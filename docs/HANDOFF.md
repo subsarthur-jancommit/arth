@@ -354,6 +354,15 @@ Pelajaran: **PR yang commit head-nya membawa `[skip ci]` tidak menjalankan workf
 
 Perapian sesudah pindah (`01e5eb6` untuk rujukan repo, `4eda70b` untuk lisensi milik PEEKABOO) masuk lewat PR #3, `claude/move-tidy` → `main`. PR itu membawa seluruh pekerjaan sejak `main` `52ac579`: 51 commit, 187 berkas. Hijau di run 37182212601: `ci` dan `e2e`, 629 lulus · 29 dilewati · 0 gagal · 0 flaky; React Doctor dan Lighthouse juga hijau. Merge dilakukan pemilik dengan merge commit, supaya hash yang dirujuk dokumen ini tetap ada di riwayat `main`.
 
+Perapian repo sesudahnya:
+
+- Di repo baru saja, 7 branch usang dihapus: `claude/arth-design`, `claude/arth-unbound`, `claude/phone-menu-focus-race`, `claude/probe-image-overscan`, `claude/red-proof-ci`, `claude/tidy-after-fork`, dan `move/verify-ci`. Semuanya tetap ada di repo lama. `probe-image-overscan` satu-satunya yang tak termuat di branch lain; isinya satu commit uji bertanda "not for merge".
+- PR #2 ditutup, dan default branch kini `main`.
+- `COMPONENTS.md` dibuat ulang (`4d5508f`).
+- `SECURITY.md` kini kebijakan Arth sendiri (`1c89509`), dengan laporan privat lewat tab Security repo ini (fitur itu diaktifkan). Sebelumnya laporan diarahkan ke darkroom.
+- Kedua commit hijau di run 37213853532: 629 lulus · 29 dilewati · 0 gagal · 0 flaky.
+- React Doctor (hanya saran, `continue-on-error`) menandai 3 "error" dan beberapa peringatan di diff terhadap `main`. Error-nya: `key` sesudah spread di dua story (`brace`, `formwork`), dan efek observer di `project-spine` yang dibaca alat itu sebagai menyinkronkan prop (positif palsu). Ini dicatat untuk perapian kode berikutnya, belum dikerjakan.
+
 ## 5. Utang yang dibawa — keputusan pemilik repo
 
 | butir                                        | status                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
