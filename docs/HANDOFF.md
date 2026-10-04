@@ -352,6 +352,8 @@ Pada 2026-10-04 repo dipindah dari `ashaamoon-lang/-1` ke `subsarthur-jancommit/
 
 Pelajaran: **PR yang commit head-nya membawa `[skip ci]` tidak menjalankan workflow `pull_request` sama sekali.** PR #1 di repo baru dibuka dari `claude/layout-motion`, yang head-nya `9c8b8b0` (commit buku besar `[skip ci]`), dan tidak memicu satu run pun. Verifikasi harus dibuka dari commit yang benar-benar diuji, bukan dari commit buku besar di atasnya.
 
+Perapian sesudah pindah (`01e5eb6` untuk rujukan repo, `4eda70b` untuk lisensi milik PEEKABOO) masuk lewat PR #3, `claude/move-tidy` → `main`. PR itu membawa seluruh pekerjaan sejak `main` `52ac579`: 51 commit, 187 berkas. Hijau di run 37182212601: `ci` dan `e2e`, 629 lulus · 29 dilewati · 0 gagal · 0 flaky; React Doctor dan Lighthouse juga hijau. Merge dilakukan pemilik dengan merge commit, supaya hash yang dirujuk dokumen ini tetap ada di riwayat `main`.
+
 ## 5. Utang yang dibawa — keputusan pemilik repo
 
 | butir                                        | status                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
