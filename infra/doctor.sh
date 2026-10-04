@@ -59,7 +59,7 @@ if [ -d "${APP_DIR}/.git" ]; then
   else bad "repository" "on ${branch}, expected ${BRANCH}"; fix "sudo -u ${APP_USER} git -C ${APP_DIR} checkout ${BRANCH}"; fi
 else
   bad "repository" "${APP_DIR} is not a git checkout"
-  fix "sudo -u ${APP_USER} git clone --branch ${BRANCH} https://github.com/ashaamoon-lang/-1.git ${APP_DIR}"
+  fix "sudo -u ${APP_USER} git clone --branch ${BRANCH} https://github.com/subsarthur-jancommit/arth.git ${APP_DIR}"
 fi
 
 if [ -d "${APP_DIR}/node_modules" ]; then ok "node_modules"

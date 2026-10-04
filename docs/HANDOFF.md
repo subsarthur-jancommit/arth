@@ -339,6 +339,19 @@ pratinjau lokal.
 
 Checkpoint (draft PR #27, base `claude/orientation`, satu-satunya CI untuk kesepuluh butir): sebelum hasil run pertama, cacat yang terbaca dari gerbang diperbaiki di `4eedb21` (story `CropMarks` berisi tombol tanpa nama, dan tombol kisi tampil tanpa JS); push itu membatalkan run untuk `5d1bf70`. Run 37175882611 pada `4eedb21` merah: `ci` hijau, `e2e` 626 lulus · 29 dilewati · 3 gagal, ketiganya dari batch ini. (1) `contrast-situ` ponsel, `/id/work/arus-balik` @2859: garis spine bertinta sendiri tertinggal di foto tanpa-huruf gerbang, melintang di keterangan yang setengah di bawah tepi strip, 1:1 (direproduksi lokal). (2) `route-marker`: garis yang tak ditempatkan berskala nol, jadi `:visible` tak menemukannya. (3) `cover-preview` keyboard: fokus mendarat sebelum skrip `/work` (ber-WebGL) mendengarkan. Diperbaiki di `65d6bed`: garis digambar dengan `currentColor` sehingga tersembunyi bersama teks seperti garis bawah (piksel di bawahnya diukur ulang: kembali hairline strip), garis dicari lewat header yang tampil, dan jangkauan diulang sampai bingkai menjawab; gerbang baru lain menunggu skrip hingga 15 s. Harapan tes yang ada tidak diubah. Hijau di run 37177613961: `ci` dan `e2e`, 629 lulus · 29 dilewati · 0 gagal · 0 flaky; `interaction-grammar` mencatat `route-marker`, `card-crop`, `cover-preview`, dan `following-facts`.
 
+### 4.7 Pindah repo — `subsarthur-jancommit/arth`
+
+Pada 2026-10-04 repo dipindah dari `ashaamoon-lang/-1` ke `subsarthur-jancommit/arth` (publik), supaya Claude GitHub App dan kredit cloud bisa dipasang oleh pemiliknya. Pemindahan dilakukan apa adanya:
+
+- 16 branch didorong dengan refspec eksplisit, tanpa force dan tanpa `--mirror`. Hash setiap head dan HEAD identik di kedua repo.
+- Riwayat tidak ditulis ulang. Kepengarangan sudah benar: commit Claude tertaut ke `claude`, dan merge PR ke `subsarthur-jancommit`.
+- Pemindaian rahasia atas seluruh riwayat bersih.
+- Repo lama tidak diubah, dan kini dipakai sebagai remote `lama`.
+
+**Nomor PR dan run CI sebelum 2026-10-04 di dokumen ini, di `FORK.md`, dan di buku besar mana pun merujuk ke `ashaamoon-lang/-1`.** Di repo baru, verifikasinya PR #2 (`move/verify-ci` = `65d6bed` → `claude/orientation`): run 37180602970, `ci` dan `e2e` hijau, 629 lulus · 29 dilewati · 0 gagal · 0 flaky, sama dengan run 37177613961 di repo lama.
+
+Pelajaran: **PR yang commit head-nya membawa `[skip ci]` tidak menjalankan workflow `pull_request` sama sekali.** PR #1 di repo baru dibuka dari `claude/layout-motion`, yang head-nya `9c8b8b0` (commit buku besar `[skip ci]`), dan tidak memicu satu run pun. Verifikasi harus dibuka dari commit yang benar-benar diuji, bukan dari commit buku besar di atasnya.
+
 ## 5. Utang yang dibawa — keputusan pemilik repo
 
 | butir                                        | status                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |

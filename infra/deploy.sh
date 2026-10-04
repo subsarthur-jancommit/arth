@@ -7,7 +7,8 @@
 #
 # ## Why this exists instead of a GitHub Actions runner
 #
-# `ashaamoon-lang/-1` is a **public** repository. A self-hosted runner on a
+# `subsarthur-jancommit/arth` (until 2026-10-04 `ashaamoon-lang/-1`, also
+# public) is a **public** repository. A self-hosted runner on a
 # public repo is a path for a pull request from a fork to execute code on this
 # machine — GitHub says not to do it, and the earlier draft of this
 # infrastructure recommended it anyway because nobody had checked the repo's
