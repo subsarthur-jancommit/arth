@@ -1,65 +1,41 @@
 # Security Policy
 
-Satūs is a **starter template**, not a hosted service. It is meant to be cloned
-and customized, so this policy covers the template's own code and tooling. Once
-you fork and deploy, securing your environment variables, secrets, and
-infrastructure is your responsibility.
+This repository is the source of **Arth**, a studio website built on Next.js 16
+with its content in Sanity. It is a site, not a template or a library, so there
+are no versions to support: the code on `main` is the code that is deployed.
 
-## Supported Versions
+## Reporting a vulnerability
 
-Security fixes land on `main`. Releases are tagged from `main`. There are no
-long-term support branches, so a fork that tracks a tag should check
-`CHANGELOG.md`'s `[Unreleased]` section for fixes that have landed since that
-tag.
+**Please do not open a public issue for a security vulnerability.** Report it
+privately through this repository's Security tab: choose
+[Report a vulnerability](https://github.com/subsarthur-jancommit/arth/security/advisories/new).
 
-| Version      | Supported |
-| ------------ | --------- |
-| 3.x (latest) | ✅        |
-| < 3.0        | ❌        |
-
-## Reporting a Vulnerability
-
-**Please do not open a public issue for security vulnerabilities.** Report it
-privately through one of these channels:
-
-1. **GitHub Security Advisories** (preferred): open the repository's Security tab
-   and choose [Report a vulnerability](https://github.com/darkroomengineering/satus/security/advisories/new).
-2. **Email**: tech@darkroom.engineering
-
-Please include the affected file or route, the impact, and steps to reproduce
+Include the affected file or route, the impact, and the steps to reproduce it
 (a minimal proof of concept helps).
-
-### What to expect
-
-- Acknowledgement within **3 business days**.
-- A severity assessment and a decision on whether the report is accepted.
-- A fix on `main` (and a patch release) once confirmed, with credit to you
-  unless you prefer to stay anonymous.
 
 ## Scope
 
-**In scope**: the template's own code, including the request proxy (`proxy.ts`)
-and rate limiting, server actions and Zod input validation, the integration
-clients (Sanity, Shopify, HubSpot, Mailchimp), and the CI/build configuration.
+**In scope:** this repository's code — the request proxy (`proxy.ts`) and its
+rate limiting, the Sanity revalidation webhook (`app/api/revalidate`), the
+integration clients in `lib/integrations/`, and the CI configuration in
+`.github/`.
 
 **Out of scope:**
 
-- Vulnerabilities in third-party dependencies. Report those upstream; we track
-  them via Dependabot and patch when releases land.
-- Issues that exist only in _your_ deployment: leaked secrets, misconfigured
-  environment variables, exposed `NEXT_PUBLIC_*` values, or infrastructure you
-  control.
+- Vulnerabilities in third-party dependencies. Report those upstream.
+- The hosting and content services themselves (Vercel, Sanity), and anything
+  that exists only in a deployment's own configuration.
 
 ## Safeguards in this repo
 
-CodeQL scanning and Dependabot run on every change, sensitive routes are
-rate-limited, and external input is validated with Zod schemas. The
-Content-Security-Policy ships enforced, composed per-integration: each kept
-integration declares the origins its browser-visible code needs in
-`lib/integrations/registry.ts`'s `cspSources`, and `lib/integrations/csp.ts`
-unions them into the single header set in `next.config.ts`. Forks that need
-project-specific origins the registry can't know about extend
-`PROJECT_CSP_EXTRA_SOURCES` in `lib/integrations/csp.ts`. The Shopify webhook
-secret on `/api/revalidate` is compared in constant time (`timingSafeEqual`):
-an unset secret returns 503, an invalid one 401. See
-[app/api/README.md](app/api/README.md) for the full revalidation flow.
+- The Content-Security-Policy ships enforced and is composed per integration:
+  each integration declares the origins its browser-visible code needs in
+  `lib/integrations/registry.ts`, and `lib/integrations/csp.ts` unions them into
+  the header that `next.config.ts` sets.
+- Routes are rate-limited in `proxy.ts` (`lib/utils/rate-limit.ts`).
+- The revalidation webhook verifies Sanity's signature (`next-sanity/webhook`):
+  an unset `SANITY_REVALIDATE_SECRET` returns 503 and an invalid signature 401.
+- Dependabot keeps the GitHub Actions in `.github/workflows` up to date, weekly.
+
+The site was started from Satūs by darkroom.engineering; that template's licence
+notice is kept in [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md).
