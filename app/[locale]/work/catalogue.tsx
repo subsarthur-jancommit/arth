@@ -3,7 +3,11 @@ import { getTranslations } from 'next-intl/server'
 
 import { Wrapper } from '@/components/layout/wrapper'
 import { Link } from '@/components/ui/link'
-import { PRACTICES, type Practice } from '@/lib/content/practices'
+import {
+  PRACTICES,
+  type Practice,
+  practiceTemplate,
+} from '@/lib/content/practices'
 import { localizedPath } from '@/lib/i18n/paths'
 import type { Locale } from '@/lib/i18n/routing'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
@@ -11,11 +15,15 @@ import {
   practicesQuery,
   workIndexQuery,
 } from '@/lib/integrations/sanity/queries'
+import { toImageSource } from '@/lib/integrations/sanity/utils/image'
 import { JsonLd } from '@/lib/seo/json-ld'
 import { collectionPageSchema } from '@/lib/seo/schemas'
 import { SITE } from '@/lib/seo/site'
 import { nameplateStyle } from '@/lib/utils/display-fit'
+import { CatalogueFrame } from '@/vault/blocks/catalogue-frame'
+import { buildFrame } from '@/vault/blocks/catalogue-frame/frame'
 import { PracticeFilter } from '@/vault/blocks/practice-filter'
+import { PracticeKey } from '@/vault/blocks/practice-key'
 import { ProjectGrid } from '@/vault/blocks/project-grid'
 import { GridPattern } from '@/vault/magic/grid-pattern'
 import { Counter } from '@/vault/motion/counter'
@@ -166,6 +174,35 @@ export async function Catalogue({ locale, practice }: CatalogueProps) {
       count: countOf(value),
     })
   )
+
+  /*
+   * The same works, read by the structure that carries them — the fork
+   * (`vault/blocks/catalogue-frame`). Built for the unfiltered catalogue only:
+   * a narrowed list is a single practice, and a frame of one row compares
+   * nothing. Same guard as `listed` above: a work with no slug or title names
+   * nothing and links nowhere.
+   */
+  const frame = practice
+    ? null
+    : buildFrame(
+        projects.flatMap((project) => {
+          const slug = project.slug?.current
+          if (!slug || !project.title) return []
+          return [
+            {
+              id: project._id,
+              title: project.title,
+              href: `/work/${slug}`,
+              client: project.client ?? null,
+              practice: project.practice ?? null,
+              year: project.year ?? null,
+              // For the plate beside the work in hand — Tata & Gerak, stage 3.
+              cover: project.cover ? toImageSource(project.cover) : null,
+            },
+          ]
+        }),
+        PRACTICES
+      )
 
   return (
     <Wrapper
@@ -347,6 +384,42 @@ export async function Catalogue({ locale, practice }: CatalogueProps) {
               sift={practice ?? 'all'}
               material
             />
+            {frame && frame.rows.length > 0 && (
+              <>
+                <CatalogueFrame
+                  frame={frame}
+                  title={t('frameTitle')}
+                  intro={t('frameIntro')}
+                  practiceLabel={t('framePractice')}
+                  undatedLabel={t('frameUndated')}
+                  unplacedLabel={t('frameUnplaced')}
+                  keysHint={t('frameKeys')}
+                  practiceLink={(value) => ({
+                    label: t(value),
+                    href: practiceTemplate(value),
+                  })}
+                />
+                {/*
+                  The frame's key — cycle 2, round 3. What each of its rows
+                  means, in the sentence the site already uses for each
+                  practice; the row for unnamed work has no meaning to give.
+                */}
+                <PracticeKey
+                  title={t('keyTitle')}
+                  rows={frame.rows.flatMap((row) =>
+                    row.practice === null
+                      ? []
+                      : [
+                          {
+                            practice: row.practice,
+                            label: t(row.practice),
+                            meaning: t(`${row.practice}Intro`),
+                          },
+                        ]
+                  )}
+                />
+              </>
+            )}
           </>
         ) : (
           /*

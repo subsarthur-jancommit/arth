@@ -238,8 +238,8 @@ cat <<NEXT
 
       sudo rm -rf /tmp/arth-infra
       sudo apt-get update -qq && sudo apt-get install -y -qq git
-      git clone --branch claude/satus-award-website-foundation-r6o5cf \\
-        https://github.com/ashaamoon-lang/-1.git /tmp/arth-infra
+      git clone --branch main \\
+        https://github.com/subsarthur-jancommit/arth.git /tmp/arth-infra
       sudo bash /tmp/arth-infra/infra/bootstrap-lab.sh ${DOMAIN}
 
   That takes 12–18 minutes. When it finishes:

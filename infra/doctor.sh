@@ -16,7 +16,7 @@ set -uo pipefail   # NOT -e: a failing check is the point, not a crash.
 DOMAIN="${1:-}"
 APP_DIR="${APP_DIR:-/srv/arth}"
 APP_USER="${APP_USER:-deploy}"
-BRANCH="claude/satus-award-website-foundation-r6o5cf"
+BRANCH="main"
 
 pass=0; fail=0
 ok()   { printf '  \033[32m✓\033[0m %-34s %s\n' "$1" "${2:-}"; pass=$((pass+1)); }
@@ -59,7 +59,7 @@ if [ -d "${APP_DIR}/.git" ]; then
   else bad "repository" "on ${branch}, expected ${BRANCH}"; fix "sudo -u ${APP_USER} git -C ${APP_DIR} checkout ${BRANCH}"; fi
 else
   bad "repository" "${APP_DIR} is not a git checkout"
-  fix "sudo -u ${APP_USER} git clone --branch ${BRANCH} https://github.com/ashaamoon-lang/-1.git ${APP_DIR}"
+  fix "sudo -u ${APP_USER} git clone --branch ${BRANCH} https://github.com/subsarthur-jancommit/arth.git ${APP_DIR}"
 fi
 
 if [ -d "${APP_DIR}/node_modules" ]; then ok "node_modules"

@@ -15,6 +15,8 @@ import {
   resolveJournalEntries,
 } from '@/lib/content/journal-fallback'
 import { practiceTemplate } from '@/lib/content/practices'
+import { countWords, minutesFor } from '@/lib/content/reading-time'
+import { studioContact } from '@/lib/content/studio-contact'
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
@@ -25,7 +27,12 @@ import { JsonLd } from '@/lib/seo/json-ld'
 import { articleSchema } from '@/lib/seo/schemas'
 import { SITE } from '@/lib/seo/site'
 import { generatePageMetadata } from '@/lib/utils/metadata'
+import { EngagementEnquiry } from '@/vault/blocks/engagement-enquiry'
+import { enquiryHref } from '@/vault/blocks/engagement-enquiry/enquiry'
 import { NextPractice } from '@/vault/blocks/next-practice'
+import { PracticeWork } from '@/vault/blocks/practice-work'
+import { ReadingLeft } from '@/vault/blocks/reading-left'
+import { ReplySlip } from '@/vault/blocks/reply-slip'
 import { ReadingProgress } from '@/vault/motion/reading-progress'
 import { Reveal } from '@/vault/motion/reveal'
 
@@ -101,12 +108,15 @@ export async function generateMetadata({ params }: EntryPageProps) {
  * above. Work from that practice beside an essay about it is a relationship
  * the data asserts rather than one invented to fill a hole.
  *
- * Returns `null` for an entry with no practice, or a practice with no listed
- * work. That is designed absence — see the render site.
+ * Returns the practice's listed work — the first row is the cover, and since
+ * round 3 of the load-bearing cycle the whole list is the index under the
+ * essay (`vault/blocks/practice-work`), one query for both. Empty for an entry
+ * with no practice, or a practice with no listed work: designed absence — see
+ * the render sites.
  */
-async function coverForPractice(locale: string, practice: string | null) {
+async function workForPractice(locale: string, practice: string | null) {
   'use cache'
-  if (!practice) return null
+  if (!practice) return []
 
   const projects = await sanityFetch({
     query: workIndexQuery,
@@ -125,10 +135,10 @@ async function coverForPractice(locale: string, practice: string | null) {
   // `workIndexQuery` is ordered `order asc, publishedAt desc`, so the same
   // entry gets the same cover on every render rather than one that moves
   // between builds.
-  // `?? []` before the index: `data` is null when Sanity is unconfigured or
-  // the query failed, and indexing null throws during prerender. The same
-  // defect the first CI run found on `/en/studio` — Tahap 53.
-  return (projects.data ?? [])[0] ?? null
+  // `?? []`: `data` is null when Sanity is unconfigured or the query failed,
+  // and indexing null throws during prerender. The same defect the first CI
+  // run found on `/en/studio` — Tahap 53.
+  return projects.data ?? []
 }
 
 export default async function JournalEntryPage({ params }: EntryPageProps) {
@@ -139,12 +149,18 @@ export default async function JournalEntryPage({ params }: EntryPageProps) {
   const entry = entryFor(locale, slug)
   if (!entry) notFound()
 
-  const [t, tWork, tNav, work] = await Promise.all([
+  const [t, tWork, tNav, works, contact] = await Promise.all([
     getTranslations('journal'),
     getTranslations('workIndex'),
     getTranslations('nav'),
-    coverForPractice(locale, entry.practice),
+    workForPractice(locale, entry.practice),
+    studioContact(locale),
   ])
+  const work = works[0] ?? null
+
+  // Words in each paragraph, and the minutes they take — Tata & Gerak.
+  const words = entry.body.map(countWords)
+  const minutes = minutesFor(words.reduce((sum, count) => sum + count, 0))
 
   const formatter = new Intl.DateTimeFormat(locale, {
     year: 'numeric',
@@ -266,6 +282,12 @@ export default async function JournalEntryPage({ params }: EntryPageProps) {
                 {tWork(entry.practice)}
               </Link>
             ) : null}
+            {/*
+              How long it takes — Tata & Gerak, stage 2. Counted from the
+              essay itself (`lib/content/reading-time`), so it cannot
+              disagree with what the reader is about to read.
+            */}
+            <span className={s.minutes}>{t('readingTime', { minutes })}</span>
           </p>
 
           {/*
@@ -354,6 +376,7 @@ export default async function JournalEntryPage({ params }: EntryPageProps) {
             {entry.body.map((paragraph) => (
               <p
                 data-reveal-item
+                data-paragraph=""
                 className={cn('p', s.paragraph)}
                 key={paragraph}
               >
@@ -361,7 +384,50 @@ export default async function JournalEntryPage({ params }: EntryPageProps) {
               </p>
             ))}
           </Reveal>
+          {/*
+            How much is left, kept in the corner once the header has gone —
+            Tata & Gerak, stage 2.
+          */}
+          <ReadingLeft words={words} paragraphs="[data-paragraph]" />
         </div>
+
+        {/*
+          The reader's turn — cycle 2, round 2. Directly below the essay and
+          before the work its practice carried: the argument has just been
+          made, and this is where a reader it convinced can answer it. A reply
+          slip, as a periodical would print one. The letter it opens names the
+          entry, and the address resolves as the home page's contact block
+          does (`lib/content/studio-contact`).
+        */}
+        <ReplySlip
+          data-epic="entry-reply"
+          className={s.reply}
+          label={t('replyLabel')}
+          subject={t('replySubject', { title: entry.title })}
+          action={
+            <EngagementEnquiry
+              href={enquiryHref(
+                contact.email,
+                t('replySubject', { title: entry.title }),
+                t('replyBody', { title: entry.title })
+              )}
+              label={t('replyAction')}
+            />
+          }
+        />
+
+        {/*
+          The work this entry's practice carried — round 3. The essay argues;
+          this is where the practice was put under load. The same rows as the
+          cover beside the essay, so the plate is finally named, and the
+          `entry-work` moment is the beam above them coming to level.
+        */}
+        {entry.practice && works.length > 0 && (
+          <PracticeWork
+            title={t('workInPractice', { practice: tWork(entry.practice) })}
+            works={works}
+          />
+        )}
 
         {/*
           The same onward link the practice pages end on — the fork. It was

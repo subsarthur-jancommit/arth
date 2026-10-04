@@ -573,6 +573,308 @@ Yang benar adalah mempersenjatai nama itu hanya saat tautan ditekan (seperti
 `released` di kartu), dengan uji navigasi mundur di browser; itu pekerjaan
 tersendiri, bukan tambahan diam-diam di sini.
 
+**`/work` — bingkai katalog, dan gerak tumpuan.** Di bawah grid, katalog
+tanpa filter kini memuat tabel praktik × tahun. Setiap karya duduk di baknya
+(judul + klien, menaut ke proyeknya), dan kepala baris menaut ke halaman
+praktiknya. Datanya `projectCardFields` yang sudah di-fetch; bak tanpa karya
+dibiarkan kosong. Geraknya primitif baru `vault/motion/bearing`: tiang naik
+dan balok membentang, lalu tiap karya mendarat di baloknya, menekan dengan
+`--press-scale` milik §9, dan mengendap tanpa melewati titik diam (§9.3) —
+CSS lewat `useReveal`, `data-epic="catalogue-frame"`, EN dan ID. **Belum
+diverifikasi:** mata — lebar tabel di ponsel dan ritme geraknya belum pernah
+dilihat. Build, e2e, dan CI hijau di checkpoint 1 (run 37046629768).
+
+**`/studio` — ukuran karya, dan garis ukur (putaran 2).** Di atas strip "Work
+it produced" kini ada ukuran seluruh karya: penugasan dan klien (ICU EN/ID),
+direntangkan antara tahun pertama dan terakhir. Datanya `workIndexQuery` tanpa
+filter, dipangkas ke `year` dan `client` di fungsi `'use cache'`. Desainnya
+primitif baru `vault/motion/dimension`, garis ukur gambar teknik khusus CSS.
+Garis saksi turun, lalu garis ukur memanjang dari tengah dan membawa tanda tiap
+tahun. Primitif ini tanpa JS baru, dan `data-epic="work-measure"`. **Belum
+diverifikasi:** mata. Build, e2e, dan CI hijau di checkpoint 1.
+
+**`/journal/<slug>` — karya praktiknya, dan balok yang mendatar (putaran 3).**
+Di bawah esai kini ada indeks karya praktik entri itu: judul yang menaut ke
+studi kasus, ditambah baris meta yang sama dengan kartunya. Datanya query
+sampul yang sudah ada, kini dikembalikan utuh, sehingga pelat di samping esai
+akhirnya bernama. Desainnya primitif baru `vault/motion/level`, khusus CSS:
+balok kantilever turun satu gutter di ujung bebasnya (`atan2` terhadap
+panjangnya sendiri), lalu naik mendatar saat baris-baris tiba, hanya rotasi.
+`data-epic="entry-work"`. **Belum diverifikasi:** mata. Build, e2e, dan CI hijau
+di checkpoint 1.
+
+**`/practice/<v>` — tulisan praktiknya, dan bekisting yang dibongkar (putaran 4).**
+Di bawah karya kini ada entri jurnal yang diarsipkan di praktik itu: tanggal,
+judul yang menaut ke entri, dan ringkasan indeks. Entri di-resolve persis
+seperti `/journal` (`resolveJournalEntries` atas `journalEntriesQuery`), jadi
+keduanya tak bisa berbeda. Desainnya primitif baru `vault/motion/formwork`,
+khusus CSS: tiap baris tiba di dalam cetakan putus-putus, lalu cetakannya
+dibongkar — memudar dan jatuh setengah gutter. Yang tersisa harus berdiri
+sendiri. `data-epic="practice-writing"`. **Belum diverifikasi:** mata.
+Build, e2e, dan CI hijau di checkpoint 2.
+
+**`/work/<slug>` — tulisan praktiknya, terhadap tahun penugasan (putaran 5).** Di
+`#onward`, sebelum proyek berikutnya, kini ada entri jurnal praktik karya itu,
+disusun terhadap datum tahun penugasannya: yang ditulis sesudahnya di atas garis,
+yang setahun atau sebelumnya di bawah. Pembacaan datanya kini dipakai bersama
+halaman praktik (`lib/content/practice-writing`, dipindah dari putaran 4 tanpa
+mengubah perilaku). Desainnya primitif baru `vault/motion/datum`, khusus CSS: garis
+level diam, dan baris menjauhinya saat tiba. Tanpa `data-region`, jadi spine tetap.
+`data-epic="engagement-writing"`. **Belum diverifikasi:** mata.
+Build, e2e, dan CI hijau di checkpoint 2.
+
+**`/` — tulisan terbaru di beranda, dan pelat yang dipaku (putaran 6).** Beranda
+kini menampilkan entri jurnal terbaru di antara "How we work" dan kontak: tanggal,
+praktik, judul yang menaut ke entri, ringkasan, dan tautan ke semua tulisan. Entri
+"terbaru" di-resolve sama seperti di `/journal`. Modul `lib/content/practice-writing`
+kini memakai satu pembaca untuk putaran 4–6. Desainnya primitif baru
+`vault/motion/fixings`, khusus CSS: entri tiba sebagai pelat, lalu dipaku di keempat
+sudutnya searah jarum jam. Tanpa JS klien baru; `data-epic="latest-writing"`.
+**Belum diverifikasi:** mata. Checkpoint 2 menangkap lift reveal-nya yang
+membawa tautan keluar dari bawah pointer; kini memudar di tempat (`72c0646`), lalu hijau.
+
+**`/journal` — jurnal menurut praktik, dan turus yang dihitung (putaran 7).** Indeks
+jurnal kini ditutup dengan tabel Tulisan | Praktik | Karya. Tiap praktik menaut ke
+halamannya, sehingga indeks punya jalan lanjut. Hitungannya diambil dari data yang
+sudah ada di halaman, entri dan karya untuk sampul, tanpa fetch baru (`tally.ts`, satu
+tes). Desainnya primitif baru `vault/motion/tally`, khusus CSS: tiap hitungan berupa
+coretan turus berkelompok lima, dihitung keluar dari praktik dalam satu ketukan
+lambat. Hanya `opacity` yang berubah; baris memudar di tempat (pelajaran checkpoint
+2). `data-epic="practice-tally"`. **Belum diverifikasi:** mata.
+
+**`/studio` — bentuk penugasan, dan unting-unting (putaran 8).** Sesudah empat langkah
+proses kini ada jadwal bentuk penugasan: tiap karya dengan nama penugasannya ditulis
+apa adanya, misalnya "Retainer, six months". Karyanya menaut ke studi kasus, disertai
+klien dan tahun. Datanya query yang sudah dibaca putaran 2, kini menyimpan juga judul,
+slug, dan penugasan. Desainnya primitif baru `vault/motion/plumb`, satu-satunya yang
+digerakkan scroll: CSS view timeline tanpa JS, dengan `@supports` sebagai pengaman.
+Garis unting-unting turun di samping jadwal seiring jadwal naik ke layar.
+`data-epic="engagement-shapes"`. **Belum diverifikasi:** mata (fix axe: `70f0d8f`).
+
+**`/work/<slug>` — penugasan sepraktik, dan rangka yang diperkaku (putaran 9).** Di
+`#onward`, sebelum tulisan, kini ada semua penugasan praktik karya itu, termasuk yang
+ini. Penugasan ini tidak menaut, ditandai "this engagement" dan `aria-current`, sehingga
+pembaca membandingkan bentuknya dengan yang lain. Datanya katalog yang sudah dimuat untuk
+proyek berikutnya, tanpa query baru. Desainnya primitif baru `vault/motion/brace`: satu
+petak per penugasan, tiba miring (`skewX`), lalu diperkaku diagonal hingga siku. Sudut
+dan panjangnya dihitung dengan `atan2` dan `hypot`. Tanpa `data-region`.
+`data-epic="practice-engagements"`. **Belum diverifikasi:** mata (fix axe: `1012b58`).
+
+**`/work/<slug>` — "Bahas penugasan serupa".** Kepala `#onward` studi kasus kini
+memuat satu tautan `mailto:` ke studio. Subjeknya menyebut kasusnya; isinya
+menyebut kasus dan bentuk penugasannya, lalu tiga baris kosong: organisasi, yang
+perlu diputuskan, tenggat. Alamatnya di-resolve seperti blok kontak beranda
+(`lib/content/studio-contact.ts` → `resolveHomeContent`). Href dibangun di
+`enquiry.ts` (satu tes). Tanpa form, JS, layanan, atau secret. Tautannya berdiri
+sendiri di luar blok teks dan tidak bergerak. **Belum diverifikasi:** mata (CI
+hijau, run 37101359980).
+
+**`/work/<slug>` — sampul proyek berikutnya ikut pindah.** Menekan NextProject kini
+memorf sampulnya menjadi hero proyek berikutnya, lewat kelas `morph` yang sama
+dengan kartu → hero. Namanya dipasang saat ditekan, bukan saat render
+(`vault/blocks/next-project/link.tsx`), dan dilepas saat blur atau saat pointer
+batal atau keluar. Klik bermodifier tidak memasangnya. Karena itu proyek → katalog
+tetap hanya membawa hero halaman ini, cacat yang dulu menahannya di _Ditunda_.
+Diuji dua arah di `e2e/next-project-morph.e2e.ts`. **Belum diverifikasi:** mata (CI
+hijau, run 37101359980).
+
+**`/practice/<v>` — mulai penugasan, dalam kop gambar (siklus 2, putaran 1).** Halaman
+praktik kini ditutup, sebelum praktik berikutnya, dengan kop gambar: praktik,
+studio, dan alamatnya dalam sel bergaris, lalu tautan "Discuss an engagement in
+{practice}" yang membuka surel berisi subjek dan brief praktik itu. Alamatnya dari
+`lib/content/studio-contact` dan href-nya dari `enquiryHref`, keduanya dari
+`claude/case-continuity`. Primitif barunya `vault/blocks/title-block`: diam, tanpa
+gerak, sehingga tautannya tidak pernah bergeser. `data-epic="practice-enquiry"`.
+**Belum diverifikasi:** mata. Build, e2e, dan CI hijau di checkpoint 1 siklus 2.
+
+**`/journal/<slug>` — balasan untuk esai (siklus 2, putaran 2).** Tepat di bawah esai,
+sebelum karya praktiknya, kini ada slip balasan: tepi berperforasi, label "Reply",
+subjek surel yang akan terkirim ("Re: {judul}"), lalu tautan "Talk to the studio about
+this" yang membuka surel berisi judul entri. Alamatnya dari `studio-contact`. Primitif
+baru `vault/blocks/reply-slip`, konvensi slip balasan majalah: diam, tidak bergerak,
+sejajar kolom esai di desktop. `data-epic="entry-reply"`. **Belum diverifikasi:**
+mata. Build, e2e, dan CI hijau di checkpoint 1 siklus 2.
+
+**`/work` — kunci bingkai katalog, dan sambungan (siklus 2, putaran 3).** Di bawah
+bingkai praktik × tahun kini ada kuncinya: tiap praktik yang tampil di bingkai
+beserta kalimat yang sudah dipakai situs untuk menjelaskannya
+(`workIndex.<praktik>Intro`). Tidak ada teks baru selain judul "Key"/"Keterangan".
+Primitif baru `vault/motion/splice`, khusus CSS: dua paruh batang dipasang dari
+ujungnya masing-masing, bertemu di sambungan, lalu pelat dipasang. Istilah dan
+artinya tidak bergerak; baris memudar di tempat. `data-epic="catalogue-key"`.
+**Belum diverifikasi:** mata. Build, e2e, dan CI hijau di checkpoint 1 siklus 2.
+
+**`/studio` — klaim praktik dengan karya buktinya (siklus 2, putaran 4).** Di pita
+kapabilitas kepala halaman, di bawah apa yang dicakup tiap praktik, kini ada "Seen
+in"/"Terlihat dalam": setiap karya terdaftar praktik itu, urut katalog, menaut ke studi
+kasusnya beserta tahunnya. Datanya kueri katalog yang sudah dibaca halaman ini
+(`casesByPractice`, satu tes); praktik tanpa karya tidak diberi baris. Primitif baru
+`vault/motion/leader`, khusus CSS: garis turun dari catatan, berbelok ke karya pertama,
+lalu titiknya mendarat. Pita kini memudar di tempat. `data-epic="capability-evidence"`.
+**Belum diverifikasi:** mata. Build, e2e, dan CI hijau di checkpoint penutup siklus 2.
+
+**`/` — alamat studio bisa disalin (sekali jalan).** Tautan `mailto:` di blok kontak tidak
+membuka apa pun bagi pembaca webmail, dan tidak memberi tanda gagal. Kini di bawahnya ada
+"Copy address"/"Salin alamat" (`vault/blocks/copy-address`): alamat yang sama, disalin,
+dengan hasilnya di `role="status"`. Tanpa JS atau tanpa clipboard asinkron, tombol tidak
+dirender; alamatnya tetap. Barisnya diposisikan agar alamat yang ditarik `Magnetic` tidak
+menutupnya, dan blok kontak kini memudar di tempat. Diuji di `e2e/address-copy.e2e.ts`.
+**Belum diverifikasi:** mata. Build, e2e, dan CI hijau (run 37113202080).
+
+**`/` — stempel saat alamat tersalin (sekali jalan).** Setiap salinan yang berhasil kini
+distempel: primitif baru `vault/motion/stamp`, khusus CSS, diputar sekali saat dipasang.
+Bingkai bergaris turun setengah gutter ke kertas dengan `--ease-in-quart` dan berhenti mati
+tanpa pantulan; katanya baru muncul saat bingkai menyentuh, jadi teks tidak pernah bergerak.
+Total 350 ms. Salinan kedua menstempel lagi (`key` baru), dan stempel ada di `role="status"`
+sehingga dibacakan. Reduced motion: stempel langsung ada. `data-epic="address-copy"`.
+**Belum diverifikasi:** mata. Build, e2e, dan CI hijau (run 37113202080).
+
+**404 — mungkin yang Anda cari (Orientasi, tahap 1).** Alamat mati jarang acak: slug
+yang diketik dari ingatan, tautan di dek lama. Kini 404 mencocokkan alamat itu dengan
+indeks pencarian yang sudah dipakai ⌘K (`/{locale}/search.json`) dan menawarkan sampai
+tiga tujuan yang mirip ejaan slugnya atau sama kata judulnya (`suggest.ts`, satu tes).
+Halaman umum tidak ditawarkan; tawaran Work/Studio/Journal sudah ada. Tanpa JS, tanpa
+kecocokan, atau fetch gagal: tidak ada yang dirender. Diuji di `e2e/wayfinding.e2e.ts`.
+**Belum diverifikasi:** mata (CI hijau, run 37125290502).
+
+**404 — penunjuk arah (Orientasi, tahap 1).** Setiap set gambar membawa penunjuk utara,
+agar pembaca yang tersesat di lembar bisa mengorientasikan diri. Di 404 jarumnya melakukan
+itu secara harfiah (`vault/motion/north-arrow`): diam menunjuk tebakan terbaik, lalu
+berputar ke saran yang dihover atau difokus. Satu sudut dihitung per hover/fokus
+(`bearing.ts`, `atan2`, satu tes), jarum berputar lewat jalan terpendek, berhenti dengan
+`--ease-out-expo` tanpa overshoot; hanya `transform`. Reduced motion: langsung menunjuk.
+`data-epic="wayfinding"`. **Belum diverifikasi:** mata (CI hijau, run 37125290502).
+
+**`/work` — bingkai yang bisa dijelajah (Orientasi, tahap 2).** Bingkai praktik × tahun
+kini dibaca seperti grid gambar. Tombol panah berpindah antarkarya: kiri-kanan menyusuri
+baris praktik, atas-bawah menuruni tahun, bay kosong dilewati (`navigate.ts`, satu tes);
+Tab tetap mengunjungi semuanya. Karya yang di-hover atau difokus menandai tahunnya di tepi
+atas bingkai. Pendengarnya didelegasikan pada tabel yang tetap dirender server
+(`reader.tsx`); petunjuk tombol terhubung lewat `aria-describedby`.
+**Belum diverifikasi:** mata (CI hijau, run 37125290502).
+
+**`/work` — garis bidik (Orientasi, tahap 2).** Grid gambar dibaca dari tepinya: sebuah titik
+adalah "baris C, kolom 4" karena ada garis dari tiap sumbu ke sana. Primitif baru
+`vault/motion/crosshair` melakukan itu untuk karya yang di-hover atau difokus: satu garis rambut
+menyusuri baris praktiknya dari tepi kiri bingkai, satu menuruni kolom tahunnya dari tepi atas,
+dan keduanya meluncur ke karya berikutnya alih-alih melompat. Hanya `transform` dan
+`opacity`, `--duration-fast`. Reduced motion: garis langsung di tempat.
+`data-epic="frame-crosshair"`. **Belum diverifikasi:** mata (CI hijau, run 37125290502).
+
+**`/work/<slug>` — tautan ke bagian (Orientasi, tahap 3).** Studi kasus dibaca lebih dari satu
+orang sebelum ada yang memesan, dan yang ingin ditunjukkan ke rekan biasanya satu bagian.
+Spine kini diakhiri "Copy section link"/"Salin tautan bagian" (`copy-link.tsx`): alamat
+halaman ini plus bagian yang sedang dibaca (`#outcome`), dihitung saat ditekan, dikonfirmasi
+stempel. `useClipboard` diekstrak dari `CopyAddress` dan dipakai keduanya. Di luar baris
+spine, jadi baris tetap sama dengan region; hanya desktop. `data-epic="section-link"`.
+**Belum diverifikasi:** mata (CI hijau, run 37125290502).
+
+**`/work/<slug>` — tanda masuk (Orientasi, tahap 3).** Denah menandai pintu masuk dengan panah.
+Pembaca yang tiba lewat tautan berbagian, yang disalin dan dikirim rekannya, kini mendapati
+baris bagian itu di spine diberi panah masuk (`vault/motion/entry-arrow`, khusus CSS): meluncur
+dari luar baris ke tepinya lalu tinggal, jadi "Anda masuk di sini" tetap terlihat saat ia
+membaca terus. Bagian dibaca dari alamat saat hidrasi dan `hashchange`. Hanya `transform` dan
+`opacity`; reduced motion: langsung ada. `data-epic="section-entry"`.
+**Belum diverifikasi:** mata (CI hijau, run 37125290502).
+
+**Header — ganti bahasa tanpa kehilangan tempat (Orientasi, tahap 4).** Pembaca di tengah
+studi kasus yang beralih ke Bahasa Indonesia, sering untuk diteruskan ke rekan, dulu
+mendarat kembali di atas. Kini pengalih bahasa membawa bagian yang sedang dibaca: bagian
+terakhir yang atasnya sudah melewati garis baca 35% layar (`section.ts`, satu tes), dibuka
+di bahasa lain pada id yang sama. `href` yang dirender tidak berubah, jadi tanpa JS, tab
+baru, atau di puncak halaman, ia tetap tautan biasa. Diuji di `e2e/locale-place.e2e.ts`.
+**Belum diverifikasi:** mata (CI hijau, run 37125290502).
+
+**Header — geser lembar (Orientasi, tahap 4).** Ganti bahasa dulu satu-satunya navigasi tanpa
+transisi sama sekali. Kini ia diumumkan sebagai intent `'sheet'` (`lib/motion/navigation-signal`),
+dan panel `vault/motion/page-transition` menyeberang ke samping: masuk dari kanan, keluar ke
+kiri, seperti lembar berikutnya dari satu set gambar. Halamannya sama, lembarnya lain. Pakai
+keyframe, bukan transisi, karena panel parkir di bawah layar. Ketukannya sama dengan cover,
+hanya `transform`; reduced motion: overlay tidak dirender. `data-epic="locale-sheet"`.
+**Belum diverifikasi:** mata (CI hijau, run 37125290502).
+
+**`/journal/<slug>` — esai yang rapi di kertas (Tata & Gerak, tahap 1).** Esai satu-satunya
+halaman yang mungkin dicetak atau disimpan sebagai PDF untuk dibawa rapat. Lembar `print`
+kini menyisakan esai saja: meta, judul, ringkasan, lalu teks satu kolom urut baca di lebar
+kertas berapa pun. Header, footer, panel transisi, tirai, bilah baca, grain, dan kursor
+disembunyikan; butir yang belum ter-reveal dicetak terlihat, karena printer tidak menggulir.
+Diuji di `e2e/print-essay.e2e.ts` dan dilihat di tangkapan layar 390/1440.
+**Belum diverifikasi:** mata (CI hijau, run 37177613961).
+
+**Semua rute — tipografi seimbang (Tata & Gerak, tahap 1).** Judul yang terbungkus kini
+seimbang (`text-wrap: balance` pada h1–h4, kecuali nameplate yang memang diukur memenuhi
+barisnya): "Evaluation before / pipeline" di ponsel menjadi "Evaluation / before pipeline".
+Jumlah baris tidak berubah, jadi tak ada yang bergeser. Paragraf dan ringkasan esai memakai
+`pretty`, sehingga tidak berakhir dengan satu kata. Keduanya di dalam `@supports`; peramban
+lama membungkus seperti biasa. Dilihat di tangkapan layar sebelum/sesudah 390 px.
+**Belum diverifikasi:** mata (CI hijau, run 37177613961).
+
+**`/journal/<slug>` — waktu baca dan sisanya (Tata & Gerak, tahap 2).** Meta esai kini
+menyebut lamanya ("1 min read"/"1 menit baca"), dihitung dari isinya (`lib/content/reading-time`,
+230 kata/menit, satu tes). Begitu esai dimulai dan header sudah lewat, label kecil di bawah
+header kanan (`vault/blocks/reading-left`) menyebut sisanya ("4 min left"), dihitung ulang
+tiap kali paragraf melewati garis baca lewat `IntersectionObserver`, dan hilang saat akhir
+esai terlihat. Posisinya hasil cek ponsel: di pojok bawah ia menutupi baris berikutnya.
+Diuji di `e2e/reading-time.e2e.ts`. **Belum diverifikasi:** mata (CI hijau, run 37177613961).
+
+**Header — penanda rute meluncur (Tata & Gerak, tahap 2).** Rute yang sedang dibuka dulu
+dibedakan oleh tinta saja, dan tinta itu terukur ±1,8:1 terhadap kata lain. Kini satu garis
+rambut bertinta sama berdiri di bawahnya (`vault/motion/route-marker`). Tekan rute lain, dan
+garis meluncur ke kata itu serta mengambil lebarnya sebelum halaman berganti. Ia hanya
+meluncur saat ditekan: tiap halaman merender header-nya sendiri, dan luncuran saat tiba akan
+terjadi di bawah panel transisi. Hanya `transform`; reduced motion: langsung di tempat; tanpa
+JS tak ada garis, tinta tetap. Desktop saja, karena kata aktif di ponsel sudah bergaris bawah.
+Diuji di `e2e/route-marker.e2e.ts`. **Belum diverifikasi:** mata (CI hijau, run 37177613961).
+
+**`/work` — sampul di bingkai (Tata & Gerak, tahap 3).** Bingkai katalog membaca karya sebagai
+tabel nama, sedangkan sampulnya satu layar di atas. Kini karya yang dihover atau difokus
+menampilkan sampulnya di pelat 4:5 (`vault/motion/cover-preview`) di ujung kosong bay-nya.
+Pelat meluncur bersama garis bidik dan gambarnya berganti silang. Ia ditambatkan ke karya,
+bukan ke pointer, supaya keyboard dan pointer sama. Tak muncul kalau bay terlalu sempit,
+dan tak pernah keluar dari bingkai. Sampul baru dimuat saat karya pertama kali disentuh.
+Diuji di `e2e/cover-preview.e2e.ts`. **Belum diverifikasi:** mata (CI hijau, run 37177613961).
+
+**Kartu karya — tanda potong (Tata & Gerak, tahap 3).** Saat kartu dihover atau difokus,
+tanda potong lembar cetak (`vault/motion/crop-marks`) merapat ke keempat sudut pelatnya,
+bergiliran searah jarum jam. Karya itu terbaca sebagai yang sedang dipotong dari lembar.
+Tanda berada di luar pelat dan di luar elemen yang dipotret morph, jadi tidak ikut ke halaman
+kasus. Panjangnya 9,2 px, di bawah celah tersempit antara pelat dan judul (10,24 px, di 800).
+CSS saja, jadi berlaku tanpa JS; hanya `transform`/`opacity`; reduced motion: langsung tampil.
+Diuji di `e2e/card-crop.e2e.ts`. **Belum diverifikasi:** mata (CI hijau, run 37177613961).
+
+**`/work/<slug>` — fakta yang ikut (Tata & Gerak, tahap 4).** Di tengah halaman kasus
+sepanjang 4,7 layar, tak ada yang menyebut karya mana yang sedang dibaca. Kini, begitu `h1`
+hero keluar layar, spine desktop menyebut nama dan tahun kasus ("Arus Balik 2025") di tempat
+labelnya. Label terangkat pergi saat nama naik masuk, di sel yang sama, jadi baris di bawahnya
+tak bergeser. Dideteksi `IntersectionObserver` pada `h1`, jadi benar juga saat tiba di tengah
+halaman. `aria-hidden` karena mengulang `h1`; tanpa JS label tetap. `data-epic="following-facts"`.
+Diuji di `e2e/following-facts.e2e.ts`. **Belum diverifikasi:** mata (CI hijau, run 37177613961).
+
+**`/work/<slug>` — spine satu baris di ponsel (Tata & Gerak, tahap 4).** Strip spine di ponsel
+menempel di atas bacaan, jadi tiap baris tambahan menutupi satu baris kasus. Kini barisnya tak
+pernah membungkus. Bila tak muat (kasus dengan bab dan hasil punya enam baris), strip bergeser
+ke samping dan baris aktif dibawa ke tengah; yang bergulir hanya strip, bukan halaman. Baris aktif
+ditandai garis header (`vault/motion/route-marker`, kini bisa mengikuti item aktif) yang meluncur
+di tepi bawah strip; dorongan 4 px di ponsel dilepas karena membuat jarak antarkata timpang. Kini
+keenam kasus muat satu baris bahkan di 320 px; geser dicek dengan strip dipersempit.
+Diuji di `e2e/spine-strip.e2e.ts`. **Belum diverifikasi:** mata (CI hijau, run 37177613961).
+
+**Halaman panjang — kembali ke atas (Tata & Gerak, tahap 5).** Beranda 13 layar dan kasus
+hampir 5, tapi jalan pulang ke atas hanya roda gulir atau wordmark, yang meninggalkan halaman.
+Kini chip kecil di pojok kanan bawah (`vault/blocks/back-to-top`) muncul setelah dua layar,
+menggulir ke atas lewat Lenis (lompat di reduced motion), lalu memindah fokus ke awal `main`.
+Ia tak dirender sebelum dua layar, jadi bukan perhentian ekstra bagi keyboard; letaknya setelah
+footer, jadi urutan kontrol lain tak bergeser. Di ujung halaman tak menutupi teks (EN/ID, 390/1440).
+Diuji di `e2e/back-to-top.e2e.ts`. **Belum diverifikasi:** mata (CI hijau, run 37177613961).
+
+**Semua rute — kisi bawah (Tata & Gerak, tahap 5).** Situs ini berargumen bahwa struktur di
+balik karya ikut dibeli klien, tapi kisi 12 kolom halamannya sendiri tak pernah terlihat. Kini
+tombol "Show the grid"/"Tampilkan kisi" di kolofon footer (`aria-pressed`), atau tombol `g` di
+luar kolom isian, menggambar kisi itu di atas halaman (`vault/motion/grid-underlay`): kolom
+turun dari atas bergiliran `--stagger-items`. Geometrinya kisi halaman sendiri (`--columns`,
+`--gap`, `--safe`; 4 kolom di ponsel). Status hanya untuk kunjungan, tanpa penyimpanan.
+Diuji di `e2e/grid-underlay.e2e.ts`. **Belum diverifikasi:** mata (CI hijau, run 37177613961).
+
 ### 3.3 Gerbang kontras melihat lebih banyak — ditemukan dengan melihat
 
 Chip "All" di `/work` tampil tanpa angka: angka hitungannya (`aria-hidden`)

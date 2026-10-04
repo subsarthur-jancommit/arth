@@ -32,16 +32,18 @@ kebocoran GPU, header/CSP, penjaga token, dan kejujuran. Prinsipnya: **ukur,
 jangan veto.** Tidak ada lagi nomor tahap. §0.1 di sana menjawab apa yang
 dicabut, apa yang dipertahankan, dan aset kurasi mana yang tidak disentuh.
 
-**Satu hal tentang repo ini yang mudah terlewat:** default branch-nya di
-GitHub **bukan** `main`, melainkan `claude/satus-award-website-foundation-r6o5cf`
-(PR #9). Menggabungkan ke `main` tidak mengubahnya; mengganti default branch
-adalah keputusan pemilik repo.
+**Default branch:** sejak 2026-10-04, `main` di repo `subsarthur-jancommit/arth`
+(§4.7). Sebelumnya, di `ashaamoon-lang/-1`, default branch-nya
+`claude/satus-award-website-foundation-r6o5cf` (PR #9) atas keputusan pemilik.
+Pemilik memindahkannya ke `main` saat repo pindah, dan seluruh pekerjaan kini
+ada di sana.
 
 Dua track berjalan paralel di repo ini dan keduanya nyata.
 `claude/satus-award-website-foundation-r6o5cf` (PR #9) membawa portabilitas
 gerbang Windows dan penjaga token; ia sudah **digabungkan ke** branch di atas,
 yang kini jadi tempat kerja berjalan. Yang lama tidak dihapus — PR-nya punya
-riwayatnya sendiri.
+riwayatnya sendiri. (Sesudah perapian pindah repo, semua track itu ada di
+`main` repo baru, dan branch-branch-nya hanya tersisa di repo lama, §4.7.)
 
 **Commit dan nomor run CI sengaja tidak ditulis di sini.** Tanyakan, jangan
 percaya dokumen:
@@ -232,18 +234,139 @@ workflow kritik desain (peringkat 1–5) sudah habis, ditambah menu ponsel
 **Ditunda, masing-masing dengan alasannya** — pilih dari sini, bukan dari
 ingatan:
 
-| butir                                                                                        | kenapa belum                                                                                                                                                                               |
-| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Morph sampul ke proyek berikutnya                                                            | nama transisi harus dipasang **saat tautan ditekan**, bukan di render — kalau tidak, proyek → katalog membentuk dua pasangan morph. Perlu uji navigasi mundur di peramban (`FORK.md` §3.2) |
-| Overscan parallax 12% di `sizes` grid galeri, dan di `needed` pada `image-resolution.e2e.ts` | ada sebelum fork; memperbaikinya mengubah byte di setiap halaman proyek dan ambang sebuah gerbang (`FORK.md` §3.4)                                                                         |
-| Indeks "What we take on" di beranda                                                          | menulis ulang tiga spec e2e; tiga kata `h1` di bawah `h1` hero (kritik, ditolak no. 3)                                                                                                     |
-| Dok ponsel di halaman proyek                                                                 | lapisan tetap di atas konten ponsel (risiko WCAG 2.4.11) dan permukaan navigasi kedua (no. 8)                                                                                              |
-| Material grid di hero                                                                        | perlu GPU nyata untuk dinilai; garis kanvas tak terlihat oleh `contrast-situ` (no. 13)                                                                                                     |
-| Tirai transisi halaman                                                                       | menambah hingga ~370 ms sebelum setiap navigasi — perlu pengukuran latensi dulu (no. 15)                                                                                                   |
-| Desain ulang 404                                                                             | rute ber-trafik terendah, bergantung pada butir hero di atas (no. 17)                                                                                                                      |
+| butir                                                                                        | kenapa belum                                                                                                                                                                                                                                     |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Morph sampul ke proyek berikutnya                                                            | **terkirim** di `claude/case-continuity` (`bdcc2d0`), CI hijau di run 37101359980; nama dipasang saat ditekan (`vault/blocks/next-project/link.tsx`), diuji dua arah di `e2e/next-project-morph.e2e.ts`. Menunggu keputusan merge (draft PR #23) |
+| Overscan parallax 12% di `sizes` grid galeri, dan di `needed` pada `image-resolution.e2e.ts` | ada sebelum fork; memperbaikinya mengubah byte di setiap halaman proyek dan ambang sebuah gerbang (`FORK.md` §3.4)                                                                                                                               |
+| Indeks "What we take on" di beranda                                                          | menulis ulang tiga spec e2e; tiga kata `h1` di bawah `h1` hero (kritik, ditolak no. 3)                                                                                                                                                           |
+| Dok ponsel di halaman proyek                                                                 | lapisan tetap di atas konten ponsel (risiko WCAG 2.4.11) dan permukaan navigasi kedua (no. 8)                                                                                                                                                    |
+| Material grid di hero                                                                        | perlu GPU nyata untuk dinilai; garis kanvas tak terlihat oleh `contrast-situ` (no. 13)                                                                                                                                                           |
+| Tirai transisi halaman                                                                       | menambah hingga ~370 ms sebelum setiap navigasi — perlu pengukuran latensi dulu (no. 15)                                                                                                                                                         |
+| Desain ulang 404                                                                             | rute ber-trafik terendah, bergantung pada butir hero di atas (no. 17)                                                                                                                                                                            |
 
 Nomor-nomor di atas merujuk daftar `rejected` workflow kritik desain. Keluaran
 workflow itu tidak ada di repo — tabel ini adalah catatannya.
+
+### 4.2 Putaran pengembangan
+
+Buku besar siklus "Work that has to hold up" (rencana yang disetujui pemilik
+repo): satu fitur dan satu desain per putaran, dibangun di `claude/load-bearing`
+tanpa CI. Setiap tiga putaran diperiksa sekali lewat draft PR permanen dari
+`claude/load-bearing-ci`, yang tidak untuk di-merge. Status: `belum CI`,
+`CI hijau (run …, tally)`, atau `diperbaiki (commit …)`. Kolom commit memuat
+subjek commit sampai checkpoint menggantinya dengan hash.
+
+| N   | rute              | fitur                                               | desain                   | `data-epic`            | commit    | status                                                        |
+| --- | ----------------- | --------------------------------------------------- | ------------------------ | ---------------------- | --------- | ------------------------------------------------------------- |
+| 1   | `/work`           | bingkai katalog (praktik × tahun)                   | `vault/motion/bearing`   | `catalogue-frame`      | `4926c63` | CI hijau (run 37046629768, 583 lulus · 29 dilewati · 0 gagal) |
+| 2   | `/studio`         | ukuran karya (penugasan, klien, rentang tahun)      | `vault/motion/dimension` | `work-measure`         | `4c0067d` | CI hijau (run 37046629768, 583 lulus · 29 dilewati · 0 gagal) |
+| 3   | `/journal/<slug>` | indeks karya praktik di bawah esai                  | `vault/motion/level`     | `entry-work`           | `0d65770` | CI hijau (run 37046629768, 583 lulus · 29 dilewati · 0 gagal) |
+| 4   | `/practice/<v>`   | tulisan dari praktik ini (entri jurnal per praktik) | `vault/motion/formwork`  | `practice-writing`     | `2540c58` | CI hijau (run 37087828073, 586 lulus · 29 dilewati · 0 gagal) |
+| 5   | `/work/<slug>`    | tulisan praktik terhadap tahun penugasan            | `vault/motion/datum`     | `engagement-writing`   | `dee912f` | CI hijau (run 37087828073, 586 lulus · 29 dilewati · 0 gagal) |
+| 6   | `/`               | tulisan terbaru dari jurnal di beranda              | `vault/motion/fixings`   | `latest-writing`       | `7fdd0f3` | diperbaiki (commit 72c0646)                                   |
+| 7   | `/journal`        | jurnal menurut praktik (tulisan dan karya)          | `vault/motion/tally`     | `practice-tally`       | `1905fac` | CI hijau (run 37099276094, 589 lulus · 29 dilewati · 0 gagal) |
+| 8   | `/studio`         | bentuk penugasan (jadwal per karya)                 | `vault/motion/plumb`     | `engagement-shapes`    | `b9834eb` | diperbaiki (commit 70f0d8f)                                   |
+| 9   | `/work/<slug>`    | penugasan sepraktik, yang ini ditandai              | `vault/motion/brace`     | `practice-engagements` | `cea5476` | CI hijau (run 37099276094, 589 lulus · 29 dilewati · 0 gagal) |
+
+Checkpoint 1 (putaran 1–3): draft PR #22 dari `claude/load-bearing-ci` pada `0d65770`, run 37046629768. Job `ci` dan `e2e` hijau, 0 flaky. `interaction-grammar` mencatat ketiga momen baru di rutenya.
+
+Checkpoint 2 (putaran 4–6): pada `7fdd0f3` merah di run 37086293717. Satu tes gagal dua kali, `e2e/interaction-grammar.e2e.ts:120` ("nav: the press did not reach the control"): lift reveal putaran 6 di beranda membawa tautan kecilnya keluar dari bawah pointer. Diperbaiki di `72c0646` (`--reveal-transform: none`, harapan tes tidak diubah), lalu hijau di run 37087828073: `ci` dan `e2e`, 586 lulus, 29 dilewati, 0 gagal, 0 flaky.
+
+Checkpoint 3 (putaran 7–9): pada `cea5476` merah di run 37097776306. `e2e/route-sweep.e2e.ts:176` gagal di `/en/studio` dan `/id/studio` (desktop dan mobile): axe tidak bisa memutuskan `link-in-text-block`, karena tautan karya di jadwal putaran 8 sebaris dengan meta-nya di atas latar grain. `material-shape` dilaporkan flaky oleh CI, di luar batch, dan tidak diperbaiki. Diperbaiki di `70f0d8f` (nama dan meta menjadi item flex); pola yang sama di putaran 9 ikut dirapikan di `1012b58`, karena rute itu tidak disapu `route-sweep`. Harapan tes tidak diubah. Hijau di run 37099276094: `ci` dan `e2e`, 589 lulus, 29 dilewati, 0 gagal, 0 flaky; ketiga momen baru tercatat.
+
+### 4.3 Putaran pengembangan — siklus 2
+
+Siklus kedua dengan arah yang sama, dibangun di `claude/value-2` (dari
+`claude/case-continuity`, `d27ef1c`) tanpa CI per putaran. Setiap tiga putaran
+diperiksa sekali lewat draft PR permanen dari `claude/value-2-ci` (base
+`claude/case-continuity`), yang tidak untuk di-merge. Status dan kolom commit
+mengikuti §4.2.
+
+| N   | rute              | fitur                                     | desain                     | `data-epic`           | commit    | status                                                        |
+| --- | ----------------- | ----------------------------------------- | -------------------------- | --------------------- | --------- | ------------------------------------------------------------- |
+| 1   | `/practice/<v>`   | ajakan penugasan per praktik              | `vault/blocks/title-block` | `practice-enquiry`    | `8f7df92` | CI hijau (run 37106818554, 594 lulus · 29 dilewati · 0 gagal) |
+| 2   | `/journal/<slug>` | balasan untuk esai (surel berkonteks)     | `vault/blocks/reply-slip`  | `entry-reply`         | `c053fb6` | CI hijau (run 37106818554, 594 lulus · 29 dilewati · 0 gagal) |
+| 3   | `/work`           | kunci bingkai katalog (arti tiap praktik) | `vault/motion/splice`      | `catalogue-key`       | `3b19c90` | CI hijau (run 37106818554, 594 lulus · 29 dilewati · 0 gagal) |
+| 4   | `/studio`         | klaim praktik dengan karya buktinya       | `vault/motion/leader`      | `capability-evidence` | `5dc141b` | CI hijau (run 37110536566, 595 lulus · 29 dilewati · 0 gagal) |
+
+Checkpoint 1 (putaran 1–3): draft PR #24 dari `claude/value-2-ci` pada `3b19c90`, run 37106818554. Job `ci` dan `e2e` hijau, 0 flaky. `interaction-grammar` mencatat ketiga momen baru di rutenya.
+
+Checkpoint penutup (putaran 4): draft PR #24 pada `5dc141b`, run 37110536566. Job `ci` dan `e2e` hijau, 0 flaky. `interaction-grammar` mencatat `capability-evidence` di `/en/studio`.
+
+Siklus 2 ditutup pada 4 putaran atas keputusan pemilik; putaran 5–6 tidak dibangun.
+
+### 4.4 Salin alamat dan stempel — sekali jalan
+
+Satu fitur dan satu animasi di beranda, dibangun di `claude/address-copy` (dari
+`claude/value-2`, `3d29a1f`) dan diperiksa sekali lewat draft PR dengan base
+`claude/value-2`, yang tidak untuk di-merge.
+
+| rute | fitur                                             | animasi                        | `data-epic`    | commit               | status                                                        |
+| ---- | ------------------------------------------------- | ------------------------------ | -------------- | -------------------- | ------------------------------------------------------------- |
+| `/`  | salin alamat studio (`vault/blocks/copy-address`) | stempel (`vault/motion/stamp`) | `address-copy` | `8ee54bf`, `f313790` | CI hijau (run 37113202080, 598 lulus · 29 dilewati · 0 gagal) |
+
+Draft PR #25 pada `f313790`, run 37113202080: job `ci` dan `e2e` hijau, 0 flaky. `e2e/address-copy.e2e.ts` lulus 2/2, dan `interaction-grammar` mencatat `address-copy` di `/en`.
+
+### 4.5 Orientasi — empat tahap, satu CI
+
+Objektif: pembaca tidak pernah kehilangan tempatnya. Empat fitur dan empat
+animasi, dibangun bertahap di `claude/orientation` (dari `claude/address-copy`,
+`959a52d`) tanpa CI per tahap; diperiksa sekali lewat draft PR setelah tahap 4,
+yang tidak untuk di-merge.
+
+| N   | rute           | fitur                                                                    | animasi                                       | `data-epic`                     | commit               | status                                                        |
+| --- | -------------- | ------------------------------------------------------------------------ | --------------------------------------------- | ------------------------------- | -------------------- | ------------------------------------------------------------- |
+| 1   | 404            | mungkin yang Anda cari (`vault/blocks/wayfinder`)                        | penunjuk arah (`vault/motion/north-arrow`)    | `wayfinding`                    | `046373c`, `290647e` | CI hijau (run 37125290502, 608 lulus · 29 dilewati · 0 gagal) |
+| 2   | `/work`        | bingkai yang bisa dijelajah (`vault/blocks/catalogue-frame`)             | garis bidik (`vault/motion/crosshair`)        | `frame-crosshair`               | `4e012dd`, `32ee89c` | CI hijau (run 37125290502, 608 lulus · 29 dilewati · 0 gagal) |
+| 3   | `/work/<slug>` | tautan ke bagian (`vault/blocks/copy-address/copy-link.tsx`)             | tanda masuk (`vault/motion/entry-arrow`)      | `section-link`, `section-entry` | `226469c`, `24fe1f6` | CI hijau (run 37125290502, 608 lulus · 29 dilewati · 0 gagal) |
+| 4   | header         | ganti bahasa tanpa kehilangan tempat (`components/ui/language-switcher`) | geser lembar (`vault/motion/page-transition`) | `locale-sheet`                  | `56bbc53`, `4a2751f` | CI hijau (run 37125290502, 608 lulus · 29 dilewati · 0 gagal) |
+
+Draft PR #26 pada `4a2751f`, run 37125290502: job `ci` dan `e2e` hijau, 0 flaky. Ketiga e2e baru (`wayfinding`, `section-link`, `locale-place`) lulus 6/6. `interaction-grammar` mencatat `frame-crosshair` di `/en/work`, `section-link` dan `section-entry` di halaman kasus, serta `locale-sheet` di setiap rute. `wayfinding` tidak tercatat karena 404 tidak disampel.
+
+### 4.6 Tata & Gerak — lima tahap, satu CI
+
+Lima desain dan lima fitur untuk UI/UX, terutama animasi dan tata letak,
+dibangun bertahap di `claude/layout-motion` (dari `claude/orientation`,
+`f9f3c9c`) tanpa CI per tahap; diperiksa sekali lewat draft PR setelah tahap 5,
+yang tidak untuk di-merge. Tiap tahap dicek juga lewat tangkapan layar
+pratinjau lokal.
+
+| N   | rute                      | fitur                                                      | desain                                                   | `data-epic`                    | commit                                     | status                                                        |
+| --- | ------------------------- | ---------------------------------------------------------- | -------------------------------------------------------- | ------------------------------ | ------------------------------------------ | ------------------------------------------------------------- |
+| 1   | `/journal/<slug>`, semua  | cetak esai rapi (`@media print`)                           | tipografi seimbang (`text-wrap`)                         | —                              | `92b86e1`, `4cae284`                       | CI hijau (run 37177613961, 629 lulus · 29 dilewati · 0 gagal) |
+| 2   | `/journal/<slug>`, header | waktu baca + sisa waktu (`vault/blocks/reading-left`)      | penanda rute meluncur (`vault/motion/route-marker`)      | `route-marker`                 | `7123db0`, `78723e7`, `65d6bed`            | CI hijau (run 37177613961, 629 lulus · 29 dilewati · 0 gagal) |
+| 3   | `/work`, kartu            | pratinjau sampul di bingkai (`vault/motion/cover-preview`) | tanda potong kartu (`vault/motion/crop-marks`)           | `cover-preview`, `card-crop`   | `3864391`, `ac76dc2`, `4eedb21`, `65d6bed` | CI hijau (run 37177613961, 629 lulus · 29 dilewati · 0 gagal) |
+| 4   | `/work/<slug>`            | fakta yang ikut di spine (`vault/blocks/project-spine`)    | spine satu baris di ponsel (`vault/motion/route-marker`) | `following-facts`              | `a00c08b`, `0c425b7`, `65d6bed`            | CI hijau (run 37177613961, 629 lulus · 29 dilewati · 0 gagal) |
+| 5   | semua                     | kembali ke atas (`vault/blocks/back-to-top`)               | kisi bawah (`vault/motion/grid-underlay`)                | `back-to-top`, `grid-underlay` | `411aaca`, `5d1bf70`, `4eedb21`            | CI hijau (run 37177613961, 629 lulus · 29 dilewati · 0 gagal) |
+
+Checkpoint (draft PR #27, base `claude/orientation`, satu-satunya CI untuk kesepuluh butir): sebelum hasil run pertama, cacat yang terbaca dari gerbang diperbaiki di `4eedb21` (story `CropMarks` berisi tombol tanpa nama, dan tombol kisi tampil tanpa JS); push itu membatalkan run untuk `5d1bf70`. Run 37175882611 pada `4eedb21` merah: `ci` hijau, `e2e` 626 lulus · 29 dilewati · 3 gagal, ketiganya dari batch ini. (1) `contrast-situ` ponsel, `/id/work/arus-balik` @2859: garis spine bertinta sendiri tertinggal di foto tanpa-huruf gerbang, melintang di keterangan yang setengah di bawah tepi strip, 1:1 (direproduksi lokal). (2) `route-marker`: garis yang tak ditempatkan berskala nol, jadi `:visible` tak menemukannya. (3) `cover-preview` keyboard: fokus mendarat sebelum skrip `/work` (ber-WebGL) mendengarkan. Diperbaiki di `65d6bed`: garis digambar dengan `currentColor` sehingga tersembunyi bersama teks seperti garis bawah (piksel di bawahnya diukur ulang: kembali hairline strip), garis dicari lewat header yang tampil, dan jangkauan diulang sampai bingkai menjawab; gerbang baru lain menunggu skrip hingga 15 s. Harapan tes yang ada tidak diubah. Hijau di run 37177613961: `ci` dan `e2e`, 629 lulus · 29 dilewati · 0 gagal · 0 flaky; `interaction-grammar` mencatat `route-marker`, `card-crop`, `cover-preview`, dan `following-facts`.
+
+### 4.7 Pindah repo — `subsarthur-jancommit/arth`
+
+Pada 2026-10-04 repo dipindah dari `ashaamoon-lang/-1` ke `subsarthur-jancommit/arth` (publik), supaya Claude GitHub App dan kredit cloud bisa dipasang oleh pemiliknya. Pemindahan dilakukan apa adanya:
+
+- 16 branch didorong dengan refspec eksplisit, tanpa force dan tanpa `--mirror`. Hash setiap head dan HEAD identik di kedua repo.
+- Riwayat tidak ditulis ulang. Kepengarangan sudah benar: commit Claude tertaut ke `claude`, dan merge PR ke `subsarthur-jancommit`.
+- Pemindaian rahasia atas seluruh riwayat bersih.
+- Repo lama tidak diubah, dan kini dipakai sebagai remote `lama`.
+
+**Nomor PR dan run CI sebelum 2026-10-04 di dokumen ini, di `FORK.md`, dan di buku besar mana pun merujuk ke `ashaamoon-lang/-1`.** Di repo baru, verifikasinya PR #2 (`move/verify-ci` = `65d6bed` → `claude/orientation`): run 37180602970, `ci` dan `e2e` hijau, 629 lulus · 29 dilewati · 0 gagal · 0 flaky, sama dengan run 37177613961 di repo lama.
+
+Pelajaran: **PR yang commit head-nya membawa `[skip ci]` tidak menjalankan workflow `pull_request` sama sekali.** PR #1 di repo baru dibuka dari `claude/layout-motion`, yang head-nya `9c8b8b0` (commit buku besar `[skip ci]`), dan tidak memicu satu run pun. Verifikasi harus dibuka dari commit yang benar-benar diuji, bukan dari commit buku besar di atasnya.
+
+Perapian sesudah pindah (`01e5eb6` untuk rujukan repo, `4eda70b` untuk lisensi milik PEEKABOO) masuk lewat PR #3, `claude/move-tidy` → `main`. PR itu membawa seluruh pekerjaan sejak `main` `52ac579`: 51 commit, 187 berkas. Hijau di run 37182212601: `ci` dan `e2e`, 629 lulus · 29 dilewati · 0 gagal · 0 flaky; React Doctor dan Lighthouse juga hijau. Merge dilakukan dengan merge commit atas perintah pemilik, supaya hash yang dirujuk dokumen ini tetap ada di riwayat `main`.
+
+Perapian repo sesudahnya:
+
+- Di repo baru saja, 7 branch usang dihapus: `claude/arth-design`, `claude/arth-unbound`, `claude/phone-menu-focus-race`, `claude/probe-image-overscan`, `claude/red-proof-ci`, `claude/tidy-after-fork`, dan `move/verify-ci`. Semuanya tetap ada di repo lama. `probe-image-overscan` satu-satunya yang tak termuat di branch lain; isinya satu commit uji bertanda "not for merge".
+- PR #2 ditutup, dan default branch kini `main`.
+- `COMPONENTS.md` dibuat ulang (`4d5508f`).
+- `SECURITY.md` kini kebijakan Arth sendiri (`1c89509`), dengan laporan privat lewat tab Security repo ini (fitur itu diaktifkan). Sebelumnya laporan diarahkan ke darkroom.
+- Kedua commit hijau di run 37213853532: 629 lulus · 29 dilewati · 0 gagal · 0 flaky.
+- React Doctor (hanya saran, `continue-on-error`) menandai 3 "error" dan beberapa peringatan di diff terhadap `main`. Error-nya: `key` sesudah spread di dua story (`brace`, `formwork`), dan efek observer di `project-spine` yang dibaca alat itu sebagai menyinkronkan prop (positif palsu). Ketiganya ditutup di commit `chore(tidy)` berikutnya di PR #3: `key` kini sebelum spread, dan `project-spine` dikecualikan dari `no-adjust-state-on-prop-change` di `doctor.config.ts`, dengan alasannya. Peringatannya (komponen besar, `prefer-tag-over-role`, dan sejenisnya) tetap saran dan belum dikerjakan.
+- Di commit yang sama, rujukan branch fondasi di `infra/` (`BRANCH` dan `git clone --branch`) diganti `main`. Isi `infra/` selain nama branch tidak diubah.
+- `CHANGELOG.md` diberi catatan pembuka: isinya changelog Satūs sampai v3.0.0. Riwayat Arth ada di git dan di dokumen ini.
+- Rencana sesudah merge PR #3: di repo baru, delapan branch tumpukan (`claude/address-copy`, `claude/case-continuity`, `claude/layout-motion`, `claude/load-bearing`, `claude/load-bearing-ci`, `claude/orientation`, `claude/value-2`, `claude/value-2-ci`), `claude/move-tidy`, dan branch fondasi dihapus. Masing-masing dihapus hanya setelah terbukti termuat di `main`, sehingga repo baru tinggal `main`. Semuanya tetap ada di repo lama.
 
 ## 5. Utang yang dibawa — keputusan pemilik repo
 
@@ -255,7 +378,7 @@ workflow itu tidak ada di repo — tabel ini adalah catatannya.
 | Thumb scrollbar palette — **temuan terbuka** | Satu-satunya tempat `line`/`line-strong` menjadi satu-satunya visual sebuah kontrol, dan ia **gagal** 3:1: 1,97 / 2,15 di atas track, 2,07 / 2,01 di atas ground (model oklab gerbang; dicat sRGB 1,83–2,34 — kesimpulan sama). Tercatat sebagai lantai di `contrast-baseline.json`; memperbaikinya berarti mengubah palet atau warna thumb, dan itu keputusan pemilik                                                                                                                                                                                                                                                                                                                                                                                                 |
 | Rotasi kredensial Sanity                     | **Tetap terbuka** (JEDA 4): **wajib sebelum domain publik**; produksi memakai token role Viewer. Terbuka karena belum ada domain publik. Dicatat sekali, jangan diungkit berulang                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | Email kontak placeholder                     | **Tetap terbuka**, atas keputusan pemilik: `studio@arth.example`, berlabel placeholder di markup; `SITE.email` kosong supaya JSON-LD tidak menerbitkannya. Alamat nyata tidak dikarang                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| Default branch GitHub                        | `claude/satus-award-website-foundation-r6o5cf`, bukan `main` — keputusan pemilik repo (§1)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Default branch GitHub                        | `main` sejak 2026-10-04, di repo baru, atas keputusan pemilik (§1, §4.7). Sebelumnya `claude/satus-award-website-foundation-r6o5cf` di repo lama                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | Pembuktian merah `phone-menu`                | **Sebagian besar lunas** lewat PR #19 (run red-proof 37001647550 dan 37005977774, 2 Oktober 2026). Merah karena perilaku di `67af568`: tanpa skrip, geometri, Escape, Tab-lewat, halaman diam. Merah karena instrumen: reduced motion, satu-task. Satu-task juga merah di `ec398eb`, di kedua separuhnya. **Tidak bisa dibuktikan terhadap commit:** ⌘K, desktop. **Terbuka:** Tab-masuk tetap _either_ di `67af568`; Tab-lewat _either_ di `ec398eb` (merah 1 dari 7, konsisten dengan race lama — disimpulkan dari kode). **Temuan, diketahui dan diperbaiki:** "halaman diam" memerah — juga di kode `main` — karena `overflow` dibaca sekali di dalam transisi `overflow` 1 ms dari Lenis `autoToggle`; cacat instrumen, kini di-_poll_. Rinciannya `FORK.md` §3.4 |
 | PR #9                                        | **Merged otomatis oleh GitHub** saat PR #16 masuk `main` (1 Oktober 2026), karena seluruh commit-nya sudah termuat di sana; komentar ditambahkan di PR-nya                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | Menyemai dataset Sanity                      | `bun --env-file .env.local lib/scripts/seed-fixtures.ts` — tulisan ke CMS Anda                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |

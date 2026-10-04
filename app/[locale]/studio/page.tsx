@@ -10,11 +10,19 @@ import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
-import { featuredProjectsQuery } from '@/lib/integrations/sanity/queries'
+import {
+  featuredProjectsQuery,
+  workIndexQuery,
+} from '@/lib/integrations/sanity/queries'
 import { nameplateStyle } from '@/lib/utils/display-fit'
 import { generatePageMetadata } from '@/lib/utils/metadata'
+import { CapabilityEvidence } from '@/vault/blocks/capability-evidence'
+import { casesByPractice } from '@/vault/blocks/capability-evidence/cases'
+import { EngagementShapes } from '@/vault/blocks/engagement-shapes'
 import { ProjectCard } from '@/vault/blocks/project-card'
 import { StepSequence } from '@/vault/blocks/step-sequence'
+import { WorkMeasure } from '@/vault/blocks/work-measure'
+import { measureWorks } from '@/vault/blocks/work-measure/measure'
 import { DotPattern } from '@/vault/magic/dot-pattern'
 import { Reveal } from '@/vault/motion/reveal'
 import { TextReveal } from '@/vault/motion/text-reveal'
@@ -135,6 +143,39 @@ async function evidence(locale: string) {
   return (projects.data ?? []).slice(0, 3)
 }
 
+/**
+ * The body of work the strip is drawn from — round 2, `work-measure`.
+ *
+ * Three covers say the studio has made things; they do not say how much, for
+ * how many clients, or over how long. This reads the catalogue's own query,
+ * unfiltered, and keeps the fields the measure counts, the fields round 8's
+ * schedule of engagement shapes names, and the practice cycle 2's round 4 sets
+ * each work under — never covers, so the cached result stays text. Same guards as `evidence()`: no
+ * Sanity, or a failed query, costs the strip its measure and nothing else.
+ */
+async function bodyOfWork(locale: string) {
+  'use cache'
+  if (!isConfigured('sanity')) return []
+
+  const projects = await sanityFetch({
+    query: workIndexQuery,
+    params: { locale, practice: null },
+    perspective: 'published',
+    stega: false,
+  })
+  return (projects.data ?? []).map(
+    ({ _id, slug, title, engagement, year, client, practice }) => ({
+      _id,
+      slug,
+      title,
+      engagement,
+      year,
+      client,
+      practice,
+    })
+  )
+}
+
 export default async function StudioPage() {
   /*
    * `workIndex`, not `work`.
@@ -148,11 +189,34 @@ export default async function StudioPage() {
   const requested = await localeRootParam()
   const locale = isLocale(requested) ? requested : routing.defaultLocale
 
-  const [t, tPractice, works] = await Promise.all([
+  const [t, tPractice, works, body] = await Promise.all([
     getTranslations('studio'),
     getTranslations('workIndex'),
     evidence(locale),
+    bodyOfWork(locale),
   ])
+  const measure = measureWorks(body)
+  /*
+   * The work under each practice's claim — cycle 2, round 4. From the same
+   * body of work, so the band and the schedule below cannot disagree.
+   */
+  const cases = casesByPractice(body)
+  const shapes = body.flatMap((work) => {
+    const slug = work.slug?.current
+    if (!work.engagement || !slug || !work.title) return []
+
+    return [
+      {
+        id: work._id,
+        engagement: work.engagement,
+        title: work.title,
+        href: `/work/${slug}`,
+        meta: [work.client, work.year]
+          .filter((part) => part !== null && part !== '')
+          .join(' · '),
+      },
+    ]
+  })
 
   /*
    * The four steps, as data rather than four copy-pasted blocks.
@@ -340,6 +404,15 @@ export default async function StudioPage() {
                   <dd className={cn('caption', s.capabilityItems)}>
                     {t(`capabilities.${practice}`)}
                   </dd>
+                  {/*
+                    Where the claim above is seen — cycle 2, round 4. Every
+                    listed work of the practice, linked, under what it covers;
+                    nothing when the practice has none to show.
+                  */}
+                  <CapabilityEvidence
+                    label={t('capabilitiesSeenIn')}
+                    cases={cases.get(practice)}
+                  />
                 </div>
               ))}
             </dl>
@@ -420,6 +493,24 @@ export default async function StudioPage() {
               {t('evidenceEyebrow')}
             </p>
             {/*
+              The measure of the whole body of work, above the three drawn
+              from it — round 2. Counted, not written: `workIndex.count` when
+              no work names a client, so the phrase never says "0 clients".
+            */}
+            {measure.engagements > 0 && (
+              <WorkMeasure
+                measure={measure}
+                value={
+                  measure.clients > 0
+                    ? t('measureFacts', {
+                        engagements: measure.engagements,
+                        clients: measure.clients,
+                      })
+                    : tPractice('count', { count: measure.engagements })
+                }
+              />
+            )}
+            {/*
               The cards directly, not `ProjectGrid` — and this is a
               measurement, not a preference.
 
@@ -473,6 +564,15 @@ export default async function StudioPage() {
             body: t(`process.${step}Body`),
           }))}
         />
+
+        {/*
+          The shapes the work has taken — round 8. Directly after the four
+          steps: the process says how the studio works, this says what form
+          that has taken with each client, in the studio's own words for it.
+        */}
+        {shapes.length > 0 && (
+          <EngagementShapes title={t('shapesTitle')} rows={shapes} />
+        )}
 
         {/*
           The receipt. Unlike everything above it, this is not scaffolding —

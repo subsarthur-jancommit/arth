@@ -57,7 +57,7 @@ Quick-reference for every component, hook, and utility in the Satus starter kit.
 |------|--------|-----------|
 | useActiveSection | `@/hooks/use-active-section` | `(ids: readonly string[]) => string | null` |
 | useDeviceDetection | `@/hooks/use-device-detection` | `()` |
-| useReveal | `@/hooks/use-reveal` | `({ threshold = 0, rootMargin = '0px 0px -25% 0px', once = true, perItem = false, }: UseRevealOptions = {})` |
+| useReveal | `@/hooks/use-reveal` | `({ threshold = 0, rootMargin = '0px 0px -8% 0px', once = true, perItem = false, }: UseRevealOptions = {})` |
 | useOnlineStatus | `@/hooks/use-sync-external` | `() => boolean` |
 | usePreferredColorScheme | `@/hooks/use-sync-external` | `() => 'light' | 'dark'` |
 | usePreferredReducedMotion | `@/hooks/use-sync-external` | `() => boolean` |
@@ -74,6 +74,12 @@ Quick-reference for every component, hook, and utility in the Satus starter kit.
 |--------|-----------|
 | assertServerEnvironment | `(moduleName: string) => void` |
 
+### Display-fit (`@/utils/display-fit`)
+
+| Export | Signature |
+|--------|-----------|
+| nameplateStyle | `(text: string) => CSSProperties` |
+
 ### Fetch (`@/utils/fetch`)
 
 | Export | Signature |
@@ -86,6 +92,7 @@ Quick-reference for every component, hook, and utility in the Satus starter kit.
 
 | Export | Signature |
 |--------|-----------|
+| isFullWidth | `(ratio: number | null) => boolean` |
 | loneHalves | `(spans: readonly boolean[]) => boolean[]` |
 | settledSpans | `(spans: readonly (6 | 12 | null)[]) => (6 | 12)[]` |
 | GRID_COLUMNS | `12` |

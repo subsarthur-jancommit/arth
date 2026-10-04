@@ -26,11 +26,14 @@ search result.
 | Status    | **Vendored.** Whole repository copied without upstream git history. |
 
 The MIT licence requires the copyright notice and permission text to be
-retained in all copies or substantial portions. **`LICENSE` at the repository
-root is darkroom.engineering's, unmodified, and must stay that way.** It is
-not a leftover from scaffolding and must not be replaced with a project
-licence. If this project later needs its own licence terms, add a separate
-file and keep this one intact.
+retained in all copies or substantial portions. **darkroom.engineering's notice
+is kept in full in `THIRD-PARTY-NOTICES.md` (§ Satūs), unmodified, and must
+stay there.** Until 2026-10-04 it was the repository's root `LICENSE`, and this
+section required the root file to stay darkroom's. On that date the owner gave
+the project its own licence — the root `LICENSE` is now MIT, Copyright (c)
+2026 PEEKABOO — and the upstream notice moved, whole, into the notices file
+(`docs/HANDOFF.md` §4.7). Moving the notice keeps the licence's condition;
+deleting it would break it.
 
 `THIRD-PARTY-NOTICES.md` (also from upstream) is retained for the same reason.
 
@@ -193,6 +196,43 @@ violates three separate hard rules in `CLAUDE.md`. Where the two disagree,
 
 Nothing was copied from `SKILL.md` into shipped source. It is guidance read by
 agents, in the same position as `ui-ux-pro-max`.
+
+---
+
+### Skills vendored into `.agents/skills/`
+
+Two more agent skills sit in `.agents/skills/`, and until 2026-10-04 neither
+was recorded here nor carried its licence. Both licences were read from the
+source repositories' own `LICENSE` files (`CLAUDE.md` #18) and copied in
+verbatim; nothing from either enters shipped source.
+
+#### `sanity-best-practices`
+
+|              |                                                                                               |
+| ------------ | --------------------------------------------------------------------------------------------- |
+| Source       | https://github.com/sanity-io/agent-toolkit, `skills/sanity-best-practices`                    |
+| Version      | as pinned in `skills-lock.json` (`computedHash` `275a1748…`); installed `3f03e2d`, 2026-08-30 |
+| Licence      | **MIT** — Copyright (c) 2025 Sanity, verified from `LICENSE`                                  |
+| Installed at | `.agents/skills/sanity-best-practices/`                                                       |
+| Licence copy | `.agents/skills/sanity-best-practices/LICENSE` — added 2026-10-04, as MIT requires            |
+
+#### `react-doctor`
+
+|              |                                                                                                         |
+| ------------ | ------------------------------------------------------------------------------------------------------- |
+| Source       | https://github.com/millionco/react-doctor, `skills/react-doctor/SKILL.md`                               |
+| Version      | `1.1.0` (the file's own frontmatter); arrived with Satūs in `8b20810`                                   |
+| Licence      | **Modified MIT** — Copyright (c) 2026 Million Software, Inc., verified from `LICENSE` (as of `ba2af1b`) |
+| Installed at | `.agents/skills/react-doctor/`                                                                          |
+| Licence copy | `.agents/skills/react-doctor/LICENSE` — added 2026-10-04, as its MIT terms require                      |
+
+**The modification matters.** On top of MIT, Million Software's licence
+requires prior written permission for two uses: using the software, or work
+derived from it, as training, fine-tuning or evaluation data for a machine
+learning model or AI system, and selling it, or offering it as a paid hosted
+service whose value comes substantially from it. Reading the skill as
+guidance is neither; feeding this repository to a training pipeline would
+reach it.
 
 ---
 

@@ -123,8 +123,8 @@ terautentikasi, tidak perlu memasang apa pun di laptop.
 ```bash
 gcloud config set project <PROJECT_ID>
 
-git clone --branch claude/satus-award-website-foundation-r6o5cf \
-  https://github.com/ashaamoon-lang/-1.git ~/arth-infra
+git clone --branch main \
+  https://github.com/subsarthur-jancommit/arth.git ~/arth-infra
 bash ~/arth-infra/infra/provision.sh lab.<domain>
 ```
 
@@ -185,8 +185,8 @@ Lalu di dalam VM:
 ```bash
 sudo rm -rf /tmp/arth-infra
 sudo apt-get update -qq && sudo apt-get install -y -qq git
-git clone --branch claude/satus-award-website-foundation-r6o5cf \
-  https://github.com/ashaamoon-lang/-1.git /tmp/arth-infra
+git clone --branch main \
+  https://github.com/subsarthur-jancommit/arth.git /tmp/arth-infra
 sudo bash /tmp/arth-infra/infra/bootstrap-lab.sh lab.<domain>
 ```
 
@@ -290,7 +290,8 @@ Memicu deploy = mendorong commit. Tidak ada cara lain memulainya.
 
 Rancangan pertama infrastruktur ini memakai runner, dan itu **salah**.
 
-`ashaamoon-lang/-1` adalah repo **publik** — diperiksa lewat API:
+`subsarthur-jancommit/arth` (sebelum 2026-10-04 `ashaamoon-lang/-1`, sama-sama
+publik) adalah repo **publik** — diperiksa lewat API:
 `visibility: public`, dan sudah ada satu fork. Self-hosted runner di repo publik
 adalah jalur bagi pull request dari fork untuk **menjalankan kode di mesin
 Anda**. GitHub sendiri menyarankan untuk tidak pernah melakukannya.

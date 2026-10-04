@@ -32,13 +32,15 @@ Cek: `bun --version` dan `node --version`.
 ## 3. Ambil kodenya
 
 ```bash
-git clone https://github.com/ashaamoon-lang/-1.git arth
+git clone https://github.com/subsarthur-jancommit/arth.git arth
 cd arth
-git checkout claude/satus-award-website-foundation-r6o5cf
+git checkout main
 bun install
 ```
 
-Cabang itu penting — seluruh pekerjaan ada di sana, bukan di `main`.
+Seluruh pekerjaan ada di `main` sejak repo pindah ke
+`subsarthur-jancommit/arth` (2026-10-04, `docs/HANDOFF.md` §4.7). Repo lama,
+`ashaamoon-lang/-1`, menyimpan riwayat PR dan CI sebelum tanggal itu.
 
 ---
 
