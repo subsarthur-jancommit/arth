@@ -21,8 +21,10 @@ industry.
 Starting there means starting from the same line as the studios doing this work
 professionally, legally, rather than assembling a stack from tutorials.
 
-`LICENSE` at the root is darkroom.engineering's and stays that way — MIT
-requires it. Full detail in [`docs/PROVENANCE.md`](docs/PROVENANCE.md).
+`LICENSE` at the root is the project's own: MIT, Copyright (c) 2026 PEEKABOO.
+darkroom.engineering's MIT notice for Satūs is kept in full in
+[`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md), as MIT requires. Full
+detail in [`docs/PROVENANCE.md`](docs/PROVENANCE.md).
 
 ## What has been added
 
