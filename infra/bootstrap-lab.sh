@@ -23,7 +23,7 @@ DOMAIN="${1:?usage: bootstrap-lab.sh <lab-domain>   e.g. lab.example.com}"
 APP_USER="deploy"
 APP_DIR="/srv/arth"
 REPO="https://github.com/subsarthur-jancommit/arth.git"
-BRANCH="claude/satus-award-website-foundation-r6o5cf"
+BRANCH="main"
 
 say() { printf '\n\033[1m==> %s\033[0m\n' "$*"; }
 

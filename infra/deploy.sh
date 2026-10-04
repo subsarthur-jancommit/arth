@@ -41,7 +41,7 @@ set -euo pipefail
 main() {
 
 APP_DIR="${APP_DIR:-/srv/arth}"
-BRANCH="${BRANCH:-claude/satus-award-website-foundation-r6o5cf}"
+BRANCH="${BRANCH:-main}"
 STAMP="${APP_DIR}/.last-deploy"
 
 export PATH="/home/deploy/.bun/bin:${PATH}"

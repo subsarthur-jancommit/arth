@@ -238,7 +238,7 @@ cat <<NEXT
 
       sudo rm -rf /tmp/arth-infra
       sudo apt-get update -qq && sudo apt-get install -y -qq git
-      git clone --branch claude/satus-award-website-foundation-r6o5cf \\
+      git clone --branch main \\
         https://github.com/subsarthur-jancommit/arth.git /tmp/arth-infra
       sudo bash /tmp/arth-infra/infra/bootstrap-lab.sh ${DOMAIN}
 

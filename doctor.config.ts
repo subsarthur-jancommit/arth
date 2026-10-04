@@ -98,6 +98,19 @@ export default {
           'react-doctor/no-event-handler',
         ],
       },
+      {
+        /**
+         * `ProjectSpine`'s `past` is not state synced to a prop. It is set from
+         * an `IntersectionObserver` callback, when the page's `h1` leaves the
+         * screen; the `facts` prop only decides whether that observer exists
+         * at all. The rule reads any `setState` reachable from an effect whose
+         * dependencies derive from a prop as prop-syncing, and asks for a
+         * render-phase adjustment that has nothing to adjust from — the
+         * scroll position is not a prop.
+         */
+        files: ['vault/blocks/project-spine/**'],
+        rules: ['react-doctor/no-adjust-state-on-prop-change'],
+      },
     ],
   },
 

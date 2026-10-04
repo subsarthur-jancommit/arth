@@ -31,7 +31,7 @@ const meta = {
       <Reveal>
         <ul style={{ display: 'grid', gap: '1rem', listStyle: 'none' }}>
           {['First member', 'Second member', 'Third member'].map((label) => (
-            <Formwork {...args} key={label} as="li">
+            <Formwork key={label} {...args} as="li">
               <p className="caption" style={{ padding: '1rem' }}>
                 {label}
               </p>

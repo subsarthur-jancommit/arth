@@ -1,5 +1,10 @@
 # Changelog
 
+> **Arth note.** Everything below is the changelog of Satūs, the starter Arth
+> was built on, up to v3.0.0 (vendored on 2026-08-29 in `8b20810`). It is kept
+> for provenance, and Arth does not add to it. Arth's own history is in git and
+> in `docs/HANDOFF.md`.
+
 All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).

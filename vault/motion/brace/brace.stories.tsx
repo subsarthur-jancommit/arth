@@ -31,7 +31,7 @@ const meta = {
       <Reveal>
         <div aria-hidden="true" style={{ display: 'flex', gap: '0.5rem' }}>
           {[0, 1, 2, 3].map((index) => (
-            <Brace {...args} key={index} index={index} current={index === 2} />
+            <Brace key={index} {...args} index={index} current={index === 2} />
           ))}
         </div>
         <p data-reveal-item className="caption">

@@ -16,7 +16,7 @@ set -uo pipefail   # NOT -e: a failing check is the point, not a crash.
 DOMAIN="${1:-}"
 APP_DIR="${APP_DIR:-/srv/arth}"
 APP_USER="${APP_USER:-deploy}"
-BRANCH="claude/satus-award-website-foundation-r6o5cf"
+BRANCH="main"
 
 pass=0; fail=0
 ok()   { printf '  \033[32m✓\033[0m %-34s %s\n' "$1" "${2:-}"; pass=$((pass+1)); }
