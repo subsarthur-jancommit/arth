@@ -47,6 +47,12 @@ export interface JournalRow extends JournalEntry {
   /** The practice's display name, or null. */
   practiceLabel: string | null
   /**
+   * "4 min read", counted on the server from the body the entry page counts —
+   * or null for an entry with no body to count (a CMS entry whose text has
+   * not been written), which says nothing rather than "1 min".
+   */
+  readingLabel: string | null
+  /**
    * A cover from this entry's practice — **already rendered**, on the server.
    *
    * A `ReactNode` rather than an image source, and that is a measurement
@@ -112,6 +118,11 @@ export function JournalIndexRows({ rows }: { rows: readonly JournalRow[] }) {
               ) : null}
               {row.practiceLabel ? (
                 <span className={s.practice}>{row.practiceLabel}</span>
+              ) : null}
+              {row.readingLabel ? (
+                <span className={s.reading} data-reading-time="">
+                  {row.readingLabel}
+                </span>
               ) : null}
             </p>
 

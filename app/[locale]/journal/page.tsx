@@ -11,6 +11,7 @@ import {
   resolveJournalEntries,
 } from '@/lib/content/journal-fallback'
 import { PRACTICES, practiceTemplate } from '@/lib/content/practices'
+import { countWords, minutesFor } from '@/lib/content/reading-time'
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
@@ -221,10 +222,18 @@ export default async function JournalPage() {
     // Wraps: more entries than works is the normal case as the journal grows,
     // and repeating in order is better than dropping the image entirely.
     const work = pool?.length ? pool[taken % pool.length] : undefined
+    // The essay page's own count (`journal/[slug]/page.tsx`), so the index
+    // and the entry never disagree about how long it takes.
+    const words = entry.body.reduce(
+      (sum, paragraph) => sum + countWords(paragraph),
+      0
+    )
     return {
       ...entry,
       dateLabel: entry.date ? formatter.format(new Date(entry.date)) : '',
       practiceLabel: entry.practice ? tWork(entry.practice) : null,
+      readingLabel:
+        words > 0 ? t('readingTime', { minutes: minutesFor(words) }) : null,
       /*
        * Rendered here, on the server, as `dateLabel` and `practiceLabel` are
        * resolved here — and for a sharper reason than symmetry.

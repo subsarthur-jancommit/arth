@@ -301,6 +301,16 @@
   color: var(--text-muted);
 }
 
+/*
+ * How long the entry takes — the length a reader weighs before choosing which
+ * to open. A line of its own, under the date and the practice: in the rail
+ * the three did not fit one line in Indonesian, and the wrap began the second
+ * line on a bare middot (measured at 1440).
+ */
+.reading {
+  flex-basis: 100%;
+}
+
 .entryTitle {
   margin: 0;
   min-width: 0;
