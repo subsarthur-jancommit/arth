@@ -18,13 +18,65 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: mobile-vw(12px);
+  gap: mobile-vw(24px);
   min-height: 100dvh;
+  padding-inline: var(--safe);
   font-family: var(--font-mono);
+
+  @media (--desktop) {
+    gap: desktop-vw(24px);
+  }
+}
+
+.status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: mobile-vw(12px);
 
   @media (--desktop) {
     gap: desktop-vw(12px);
   }
+}
+
+/*
+ * What a reader without JavaScript gets instead of a dead end. Mono caption
+ * size, centred under the bars, and the two front doors as a list of their
+ * own rather than links inside a sentence.
+ */
+.noscript {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: mobile-vw(8px);
+  text-align: center;
+
+  @media (--desktop) {
+    gap: desktop-vw(8px);
+  }
+}
+
+.note {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.doors {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.door {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--tap-target);
+  color: inherit;
+  text-decoration-line: underline;
 }
 
 .bars {
