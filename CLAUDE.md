@@ -142,3 +142,19 @@ works, not a limit on what may be tried.
 Try the bigger idea. Look at it on a real screen. Keep what earns its place,
 cut what does not — and let that be judged by looking, not by a quota decided
 in advance.
+
+## Melihat hasil
+
+The site is live at <https://arth-test-01.vercel.app>, and production is
+`main`. Work is looked at there, not on a local build:
+
+- **Per PR:** the Vercel preview for the PR (a `vercel[bot]` deployment, or its
+  comment). It can sit behind Vercel's login, in which case only the owner can
+  open it.
+- **Production:** the URL above, public. To see which commit is live, ask the
+  deployments API: `gh api repos/subsarthur-jancommit/arth/deployments`.
+- **No local build, dev server, or e2e suite.** CI on GitHub Actions is the one
+  place `bun run build` and `bunx playwright test` run. Locally: `bun test`,
+  oxlint, `oxfmt --check`, `tsc --noEmit`. The local preview is not started.
+- **Screenshots** of the live site: one headless Chromium, sequential, saved
+  outside the repository.
