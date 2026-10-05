@@ -241,6 +241,18 @@ const nextConfig: NextConfig = {
       ],
     },
   ],
+  /*
+   * `/favicon.ico` → the icon that exists.
+   *
+   * The site ships `app/icon.png` and no `.ico`, and the proxy's matcher lets
+   * dotted root paths through untouched, so `/favicon.ico` fell to the
+   * `[locale]` segment and answered 200 with the whole home page as HTML —
+   * measured on the live site on 2026-10-05 (`docs/HANDOFF.md` §4.8, L4).
+   * Browsers and crawlers that ask for the conventional path now get the icon.
+   */
+  redirects: async () => [
+    { source: '/favicon.ico', destination: '/icon.png', permanent: true },
+  ],
   rewrites: async () =>
     STORYBOOK_PROXY_ENABLED
       ? [
