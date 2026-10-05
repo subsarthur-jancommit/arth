@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+import { resolveBaseUrl } from '@/lib/base-url'
 import { assertServerEnvironment } from '@/utils/assert-server-environment'
 
 /**
@@ -22,6 +23,11 @@ const declaredEnv = z.object({
   // Core
   NODE_ENV: z.enum(['development', 'production', 'test']).optional(),
   NEXT_PUBLIC_BASE_URL: z.url().optional(),
+  // Vercel system variable: the project's production domain, without a
+  // scheme. Present on every Vercel build and function, previews included;
+  // the base URL's fallback when NEXT_PUBLIC_BASE_URL is unset
+  // (`lib/base-url.ts`).
+  VERCEL_PROJECT_PRODUCTION_URL: z.string().optional(),
 
   // Sanity (supports both Satus and Vercel Marketplace conventions)
   NEXT_PUBLIC_SANITY_PROJECT_ID: z.string().optional(),
@@ -151,12 +157,17 @@ export const env: Env = parsedEnv.data
 /**
  * Canonical base URL for the application.
  *
- * Falls back to `https://localhost:3000` for local development (the dev server
- * supports --https mode). In production, NEXT_PUBLIC_BASE_URL must be set —
- * omitting it causes all canonical URLs, sitemaps, and OG images to resolve
- * to localhost, breaking SEO entirely.
+ * `NEXT_PUBLIC_BASE_URL` when it is set; otherwise, on Vercel, the project's
+ * production domain; otherwise `https://localhost:3000` for local development
+ * (the dev server supports --https mode) and CI. The order and the reason for
+ * it are in `lib/base-url.ts`. Off Vercel, production still needs
+ * NEXT_PUBLIC_BASE_URL — without it every canonical URL, sitemap entry and OG
+ * image resolves to localhost.
  */
-export const APP_BASE_URL = env.NEXT_PUBLIC_BASE_URL ?? 'https://localhost:3000'
+export const APP_BASE_URL = resolveBaseUrl({
+  explicit: env.NEXT_PUBLIC_BASE_URL,
+  vercelProductionHost: env.VERCEL_PROJECT_PRODUCTION_URL,
+})
 
 /**
  * Warned once per process, and the "once" is the whole of this block.
@@ -188,8 +199,14 @@ export const APP_BASE_URL = env.NEXT_PUBLIC_BASE_URL ?? 'https://localhost:3000'
  *
  * It is not a fix for the missing value. `NEXT_PUBLIC_BASE_URL` is baked at
  * build time, so setting it later without rebuilding changes nothing —
- * `docs/DEPLOYMENT.md` §2.1 and the domain step in `RENCANA` own that, and
- * both are still open.
+ * `docs/DEPLOYMENT.md` §2.1 owns that.
+ *
+ * ## When it stays quiet
+ *
+ * On Vercel the origin falls back to the project's production domain
+ * (`lib/base-url.ts`), so nothing resolves to localhost and there is nothing to
+ * warn about. It speaks only when production has neither value — a host other
+ * than Vercel, with the variable forgotten.
  */
 declare global {
   /*
@@ -206,6 +223,7 @@ declare global {
 if (
   process.env.NODE_ENV === 'production' &&
   !process.env.NEXT_PUBLIC_BASE_URL &&
+  !process.env.VERCEL_PROJECT_PRODUCTION_URL &&
   !globalThis.arthBaseUrlWarned
 ) {
   globalThis.arthBaseUrlWarned = true
