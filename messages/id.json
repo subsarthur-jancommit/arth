@@ -269,5 +269,9 @@
     "goTo": "Ke gambar {position}",
     "openImage": "Buka gambar {position} layar penuh",
     "run": "Karyanya, {count} gambar, melaju menyamping saat Anda menggulir"
+  },
+  "connection": {
+    "offline": "Anda sedang luring",
+    "restored": "Tersambung kembali"
   }
 }

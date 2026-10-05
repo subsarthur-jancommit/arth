@@ -269,5 +269,9 @@
     "goTo": "Go to image {position}",
     "openImage": "Open image {position} full screen",
     "run": "The work, {count} images, travelling sideways as you scroll"
+  },
+  "connection": {
+    "offline": "You are offline",
+    "restored": "Back online"
   }
 }

@@ -1,0 +1,76 @@
+/*
+ * OfflineNotice — a pill in the lower left, the back-to-top chip's opposite
+ * corner and its build: the page's own paper, a hairline, a caption. It holds
+ * nothing to press, so the pointer passes through it.
+ */
+
+/*
+ * On the chip's row, so the footer's clearance for that corner keeps the last
+ * line of every page clear of both. The two fit side by side at 320px with
+ * room between them; the Indonesian pair, the longer, measured 7px apart.
+ */
+.region {
+  position: fixed;
+  inset-block-end: var(--safe);
+  inset-inline-start: var(--safe);
+  z-index: 10;
+  max-inline-size: calc(100% - var(--safe) * 2);
+  pointer-events: none;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: calc(var(--gap) * 1.5);
+  margin: 0;
+  padding-inline: calc(var(--gap) * 0.75);
+  border: thin solid var(--line);
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  transition:
+    transform var(--duration) var(--ease-out-quart),
+    opacity var(--duration) var(--ease-out-quart);
+}
+
+@starting-style {
+  .pill {
+    opacity: 0;
+    transform: translateY(calc(var(--gap) * 0.5));
+  }
+}
+
+/*
+ * "Back online" leaves over the last `--duration` of its hold (`--hold`, set
+ * by the component from the same number that removes it). A browser that
+ * cannot compute the delay drops the declaration, and the words simply go
+ * when the hold ends.
+ */
+.pill[data-state='restored'] {
+  animation: settle var(--duration) var(--ease-out-quart)
+    calc(var(--hold) - var(--duration)) forwards;
+}
+
+@keyframes settle {
+  to {
+    opacity: 0;
+    transform: translateY(calc(var(--gap) * 0.5));
+  }
+}
+
+/* Reduced motion: it is there, or it is not, at once. */
+@media (--reduced-motion) {
+  .pill {
+    transition: none;
+  }
+
+  .pill[data-state='restored'] {
+    animation: none;
+  }
+}
+
+/* Paper has no connection to lose. */
+@media print {
+  .region {
+    display: none;
+  }
+}
