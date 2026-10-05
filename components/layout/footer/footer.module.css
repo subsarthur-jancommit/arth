@@ -31,14 +31,21 @@
    * ended on two hairlines with ~97px of nothing between them (the
    * design-critique workflow, in every route's last screenshot). The
    * wordmark's rule is now the page's one seam.
+   *
+   * The bottom is never shallower than the back-to-top chip's corner
+   * (`vault/blocks/back-to-top`: `--safe` from the edge, `--gap` × 1.5 tall)
+   * plus half a gutter. At the end of a page the chip and the last line meet
+   * here, and on a 390px phone the rights line reaches the right edge: with
+   * 32px under it, the chip covered its lower 6px. Measured on the live site
+   * on 2026-10-05 (`docs/HANDOFF.md` §4.8, A2).
    */
-  padding-block: 0 mobile-vw(32px);
+  padding-block: 0 max(mobile-vw(32px), calc(var(--safe) + var(--gap) * 2));
   display: flex;
   flex-direction: column;
   gap: mobile-vw(40px);
 
   @media (--desktop) {
-    padding-block: 0 desktop-vw(40px);
+    padding-block: 0 max(desktop-vw(40px), calc(var(--safe) + var(--gap) * 2));
     gap: desktop-vw(64px);
   }
 }
