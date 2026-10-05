@@ -10,6 +10,8 @@ import { BuildStamp } from '@/vault/blocks/build-stamp'
 import { readBuild } from '@/vault/blocks/build-stamp/build'
 import { GridToggle } from '@/vault/motion/grid-underlay'
 
+import { IndexLink } from './index-link'
+
 import s from './footer.module.css'
 
 /**
@@ -187,9 +189,7 @@ export function Footer() {
           <h2 className={cn('caption', s.heading)}>{t('index')}</h2>
           <ul className={s.list}>
             <li>
-              <Link href="/work" className={cn('caption', s.link)}>
-                {tNav('work')}
-              </Link>
+              <IndexLink href="/work">{tNav('work')}</IndexLink>
             </li>
             {/*
               The studio page, which became a real route in Tahap 24.
@@ -202,23 +202,16 @@ export function Footer() {
               `e2e/site-reach.e2e.ts` reads.
             */}
             <li>
-              <Link href="/studio" className={cn('caption', s.link)}>
-                {tNav('studio')}
-              </Link>
+              <IndexLink href="/studio">{tNav('studio')}</IndexLink>
             </li>
             <li>
-              <Link href="/journal" className={cn('caption', s.link)}>
-                {tJournal('title')}
-              </Link>
+              <IndexLink href="/journal">{tJournal('title')}</IndexLink>
             </li>
             {PRACTICES.map((value) => (
               <li key={value}>
-                <Link
-                  href={practiceTemplate(value)}
-                  className={cn('caption', s.link)}
-                >
+                <IndexLink href={practiceTemplate(value)}>
                   {tWork(value)}
-                </Link>
+                </IndexLink>
               </li>
             ))}
           </ul>
