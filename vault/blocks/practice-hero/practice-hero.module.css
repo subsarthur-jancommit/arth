@@ -38,8 +38,13 @@
    *
    * `svh`, not `vh`: on a phone the dynamic viewport shrinks when the URL bar
    * returns, and `vh` would leave the name clipped behind it.
+   *
+   * Less the header's height, because the practice page now clears the header
+   * above its breadcrumb trail (`app/[locale]/practice/[value]`). Taking the
+   * same length back here keeps the bottom of the nameplate, and so the
+   * statement's scroll runway, where they were measured.
    */
-  min-height: 70svh;
+  min-height: calc(70svh - var(--header-height));
 
   @media (--desktop) {
     gap: desktop-vw(16px);

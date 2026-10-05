@@ -5,7 +5,19 @@
   flex-direction: column;
   /* The one section-lead token every other page uses. */
   gap: var(--section-lead);
-  padding-block: var(--section-lead);
+  /*
+   * The top clears the fixed header, as every other route's does.
+   *
+   * It was `--section-lead` alone, which is shorter than `--header-height` at
+   * every width, so the breadcrumb trail rendered under the header: at y=31
+   * behind a 58px header on a phone, y=47 behind 72px at 1440. Invisible, and
+   * keyboard focus landed on links the header covered entirely (WCAG 2.2 SC
+   * 2.4.11). Measured on the live site on 2026-10-05 (`docs/HANDOFF.md` §4.8,
+   * A1). `vault/blocks/practice-hero` gives the same height back, so the
+   * nameplate sits exactly where it did.
+   */
+  padding-block: calc(var(--header-height) + var(--section-lead))
+    var(--section-lead);
   /*
    * The page gutter, and its absence was a shipped defect.
    *
@@ -101,8 +113,13 @@
   color: var(--text-muted);
 }
 
+/*
+ * No inline padding of its own: `.page` already carries `--safe`, and the
+ * trail's own copy set it 32px in from the content edge it labels — unseen
+ * while the header covered it.
+ */
 .breadcrumbs {
-  padding-inline: var(--safe);
+  align-self: stretch;
 }
 
 /*
