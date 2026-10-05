@@ -418,9 +418,22 @@ Yang bersih: tanpa overflow horizontal di semua lebar dan layar pendek, tanpa ko
 
 Buku besar. Status: `belum CI`, `CI hijau (run …, tally)`, atau `di-merge (hash)`. Kolom commit memuat subjek commit sampai CI hijau menggantinya dengan hash.
 
-| N   | rute | butir                                                      | `data-epic` | commit                                              | status   |
-| --- | ---- | ---------------------------------------------------------- | ----------- | --------------------------------------------------- | -------- |
-| 0.1 | —    | catatan: situs live, §5, §4.8, `CLAUDE.md` "Melihat hasil" | —           | docs: record the live site and how work is seen now | belum CI |
+| N    | rute            | butir                                                      | `data-epic`   | commit                                                                   | status   |
+| ---- | --------------- | ---------------------------------------------------------- | ------------- | ------------------------------------------------------------------------ | -------- |
+| 0.1  | —               | catatan: situs live, §5, §4.8, `CLAUDE.md` "Melihat hasil" | —             | docs: record the live site and how work is seen now                      | belum CI |
+| 0.2  | —               | catatan audit visual (tabel di atas)                       | —             | docs: record the visual audit of the live site                           | belum CI |
+| 0.3  | CI              | Lighthouse menemukan proyek Vercel lewat tautan Git (L8)   | —             | fix(ci): find the Vercel project by its Git link, not by name and team   | belum CI |
+| 0.4  | semua           | URL dasar dari domain produksi Vercel (L1)                 | —             | fix(seo): take the site's origin from Vercel when nothing else gives it  | belum CI |
+| 0.5  | semua           | satu set hreflang, dari halaman (L5)                       | —             | fix(seo): send one set of hreflang, from the page                        | belum CI |
+| 0.6  | `/favicon.ico`  | dialihkan ke ikon (L4)                                     | —             | fix(seo): send /favicon.ico to the icon instead of the home page         | belum CI |
+| 0.7  | `/practice/<v>` | breadcrumb di bawah header tetap (A1)                      | —             | fix(design): practice pages clear the header above their trail           | belum CI |
+| 0.8  | semua           | footer menyisakan sudut chip kembali ke atas (A2)          | `back-to-top` | fix(design): the footer keeps the back-to-top corner clear               | belum CI |
+| 0.9  | 404 tanpa JS    | jalan keluar di `<noscript>` (A3)                          | —             | fix(design): a 404 without JavaScript offers the front doors             | belum CI |
+| 0.10 | `/work`         | keadaan katalog kosong (A4)                                | —             | fix(design): an empty catalogue says so, instead of blaming a practice   | belum CI |
+| 0.11 | `/`             | jarak paragraf pernyataan (A5)                             | —             | fix(design): the home statement's paragraphs keep their spacing          | belum CI |
+| 0.12 | semua           | teks badan tanpa kata yatim (A6)                           | —             | fix(design): body text no longer ends on a lone word                     | belum CI |
+| 0.13 | `/studio`       | catatan kolofon sebelum daftarnya (A7)                     | —             | fix(design): the studio colophon's note comes before what it vouches for | belum CI |
+| 0.14 | `/id/studio`    | kata kerja di lead Studio (L9)                             | —             | fix(i18n): the Indonesian studio lead has its verb                       | belum CI |
 
 ## 5. Utang yang dibawa — keputusan pemilik repo
 
