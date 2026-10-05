@@ -51,10 +51,35 @@ const PUBLIC_BASE_URL = resolveBaseUrl({
 })
 // -----------------------------------------------------------------------------
 
+// --- Build stamp ---------------------------------------------------------------
+// Which commit a deployment serves, for the colophon
+// (`vault/blocks/build-stamp`). Vercel sets the commit and the repository on
+// every build; the time is read here, once, as the build starts. A build
+// anywhere else — local, CI — names no commit, inlines nothing, and the stamp
+// is not rendered.
+const COMMIT_SHA = process.env.VERCEL_GIT_COMMIT_SHA
+const REPO_OWNER = process.env.VERCEL_GIT_REPO_OWNER
+const REPO_SLUG = process.env.VERCEL_GIT_REPO_SLUG
+const REPOSITORY_URL =
+  process.env.VERCEL_GIT_PROVIDER === 'github' && REPO_OWNER && REPO_SLUG
+    ? `https://github.com/${REPO_OWNER}/${REPO_SLUG}`
+    : undefined
+const BUILD_STAMP = COMMIT_SHA
+  ? {
+      NEXT_PUBLIC_COMMIT_SHA: COMMIT_SHA,
+      NEXT_PUBLIC_BUILT_AT: new Date().toISOString(),
+      ...(REPOSITORY_URL && { NEXT_PUBLIC_REPOSITORY_URL: REPOSITORY_URL }),
+    }
+  : {}
+// -----------------------------------------------------------------------------
+
 const nextConfig: NextConfig = {
-  ...(PUBLIC_BASE_URL !== LOCAL_BASE_URL && {
-    env: { NEXT_PUBLIC_BASE_URL: PUBLIC_BASE_URL },
-  }),
+  env: {
+    ...(PUBLIC_BASE_URL !== LOCAL_BASE_URL && {
+      NEXT_PUBLIC_BASE_URL: PUBLIC_BASE_URL,
+    }),
+    ...BUILD_STAMP,
+  },
   reactStrictMode: true,
   reactCompiler: true,
   poweredByHeader: false,

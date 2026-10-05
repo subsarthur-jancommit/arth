@@ -6,6 +6,8 @@ import { Link } from '@/components/ui/link'
 import { Marquee } from '@/components/ui/marquee'
 import { FALLBACK_CONTACT } from '@/lib/content/home-fallback'
 import { PRACTICES, practiceTemplate } from '@/lib/content/practices'
+import { BuildStamp } from '@/vault/blocks/build-stamp'
+import { readBuild } from '@/vault/blocks/build-stamp/build'
 import { GridToggle } from '@/vault/motion/grid-underlay'
 
 import s from './footer.module.css'
@@ -73,6 +75,18 @@ const { name: SITE_NAME, email: EMAIL, socials: SOCIAL } = FALLBACK_CONTACT
  * `CSSProperties`, so the object is widened — the contact block's shape.
  */
 const EMAIL_STYLE = { '--email-chars': EMAIL.length } as CSSProperties
+
+/*
+ * The commit this build was made from, or `null` — read once, like the year.
+ *
+ * Inlined by `next.config.ts` on a Vercel build only, so on CI and in a
+ * local build the colophon carries no stamp (`vault/blocks/build-stamp`).
+ */
+const BUILD = readBuild({
+  sha: process.env.NEXT_PUBLIC_COMMIT_SHA,
+  builtAt: process.env.NEXT_PUBLIC_BUILT_AT,
+  repository: process.env.NEXT_PUBLIC_REPOSITORY_URL,
+})
 
 export function Footer() {
   const t = useTranslations('footer')
@@ -226,6 +240,7 @@ export function Footer() {
         <section className={s.column}>
           <h2 className={cn('caption', s.heading)}>{t('colophon')}</h2>
           <p className={cn('caption', s.note)}>{t('builtOn')}</p>
+          {BUILD && <BuildStamp build={BUILD} label={t('build')} />}
           {/*
             The grid these pages are set on, drawn over the page on request —
             Tata & Gerak, stage 5 (`vault/motion/grid-underlay`). In the
