@@ -234,6 +234,7 @@
     "eyebrow": "Jurnal",
     "title": "Jurnal",
     "intro": "Catatan tentang bagaimana pekerjaan dilingkupi, diputuskan, dan dikirim. Metode, bukan pengumuman.",
+    "follow": "Ikuti jurnal (umpan Atom)",
     "nextEyebrow": "Entri berikutnya",
     "workInPractice": "Karya di {practice}",
     "emptyTitle": "Belum ada yang diterbitkan di sini.",

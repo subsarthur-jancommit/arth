@@ -1,9 +1,40 @@
 import type { Metadata } from 'next'
 
-import { localizedPath, templateFromLocalizedPath } from '@/lib/i18n/paths'
+import {
+  localeFromPath,
+  localizedPath,
+  templateFromLocalizedPath,
+} from '@/lib/i18n/paths'
 import { LOCALE_TAGS, routing } from '@/lib/i18n/routing'
+import { FEED_PATH, FEED_TITLES } from '@/lib/seo/atom-feed'
 import { markdownPathForRoute } from '@/lib/seo/markdown-path'
 import { STATIC_ROUTES } from '@/lib/seo/route-catalog'
+
+/**
+ * hreflang for one localized path: every locale under its BCP 47 tag, plus
+ * `x-default`. Root-relative; `undefined` for a route with no locale prefix.
+ *
+ * Shared by the page head (`routeAlternates`, below) and `app/sitemap.ts`,
+ * so the two places a search engine reads alternates from cannot disagree.
+ */
+export function languageAlternates(
+  path: string
+): Record<string, string> | undefined {
+  const template = templateFromLocalizedPath(path)
+  if (!template) return undefined
+
+  return {
+    ...Object.fromEntries(
+      routing.locales.map((locale) => [
+        LOCALE_TAGS[locale],
+        localizedPath(locale, template),
+      ])
+    ),
+    // x-default names the version served to a visitor whose language
+    // matches none of ours. Omitting it makes engines guess.
+    'x-default': localizedPath(routing.defaultLocale, template),
+  }
+}
 
 /**
  * Builds the `alternates` block for one route.
@@ -35,20 +66,17 @@ export function routeAlternates(path: string): Metadata['alternates'] {
   // Keys are BCP 47 tags, not the internal segment: `en-US`, not `en`. The
   // segment is a URL detail; hreflang is a language declaration, and search
   // engines read it as one.
+  const languages = languageAlternates(path)
+
+  // The journal's feed, announced on the journal's own pages so a reader app
+  // pointed at one finds it (`app/[locale]/journal/feed.xml`). One feed per
+  // language, so the page links the feed in its own.
   const template = templateFromLocalizedPath(path)
-  const languages = template
-    ? {
-        ...Object.fromEntries(
-          routing.locales.map((locale) => [
-            LOCALE_TAGS[locale],
-            localizedPath(locale, template),
-          ])
-        ),
-        // x-default names the version served to a visitor whose language
-        // matches none of ours. Omitting it makes engines guess.
-        'x-default': localizedPath(routing.defaultLocale, template),
-      }
-    : undefined
+  const locale = localeFromPath(path)
+  const journalFeed =
+    locale && (template === '/journal' || template?.startsWith('/journal/'))
+      ? [{ url: localizedPath(locale, FEED_PATH), title: FEED_TITLES[locale] }]
+      : null
 
   return {
     // Self-referential on every route. A single hardcoded canonical in a
@@ -59,6 +87,7 @@ export function routeAlternates(path: string): Metadata['alternates'] {
     // Advertises the plain-text mirror via <link rel="alternate" type="text/plain">.
     types: {
       'text/plain': [{ url: '/llms.txt', title: 'llms.txt' }],
+      ...(journalFeed && { 'application/atom+xml': journalFeed }),
       ...(hasMarkdownRepresentation && {
         'text/markdown': [
           {
