@@ -687,3 +687,21 @@ html.screenshot {
     text-wrap: balance;
   }
 }
+
+/*
+ * Body text never ends on a lone word.
+ *
+ * The headings above were balanced; the prose under them was not. Measured on
+ * the live site on 2026-10-05, 91 paragraphs, list items and captions across
+ * 110 renders (eleven routes, both languages, 320 to 1440) ended on a single
+ * word — "them." alone under five lines of the home statement on a phone
+ * (`docs/HANDOFF.md` §4.8, A6). `pretty` re-breaks only the last lines of a
+ * block, and the journal entry already set it on its own; this makes it the
+ * default for prose. Element selectors only, so a component that sets its own
+ * `text-wrap` keeps it, and a browser without `pretty` wraps as it always did.
+ */
+@supports (text-wrap: pretty) {
+  :is(p, li, dd, figcaption, blockquote) {
+    text-wrap: pretty;
+  }
+}
