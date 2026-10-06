@@ -66,3 +66,14 @@
     transition: none;
   }
 }
+
+/*
+ * Paper has no clipboard. The address itself is printed where it is
+ * written; the control that copies it is not — after the site went live
+ * (`lib/styles/css/print.css`).
+ */
+@media print {
+  .copy {
+    display: none;
+  }
+}

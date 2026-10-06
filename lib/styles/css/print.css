@@ -1,0 +1,93 @@
+/*
+ * On paper — the print sheet.
+ *
+ * Tata & Gerak, stage 1 wrote the first of these rules, for the essay: a
+ * reader may print it, or save it as a PDF, to take into a meeting, so on
+ * paper a page is its content. The site's chrome and the layers fixed over
+ * every screen — header, footer, the transition panel, the entrance curtain,
+ * the reading bar — are left off, and anything still waiting for a reveal is
+ * printed as it would read once revealed: a printer does not scroll, so a
+ * paragraph never reached on screen would otherwise print blank.
+ *
+ * After the site went live the same sheet was asked of the pages a client
+ * takes into a meeting — a case, a practice, the studio, the catalogue
+ * (`docs/HANDOFF.md` §4.8, 4.1). They are dark, and they move; the rules
+ * below the first two are what those two facts cost on paper. What belongs to
+ * one block is in that block's stylesheet, under its own `@media print`.
+ *
+ * `!important` only here, and only for print: each of these is styled by its
+ * own module at a higher specificity than a rule about paper should need to
+ * match, or written inline by a script while the page is read, and a print
+ * sheet is the one place that has to win outright. Per-page rules (which
+ * parts of an essay to keep) live with the page —
+ * `app/[locale]/journal/[slug]/page.module.css`.
+ *
+ * Moved here from `global.css` when it grew.
+ */
+@media print {
+  :is(header, footer):not(main *),
+  [data-page-transition],
+  [data-curtain],
+  [data-reading-progress] {
+    display: none !important;
+  }
+
+  [data-reveal] [data-reveal-item] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /*
+   * Ink on paper.
+   *
+   * A printer leaves backgrounds off unless asked, so a dark page printed as
+   * it looks is paper-coloured text on white paper: nothing. The dark theme's
+   * three colours become the palette's own paper and ink, and every token
+   * derived from them — lines, muted text, surfaces — follows, because
+   * `global.css` derives them on the themed element itself.
+   */
+  [data-theme='dark'] {
+    --color-primary: var(--color-paper);
+    --color-secondary: var(--color-ink);
+    --color-contrast: var(--color-ink);
+  }
+
+  /*
+   * A pinned section, unpinned. ScrollTrigger holds a pinned element in a
+   * spacer as tall as the pin's travel, and while it is held writes its
+   * position inline; on paper the spacer is a blank sheet and the held
+   * element sits wherever the screen last left it.
+   */
+  .pin-spacer {
+    padding: 0 !important;
+    inset: auto !important;
+    block-size: auto !important;
+    inline-size: auto !important;
+    max-inline-size: none !important;
+  }
+
+  .pin-spacer > * {
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    block-size: auto !important;
+    inline-size: auto !important;
+    max-block-size: none !important;
+    max-inline-size: none !important;
+  }
+
+  /* A card, a figure or a step on one sheet, not cut across two. */
+  main :is(article, figure, li) {
+    break-inside: avoid;
+  }
+
+  /*
+   * Where a link off the site goes, since paper cannot follow it. Links on
+   * the site are left as they are: their words already say where they go,
+   * and a path printed after each would double every line of an index.
+   */
+  main a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    overflow-wrap: anywhere;
+  }
+}

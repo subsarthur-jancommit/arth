@@ -219,3 +219,36 @@
     max-inline-size: calc(var(--row-cap) * var(--item-ratio, 1));
   }
 }
+
+/*
+ * On paper, the reduced-motion unwrap — after the site went live
+ * (`lib/styles/css/print.css`). A printer does not scroll, so a track prints
+ * its first screen and nothing past it; wrapped into rows, every plate is on
+ * the sheet. Keep the two in step. The track's transform alone takes
+ * `!important`: the script writes it inline while the page is read.
+ */
+@media print {
+  .viewport {
+    display: block;
+    block-size: auto;
+    padding-block-start: 0;
+    overflow: visible;
+  }
+
+  .track {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    inline-size: auto;
+    transform: none !important;
+    will-change: auto;
+  }
+
+  .item {
+    flex: var(--item-ratio, 1) 1 calc(var(--row-block) * var(--item-ratio, 1));
+    inline-size: auto;
+    min-inline-size: 0;
+    max-inline-size: calc(var(--row-cap) * var(--item-ratio, 1));
+    break-inside: avoid;
+  }
+}

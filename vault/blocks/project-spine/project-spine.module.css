@@ -385,3 +385,18 @@
     display: none;
   }
 }
+
+/*
+ * On paper the index points at nothing a reader can press, so it is left off
+ * and the case takes the whole sheet — after the site went live
+ * (`lib/styles/css/print.css`).
+ */
+@media print {
+  .spine {
+    display: none;
+  }
+
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -157,3 +157,14 @@
     }
   }
 }
+
+/*
+ * On paper — after the site went live (`lib/styles/css/print.css`). The dot
+ * ground is fixed, and a fixed layer is printed on every sheet: paper is its
+ * own ground.
+ */
+@media print {
+  .ground {
+    display: none;
+  }
+}
