@@ -57,3 +57,20 @@ export const Default: Story = {
 export const Short: Story = {
   args: { label: 'How we work', steps: Default.args.steps.slice(0, 2) },
 }
+
+/**
+ * Each step can be pointed at, as on `/studio`. Open the canvas with
+ * `#process-decide` in the address and the third step is marked with the
+ * entry arrow; the held column copies the step at the reading line.
+ */
+export const Linked: Story = {
+  args: {
+    ...Default.args,
+    id: 'process',
+    linkSteps: {
+      label: 'Copy section link',
+      copied: 'Copied',
+      failed: 'Couldn’t copy — use the address bar',
+    },
+  },
+}

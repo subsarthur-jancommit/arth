@@ -43,6 +43,8 @@ import { useState } from 'react'
 
 import { usePreferredReducedMotion } from '@/lib/hooks/use-sync-external'
 
+import { READING_LINE_PERCENT } from './reading-line'
+
 // Registered here as well as in `components/effects/gsap.tsx` so a consumer is
 // correct even when it renders before that bridge is dynamically imported.
 // `registerPlugin` is idempotent.
@@ -84,8 +86,11 @@ export function useActiveInSequence(
       const triggers = items.map((item, index) =>
         ScrollTrigger.create({
           trigger: item,
-          start: 'top 60%',
-          end: 'bottom 40%',
+          // The reading line (`reading-line.ts`) and its mirror: an item leads
+          // once its top passes the line, and, scrolling back up, once its
+          // bottom comes down past the mirror.
+          start: `top ${READING_LINE_PERCENT}%`,
+          end: `bottom ${100 - READING_LINE_PERCENT}%`,
           onEnter: () => setActive(index),
           onEnterBack: () => setActive(index),
         })

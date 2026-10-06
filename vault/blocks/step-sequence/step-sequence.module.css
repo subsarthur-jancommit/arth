@@ -233,6 +233,24 @@
 }
 
 /*
+ * Steps that can be pointed at (`linkSteps`). An address that names one lands
+ * it below the fixed header rather than under it, and the number is the
+ * positioned box the entry arrow is drawn beside.
+ */
+.linked {
+  scroll-margin-block-start: calc(var(--header-height) + var(--gap));
+}
+
+.linked .number {
+  position: relative;
+}
+
+/* The copy control is as wide as its words, not the held column. */
+.copyLink {
+  align-self: flex-start;
+}
+
+/*
  * The step's title at display size. `text-wrap: balance` because a project's
  * chapters pass their own titles here, and a long one should break into even
  * lines rather than leave one word alone under a wide first line.
