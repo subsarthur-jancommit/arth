@@ -947,6 +947,29 @@ akhir halaman, karena halaman masih tumbuh. Kini tes menunggu font, menggulir di
 halaman benar-benar berakhir, lalu memeriksa lagi setelah chip muncul. Harapannya tidak berubah
 (CI hijau, run 37373974853).
 
+**`/<l>/journal/feed.xml` — jurnal bisa diikuti (sesudah live, batch 1).** Jurnal menyebut dirinya
+metode, bukan pengumuman, tetapi pembaca yang menunggu tulisan berikutnya tidak punya cara untuk
+diberi tahu: tidak ada feed, dan tidak ada `rel="alternate"` yang bisa ditemukan aplikasi pembaca.
+Kini ada feed Atom per bahasa, dari entri yang sama dengan halaman jurnal (`lib/seo/atom-feed.ts`,
+murni dan teruji). Feed itu diumumkan di `<head>` indeks jurnal dan ditautkan di akhirnya: "Follow
+the journal (Atom feed)" / "Ikuti jurnal (umpan Atom)". Diuji di `e2e/journal-feed.e2e.ts`, yang
+membuka setiap entri feed. **Belum diverifikasi:** produksi sesudah merge (CI hijau, run
+37374016613).
+
+**`/sitemap.xml` — hreflang dan tanggal yang jujur (sesudah live, batch 1, L6).** Setiap halaman
+statis mengaku berubah pada jam build, dan tidak satu URL pun membawa terjemahannya. Kini setiap
+URL membawa `xhtml:link` dari peta yang sama dengan `<head>`. `/journal` dan `/work` memakai
+tanggal halaman terbaru yang mereka daftarkan; halaman statis lain tidak memakai tanggal. Di build
+lokal: 32 URL, semuanya dengan alternates, dan 22 bertanggal. Diuji di
+`e2e/sitemap-alternates.e2e.ts`. **Belum diverifikasi:** produksi sesudah merge (CI hijau, run
+37374016613).
+
+**`/.well-known/security.txt` — tempat melapor kerentanan (sesudah live, batch 1).** Alat keamanan
+mencari berkas ini dan tidak menemukannya. Kini berkas itu ada, menurut RFC 9116: `Contact` menuju
+formulir laporan privat repo, saluran yang disebut `SECURITY.md`; `Expires` setahun dari build;
+lalu `Policy`, `Preferred-Languages: en, id`, dan `Canonical`. Diuji di `e2e/security-txt.e2e.ts`.
+**Belum diverifikasi:** produksi sesudah merge (CI hijau, run 37374016613).
+
 ### 3.3 Gerbang kontras melihat lebih banyak — ditemukan dengan melihat
 
 Chip "All" di `/work` tampil tanpa angka: angka hitungannya (`aria-hidden`)
