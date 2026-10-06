@@ -116,7 +116,8 @@ openssl rand -base64 32
 3. Add every variable from §1 under **Settings → Environment Variables**.
    Apply them to Production _and_ Preview, or previews will read no content.
    Keep **Automatically expose System Environment Variables** on: the base
-   URL falls back to `VERCEL_PROJECT_PRODUCTION_URL`.
+   URL falls back to `VERCEL_PROJECT_PRODUCTION_URL`, and the colophon's
+   build stamp names `VERCEL_GIT_COMMIT_SHA` (`vault/blocks/build-stamp`).
 4. Deploy.
 
 ### Immediately after the first deploy

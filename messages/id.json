@@ -84,7 +84,8 @@
     "builtOn": "Dibangun di atas Satūs oleh darkroom.engineering, berlisensi MIT. Hurufnya Syne dan Geist Mono.",
     "index": "Indeks",
     "backToTop": "Kembali ke atas",
-    "showGrid": "Tampilkan kisi"
+    "showGrid": "Tampilkan kisi",
+    "build": "Versi"
   },
   "project": {
     "enquiryLabel": "Bahas penugasan serupa",
@@ -268,5 +269,9 @@
     "goTo": "Ke gambar {position}",
     "openImage": "Buka gambar {position} layar penuh",
     "run": "Karyanya, {count} gambar, melaju menyamping saat Anda menggulir"
+  },
+  "connection": {
+    "offline": "Anda sedang luring",
+    "restored": "Tersambung kembali"
   }
 }

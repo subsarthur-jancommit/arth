@@ -1,0 +1,54 @@
+/*
+ * BuildStamp — one line of the colophon: a label, the commit, the day.
+ *
+ * Items in a row rather than words in a sentence, so the commit link is never
+ * inline in running text; on a narrow column they wrap.
+ */
+
+.stamp {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: calc(var(--gap) * 0.5);
+  margin: 0;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * The one followable item. Underlined in the text's own colour, so the row
+ * says which part is a link without a second colour to measure.
+ */
+.commit {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: currentColor;
+  text-underline-offset: 0.2em;
+  transition: color var(--duration-fast) var(--ease-out-expo);
+
+  /* A thumb-sized target on a touch screen, like the footer's index links. */
+  @media (pointer: coarse) {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--tap-target);
+  }
+
+  @media (--hover) {
+    &:hover {
+      color: var(--color-secondary);
+    }
+  }
+
+  &:focus-visible {
+    color: var(--color-secondary);
+    outline: 2px solid var(--color-contrast);
+    outline-offset: 3px;
+    border-radius: var(--radius-hairline);
+  }
+}
+
+@media (--reduced-motion) {
+  .commit {
+    transition: none;
+  }
+}

@@ -6,7 +6,11 @@ import { Link } from '@/components/ui/link'
 import { Marquee } from '@/components/ui/marquee'
 import { FALLBACK_CONTACT } from '@/lib/content/home-fallback'
 import { PRACTICES, practiceTemplate } from '@/lib/content/practices'
+import { BuildStamp } from '@/vault/blocks/build-stamp'
+import { readBuild } from '@/vault/blocks/build-stamp/build'
 import { GridToggle } from '@/vault/motion/grid-underlay'
+
+import { IndexLink } from './index-link'
 
 import s from './footer.module.css'
 
@@ -73,6 +77,18 @@ const { name: SITE_NAME, email: EMAIL, socials: SOCIAL } = FALLBACK_CONTACT
  * `CSSProperties`, so the object is widened — the contact block's shape.
  */
 const EMAIL_STYLE = { '--email-chars': EMAIL.length } as CSSProperties
+
+/*
+ * The commit this build was made from, or `null` — read once, like the year.
+ *
+ * Inlined by `next.config.ts` on a Vercel build only, so on CI and in a
+ * local build the colophon carries no stamp (`vault/blocks/build-stamp`).
+ */
+const BUILD = readBuild({
+  sha: process.env.NEXT_PUBLIC_COMMIT_SHA,
+  builtAt: process.env.NEXT_PUBLIC_BUILT_AT,
+  repository: process.env.NEXT_PUBLIC_REPOSITORY_URL,
+})
 
 export function Footer() {
   const t = useTranslations('footer')
@@ -173,9 +189,7 @@ export function Footer() {
           <h2 className={cn('caption', s.heading)}>{t('index')}</h2>
           <ul className={s.list}>
             <li>
-              <Link href="/work" className={cn('caption', s.link)}>
-                {tNav('work')}
-              </Link>
+              <IndexLink href="/work">{tNav('work')}</IndexLink>
             </li>
             {/*
               The studio page, which became a real route in Tahap 24.
@@ -188,23 +202,16 @@ export function Footer() {
               `e2e/site-reach.e2e.ts` reads.
             */}
             <li>
-              <Link href="/studio" className={cn('caption', s.link)}>
-                {tNav('studio')}
-              </Link>
+              <IndexLink href="/studio">{tNav('studio')}</IndexLink>
             </li>
             <li>
-              <Link href="/journal" className={cn('caption', s.link)}>
-                {tJournal('title')}
-              </Link>
+              <IndexLink href="/journal">{tJournal('title')}</IndexLink>
             </li>
             {PRACTICES.map((value) => (
               <li key={value}>
-                <Link
-                  href={practiceTemplate(value)}
-                  className={cn('caption', s.link)}
-                >
+                <IndexLink href={practiceTemplate(value)}>
                   {tWork(value)}
-                </Link>
+                </IndexLink>
               </li>
             ))}
           </ul>
@@ -226,6 +233,7 @@ export function Footer() {
         <section className={s.column}>
           <h2 className={cn('caption', s.heading)}>{t('colophon')}</h2>
           <p className={cn('caption', s.note)}>{t('builtOn')}</p>
+          {BUILD && <BuildStamp build={BUILD} label={t('build')} />}
           {/*
             The grid these pages are set on, drawn over the page on request —
             Tata & Gerak, stage 5 (`vault/motion/grid-underlay`). In the

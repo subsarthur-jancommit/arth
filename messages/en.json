@@ -84,7 +84,8 @@
     "builtOn": "Built on Satūs by darkroom.engineering, MIT licensed. Type is Syne and Geist Mono.",
     "index": "Index",
     "backToTop": "Back to top",
-    "showGrid": "Show the grid"
+    "showGrid": "Show the grid",
+    "build": "Build"
   },
   "project": {
     "enquiryLabel": "Discuss a similar engagement",
@@ -268,5 +269,9 @@
     "goTo": "Go to image {position}",
     "openImage": "Open image {position} full screen",
     "run": "The work, {count} images, travelling sideways as you scroll"
+  },
+  "connection": {
+    "offline": "You are offline",
+    "restored": "Back online"
   }
 }

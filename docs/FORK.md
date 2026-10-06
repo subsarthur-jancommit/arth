@@ -970,6 +970,32 @@ formulir laporan privat repo, saluran yang disebut `SECURITY.md`; `Expires` seta
 lalu `Policy`, `Preferred-Languages: en, id`, dan `Canonical`. Diuji di `e2e/security-txt.e2e.ts`.
 **Belum diverifikasi:** produksi sesudah merge (CI hijau, run 37374016613).
 
+**Semua rute — cap build di kolofon (sesudah live, batch 2).** Setiap perubahan kini dilihat dua
+kali, di preview dan di produksi, tetapi tidak satu halaman pun menyebut commit mana yang ia
+sajikan. Kolofon footer kini membawa "Build <hash> <hari>": hash pendek yang menaut ke commit di
+GitHub, dan hari build dalam UTC, sebagai item dalam satu baris (`vault/blocks/build-stamp`).
+`next.config.ts` membakar nilainya dari variabel sistem Vercel; build lokal dan CI tidak menyebut
+commit, jadi cap tidak dirender. Aturannya diuji di `build.test.ts`, keadaan tanpa cap di
+`e2e/build-stamp.e2e.ts`. **Belum diverifikasi:** keadaan bercap, yang hanya ada di build Vercel
+(CI hijau, run 37374058475).
+
+**Semua rute — pemberitahuan luring (sesudah live, batch 2).** Tanpa sambungan, klik pada tautan
+tampak sama dengan sambungan lambat: tidak terjadi apa-apa. Kini wilayah `role="status"`, yang
+selalu ada dan kosong saat daring, memuat pil di kiri bawah: "You are offline" / "Anda sedang
+luring", lalu "Back online" / "Tersambung kembali" selama 3 detik (`vault/blocks/offline-notice`).
+Pil naik dari `@starting-style` dan memudar di ujung jedanya; hanya `transform` dan `opacity`,
+langsung di reduced motion, tidak bisa difokus, tidak ikut dicetak. Di build lokal pada 320, 390,
+dan 1440 ia tidak pernah menimpa chip kembali ke atas. Diuji di `e2e/offline-notice.e2e.ts`
+(`context.setOffline`, axe). **Belum diverifikasi:** mata (CI hijau, run 37374058475).
+
+**Semua rute — footer menandai halaman yang dibaca (sesudah live, batch 2).** Header selalu
+menandai rute yang sedang dibuka, tetapi indeks footer, yang menyebut lebih banyak rute, diam
+saja: di akhir `/studio`, "Studio" ditawarkan seolah tempat lain. Kini baris itu membawa
+`aria-current="page"`, bertinta penuh dan bergaris bawah, karena kedua tinta hanya berselisih
+sekitar 1,8:1 dan menjadi satu warna di forced colors. Tanpa `RouteMarker`: primitif itu mengukur
+sepanjang baris, sedangkan indeks ini berupa kolom. Diuji di `e2e/footer-current.e2e.ts`. **Belum
+diverifikasi:** mata (CI hijau, run 37374058475).
+
 ### 3.3 Gerbang kontras melihat lebih banyak — ditemukan dengan melihat
 
 Chip "All" di `/work` tampil tanpa angka: angka hitungannya (`aria-hidden`)

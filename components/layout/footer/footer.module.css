@@ -189,6 +189,19 @@
     outline-offset: 3px;
     border-radius: var(--radius-hairline);
   }
+
+  /*
+   * "You are here" (`index-link.tsx`): the full ink, as the header's current
+   * route has, and an underline in it. The ink alone is not enough — the
+   * phone sheet's note in `header.module.css` measured the two inks at about
+   * 1.8:1 against each other, and in forced colours they are one colour.
+   * After `:hover`, so pointing at it does not take the underline away.
+   */
+  &[aria-current] {
+    color: var(--color-secondary);
+    text-decoration-line: underline;
+    text-underline-offset: 0.2em;
+  }
 }
 
 .note,

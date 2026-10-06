@@ -22,6 +22,7 @@ import { organizationSchema, websiteSchema } from '@/lib/seo/schemas'
 import { SITE, siteFacts } from '@/lib/seo/site'
 import { themes } from '@/lib/styles/colors'
 import { fontsVariable } from '@/lib/styles/fonts'
+import { OfflineNotice } from '@/vault/blocks/offline-notice'
 import { Curtain } from '@/vault/motion/curtain'
 import { PageTransition } from '@/vault/motion/page-transition'
 import { Cursor } from '@/vault/primitives/cursor'
@@ -286,6 +287,17 @@ export default async function AppLayout({ children }: PropsWithChildren) {
             something else would be a second vocabulary for one idea.
           */}
           <Cursor viewLabel={t('work.viewProject')} />
+          {/*
+            What the page says when the connection goes, and when it comes
+            back (`vault/blocks/offline-notice`). Here for the cursor's reason:
+            it belongs to the site, and a notice remounted per route would
+            forget that the connection had been lost. No `<Suspense>`: it
+            reads no URL data.
+          */}
+          <OfflineNotice
+            offline={t('connection.offline')}
+            restored={t('connection.restored')}
+          />
           {/* Critical: CSS custom properties needed for layout */}
           <RealViewport>
             <TransformProvider>
