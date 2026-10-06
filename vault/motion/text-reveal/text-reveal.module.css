@@ -28,3 +28,15 @@
     will-change: auto;
   }
 }
+
+/*
+ * On paper every line in place — after the site went live
+ * (`lib/styles/css/print.css`). The entrance holds each part below its mask
+ * with an inline transform until it is scrolled to, and a heading the reader
+ * never reached would print clipped to nothing.
+ */
+@media print {
+  .reveal * {
+    transform: none !important;
+  }
+}

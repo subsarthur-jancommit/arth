@@ -1014,6 +1014,24 @@ dari tata letak, jadi tetap benar di reduced motion. `CapabilitySet` praktik sen
 karena itemnya himpunan tak berurut tanpa kunci. Diuji di `e2e/section-link-studio.e2e.ts`.
 **Belum diverifikasi:** mata (CI hijau, run 37452740427).
 
+**Studio, praktik, katalog, kasus — lembar cetak (sesudah live, batch 4).** Lembar cetak ditulis
+untuk esai, halaman terang yang diam. Halaman yang dibawa klien ke rapat gelap dan bergerak, jadi
+tercetak sebagai huruf sewarna kertas di atas kertas putih, bersama sisa pembacaan: kata redup,
+langkah surut, kolom tertahan, spacer pin kosong. `lib/styles/css/print.css`, dipindah dari
+`global.css`, kini memakai kertas dan tinta palet untuk tema gelap, mematikan transisi, melepas
+spacer pin, menjaga kartu dan langkah utuh, dan mencetak alamat tautan ke luar; tiap blok memegang
+sisanya di `@media print` sendiri. Diuji di `e2e/print-sheet.e2e.ts`. **Belum diverifikasi:**
+hasil cetak belum dilihat siapa pun (CI hijau, run 37455178388).
+
+**`/<l>/work/<slug>` — karya sebagai `CreativeWork` (sesudah live, batch 4).** Halaman kasus
+memberi tahu crawler bahwa ia halaman dengan jejak remah, tanpa apa pun tentang karyanya. Kini
+`creativeWorkSchema` menyatakan nama, alamat kanonis, bahasa, dan studio sebagai pembuat lewat
+`@id` node `Organization`; bila ada, juga deskripsi `<meta>`, gambar kartu sosial, tahun, tanggal
+terbit dan suntingan, serta praktiknya. Hanya bidang yang sudah diambil halaman; yang kosong tidak
+dipancarkan. Diuji di `lib/seo/schemas.test.ts` dan `e2e/work-jsonld.e2e.ts`. **Belum
+diverifikasi:** di situs live, yang katalognya kosong sampai env Sanity dipasang (CI hijau, run
+37455178388).
+
 ### 3.3 Gerbang kontras melihat lebih banyak — ditemukan dengan melihat
 
 Chip "All" di `/work` tampil tanpa angka: angka hitungannya (`aria-hidden`)

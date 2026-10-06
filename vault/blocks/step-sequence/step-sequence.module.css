@@ -288,3 +288,30 @@
     padding-block-start: 0.6em;
   }
 }
+
+/*
+ * On paper — after the site went live (`lib/styles/css/print.css`).
+ *
+ * A printer does not scroll, so there is no step being read: every step at
+ * full ink, at its own height rather than most of a sheet, and kept whole.
+ * The held column stops holding, and keeps only its label: the counter and
+ * the echoed title report a scroll position paper does not have.
+ */
+@media print {
+  .step,
+  .step[data-active] {
+    opacity: 1;
+    transition: none;
+    min-block-size: 0;
+    break-inside: avoid;
+  }
+
+  .held {
+    position: static;
+  }
+
+  .counter,
+  .activeTitle {
+    display: none;
+  }
+}

@@ -12,7 +12,7 @@ import { writingForPractice } from '@/lib/content/practice-writing'
 import { PRACTICE_SEGMENT, isPractice } from '@/lib/content/practices'
 import { studioContact } from '@/lib/content/studio-contact'
 import { localizedPath } from '@/lib/i18n/paths'
-import { isLocale, routing } from '@/lib/i18n/routing'
+import { isLocale, LOCALE_TAGS, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
 import { RichText } from '@/lib/integrations/sanity/components/rich-text'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
@@ -22,8 +22,13 @@ import {
   projectsQuery,
 } from '@/lib/integrations/sanity/queries'
 import { transitionName } from '@/lib/motion/transition-name'
+import { JsonLd } from '@/lib/seo/json-ld'
+import { creativeWorkSchema } from '@/lib/seo/schemas'
 import { SITE } from '@/lib/seo/site'
-import { generateSanityMetadata } from '@/lib/utils/metadata'
+import {
+  generateSanityMetadata,
+  truncateDescription,
+} from '@/lib/utils/metadata'
 import { EngagementEnquiry } from '@/vault/blocks/engagement-enquiry'
 import { enquiryHref } from '@/vault/blocks/engagement-enquiry/enquiry'
 import { EngagementWriting } from '@/vault/blocks/engagement-writing'
@@ -484,6 +489,27 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               url: `${SITE.url}${localizedPath(locale, `/work/${slug}`)}`,
             },
           ]}
+        />
+        {/*
+          What the work is, for a crawler — after the site went live
+          (`lib/seo/schemas.ts`, `creativeWorkSchema`). The description is
+          the one this page's `<meta>` carries, chosen the same way
+          (`generateSanityMetadata`), and the image is its social card.
+        */}
+        <JsonLd
+          data={creativeWorkSchema({
+            name: project.title || humanizeSlug(slug),
+            url: `${SITE.url}${localizedPath(locale, `/work/${slug}`)}`,
+            inLanguage: LOCALE_TAGS[locale],
+            description:
+              project.metadata?.description ||
+              truncateDescription(project.excerpt),
+            image: ogImageFor(project.ogImage)?.url,
+            year: project.year ?? undefined,
+            datePublished: project.publishedAt ?? undefined,
+            dateModified: project._updatedAt,
+            practice: practice ? tWork(practice) : undefined,
+          })}
         />
 
         <ProjectSpine

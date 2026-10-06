@@ -8,3 +8,15 @@
     display: inline-block;
   }
 }
+
+/*
+ * On paper every word at full ink — after the site went live
+ * (`lib/styles/css/print.css`). The scrub sets each word's opacity inline as
+ * the page is read, so the words a reader had not reached would print at
+ * their dim value; `!important` is what outranks an inline style.
+ */
+@media print {
+  .progressText .word {
+    opacity: 1 !important;
+  }
+}

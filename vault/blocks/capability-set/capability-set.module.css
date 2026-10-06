@@ -206,3 +206,29 @@
     }
   }
 }
+
+/*
+ * On paper — after the site went live (`lib/styles/css/print.css`).
+ *
+ * The reduced-motion outcome, for the same reason: nothing is being read, so
+ * nothing recedes, nothing is held, and each statement takes the height its
+ * words need. The echo of the current statement goes; on paper it would
+ * repeat the first one.
+ */
+@media print {
+  .item,
+  .item[data-active] {
+    opacity: 1;
+    transition: none;
+    min-block-size: 0;
+    break-inside: avoid;
+  }
+
+  .held {
+    position: static;
+  }
+
+  .echo {
+    display: none;
+  }
+}
