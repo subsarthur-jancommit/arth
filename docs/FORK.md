@@ -875,6 +875,127 @@ turun dari atas bergiliran `--stagger-items`. Geometrinya kisi halaman sendiri (
 `--gap`, `--safe`; 4 kolom di ponsel). Status hanya untuk kunjungan, tanpa penyimpanan.
 Diuji di `e2e/grid-underlay.e2e.ts`. **Belum diverifikasi:** mata (CI hijau, run 37177613961).
 
+**CI — Lighthouse menemukan proyek Vercel lewat tautan Git (sesudah live, batch 0, L8).** Workflow
+Lighthouse mencari proyek dengan slug tim `darkroom-engineering` yang dikunci, jadi ia tidak akan
+jalan walau `VERCEL_TOKEN` dipasang. Kini proyek dicari lewat tautan Git-nya, di cakupan pribadi
+lalu di tiap tim milik token. Selama token belum ada, ia tetap melewati dirinya dengan peringatan.
+**Belum diverifikasi:** terhadap Vercel, karena butuh `VERCEL_TOKEN` (CI hijau, run 37373974853).
+
+**Semua rute — URL dasar dari domain produksi Vercel (sesudah live, batch 0, L1).** Situs tayang
+tanpa `NEXT_PUBLIC_BASE_URL`, sehingga setiap canonical, hreflang, entri sitemap, gambar OG, dan
+`@id` JSON-LD menunjuk `https://localhost:3000`. `lib/base-url.ts` kini memakai
+`NEXT_PUBLIC_BASE_URL` bila diisi, lalu `VERCEL_PROJECT_PRODUCTION_URL`, lalu localhost, jadi
+lokal dan CI tidak berubah. Diuji di `lib/base-url.test.ts`. **Belum diverifikasi:** produksi
+sesudah merge (CI hijau, run 37373974853).
+
+**Semua rute — satu set hreflang (sesudah live, batch 0, L5).** next-intl mengirim header `Link`
+dengan set hreflang sendiri (`en`, `id`, x-default ke `/`), yang berbeda dari `<head>` (`en-US`,
+`id-ID`, x-default ke `/en`). Kini `alternateLinks: false`, jadi `<head>` satu-satunya sumber.
+Diuji di `e2e/hreflang-source.e2e.ts`. **Belum diverifikasi:** produksi sesudah merge (CI hijau,
+run 37373974853).
+
+**`/favicon.ico` — ke ikon, bukan beranda (sesudah live, batch 0, L4).** Segmen bertitik jatuh ke
+`[locale]`, sehingga `/favicon.ico` menjawab HTML beranda dengan 200 dan tanpa `noindex`. Kini ia
+dialihkan permanen ke `/icon.png`. Diuji di `e2e/favicon.e2e.ts`. **Belum diverifikasi:** produksi
+sesudah merge (CI hijau, run 37373974853).
+
+**`/practice/<v>` — jejak di bawah header tetap (sesudah live, batch 0, A1).** Breadcrumb praktik
+tertutup header tetap (y=31 di bawah header setinggi 58 di 390), dan fokus Tab mendarat di
+bawahnya (WCAG 2.2 SC 2.4.11). Halaman kini memberi ruang setinggi header di atas jejak; posisi
+`h1` tidak berubah. Diuji di `e2e/practice-trail.e2e.ts`. **Belum diverifikasi:** mata (CI hijau,
+run 37373974853).
+
+**Semua rute — sudut chip kembali ke atas (sesudah live, batch 0, A2).** Di 390 chip menutup 6 px
+bagian bawah baris hak cipta di ujung halaman. Kini padding bawah footer tidak pernah kurang dari
+sudut chip ditambah setengah gutter. Di build lokal, baris terakhir berakhir 8 px di atas chip
+pada 320, 390, 768, dan 1440. Diuji di `e2e/back-to-top-clear.e2e.ts`, yang diperkuat di 0.15.
+**Belum diverifikasi:** mata (CI hijau, run 37373974853).
+
+**404 tanpa JS — pintu depan (sesudah live, batch 0, A3).** Tanpa JavaScript, 404 dan `[...slug]`
+hanya menampilkan bilah "Loading": 28 karakter, tanpa satu tautan pun. Kerangka pemuatan kini
+membawa `<noscript>` berisi satu kalimat EN dan satu ID, serta tautan ke `/en` dan `/id`. Diuji di
+`e2e/no-javascript-404.e2e.ts`. **Belum diverifikasi:** mata (CI hijau, run 37373974853).
+
+**`/work` — katalog kosong (sesudah live, batch 0, A4).** Tanpa karya, katalog memakai teks
+"Nothing in this practice yet", dan tombolnya menaut ke halaman itu sendiri. Kini ada dua keadaan:
+katalog kosong, yang mengarah ke `/studio`, dan praktik kosong, yang tidak berubah. **Belum
+diverifikasi:** keadaan ini hanya muncul tanpa karya, jadi CI tidak melihatnya; produksi
+menampilkannya selama env Sanity belum dipasang (CI hijau, run 37373974853).
+
+**Beranda — jarak paragraf pernyataan (sesudah live, batch 0, A5).** Dua paragraf "How we work"
+menempel tanpa jarak. Pembungkusnya kini kolom flex yang mewarisi gap; di build lokal terukur 17
+px di 390 dan 20 px di 1440. **Belum diverifikasi:** mata (CI hijau, run 37373974853).
+
+**Semua rute — teks badan tanpa kata yatim (sesudah live, batch 0, A6).** Audit menemukan baris
+terakhir berisi satu kata di 91 dari 110 render. `text-wrap: pretty` kini berlaku untuk `p`, `li`,
+`dd`, `figcaption`, dan `blockquote`, di dalam `@supports`. Pada pengukuran yang sama, baris satu
+kata turun dari 58 di situs live menjadi 7 di build lokal. **Belum diverifikasi:** mata (CI hijau,
+run 37373974853).
+
+**`/studio` — catatan kolofon sebelum daftarnya (sesudah live, batch 0, A7).** "Everything below
+is accurate" berada di bawah daftar yang ia jamin, sehingga "below" menunjuk kalimat penutup. Kini
+catatan itu ada sebelum daftarnya. **Belum diverifikasi:** mata (CI hijau, run 37373974853).
+
+**`/id/studio` — kata kerja di lead (sesudah live, batch 0, L9).** "Arth praktik kecil yang …"
+kini "Arth adalah praktik kecil yang …". Kalimat yang sama juga dipakai sebagai meta description.
+**Belum diverifikasi:** mata (CI hijau, run 37373974853).
+
+**e2e — pemeriksaan sudut chip yang lebih kokoh (sesudah live, batch 0, 0.15).** Run e2e pertama
+untuk `back-to-top-clear` berjalan di PR batch 1, karena run batch 0 dua kali tidak mendapat
+runner. Run itu gagal di ketiga rute: satu `scrollTo` saat load menyisakan viewport ±40 px sebelum
+akhir halaman, karena halaman masih tumbuh. Kini tes menunggu font, menggulir di dalam poll sampai
+halaman benar-benar berakhir, lalu memeriksa lagi setelah chip muncul. Harapannya tidak berubah
+(CI hijau, run 37373974853).
+
+**`/<l>/journal/feed.xml` — jurnal bisa diikuti (sesudah live, batch 1).** Jurnal menyebut dirinya
+metode, bukan pengumuman, tetapi pembaca yang menunggu tulisan berikutnya tidak punya cara untuk
+diberi tahu: tidak ada feed, dan tidak ada `rel="alternate"` yang bisa ditemukan aplikasi pembaca.
+Kini ada feed Atom per bahasa, dari entri yang sama dengan halaman jurnal (`lib/seo/atom-feed.ts`,
+murni dan teruji). Feed itu diumumkan di `<head>` indeks jurnal dan ditautkan di akhirnya: "Follow
+the journal (Atom feed)" / "Ikuti jurnal (umpan Atom)". Diuji di `e2e/journal-feed.e2e.ts`, yang
+membuka setiap entri feed. **Belum diverifikasi:** produksi sesudah merge (CI hijau, run
+37374016613).
+
+**`/sitemap.xml` — hreflang dan tanggal yang jujur (sesudah live, batch 1, L6).** Setiap halaman
+statis mengaku berubah pada jam build, dan tidak satu URL pun membawa terjemahannya. Kini setiap
+URL membawa `xhtml:link` dari peta yang sama dengan `<head>`. `/journal` dan `/work` memakai
+tanggal halaman terbaru yang mereka daftarkan; halaman statis lain tidak memakai tanggal. Di build
+lokal: 32 URL, semuanya dengan alternates, dan 22 bertanggal. Diuji di
+`e2e/sitemap-alternates.e2e.ts`. **Belum diverifikasi:** produksi sesudah merge (CI hijau, run
+37374016613).
+
+**`/.well-known/security.txt` — tempat melapor kerentanan (sesudah live, batch 1).** Alat keamanan
+mencari berkas ini dan tidak menemukannya. Kini berkas itu ada, menurut RFC 9116: `Contact` menuju
+formulir laporan privat repo, saluran yang disebut `SECURITY.md`; `Expires` setahun dari build;
+lalu `Policy`, `Preferred-Languages: en, id`, dan `Canonical`. Diuji di `e2e/security-txt.e2e.ts`.
+**Belum diverifikasi:** produksi sesudah merge (CI hijau, run 37374016613).
+
+**Semua rute — cap build di kolofon (sesudah live, batch 2).** Setiap perubahan kini dilihat dua
+kali, di preview dan di produksi, tetapi tidak satu halaman pun menyebut commit mana yang ia
+sajikan. Kolofon footer kini membawa "Build <hash> <hari>": hash pendek yang menaut ke commit di
+GitHub, dan hari build dalam UTC, sebagai item dalam satu baris (`vault/blocks/build-stamp`).
+`next.config.ts` membakar nilainya dari variabel sistem Vercel; build lokal dan CI tidak menyebut
+commit, jadi cap tidak dirender. Aturannya diuji di `build.test.ts`, keadaan tanpa cap di
+`e2e/build-stamp.e2e.ts`. **Belum diverifikasi:** keadaan bercap, yang hanya ada di build Vercel
+(CI hijau, run 37374058475).
+
+**Semua rute — pemberitahuan luring (sesudah live, batch 2).** Tanpa sambungan, klik pada tautan
+tampak sama dengan sambungan lambat: tidak terjadi apa-apa. Kini wilayah `role="status"`, yang
+selalu ada dan kosong saat daring, memuat pil di kiri bawah: "You are offline" / "Anda sedang
+luring", lalu "Back online" / "Tersambung kembali" selama 3 detik (`vault/blocks/offline-notice`).
+Pil naik dari `@starting-style` dan memudar di ujung jedanya; hanya `transform` dan `opacity`,
+langsung di reduced motion, tidak bisa difokus, tidak ikut dicetak. Di build lokal pada 320, 390,
+dan 1440 ia tidak pernah menimpa chip kembali ke atas. Diuji di `e2e/offline-notice.e2e.ts`
+(`context.setOffline`, axe). **Belum diverifikasi:** mata (CI hijau, run 37374058475).
+
+**Semua rute — footer menandai halaman yang dibaca (sesudah live, batch 2).** Header selalu
+menandai rute yang sedang dibuka, tetapi indeks footer, yang menyebut lebih banyak rute, diam
+saja: di akhir `/studio`, "Studio" ditawarkan seolah tempat lain. Kini baris itu membawa
+`aria-current="page"`, bertinta penuh dan bergaris bawah, karena kedua tinta hanya berselisih
+sekitar 1,8:1 dan menjadi satu warna di forced colors. Tanpa `RouteMarker`: primitif itu mengukur
+sepanjang baris, sedangkan indeks ini berupa kolom. Diuji di `e2e/footer-current.e2e.ts`. **Belum
+diverifikasi:** mata (CI hijau, run 37374058475).
+
 ### 3.3 Gerbang kontras melihat lebih banyak — ditemukan dengan melihat
 
 Chip "All" di `/work` tampil tanpa angka: angka hitungannya (`aria-hidden`)
