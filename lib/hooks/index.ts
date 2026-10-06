@@ -9,6 +9,7 @@ export { useMediaQuery } from 'hamo'
 export { useReveal } from './use-reveal'
 export {
   useDocumentVisibility,
+  useLocationHash,
   useOnlineStatus,
   usePointerIsFine,
   usePreferredColorScheme,

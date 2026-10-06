@@ -996,6 +996,24 @@ sekitar 1,8:1 dan menjadi satu warna di forced colors. Tanpa `RouteMarker`: prim
 sepanjang baris, sedangkan indeks ini berupa kolom. Diuji di `e2e/footer-current.e2e.ts`. **Belum
 diverifikasi:** mata (CI hijau, run 37374058475).
 
+**`/<l>/journal` — waktu baca di indeks (sesudah live, batch 3).** Halaman entri sudah lama
+menyebut "4 min read", tetapi indeks, tempat pembaca memilih entri mana yang dibuka, tidak. Kini
+tiap baris membawa angka yang sama, di barisnya sendiri di bawah tanggal dan praktik. Angkanya
+dihitung di server dengan `countWords` dan `minutesFor` milik halaman entri, jadi keduanya tidak
+bisa berbeda; entri tanpa isi tidak menyebut apa-apa. Barisnya sendiri karena di rail tanggal
+ketiganya tidak muat satu baris dalam bahasa Indonesia di 1440. Diuji di
+`e2e/journal-reading-time.e2e.ts`. **Belum diverifikasi:** mata; tata letaknya belum dilihat siapa
+pun (CI hijau, run 37452740427).
+
+**`/<l>/studio` — tiap langkah proses bisa ditaut (sesudah live, batch 3).** Proses adalah bagian
+`/studio` yang diteruskan pembaca ("begini cara mereka bekerja"), dan tidak satu langkah pun punya
+alamat. `StepSequence` mendapat prop opt-in `linkSteps`: tiap langkah ber-id `#process-<kunci>`,
+sama di EN dan ID; langkah yang dituju alamat ditandai panah masuk; dan kolom tertahan membawa
+tombol salin milik spine, yang menyalin langkah di garis baca saat ditekan. Langkah itu dibaca
+dari tata letak, jadi tetap benar di reduced motion. `CapabilitySet` praktik sengaja tidak ditaut,
+karena itemnya himpunan tak berurut tanpa kunci. Diuji di `e2e/section-link-studio.e2e.ts`.
+**Belum diverifikasi:** mata (CI hijau, run 37452740427).
+
 ### 3.3 Gerbang kontras melihat lebih banyak — ditemukan dengan melihat
 
 Chip "All" di `/work` tampil tanpa angka: angka hitungannya (`aria-hidden`)

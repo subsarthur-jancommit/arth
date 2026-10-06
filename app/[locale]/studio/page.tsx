@@ -189,9 +189,12 @@ export default async function StudioPage() {
   const requested = await localeRootParam()
   const locale = isLocale(requested) ? requested : routing.defaultLocale
 
-  const [t, tPractice, works, body] = await Promise.all([
+  const [t, tPractice, tProject, works, body] = await Promise.all([
     getTranslations('studio'),
     getTranslations('workIndex'),
+    // The case page's words for copying a link to a section, used as they
+    // are: the control below is the same one (`vault/blocks/copy-address`).
+    getTranslations('project'),
     evidence(locale),
     bodyOfWork(locale),
   ])
@@ -563,6 +566,19 @@ export default async function StudioPage() {
             title: t(`process.${step}Title`),
             body: t(`process.${step}Body`),
           }))}
+          /*
+            Each step can be pointed at — after the site went live
+            (`docs/HANDOFF.md` §4.8, 3.2). `#process-scope` through
+            `#process-deliver`, the same in both languages, and the held
+            column copies the one being read. The process is the part of
+            this page a reader sends on: "this is how they work".
+          */
+          id="process"
+          linkSteps={{
+            label: tProject('sectionCopy'),
+            copied: tProject('sectionCopied'),
+            failed: tProject('sectionCopyFailed'),
+          }}
         />
 
         {/*

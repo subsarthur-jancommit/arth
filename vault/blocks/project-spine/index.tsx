@@ -7,10 +7,12 @@ import {
   useEffect,
   useRef,
   useState,
-  useSyncExternalStore,
 } from 'react'
 
-import { usePreferredReducedMotion } from '@/lib/hooks/use-sync-external'
+import {
+  useLocationHash,
+  usePreferredReducedMotion,
+} from '@/lib/hooks/use-sync-external'
 import { CopyLink } from '@/vault/blocks/copy-address/copy-link'
 import { EntryArrow } from '@/vault/motion/entry-arrow'
 import { RouteMarker } from '@/vault/motion/route-marker'
@@ -142,25 +144,6 @@ export interface SectionCopyLabels {
   failed: string
 }
 
-function subscribeToHash(onChange: () => void) {
-  window.addEventListener('hashchange', onChange)
-  return () => window.removeEventListener('hashchange', onChange)
-}
-
-/** The section the address points at, decoded; '' when it points at none. */
-function readHash(): string {
-  const fragment = window.location.hash.slice(1)
-  try {
-    return decodeURIComponent(fragment)
-  } catch {
-    return fragment
-  }
-}
-
-function noHashOnServer(): string {
-  return ''
-}
-
 export function ProjectSpine({
   label,
   regions,
@@ -171,11 +154,7 @@ export function ProjectSpine({
 }: ProjectSpineProps) {
   const rootRef = useRef<HTMLDivElement>(null)
   const active = useActiveInSequence(rootRef, '[data-region]', regions.length)
-  const arrived = useSyncExternalStore(
-    subscribeToHash,
-    readHash,
-    noHashOnServer
-  )
+  const arrived = useLocationHash()
 
   /*
    * Whether the page's title has gone off the top of the screen. Told by an

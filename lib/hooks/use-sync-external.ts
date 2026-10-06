@@ -251,3 +251,50 @@ export function useDocumentVisibility(): DocumentVisibilityState {
     getVisibilityServerSnapshot
   )
 }
+
+// ============================================================================
+// useLocationHash
+// ============================================================================
+
+function subscribeToHash(callback: () => void) {
+  window.addEventListener('hashchange', callback)
+  return () => window.removeEventListener('hashchange', callback)
+}
+
+/** The section the address points at, decoded; '' when it points at none. */
+function getHashSnapshot(): string {
+  const fragment = window.location.hash.slice(1)
+  try {
+    return decodeURIComponent(fragment)
+  } catch {
+    return fragment
+  }
+}
+
+function getHashServerSnapshot(): string {
+  return ''
+}
+
+/**
+ * The fragment of the page's address — the section a link brought the
+ * reader to, which a block marks on arrival.
+ *
+ * Moved here from `vault/blocks/project-spine` when the studio's steps and a
+ * practice's capabilities began answering the same question; three copies of
+ * one listener is two that can drift. '' on the server and in the first
+ * client render, then the address's own value, and again on every
+ * `hashchange`.
+ *
+ * @example
+ * ```tsx
+ * const arrived = useLocationHash()
+ * <li {...(region.id === arrived && { 'data-arrived': '' })} />
+ * ```
+ */
+export function useLocationHash(): string {
+  return useSyncExternalStore(
+    subscribeToHash,
+    getHashSnapshot,
+    getHashServerSnapshot
+  )
+}

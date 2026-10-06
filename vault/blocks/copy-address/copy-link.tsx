@@ -27,8 +27,15 @@ import { useClipboard } from './use-clipboard'
 import s from './copy-address.module.css'
 
 interface CopyLinkProps {
-  /** The section's id — the part of the address after `#`. */
-  hash: string
+  /**
+   * The section's id — the part of the address after `#`.
+   *
+   * Or a function that answers at the moment of the press, for a block whose
+   * section is wherever the reader is then (`vault/blocks/step-sequence`):
+   * read from layout as the button is pressed, so it is right under reduced
+   * motion too, where nothing tracks the reader's place as they scroll.
+   */
+  hash: string | (() => string)
   /** Already localized — "Copy section link". */
   label: string
   /** Already localized — what the status says once the link is copied. */
@@ -50,7 +57,9 @@ export function CopyLink({
   if (!writable) return null
 
   const link = () =>
-    `${window.location.origin}${window.location.pathname}#${hash}`
+    `${window.location.origin}${window.location.pathname}#${
+      typeof hash === 'function' ? hash() : hash
+    }`
 
   return (
     <div data-epic="section-link" className={cn(s.copy, className)}>

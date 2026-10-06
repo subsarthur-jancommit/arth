@@ -67,6 +67,11 @@
 import cn from 'clsx'
 import { useRef } from 'react'
 
+import { useLocationHash } from '@/lib/hooks/use-sync-external'
+import { CopyLink } from '@/vault/blocks/copy-address/copy-link'
+import type { SectionCopyLabels } from '@/vault/blocks/project-spine'
+import { EntryArrow } from '@/vault/motion/entry-arrow'
+import { indexAtReadingLine } from '@/vault/motion/reading-line'
 import { useActiveInSequence } from '@/vault/motion/use-active-in-sequence'
 
 import s from './step-sequence.module.css'
@@ -100,12 +105,26 @@ interface StepSequenceProps {
    * Anchor id, for a page whose index links to this section.
    *
    * Declared rather than spread, for the same reason `data-epic` is: this
-   * block takes no arbitrary props. `/studio` needs neither of these, but
-   * `/work/<slug>` renders inside `vault/blocks/project-spine`, whose rows
-   * are anchors — a row pointing at an id nothing carries is the lie Tahap 39
-   * removed from the filter chips.
+   * block takes no arbitrary props. `/work/<slug>` renders inside
+   * `vault/blocks/project-spine`, whose rows are anchors — a row pointing at
+   * an id nothing carries is the lie Tahap 39 removed from the filter chips.
+   * `/studio` passes it for `linkSteps` below.
    */
   id?: string | undefined
+  /**
+   * Lets each step be pointed at — the studio's process, after the site
+   * went live (`docs/HANDOFF.md` §4.8, 3.2). Needs `id`.
+   *
+   * Each step takes `<id>-<key>` as its own id, the same in both languages
+   * because the key is. The step an address arrives at is marked with the
+   * entry arrow (`vault/motion/entry-arrow`, the `section-entry` moment), and
+   * the held column carries the spine's copy control, which copies the step
+   * at the reading line at the moment it is pressed.
+   *
+   * Off unless passed, so a case page, whose spine already points at its
+   * regions, renders exactly as it did.
+   */
+  linkSteps?: SectionCopyLabels | undefined
   /** Marks this as one of the spine's regions. Empty string, like its siblings. */
   'data-region'?: string | undefined
   className?: string | undefined
@@ -116,15 +135,42 @@ function pad(value: number): string {
   return String(value).padStart(2, '0')
 }
 
+/** A step's own id: the sequence's, then the step's key. */
+function stepId(sequence: string, key: string): string {
+  return `${sequence}-${key}`
+}
+
+/**
+ * The id of the step at the reading line now — read from layout when asked,
+ * so it is right under reduced motion too, where the hook that leads the
+ * steps creates no trigger and stays at the first.
+ */
+function stepAtReadingLine(
+  root: HTMLElement | null,
+  sequence: string,
+  steps: readonly Step[]
+): string {
+  const items = root ? [...root.querySelectorAll('[data-step]')] : []
+  const index = indexAtReadingLine(
+    items.map((item) => item.getBoundingClientRect().top),
+    window.innerHeight
+  )
+  return stepId(sequence, steps[index]?.key ?? steps[0]?.key ?? '')
+}
+
 export function StepSequence({
   label,
   steps,
   'data-epic': epic,
   id,
+  linkSteps,
   'data-region': region,
   className,
 }: StepSequenceProps) {
   const rootRef = useRef<HTMLElement>(null)
+  const arrived = useLocationHash()
+  // What every step's own id is built on, when the steps can be pointed at.
+  const anchor = linkSteps && id ? id : null
 
   /*
    * The behaviour moved to `vault/motion/use-active-in-sequence` in Tahap 27,
@@ -166,29 +212,52 @@ export function StepSequence({
           <p className={cn('caption', s.activeTitle)} aria-hidden="true">
             {current?.title}
           </p>
+          {anchor !== null && linkSteps && (
+            <CopyLink
+              hash={() => stepAtReadingLine(rootRef.current, anchor, steps)}
+              className={s.copyLink}
+              {...linkSteps}
+            />
+          )}
         </div>
       </div>
 
       <ol className={s.steps}>
-        {steps.map((step, index) => (
-          <li
-            key={step.key}
-            data-step=""
-            /*
-             * Presence, not a boolean string: `data-active=""` is what CSS
-             * matches on, and an absent attribute is the off state. A
-             * `data-active="false"` would still match `[data-active]`.
-             */
-            {...(index === active && { 'data-active': '' })}
-            className={s.step}
-          >
-            <p className={cn('caption', s.number)} aria-hidden="true">
-              {pad(index + 1)}
-            </p>
-            <h3 className={cn('h3', s.title)}>{step.title}</h3>
-            <p className={cn('p-big', s.body)}>{step.body}</p>
-          </li>
-        ))}
+        {steps.map((step, index) => {
+          const own = anchor === null ? null : stepId(anchor, step.key)
+          const isArrival = own !== null && own === arrived
+          return (
+            <li
+              key={step.key}
+              {...(own !== null && { id: own })}
+              data-step=""
+              /*
+               * Presence, not a boolean string: `data-active=""` is what CSS
+               * matches on, and an absent attribute is the off state. A
+               * `data-active="false"` would still match `[data-active]`.
+               */
+              {...(index === active && { 'data-active': '' })}
+              {...(isArrival && { 'data-arrived': '' })}
+              className={cn(s.step, own !== null && s.linked)}
+            >
+              {/*
+                The arrow is drawn beside the number, whose box is one line
+                tall, rather than at the middle of a step most of a screen
+                high. It reads `data-arrived` from its parent.
+              */}
+              <p
+                className={cn('caption', s.number)}
+                aria-hidden="true"
+                {...(isArrival && { 'data-arrived': '' })}
+              >
+                {own !== null && <EntryArrow />}
+                {pad(index + 1)}
+              </p>
+              <h3 className={cn('h3', s.title)}>{step.title}</h3>
+              <p className={cn('p-big', s.body)}>{step.body}</p>
+            </li>
+          )
+        })}
       </ol>
     </section>
   )
