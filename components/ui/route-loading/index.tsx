@@ -19,22 +19,67 @@ import s from './route-loading.module.css'
  * JavaScript — which is a roadmap §1.5 exit criterion that had been passing
  * only because the dataset used to be empty.
  *
+ * ## A way out without JavaScript
+ *
+ * One route still ends here for a reader without JavaScript: the 404, and any
+ * `[...slug]` URL, whose answer streams into a hole only a script can fill
+ * (`e2e/site-reach.e2e.ts` records the two fixes that were tried and failed).
+ * Measured on the live site on 2026-10-05, that reader got three grey bars and
+ * nothing to press (`docs/HANDOFF.md` §4.8, A3). The `<noscript>` block below
+ * is what they get now: one sentence in each language and the two front
+ * doors. A browser running scripts never builds it.
+ *
+ * Both languages, because this fallback is static and knows no locale; the
+ * links name their own.
+ *
+ * Plain anchors, not `components/ui/link`. That component reads the router's
+ * pathname, and a fallback that must prerender as part of a dynamic route's
+ * shell cannot: with it, the production build failed. Nothing here needs the
+ * client router anyway — `<noscript>` content only exists when there is no
+ * script to run one.
+ *
  * ## No `<Wrapper>`
  *
  * With `cacheComponents` this must be statically renderable, and Wrapper
  * mounts `<Theme>`, which reads uncached data and fails the prerender. Keep it
- * dependency-free.
+ * free of anything that reads request data.
  */
 export function RouteLoading() {
   return (
-    // `<output>` carries an implicit role="status", so the role is redundant.
-    <output aria-busy="true" className={s.loading}>
-      <span className="sr-only">Loading</span>
-      <div className={s.bars} aria-hidden="true">
-        <div className={s.bar} />
-        <div className={s.bar} />
-        <div className={s.bar} />
-      </div>
-    </output>
+    <div className={s.loading}>
+      {/* `<output>` carries an implicit role="status", so the role is redundant. */}
+      <output aria-busy="true" className={s.status}>
+        <span className="sr-only">Loading</span>
+        <div className={s.bars} aria-hidden="true">
+          <div className={s.bar} />
+          <div className={s.bar} />
+          <div className={s.bar} />
+        </div>
+      </output>
+      <noscript>
+        <div className={s.noscript}>
+          <p className={s.note}>
+            This page needs JavaScript to finish loading.
+          </p>
+          <p className={s.note} lang="id">
+            Halaman ini butuh JavaScript untuk selesai dimuat.
+          </p>
+          <ul className={s.doors}>
+            <li>
+              {/* oxlint-disable-next-line react/forbid-elements, nextjs/no-html-link-for-pages -- no-JS fallback inside a prerendered shell; see the note above */}
+              <a href="/en" className={s.door}>
+                Arth — English
+              </a>
+            </li>
+            <li lang="id">
+              {/* oxlint-disable-next-line react/forbid-elements, nextjs/no-html-link-for-pages -- no-JS fallback inside a prerendered shell; see the note above */}
+              <a href="/id" className={s.door}>
+                Arth — Bahasa Indonesia
+              </a>
+            </li>
+          </ul>
+        </div>
+      </noscript>
+    </div>
   )
 }

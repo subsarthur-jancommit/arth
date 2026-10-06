@@ -60,23 +60,47 @@ jobs:
             exit 0
           fi
 
-          project_name="${GITHUB_REPOSITORY##*/}"
-          echo "Looking for Vercel project: $project_name"
+          # The project is found by its Git link, not by name and team. The
+          # lookup this replaces asked for a project named after the
+          # repository inside the starter's `darkroom-engineering` team, and
+          # neither holds here: the Vercel project is `arth-test-01`, in a
+          # personal scope. It could never have matched, so a token alone
+          # would only have moved the skip one step later.
+          owner="${GITHUB_REPOSITORY%%/*}"
+          repo="${GITHUB_REPOSITORY##*/}"
+          echo "Looking for the Vercel project linked to $owner/$repo"
 
-          # `[]?` tolerates a null/error response (e.g. invalid token) instead of crashing.
-          teams=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" "https://api.vercel.com/v2/teams")
-          team_id=$(echo "$teams" | jq -r '.teams[]? | select(.slug=="darkroom-engineering") | .id')
+          # $1: a team id, or empty for the token's personal scope. `[]?`
+          # tolerates a null or error response (e.g. an invalid token), and
+          # `|| true` keeps `head` closing the pipe from failing the step.
+          find_project() {
+            scope=""
+            if [ -n "$1" ]; then scope="&teamId=$1"; fi
+            curl -s -H "Authorization: Bearer $VERCEL_TOKEN" "https://api.vercel.com/v9/projects?limit=100$scope" |
+              jq -r --arg org "$owner" --arg repo "$repo" '.projects[]? | select(.link.org == $org and .link.repo == $repo) | .id' |
+              head -n 1 || true
+          }
 
-          projects=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" "https://api.vercel.com/v9/projects?teamId=$team_id")
-          project_id=$(echo "$projects" | jq -r ".projects[]? | select(.name==\"$project_name\") | .id")
+          team_id=""
+          project_id=$(find_project "")
+          if [ -z "$project_id" ]; then
+            teams=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" "https://api.vercel.com/v2/teams")
+            for candidate in $(echo "$teams" | jq -r '.teams[]?.id'); do
+              project_id=$(find_project "$candidate")
+              if [ -n "$project_id" ]; then
+                team_id="$candidate"
+                break
+              fi
+            done
+          fi
 
-          if [ -z "$team_id" ] || [ -z "$project_id" ]; then
-            echo "::warning title=Lighthouse skipped::Could not resolve Vercel team/project (token invalid or lacks access). Skipping Lighthouse report."
+          if [ -z "$project_id" ]; then
+            echo "::warning title=Lighthouse skipped::No Vercel project linked to $GITHUB_REPOSITORY was found with this token (invalid token, or no access). Skipping Lighthouse report."
             echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          echo "Team ID: $team_id"
+          echo "Team ID: ${team_id:-none (personal scope)}"
           echo "Project ID: $project_id"
           echo "team_id=$team_id" >> "$GITHUB_OUTPUT"
           echo "project_id=$project_id" >> "$GITHUB_OUTPUT"

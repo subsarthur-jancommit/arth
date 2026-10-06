@@ -130,6 +130,22 @@
   }
 }
 
+/*
+ * The statement's paragraphs, spaced like the prose column around them.
+ *
+ * `vault/blocks/studio-note` spaces its prose with a flex `gap`, and a gap
+ * reaches only direct children. This wrapper (it carries `data-statement`)
+ * sat between them, so its paragraphs touched: "…a menu of services." ran
+ * straight into "The work runs from…" at every width. Measured on the live
+ * site on 2026-10-05 (`docs/HANDOFF.md` §4.8, A5). `inherit` takes the
+ * column's own gap, so the two cannot drift apart.
+ */
+.statement {
+  display: flex;
+  flex-direction: column;
+  gap: inherit;
+}
+
 .placeholder {
   /*
    * Says out loud that the copy above is a stand-in. It is set back rather

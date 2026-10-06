@@ -50,6 +50,9 @@
     "emptyTitle": "Belum ada di praktik ini",
     "emptyBody": "Belum ada pekerjaan yang diterbitkan pada praktik ini. Lihat semuanya saja.",
     "emptyAction": "Lihat semua karya",
+    "emptyAllTitle": "Belum ada penugasan yang diterbitkan",
+    "emptyAllBody": "Karya yang selesai tercantum di sini begitu diterbitkan. Sampai saat itu, halaman Studio menjelaskan bagaimana sebuah penugasan berjalan.",
+    "emptyAllAction": "Cara studio bekerja",
     "consulting": "Konsultasi",
     "ai-data": "AI & Data",
     "commission": "Pesanan",
@@ -165,7 +168,7 @@
   "studio": {
     "eyebrow": "Studio",
     "title": "Studio",
-    "lead": "Arth praktik kecil yang dibangun di atas satu kebiasaan: tentukan lingkup pekerjaan dengan jujur, lalu selesaikan. Kami mengambil konsultasi, AI dan data, serta pengerjaan pesanan. Tiga praktik yang berbagi metode, bukan medium.",
+    "lead": "Arth adalah praktik kecil yang dibangun di atas satu kebiasaan: tentukan lingkup pekerjaan dengan jujur, lalu selesaikan. Kami mengambil konsultasi, AI dan data, serta pengerjaan pesanan. Tiga praktik yang berbagi metode, bukan medium.",
     "facts": {
       "founded": "Berdiri",
       "foundedValue": "2021",

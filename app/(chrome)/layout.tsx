@@ -58,8 +58,9 @@ import '@/lib/styles/css/index.css'
  * The division stated above therefore holds for the first time: this tree has
  * no title, no description, no OG image and no JSON-LD.
  *
- * `NEXT_PUBLIC_BASE_URL` remains the setting that actually matters, and
- * remains unset — `docs/DEPLOYMENT.md` §2.1 owns it.
+ * `NEXT_PUBLIC_BASE_URL` remains the setting that actually matters off
+ * Vercel; on Vercel the origin falls back to the project's production domain
+ * (`lib/base-url.ts`). `docs/DEPLOYMENT.md` §1 owns it.
  */
 export const metadata: Metadata = {
   metadataBase: new URL(APP_BASE_URL),

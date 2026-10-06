@@ -16,11 +16,22 @@ import { defineRouting } from 'next-intl/routing'
  * It also keeps `proxy.ts` simple: 'always' makes next-intl emit plain
  * redirects rather than internal rewrites, so it never competes with the
  * Markdown rewrite that proxy already performs.
+ *
+ * ## `alternateLinks: false` — one set of hreflang, not two
+ *
+ * next-intl's proxy also sent its own `Link` header on every page, and it
+ * disagreed with the page: `hreflang="en"` and `"id"` against the head's
+ * `en-US` and `id-ID`, and `x-default` pointing at the bare root (which only
+ * redirects) against the head's `/en`. Measured on the live site, 2026-10-05
+ * (`docs/HANDOFF.md` §4.8, L5). A search engine reads both and has to pick;
+ * `lib/seo/alternates.ts` is the one source that knows the canonical shape,
+ * so the header goes.
  */
 export const routing = defineRouting({
   locales: ['en', 'id'],
   defaultLocale: 'en',
   localePrefix: 'always',
+  alternateLinks: false,
 })
 
 export type Locale = (typeof routing.locales)[number]

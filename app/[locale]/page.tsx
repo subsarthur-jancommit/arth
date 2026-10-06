@@ -350,7 +350,10 @@ export default async function Home() {
             have a statement?", and with the fixture document present the
             answers disagreed — placeholder paragraphs shipped with no label.
           */}
-          <div data-statement={content.statement ? 'cms' : 'fallback'}>
+          <div
+            className={s.statement}
+            data-statement={content.statement ? 'cms' : 'fallback'}
+          >
             {content.statement ? (
               // SAFETY: `statement` is the CMS's Portable Text for this
               // locale. `resolveHomeContent` widens it to `unknown[]` because

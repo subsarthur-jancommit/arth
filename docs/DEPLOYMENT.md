@@ -76,8 +76,13 @@ and must stay that way.
 | `NEXT_PUBLIC_BASE_URL`          | `https://yourdomain.com` | **No trailing slash.**       |
 
 `NEXT_PUBLIC_BASE_URL` is not cosmetic. It drives canonical URLs, `hreflang`,
-the sitemap, and social images. Leave it unset and the build warns, then
-publishes `localhost` URLs to search engines.
+the sitemap, and social images. **On Vercel it may stay unset:** the site then
+uses the project's production domain from Vercel's own
+`VERCEL_PROJECT_PRODUCTION_URL` — the shortest custom domain, or the
+`*.vercel.app` alias when there is none (`lib/base-url.ts`). Set it when the
+canonical domain should be one Vercel does not know yet. On any other host,
+leave it unset and the build warns, then publishes `localhost` URLs to search
+engines.
 
 ### Recommended
 
@@ -109,8 +114,9 @@ openssl rand -base64 32
 2. Framework preset **Next.js**. Leave build and output settings alone — the
    repo's `vercel.json` and `next.config.ts` already carry what is needed.
 3. Add every variable from §1 under **Settings → Environment Variables**.
-   Apply them to Production _and_ Preview, or previews will render with
-   `localhost` canonicals.
+   Apply them to Production _and_ Preview, or previews will read no content.
+   Keep **Automatically expose System Environment Variables** on: the base
+   URL falls back to `VERCEL_PROJECT_PRODUCTION_URL`.
 4. Deploy.
 
 ### Immediately after the first deploy
@@ -209,8 +215,9 @@ curl -sS $SITE/sitemap.xml | grep -o '<loc>[^<]*</loc>'
 curl -sSo /dev/null -w "%{http_code}\n" $SITE/cms
 ```
 
-If `hreflang` or the sitemap show `localhost`, `NEXT_PUBLIC_BASE_URL` is
-missing or wrong. Fix it and redeploy — the values are baked in at build time.
+If `hreflang` or the sitemap show `localhost`, the build found neither
+`NEXT_PUBLIC_BASE_URL` nor Vercel's system variables. Set the first (or turn the
+system variables on) and redeploy — the values are baked in at build time.
 
 ---
 

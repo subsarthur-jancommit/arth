@@ -2,10 +2,11 @@ import bundleAnalyzer from '@next/bundle-analyzer'
 import type { NextConfig } from 'next'
 import createNextIntlPlugin from 'next-intl/plugin'
 
-// Relative import — see the comment on `./lib/integrations/registry`'s own
+// Relative imports — see the comment on `./lib/integrations/registry`'s own
 // `@/utils/validation` import for why: Next's next.config.ts loader
-// mis-resolves `@/*` aliases for transitively-required files, so both this
-// import and everything it pulls in must use relative paths.
+// mis-resolves `@/*` aliases for transitively-required files, so both these
+// imports and everything they pull in must use relative paths.
+import { LOCAL_BASE_URL, resolveBaseUrl } from './lib/base-url'
 import { composeCsp } from './lib/integrations/csp'
 
 // --- Content-Security-Policy --------------------------------------------------
@@ -37,7 +38,23 @@ const STORYBOOK_PROXY_ENABLED =
     process.env.NODE_ENV === 'development')
 // -----------------------------------------------------------------------------
 
+// --- Base URL for client bundles ---------------------------------------------
+// The server resolves the site's origin in `lib/env.ts`, falling back to
+// Vercel's production domain when NEXT_PUBLIC_BASE_URL is unset
+// (`lib/base-url.ts`). Two client-safe constants in
+// `lib/integrations/sanity/env.ts` read the variable directly, so the same
+// answer is inlined for them here — and only when there is a real origin to
+// inline, so local builds and CI inline nothing, exactly as before.
+const PUBLIC_BASE_URL = resolveBaseUrl({
+  explicit: process.env.NEXT_PUBLIC_BASE_URL,
+  vercelProductionHost: process.env.VERCEL_PROJECT_PRODUCTION_URL,
+})
+// -----------------------------------------------------------------------------
+
 const nextConfig: NextConfig = {
+  ...(PUBLIC_BASE_URL !== LOCAL_BASE_URL && {
+    env: { NEXT_PUBLIC_BASE_URL: PUBLIC_BASE_URL },
+  }),
   reactStrictMode: true,
   reactCompiler: true,
   poweredByHeader: false,
@@ -223,6 +240,18 @@ const nextConfig: NextConfig = {
         },
       ],
     },
+  ],
+  /*
+   * `/favicon.ico` → the icon that exists.
+   *
+   * The site ships `app/icon.png` and no `.ico`, and the proxy's matcher lets
+   * dotted root paths through untouched, so `/favicon.ico` fell to the
+   * `[locale]` segment and answered 200 with the whole home page as HTML —
+   * measured on the live site on 2026-10-05 (`docs/HANDOFF.md` §4.8, L4).
+   * Browsers and crawlers that ask for the conventional path now get the icon.
+   */
+  redirects: async () => [
+    { source: '/favicon.ico', destination: '/icon.png', permanent: true },
   ],
   rewrites: async () =>
     STORYBOOK_PROXY_ENABLED

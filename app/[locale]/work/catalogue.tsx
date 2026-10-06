@@ -119,6 +119,30 @@ export async function Catalogue({ locale, practice }: CatalogueProps) {
   const basePath = localizedPath(locale, '/work')
 
   /*
+   * Two kinds of empty, and they need different words.
+   *
+   * A practice with nothing under it can point at the whole catalogue. The
+   * whole catalogue cannot point at itself — it said "Nothing in this practice
+   * yet … See all work", with no practice chosen and a button back to the same
+   * page. That is what the live site showed on 2026-10-05, before its dataset
+   * was readable (`docs/HANDOFF.md` §4.8, A4). Empty everywhere, it says so
+   * and sends the reader to the page that explains how the studio works.
+   */
+  const empty = practice
+    ? {
+        title: t('emptyTitle'),
+        body: t('emptyBody'),
+        action: t('emptyAction'),
+        href: basePath,
+      }
+    : {
+        title: t('emptyAllTitle'),
+        body: t('emptyAllBody'),
+        action: t('emptyAllAction'),
+        href: localizedPath(locale, '/studio'),
+      }
+
+  /*
    * The catalogue states what it contains — Tahap 38.
    *
    * `collectionPageSchema()` had been written, typed, exported and never
@@ -435,10 +459,10 @@ export async function Catalogue({ locale, practice }: CatalogueProps) {
            * different claim from "no work under it yet".
            */
           <div className={s.empty}>
-            <h2 className="h2">{t('emptyTitle')}</h2>
-            <p className={s.intro}>{t('emptyBody')}</p>
-            <Link href={basePath} className={s.emptyAction}>
-              {t('emptyAction')}
+            <h2 className="h2">{empty.title}</h2>
+            <p className={s.intro}>{empty.body}</p>
+            <Link href={empty.href} className={s.emptyAction}>
+              {empty.action}
             </Link>
           </div>
         )}

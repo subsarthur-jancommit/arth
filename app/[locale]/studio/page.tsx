@@ -583,6 +583,14 @@ export default async function StudioPage() {
           <p data-reveal-item className={cn('caption', s.eyebrow)}>
             {t('colophonEyebrow')}
           </p>
+          {/*
+            Before the facts, because it vouches for them: "Everything below is
+            accurate". It sat after the list, so "below" pointed at the closing
+            line instead (`docs/HANDOFF.md` §4.8, A7).
+          */}
+          <p data-reveal-item className={cn('caption', s.colophonNote)}>
+            {t('colophonNote')}
+          </p>
           <dl className={s.colophonList}>
             {(['built', 'type', 'colour', 'access'] as const).map((entry) => (
               <div className={s.colophonEntry} data-reveal-item key={entry}>
@@ -595,9 +603,6 @@ export default async function StudioPage() {
               </div>
             ))}
           </dl>
-          <p data-reveal-item className={cn('caption', s.colophonNote)}>
-            {t('colophonNote')}
-          </p>
         </Reveal>
 
         <Reveal as="section" className={s.closing}>
