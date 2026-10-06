@@ -4,6 +4,7 @@ import { draftMode } from 'next/headers'
 import { locale as localeRootParam } from 'next/root-params'
 
 import { Wrapper } from '@/components/layout/wrapper'
+import { Link } from '@/components/ui/link'
 import { SanityImage } from '@/components/ui/sanity-image'
 import {
   type JournalEntry,
@@ -19,6 +20,7 @@ import {
   projectsQuery,
 } from '@/lib/integrations/sanity/queries'
 import { toImageSource } from '@/lib/integrations/sanity/utils/image'
+import { FEED_PATH } from '@/lib/seo/atom-feed'
 import { JsonLd } from '@/lib/seo/json-ld'
 import { collectionPageSchema } from '@/lib/seo/schemas'
 import { SITE } from '@/lib/seo/site'
@@ -369,6 +371,25 @@ export default async function JournalPage() {
             }))}
           />
         )}
+
+        {/*
+          Following the journal — under everything else on the index, which is
+          where a reader decides to. The feed is per language
+          (`app/[locale]/journal/feed.xml`) and the page head announces it too
+          (`lib/seo/alternates.ts`). A link of its own, not inside a sentence,
+          and `prefetch={false}`: it is a document for a reader app, not a page
+          the router can render.
+        */}
+        <div className={s.follow}>
+          <Link
+            href={localizedPath(locale, FEED_PATH)}
+            type="application/atom+xml"
+            prefetch={false}
+            className={cn('caption', s.followLink)}
+          >
+            {t('follow')}
+          </Link>
+        </div>
       </div>
     </Wrapper>
   )

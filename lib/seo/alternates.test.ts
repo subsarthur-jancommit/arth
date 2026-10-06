@@ -71,6 +71,20 @@ describe('routeAlternates', () => {
     expect(alternates('/studio').languages).toBeUndefined()
   })
 
+  it("announces the journal's feed on the journal's pages, in their language", () => {
+    expect(alternates('/en/journal').types?.['application/atom+xml']).toEqual([
+      { url: '/en/journal/feed.xml', title: 'Arth — Journal' },
+    ])
+    expect(
+      alternates('/id/journal/scope-is-the-deliverable').types?.[
+        'application/atom+xml'
+      ]
+    ).toEqual([{ url: '/id/journal/feed.xml', title: 'Arth — Jurnal' }])
+    expect(alternates('/en/studio').types?.['application/atom+xml']).toBe(
+      undefined
+    )
+  })
+
   it('keeps the shared llms.txt alternate on every route', () => {
     // Regression guard for the exact bug alternates.ts documents: Next merges
     // metadata shallowly, so a route declaring its own `alternates` drops the

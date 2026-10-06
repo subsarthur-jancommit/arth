@@ -234,6 +234,7 @@
     "eyebrow": "Journal",
     "title": "Journal",
     "intro": "Notes on how the work gets scoped, decided and delivered. Method rather than announcements.",
+    "follow": "Follow the journal (Atom feed)",
     "nextEyebrow": "Next entry",
     "workInPractice": "Work in {practice}",
     "emptyTitle": "Nothing published here yet.",

@@ -369,6 +369,40 @@
   max-width: 52ch;
 }
 
+/* Following the journal: one link, last on the index. */
+.follow {
+  display: flex;
+}
+
+.followLink {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--tap-target);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration-line: none;
+  transition: color var(--duration-micro) var(--ease-out-quart);
+
+  @media (--hover) {
+    &:hover {
+      color: var(--color-secondary);
+      text-decoration-line: underline;
+    }
+  }
+
+  &:focus-visible {
+    color: var(--color-secondary);
+    text-decoration-line: underline;
+  }
+}
+
+@media (--reduced-motion) {
+  .followLink {
+    transition: none;
+  }
+}
+
 /*
  * Work from the row's practice — Tahap 44.
  *

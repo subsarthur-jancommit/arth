@@ -418,25 +418,30 @@ Yang bersih: tanpa overflow horizontal di semua lebar dan layar pendek, tanpa ko
 
 Buku besar. Status: `belum CI`, `CI hijau (run …, tally)`, atau `di-merge (hash)`. Kolom commit memuat subjek commit sampai CI hijau menggantinya dengan hash.
 
-| N    | rute            | butir                                                                | `data-epic`   | commit    | status                                                        |
-| ---- | --------------- | -------------------------------------------------------------------- | ------------- | --------- | ------------------------------------------------------------- |
-| 0.1  | —               | catatan: situs live, §5, §4.8, `CLAUDE.md` "Melihat hasil"           | —             | `acc50e2` | CI hijau (run 37373974853, 644 lulus · 29 dilewati · 0 gagal) |
-| 0.2  | —               | catatan audit visual (tabel di atas)                                 | —             | `63b6471` | CI hijau (run 37373974853, 644 lulus · 29 dilewati · 0 gagal) |
-| 0.3  | CI              | Lighthouse menemukan proyek Vercel lewat tautan Git (L8)             | —             | `1d42ac6` | CI hijau (run 37373974853, 644 lulus · 29 dilewati · 0 gagal) |
-| 0.4  | semua           | URL dasar dari domain produksi Vercel (L1)                           | —             | `0256db7` | CI hijau (run 37373974853, 644 lulus · 29 dilewati · 0 gagal) |
-| 0.5  | semua           | satu set hreflang, dari halaman (L5)                                 | —             | `c9c33a5` | CI hijau (run 37373974853, 644 lulus · 29 dilewati · 0 gagal) |
-| 0.6  | `/favicon.ico`  | dialihkan ke ikon (L4)                                               | —             | `00d11b1` | CI hijau (run 37373974853, 644 lulus · 29 dilewati · 0 gagal) |
-| 0.7  | `/practice/<v>` | breadcrumb di bawah header tetap (A1)                                | —             | `324e86e` | CI hijau (run 37373974853, 644 lulus · 29 dilewati · 0 gagal) |
-| 0.8  | semua           | footer menyisakan sudut chip kembali ke atas (A2)                    | `back-to-top` | `6305b3e` | CI hijau (run 37373974853, 644 lulus · 29 dilewati · 0 gagal) |
-| 0.9  | 404 tanpa JS    | jalan keluar di `<noscript>` (A3)                                    | —             | `09316bd` | CI hijau (run 37373974853, 644 lulus · 29 dilewati · 0 gagal) |
-| 0.10 | `/work`         | keadaan katalog kosong (A4)                                          | —             | `517eea0` | CI hijau (run 37373974853, 644 lulus · 29 dilewati · 0 gagal) |
-| 0.11 | `/`             | jarak paragraf pernyataan (A5)                                       | —             | `7b673e5` | CI hijau (run 37373974853, 644 lulus · 29 dilewati · 0 gagal) |
-| 0.12 | semua           | teks badan tanpa kata yatim (A6)                                     | —             | `4584e9f` | CI hijau (run 37373974853, 644 lulus · 29 dilewati · 0 gagal) |
-| 0.13 | `/studio`       | catatan kolofon sebelum daftarnya (A7)                               | —             | `d7bdc64` | CI hijau (run 37373974853, 644 lulus · 29 dilewati · 0 gagal) |
-| 0.14 | `/id/studio`    | kata kerja di lead Studio (L9)                                       | —             | `9a925e9` | CI hijau (run 37373974853, 644 lulus · 29 dilewati · 0 gagal) |
-| 0.15 | e2e             | pemeriksaan sudut chip menggulir sampai halaman benar-benar berakhir | `back-to-top` | `3c60b86` | CI hijau (run 37373974853, 644 lulus · 29 dilewati · 0 gagal) |
+| N    | rute                                    | butir                                                                | `data-epic`   | commit    | status                                                        |
+| ---- | --------------------------------------- | -------------------------------------------------------------------- | ------------- | --------- | ------------------------------------------------------------- |
+| 0.1  | —                                       | catatan: situs live, §5, §4.8, `CLAUDE.md` "Melihat hasil"           | —             | `acc50e2` | di-merge (`e38b413`)                                          |
+| 0.2  | —                                       | catatan audit visual (tabel di atas)                                 | —             | `63b6471` | di-merge (`e38b413`)                                          |
+| 0.3  | CI                                      | Lighthouse menemukan proyek Vercel lewat tautan Git (L8)             | —             | `1d42ac6` | di-merge (`e38b413`)                                          |
+| 0.4  | semua                                   | URL dasar dari domain produksi Vercel (L1)                           | —             | `0256db7` | di-merge (`e38b413`)                                          |
+| 0.5  | semua                                   | satu set hreflang, dari halaman (L5)                                 | —             | `c9c33a5` | di-merge (`e38b413`)                                          |
+| 0.6  | `/favicon.ico`                          | dialihkan ke ikon (L4)                                               | —             | `00d11b1` | di-merge (`e38b413`)                                          |
+| 0.7  | `/practice/<v>`                         | breadcrumb di bawah header tetap (A1)                                | —             | `324e86e` | di-merge (`e38b413`)                                          |
+| 0.8  | semua                                   | footer menyisakan sudut chip kembali ke atas (A2)                    | `back-to-top` | `6305b3e` | di-merge (`e38b413`)                                          |
+| 0.9  | 404 tanpa JS                            | jalan keluar di `<noscript>` (A3)                                    | —             | `09316bd` | di-merge (`e38b413`)                                          |
+| 0.10 | `/work`                                 | keadaan katalog kosong (A4)                                          | —             | `517eea0` | di-merge (`e38b413`)                                          |
+| 0.11 | `/`                                     | jarak paragraf pernyataan (A5)                                       | —             | `7b673e5` | di-merge (`e38b413`)                                          |
+| 0.12 | semua                                   | teks badan tanpa kata yatim (A6)                                     | —             | `4584e9f` | di-merge (`e38b413`)                                          |
+| 0.13 | `/studio`                               | catatan kolofon sebelum daftarnya (A7)                               | —             | `d7bdc64` | di-merge (`e38b413`)                                          |
+| 0.14 | `/id/studio`                            | kata kerja di lead Studio (L9)                                       | —             | `9a925e9` | di-merge (`e38b413`)                                          |
+| 0.15 | e2e                                     | pemeriksaan sudut chip menggulir sampai halaman benar-benar berakhir | `back-to-top` | `3c60b86` | di-merge (`e38b413`)                                          |
+| 1.1  | `/<l>/journal`, `/<l>/journal/feed.xml` | atom feed jurnal, diumumkan di `<head>` dan tautan di akhir indeks   | —             | `6257eda` | CI hijau (run 37374016613, 650 lulus · 29 dilewati · 0 gagal) |
+| 1.2  | `/sitemap.xml`                          | hreflang per URL dan `lastmod` yang jujur                            | —             | `9ab47cb` | CI hijau (run 37374016613, 650 lulus · 29 dilewati · 0 gagal) |
+| 1.3  | `/.well-known/security.txt`             | tempat melapor kerentanan (RFC 9116)                                 | —             | `7c42a4e` | CI hijau (run 37374016613, 650 lulus · 29 dilewati · 0 gagal) |
 
 CI batch 0: run pertama (37365273806) dan rerun-nya tidak mendapat runner GitHub untuk e2e. Karena itu e2e pertama yang menyentuh batch ini berjalan di PR batch 1 (run 37367097365, percobaan 2), dan di sana `back-to-top-clear` gagal di tiga rute. Perbaikannya baris 0.15, yang di-merge ke atas ke b1, b2, dan b3. Run 37373974853 hijau: e2e 644 lulus · 29 dilewati · 0 gagal, unit 535 lulus.
+
+CI batch 1: run 37367097365 tidak mendapat runner pada percobaan pertama. Pada percobaan kedua, e2e berjalan dan gagal hanya di `back-to-top-clear` (tes batch 0), sedangkan job `ci` kembali tidak mendapat runner. Sesudah perbaikan 0.15 di-merge (`daf3a0e`), run 37374016613 hijau: e2e 650 lulus · 29 dilewati · 0 gagal, unit 545 lulus. Lighthouse (run 37374016632) tidak mendapat runner; tanpa `VERCEL_TOKEN` ia memang melewati dirinya, jadi dicatat sebagai infra.
 
 ## 5. Utang yang dibawa — keputusan pemilik repo
 
