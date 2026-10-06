@@ -101,6 +101,27 @@ export interface ArticleSchema {
   author?: ArticleAuthor
 }
 
+interface CreativeWorkTopic {
+  '@type': 'Thing'
+  name: string
+}
+
+export interface CreativeWorkSchema {
+  '@context': 'https://schema.org'
+  '@type': 'CreativeWork'
+  name: string
+  url: string
+  inLanguage: string
+  creator: { '@id': string }
+  isPartOf: { '@id': string }
+  description?: string
+  image?: string
+  dateCreated?: string
+  datePublished?: string
+  dateModified?: string
+  about?: CreativeWorkTopic
+}
+
 /** The union every JSON-LD node builder here can produce; `JsonLd` renders any of them. */
 export type JsonLdSchema =
   | OrganizationSchema
@@ -108,6 +129,7 @@ export type JsonLdSchema =
   | BreadcrumbListSchema
   | CollectionPageSchema
   | ArticleSchema
+  | CreativeWorkSchema
 
 /**
  * The Organization node, stated in one language.
@@ -229,6 +251,59 @@ export interface ArticleSchemaInput {
   datePublished?: string
   dateModified?: string
   authorName?: string
+}
+
+export interface CreativeWorkSchemaInput {
+  name: string
+  /** Absolute — see `collectionPageSchema`. */
+  url: string
+  /** BCP 47, the page's own language (`LOCALE_TAGS`). */
+  inLanguage: string
+  description?: string | undefined
+  /** Absolute, the work's own image. */
+  image?: string | undefined
+  /** The year the work is dated, as the case's facts give it. */
+  year?: number | undefined
+  datePublished?: string | undefined
+  dateModified?: string | undefined
+  /** The practice it was made under, named in the page's language. */
+  practice?: string | undefined
+}
+
+/**
+ * One commissioned work, as `CreativeWork` — after the site went live
+ * (`docs/HANDOFF.md` §4.8, 4.2).
+ *
+ * A case page told a crawler it was a page with a breadcrumb trail, and
+ * nothing about the work on it: not that it is a work, who made it, when, or
+ * under which practice. Every field comes from what the page already
+ * fetches, and the creator is the studio's own `Organization` node by `@id`,
+ * so the work and the studio are one graph rather than two strangers.
+ *
+ * A year is a valid ISO 8601 date on its own, and it is all most cases
+ * carry, so `dateCreated` is the year as written rather than an invented day.
+ */
+export function creativeWorkSchema(
+  input: CreativeWorkSchemaInput
+): CreativeWorkSchema {
+  const schema: CreativeWorkSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: input.name,
+    url: input.url,
+    inLanguage: input.inLanguage,
+    creator: { '@id': ORGANIZATION_ID },
+    isPartOf: { '@id': WEBSITE_ID },
+  }
+
+  if (input.description) schema.description = input.description
+  if (input.image) schema.image = input.image
+  if (input.year !== undefined) schema.dateCreated = String(input.year)
+  if (input.datePublished) schema.datePublished = input.datePublished
+  if (input.dateModified) schema.dateModified = input.dateModified
+  if (input.practice) schema.about = { '@type': 'Thing', name: input.practice }
+
+  return schema
 }
 
 export function articleSchema(input: ArticleSchemaInput): ArticleSchema {
