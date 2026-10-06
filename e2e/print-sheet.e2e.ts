@@ -31,6 +31,8 @@ async function readThenPrint(page: Page, path: string) {
       await new Promise((resolve) => setTimeout(resolve, 40))
     }
   })
+  // Printed straight after reading, while the last reveals are still under
+  // way: the sheet, not a pause, is what has to settle them.
   await page.emulateMedia({ media: 'print' })
 }
 

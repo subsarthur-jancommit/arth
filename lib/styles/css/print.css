@@ -25,6 +25,18 @@
  * Moved here from `global.css` when it grew.
  */
 @media print {
+  /*
+   * Nothing moves on paper. A page switched to print mid-reveal would
+   * otherwise animate from where the screen left a part to where paper wants
+   * it, and print whatever frame it had reached.
+   */
+  *,
+  *::before,
+  *::after {
+    /* motion-exempt: on paper this only turns transitions off. */
+    transition: none !important;
+  }
+
   :is(header, footer):not(main *),
   [data-page-transition],
   [data-curtain],
