@@ -161,8 +161,14 @@ Pemilik boleh merge sendiri di GitHub; ruleset di §5 tetap berlaku untuknya.
    untuk PR lain bukan izin merge.
 3. Merge ketika `ci` atau `e2e` merah, masih berjalan, dibatalkan, atau hijau
    pada SHA lain.
-4. `[skip ci]`, `[ci skip]`, atau sejenisnya di commit mana pun yang menuju
-   `main`.
+4. `[skip ci]`, `[ci skip]`, `[no ci]`, `[skip actions]`, `[actions skip]`,
+   atau trailer `skip-checks: true` di pesan commit mana pun yang menuju
+   `main` — **termasuk sekadar menyebutnya di badan pesan.** GitHub mencari
+   string itu di seluruh pesan commit head, bukan hanya di judulnya. Diukur
+   2026-10-07: commit pertama PR #10 (`aac63ed`) menyebut `[skip ci]` di badan
+   pesannya untuk menjelaskan larangan ini, dan tidak satu pun workflow
+   berjalan untuk PR itu; pesannya lalu diperbaiki. Kalau perlu menyebutnya
+   di pesan commit, tulis tanpa kurung siku.
 5. Mematikan, melewati, atau mengkarantina tes; membuat commit kosong atau
    menutup lalu membuka PR untuk memicu CI.
 6. Mengubah `.github/workflows/` supaya sebuah check lolos. Setiap perubahan
