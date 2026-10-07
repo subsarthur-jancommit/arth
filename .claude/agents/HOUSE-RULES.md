@@ -46,6 +46,12 @@ daripada 30 yang dicampur nit.
 
 ## 5. Perintah yang dipakai
 
+**Di sesi cloud, `docs/PROSEDUR-KERJA.md` §2–§3 yang berlaku:** `bun run check`,
+satu `bun run build` bila perubahan menyentuh tampilan, tanpa server yang
+dibiarkan menyala, dan e2e hanya di CI. Diukur 2026-10-07: Chromium yang
+dibutuhkan `playwright-core` 1.62.1 (`chromium-1234`) tidak ada di sesi, hanya
+`chromium-1194`. Daftar di bawah untuk mesin lokal pemilik.
+
 ```bash
 bun run check              # oxlint, oxfmt, type-aware, tsc, unit, aset
 bun run build              # build produksi
