@@ -178,13 +178,13 @@ sekali:
 Bukan aturan teknis — itu ada di `CLAUDE.md` dan `AGENTS.md`. Ini **cara
 menjalankan pekerjaannya**, diminta pemilik repo dan masih berlaku:
 
-| aturan                                  | maksudnya                                                                                                  |
-| --------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| **Satu pekerjaan penuh, sampai tuntas** | Kode, lalu **semua** gerbang, lalu commit dan push. Spec-sebelum-kode dilepas fork                         |
-| **Jangan menunggu persetujuan**         | Lanjut ke tahap berikutnya sendiri. Berhenti hanya kalau ada keputusan yang benar-benar milik pemilik repo |
-| **Nol konten karangan**                 | Tidak ada nama klien, entri, atau angka yang tidak berasal dari sumber yang sudah ada                      |
-| **Katakan yang gagal atau dilewati**    | `CLAUDE.md` #21. Mempersempit ruang lingkup diam-diam lebih buruk daripada gagal terbuka                   |
-| **Kerjakan sendiri**                    | Pemilik repo meminta pekerjaan dilakukan agen utama, bukan didelegasikan ke sub-agen                       |
+| aturan                                  | maksudnya                                                                                                                                                                  |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Satu pekerjaan penuh, sampai tuntas** | Kode, lalu **semua** gerbang, lalu commit dan push. Spec-sebelum-kode dilepas fork                                                                                         |
+| **Jangan menunggu persetujuan**         | Lanjut ke tahap berikutnya sendiri. Berhenti hanya kalau ada keputusan yang benar-benar milik pemilik repo. Merge ke `main` adalah keputusan itu: `docs/PROSEDUR-KERJA.md` |
+| **Nol konten karangan**                 | Tidak ada nama klien, entri, atau angka yang tidak berasal dari sumber yang sudah ada                                                                                      |
+| **Katakan yang gagal atau dilewati**    | `CLAUDE.md` #21. Mempersempit ruang lingkup diam-diam lebih buruk daripada gagal terbuka                                                                                   |
+| **Kerjakan sendiri**                    | Pemilik repo meminta pekerjaan dilakukan agen utama, bukan didelegasikan ke sub-agen                                                                                       |
 
 ### 3.1 Dua aturan yang tahap-tahap terakhir bayar mahal untuk pelajari
 
@@ -388,7 +388,9 @@ Cara kerja yang berlaku di bagian ini:
 
 - Satu PR per batch, bertumpuk: batch 0 di `claude/live-dev` (base `main`), batch N di `claude/live-dev-bN` (dari ujung batch sebelumnya, base = branch batch sebelumnya). Tanpa rebase.
 - Merge hanya atas pesan pemilik "ok batch N", hanya dengan merge commit, dan hanya bila CI hijau pada commit kode terakhir batch itu.
+  **Diganti 2026-10-07 oleh `docs/PROSEDUR-KERJA.md`.** "Commit kode terakhir" ternyata celah: PR #8 dan #9 di-merge pada head `672923d` dan `187614b`, commit buku besar `[skip ci]` yang tidak pernah dijalankan CI-nya. Kini CI harus hijau pada head SHA yang di-merge, izin berbunyi `ok merge #<n>`, dan `[skip ci]` dilarang pada commit yang menuju `main`.
 - CI di GitHub Actions saja; hasil dilihat lewat preview Vercel per PR dan produksi. Tanpa build, dev server, atau suite e2e lokal; pratinjau lokal tidak dinyalakan.
+  **Dikoreksi 2026-10-07:** satu build produksi kini boleh di sesi bila perubahan menyentuh tampilan (`docs/PROSEDUR-KERJA.md` §3). Dev server dan e2e tetap tidak.
 - Kredensial dicatat di §5 dan tidak diulang di sini.
 
 Batch yang direncanakan:

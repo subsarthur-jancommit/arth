@@ -15,16 +15,17 @@ boldly. The layer that used to decide in advance how much a page could do —
 budgets, quotas, token-only vocabulary, mandatory rituals — is gone. What is
 left is short, and every line of it protects a reader or keeps a claim honest.
 
-| Document                                           | Covers                                                                |
-| -------------------------------------------------- | --------------------------------------------------------------------- |
-| [`docs/FORK.md`](./docs/FORK.md)                   | **What this fork removed, what it kept, and why.** Read this first.   |
-| [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md)       | Shipping it. Env vars, hosts, and the security checklist.             |
-| [`docs/PROVENANCE.md`](./docs/PROVENANCE.md)       | Licensing. Read before copying anything.                              |
-| [`docs/MOTION-SPEC.md`](./docs/MOTION-SPEC.md)     | How existing motion was built. Reference, not law.                    |
-| [`docs/DESIGN-SYSTEM.md`](./docs/DESIGN-SYSTEM.md) | The tokens that exist. A default idiom, not a requirement.            |
-| [`docs/TEARDOWN.md`](./docs/TEARDOWN.md)           | Measured evidence from ten award sites. Inspiration, not a ceiling.   |
-| [`docs/stages/`](./docs/stages/)                   | The history of the first hundred stages. Archive; no longer added to. |
-| [`references/`](./references/)                     | Architecture notes on code we may **not** copy.                       |
+| Document                                             | Covers                                                                                             |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| [`docs/FORK.md`](./docs/FORK.md)                     | **What this fork removed, what it kept, and why.** Read this first.                                |
+| [`docs/PROSEDUR-KERJA.md`](./docs/PROSEDUR-KERJA.md) | **Binding.** Branch → PR → CI → merge → production, and credentials. Read before the first commit. |
+| [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md)         | Shipping it. Env vars, hosts, and the security checklist.                                          |
+| [`docs/PROVENANCE.md`](./docs/PROVENANCE.md)         | Licensing. Read before copying anything.                                                           |
+| [`docs/MOTION-SPEC.md`](./docs/MOTION-SPEC.md)       | How existing motion was built. Reference, not law.                                                 |
+| [`docs/DESIGN-SYSTEM.md`](./docs/DESIGN-SYSTEM.md)   | The tokens that exist. A default idiom, not a requirement.                                         |
+| [`docs/TEARDOWN.md`](./docs/TEARDOWN.md)             | Measured evidence from ten award sites. Inspiration, not a ceiling.                                |
+| [`docs/stages/`](./docs/stages/)                     | The history of the first hundred stages. Archive; no longer added to.                              |
+| [`references/`](./references/)                       | Architecture notes on code we may **not** copy.                                                    |
 
 Two design skills are vendored at `.claude/skills/` (`ui-ux-pro-max`,
 `taste-skill`). They are curated assets and they stay. **Consulting them is
@@ -92,6 +93,29 @@ so a gap in the numbering is deliberate.
 21. **If something was skipped or failed, say so explicitly** rather than
     quietly narrowing scope.
 
+### Merge and production
+
+Added 2026-10-07. Every merge to `main` is live on the site within minutes, and
+until the owner turns on the ruleset in its §5, nothing on GitHub stops a
+broken one. The procedure, its evidence and that one-time setup are in
+[`docs/PROSEDUR-KERJA.md`](./docs/PROSEDUR-KERJA.md).
+
+22. **Nothing reaches `main` except a pull request** whose `ci` and `e2e`
+    checks are green on the exact head SHA being merged. No direct push, no
+    force-push, and no `[skip ci]` on a commit headed for `main`.
+23. **Merge only on the owner's `ok merge #<n>`**, given for that PR at its
+    reported head SHA. Any later commit voids it, except a conflict-free merge
+    of the latest `main`, which still needs green CI on the new head.
+24. **Verify production after every merge** — the deployment for the merge
+    SHA is READY and the smoke checks pass — and report it. Never promote, roll
+    back or redeploy on Vercel; propose it to the owner.
+25. **Never change GitHub, Vercel or Sanity settings, and never write to
+    Sanity** outside the procedure's §6. Never print a secret's value; its name
+    and "set" or "not set" are enough.
+26. **The session runs Bun 1.3.5**, the `packageManager` in `package.json`. If
+    `bun --version` says otherwise, stop: another Bun lays out `node_modules`
+    differently and `tsc` fails.
+
 ### Retired in the fork
 
 Kept here only so that an old citation still resolves. None of these is a
@@ -149,12 +173,16 @@ The site is live at <https://arth-test-01.vercel.app>, and production is
 `main`. Work is looked at there, not on a local build:
 
 - **Per PR:** the Vercel preview for the PR (a `vercel[bot]` deployment, or its
-  comment). It can sit behind Vercel's login, in which case only the owner can
-  open it.
+  comment). Every preview URL sits behind Vercel's login — measured
+  2026-10-07, each answers `302` to `vercel.com/sso-api` — so the owner is the
+  one who opens it.
 - **Production:** the URL above, public. To see which commit is live, ask the
   deployments API: `gh api repos/subsarthur-jancommit/arth/deployments`.
-- **No local build, dev server, or e2e suite.** CI on GitHub Actions is the one
-  place `bun run build` and `bunx playwright test` run. Locally: `bun test`,
-  oxlint, `oxfmt --check`, `tsc --noEmit`. The local preview is not started.
+- **No dev server and no local e2e suite.** CI on GitHub Actions is the one
+  place `bunx playwright test` runs. In the session: `bun run check`, and one
+  `bun run build` when a change touches rendering (`docs/PROSEDUR-KERJA.md`
+  §3). Measured in the cloud session on 2026-10-07: the build takes 66 s and
+  about 4.5 GB of memory at its peak on a 15 GB machine. Nothing is left
+  running.
 - **Screenshots** of the live site: one headless Chromium, sequential, saved
   outside the repository.
