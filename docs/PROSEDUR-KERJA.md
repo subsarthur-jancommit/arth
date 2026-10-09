@@ -258,6 +258,13 @@ Administrator, dan `NEXT_PUBLIC_SANITY_API_READ_TOKEN`.
 5. Pemilik mencabut token di sanity.io/manage → API → Tokens dan menghapus
    variabelnya dari environment.
 
+**Lewat konektor Sanity (MCP).** Pemilik menerima, pada 2026-10-09, bahwa sesi
+memakai konektor Sanity yang login sebagai akun manusianya, dengan seluruh hak
+akun itu. Membaca lewatnya bebas. Menulis lewatnya — membuat, mengubah,
+menerbitkan, membuang draft, deploy skema atau Studio, CORS, dataset — memakai
+langkah 2–4 di atas; langkah 1 dan 5 tidak berlaku karena tidak ada token yang
+dibuat atau dicabut.
+
 Penghapusan (`delete`, `--clean`, menghapus aset atau dataset) selalu disebut
 terpisah dalam rencana, dan butuh izin yang menyebutnya.
 
