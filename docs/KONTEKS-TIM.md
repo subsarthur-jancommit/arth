@@ -173,8 +173,29 @@ Dua hal yang paling mudah membuat kamu bingung, jadi disebut terang-terangan:
   ada delapan dokumen `project` yang memakainya — jadi F2-02 yang mengganti
   nama medan **bersama** datanya. Jangan ganti separuh.
 
-Daftar lengkap apa yang dilewati di PR ini ada di deskripsi PR-nya dan di
-`PROGRES-ARTHUR.md`.
+Daftar lengkap apa yang dilewati ada di deskripsi [PR #14](https://github.com/subsarthur-jancommit/arth/pull/14)
+dan di `PROGRES-ARTHUR.md`.
+
+### Satu peringatan praktis untuk penggantian kosakata berikutnya
+
+F1-04 sampai F1-06 akan mengganti kosakata lagi (sisi, navigasi). Penggantian
+`practices` → `units` menghasilkan **sebelas kegagalan e2e** yang
+`bun run check` tidak bisa lihat sama sekali. Tiga hal yang tidak dijaga tipe,
+dan yang sebaiknya kamu grep sendiri sebelum push:
+
+1. **Kunci query.** `?practice=` → `?unit=` tertulis di dokumen dan tidak
+   diimplementasikan di `app/[locale]/work/page.tsx`. Kunci query yang tidak
+   ada hanya bernilai `undefined`, jadi penyaringnya diam-diam mati.
+2. **Ejaan kedua sebuah segmen.** `/en/practice` menjawab 410, `/id/praktik`
+   menjawab 404, karena hanya ejaan Inggris yang terdaftar.
+3. **Berkas `loading.tsx`.** Memindahkannya ikut memindahkan `<noscript>`
+   jalan keluar di `components/ui/route-loading` — diukur di build: rute 404
+   dalam chrome tinggal 1657 bita HTML tanpa judul maupun tautan.
+
+Dan yang paling penting: **empat belas spesifikasi `e2e/` menunjuk rute
+praktik tanpa mengimpor modulnya**, jadi `tsc` tidak punya apa pun untuk
+dikatakan. Grep nilai lama di seluruh `e2e/`, bukan hanya ikuti galat
+typecheck. Rinciannya di `PROGRES-ARTHUR.md` U18.
 
 ---
 

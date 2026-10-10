@@ -35,9 +35,9 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 | ------------------------------------- | --- | --------- | ---------------- | ---------------------------------------------------------------------------------------------------- |
 | F0-01 Noindex selama dummy            | #12 | `2491472` | **Selesai**      | Pengecualian domain dibangun tapi daftarnya kosong (lihat U3); lokasinya pindah dari `proxy.ts` (U4) |
 | F0-07 Dokumen repo diselaraskan       | #13 | `45f220b` | **Selesai**      | FORK.md tidak disunting (U1); `ROADMAP.md` dan `docs/stages/` tidak disentuh (U8)                    |
-| F1-01 Merek Arthur dari satu sumber   | #14 | —         | PR siap tinjau   | Prosa `SITE` dan `home-fallback` ikut dibereskan di F1-02 (U11)                                      |
-| F1-02 Tiga unit menggantikan praktik  | #14 | —         | PR siap tinjau   | Medan Sanity masih bernama `practice` (U12); rute/sitemap mendarat bersama F1-03 (U13)               |
-| F1-03 Rute unit                       | #14 | —         | PR siap tinjau   | Halaman CMS pindah ke `/halaman/<slug>` (U14); tiga gerbang e2e melemah (U15)                        |
+| F1-01 Merek Arthur dari satu sumber   | #14 | `a052ace` | **Selesai**      | Prosa `SITE` dan `home-fallback` ikut dibereskan di F1-02 (U11)                                      |
+| F1-02 Tiga unit menggantikan praktik  | #14 | `a052ace` | **Selesai**      | Medan Sanity masih bernama `practice` (U12); `?practice=` → `?unit=` tanpa pengalih (U13)            |
+| F1-03 Rute unit                       | #14 | `a052ace` | **Selesai**      | Halaman CMS pindah ke `/halaman/<slug>` (U14); tiga gerbang e2e melemah (U15)                        |
 | F0-02 Uji terbit menampilkan isi baru | —   | —         | Belum mulai      | Bergantung F0-06                                                                                     |
 | F0-03 Token produksi hanya Viewer     | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                                      |
 | F0-04 Token dev dicabut               | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                                         |
@@ -62,6 +62,29 @@ itu READY; uji asap §3 langkah 9 lulus (`/` → `/en`, `/en` dan `/id` 200,
 noindex, nofollow` terbit di `/`, `/id`, `/robots.txt`, `/sitemap.xml`,
 `/icon.png` dan `/en/journal/feed.xml`; `robots.txt` produksi menolak kedelapan
 perayap AI dan tetap `Allow: /` untuk `*`; meta robots ada di `/id`.
+
+**Verifikasi produksi F1-01/F1-02/F1-03**, diukur 2026-10-10 sesudah merge
+`a052ace` pada domain publik. CI `push` di `main` hijau (`ci` dan `e2e`);
+deployment Production untuk SHA itu `success`. Uji asap §3 langkah 9, diperluas
+dengan status-status baru paket ini:
+
+| Diminta                                                   | Jawaban                                   |
+| --------------------------------------------------------- | ----------------------------------------- |
+| `/`                                                       | 307 → `/en` (masih `/en` sampai F1-07)    |
+| `/en`, `/id`                                              | 200                                       |
+| `/{en,id}/konstruksi`, `/teknologi`, `/peekabo`           | 200, keenamnya                            |
+| `/en/practice`, `/id/praktik`                             | **410**                                   |
+| `/en/practice/consulting`, `/en/work/practice/commission` | **410**                                   |
+| `/en/no-such-page-here`, `/id/tidak-ada`                  | **404**                                   |
+| `/en/halaman`                                             | 404 (tidak ada dokumen `page` di dataset) |
+| `/en/work`, `/cms`, `/robots.txt`, `/sitemap.xml`         | 200                                       |
+
+Isi yang diperiksa, bukan hanya statusnya: halaman unit membawa
+`data-sample-content` dan satu `PERLU PEMILIK`; halaman 410 adalah dokumen
+lengkap (`<!doctype html>`) yang memuat wordmark Arthur, angka `410`, ketiga
+tautan unit, dan `noindex, nofollow`; `X-Robots-Tag: noindex, nofollow` masih
+terbit; dan `sitemap.xml` memuat keenam URL unit dan **tidak satu pun**
+`/practice/`.
 
 ## Utang dokumen
 
@@ -234,3 +257,33 @@ Bandung. "Worldwide" karenanya klaim yang salah hari ini. Tidak diubah di sini
 karena **F2-01** yang memiliki medan wilayah (diedit di Studio lewat
 `siteSettings`), dan memindahkannya sekarang berarti menuliskannya dua kali.
 Seluruh situs `noindex`, jadi tidak ada mesin yang sedang memakainya.
+
+**U18 — dua setengah dari kosakata lolos `typecheck` dan hanya CI yang
+menangkapnya.** Dicatat karena F1-04 sampai F1-06 akan mengganti kosakata
+lagi, dan ini bentuk cacat yang akan terulang.
+
+Penggantian `practices` → `units` di F1-02/F1-03 menghasilkan sebelas
+kegagalan e2e yang `bun run check` tidak bisa lihat, dari empat sebab:
+
+1. **`?practice=` → `?unit=` ditulis di dokumen dan tidak diimplementasikan.**
+   `app/[locale]/work/page.tsx` masih mendestruktur `practice` dari
+   `searchParams` dan `hrefs.ts` masih menyusun `?practice=`. Tidak ada tipe
+   yang dilanggar — sebuah kunci query yang tidak ada hanya bernilai
+   `undefined` — jadi katalog diam-diam jatuh ke keadaan "tanpa penyaring".
+2. **Ejaan Indonesia sebuah rute pensiun terlewat.** `/en/practice` menjawab
+   410 sementara `/id/praktik` menjawab 404, karena `GONE_PREFIXES` hanya
+   memuat ejaan Inggris.
+3. **Keputusan isi yang benar menghapus sebuah lapisan visual.** Mencatat
+   entri jurnal contoh di bawah "tidak ada unit" (U16) membuat
+   `coversByPractice` kehilangan kolamnya, dan setiap baris `/en/journal`
+   kehilangan gambarnya.
+4. **Memindahkan `loading.tsx` ikut memindahkan jalan keluar tanpa
+   JavaScript.** Diukur di build: tanpa berkas itu rute 404 dalam chrome
+   menjawab `status: 404` asli tapi hanya 1657 bita HTML, tanpa judul, tautan,
+   atau teks 404.
+
+Pelajaran yang berlaku untuk paket berikutnya: **kunci query, ejaan kedua
+sebuah segmen, dan berkas `loading.tsx` tidak dijaga tipe.** Grep untuk nilai
+lamanya di seluruh `e2e/` sebelum push — empat belas spesifikasi menunjuk rute
+praktik dan tidak satu pun mengimpor modulnya, jadi `tsc` tidak punya apa pun
+untuk dikatakan tentang mereka.
