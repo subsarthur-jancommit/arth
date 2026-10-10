@@ -93,7 +93,7 @@ export const UNIT_STUDIO_TITLES = {
 /** Every side across every unit, for a sweep that does not care which unit. */
 export const ALL_SIDES = UNITS.flatMap((unit) => SIDES[unit]) as readonly Side[]
 
-export function isSideOf(unit: Unit, value: string | undefined): boolean {
+export function isSideOf(unit: Unit, value: string | undefined): value is Side {
   return (
     value !== undefined && (SIDES[unit] as readonly string[]).includes(value)
   )

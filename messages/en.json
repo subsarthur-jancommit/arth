@@ -154,11 +154,36 @@
     "statementNeed": "the statement for this unit",
     "statementExample": "e.g. \"one paragraph on what this unit takes on\"",
     "metaDescription": "One of the three units Arthur is read by.",
+    "sidesLabel": "The two sides of {unit}",
     "othersLabel": "The other units"
+  },
+  "side": {
+    "eyebrow": "{unit} side",
+    "pelaku-proyek": "People running a project",
+    "pemilik-bangunan": "Building owners",
+    "siap-pakai": "Ready to use",
+    "paham-teknis": "Technically fluent",
+    "pemilik-usaha": "Business owners",
+    "jaringan": "The seller network",
+    "orientation": "{side} is one of the two sides of the {unit} unit.",
+    "problemTitle": "What the reader is facing",
+    "problemNeed": "the main problem for a reader on this side",
+    "problemExample": "e.g. \"one decision they are trying to make\"",
+    "answerTitle": "What could answer it",
+    "answerNeed": "the form of help that answers that problem",
+    "answerExample": "e.g. \"an offer name and the change it works toward\"",
+    "firstStepTitle": "The first step",
+    "firstStepNeed": "a light first step",
+    "firstStepExample": "e.g. \"one initial action a reader could choose\"",
+    "navigationLabel": "Explore the {unit} unit",
+    "otherLabel": "The other side of {unit}",
+    "backToUnit": "Back to {unit}",
+    "metaDescription": "{side} is one of the two sides of Arthur's {unit} unit."
   },
   "sample": {
     "label": "Sample content",
-    "unitNote": "The unit statement is written once the content type exists to hold it. Nothing here is a claim."
+    "unitNote": "The unit statement is written once the content type exists to hold it. Nothing here is a claim.",
+    "sideNote": "This side does not state Arthur's position yet. Its words will come from an approved source once the side content type exists."
   },
   "studio": {
     "eyebrow": "Studio",

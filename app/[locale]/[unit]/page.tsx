@@ -9,7 +9,13 @@ import { Link } from '@/components/ui/link'
 import { SampleContent } from '@/components/ui/sample-content'
 import { SectionHeader } from '@/components/ui/section-header'
 import { ownerPlaceholder } from '@/lib/content/sample-content'
-import { isUnit, UNITS, unitTemplate } from '@/lib/content/units'
+import {
+  isUnit,
+  SIDES,
+  sideTemplate,
+  UNITS,
+  unitTemplate,
+} from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { transitionName } from '@/lib/motion/transition-name'
@@ -53,8 +59,11 @@ import s from './page.module.css'
  * inventing a claim about a business, which is the one thing the rules refuse
  * outright. A placeholder says the same thing honestly.
  *
- * The two sides of each unit are not linked yet either: their pages are F1-04,
- * and a link to a page that does not answer is worse than no link.
+ * The two sides and the other two units are linked. That is not offer copy —
+ * it is the route structure the scaffold exists to prove, and the only way
+ * off this page that is not the browser's back button. The side links begin
+ * the message hierarchy honestly: they name the reader's vantage point but
+ * make no claim about what Arthur offers them.
  *
  * The other two units **are** linked, and that is not content — it is the
  * only way off this page that is not the browser's back button. A scaffold
@@ -84,8 +93,9 @@ export default async function UnitPage({ params }: UnitPageProps) {
 
   if (!isUnit(unit)) notFound()
 
-  const [t, tSample] = await Promise.all([
+  const [t, tSide, tSample] = await Promise.all([
     getTranslations('unit'),
+    getTranslations('side'),
     getTranslations('sample'),
   ])
 
@@ -120,6 +130,23 @@ export default async function UnitPage({ params }: UnitPageProps) {
             {ownerPlaceholder(t('statementNeed'), t('statementExample'))}
           </p>
         </SampleContent>
+
+        <nav
+          aria-label={t('sidesLabel', { unit: t(unit) })}
+          className={s.others}
+        >
+          {SIDES[unit].map((side) => (
+            <Link
+              key={side}
+              href={sideTemplate(unit, side)}
+              className={cn('caption', s.other)}
+              data-press="chip"
+              data-intent=""
+            >
+              {tSide(side)}
+            </Link>
+          ))}
+        </nav>
 
         <nav aria-label={t('othersLabel')} className={s.others}>
           {UNITS.filter((other) => other !== unit).map((other) => (

@@ -154,11 +154,36 @@
     "statementNeed": "pernyataan untuk unit ini",
     "statementExample": "misalnya \"satu paragraf tentang yang dikerjakan unit ini\"",
     "metaDescription": "Satu dari tiga unit yang membaca Arthur.",
+    "sidesLabel": "Dua sisi {unit}",
     "othersLabel": "Unit lainnya"
+  },
+  "side": {
+    "eyebrow": "Sisi {unit}",
+    "pelaku-proyek": "Pelaku proyek",
+    "pemilik-bangunan": "Pemilik bangunan",
+    "siap-pakai": "Siap pakai",
+    "paham-teknis": "Paham teknis",
+    "pemilik-usaha": "Pemilik usaha",
+    "jaringan": "Jaringan penjual",
+    "orientation": "{side} adalah satu dari dua cara membaca unit {unit}.",
+    "problemTitle": "Yang sedang dihadapi",
+    "problemNeed": "masalah utama pembaca dari sisi ini",
+    "problemExample": "misalnya \"satu keputusan yang sedang mereka hadapi\"",
+    "answerTitle": "Yang dapat menjawabnya",
+    "answerNeed": "bentuk bantuan yang menjawab masalah itu",
+    "answerExample": "misalnya \"nama offer dan perubahan yang diupayakan\"",
+    "firstStepTitle": "Langkah pertama",
+    "firstStepNeed": "langkah pertama yang ringan",
+    "firstStepExample": "misalnya \"satu tindakan awal yang dapat dipilih\"",
+    "navigationLabel": "Jelajahi unit {unit}",
+    "otherLabel": "Sisi lain di {unit}",
+    "backToUnit": "Kembali ke {unit}",
+    "metaDescription": "{side} adalah satu dari dua sisi unit {unit} milik Arthur."
   },
   "sample": {
     "label": "Isi contoh",
-    "unitNote": "Pernyataan unit ditulis setelah ada tipe isi yang menyimpannya. Tidak ada klaim di sini."
+    "unitNote": "Pernyataan unit ditulis setelah ada tipe isi yang menyimpannya. Tidak ada klaim di sini.",
+    "sideNote": "Isi sisi ini belum menjadi pernyataan Arthur. Kata-katanya akan ditulis dari sumber yang disetujui setelah tipe isi sisi tersedia."
   },
   "studio": {
     "eyebrow": "Studio",

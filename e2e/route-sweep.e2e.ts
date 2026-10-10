@@ -5,7 +5,7 @@ import AxeBuilder from '@axe-core/playwright'
 import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
-import { UNITS } from '../lib/content/units'
+import { SIDES, type Unit, UNITS } from '../lib/content/units'
 import { routing } from '../lib/i18n/routing'
 import { axeTags } from './axe-tags'
 
@@ -94,9 +94,13 @@ function findPageFiles(dir: string, base = dir): string[] {
  * segment, so a route that stopped answering would otherwise be invisible
  * here and caught only by `proxy.ts` answering it `404`.
  *
+ * `[side]` is expanded from the unit already present in that path. That
+ * relationship is essential: a Cartesian product would invent twelve URLs
+ * such as `/teknologi/pelaku-proyek` that are intentionally invalid.
+ *
  * Other dynamic segments (`[slug]`, `[...slug]`) are still skipped: they need
  * fixture data to render meaningfully and belong in a dedicated spec —
- * `e2e/unit-page.e2e.ts` is the unit pages' own, beyond this smoke.
+ * `e2e/unit-page.e2e.ts` and `e2e/side-page.e2e.ts` go beyond this smoke.
  */
 function toRoutes(relativePagePath: string): string[] {
   // path.join produces `\` separators on Windows; split on both so the
@@ -106,17 +110,12 @@ function toRoutes(relativePagePath: string): string[] {
     .filter((segment) => segment.length > 0 && segment !== 'page.tsx')
 
   /*
-   * The dynamic segments this sweep knows how to expand, and what into.
-   *
-   * Keyed by the directory name so the table reads as the filesystem does.
-   * Anything dynamic and absent from it is still skipped wholesale.
+   * The dynamic segments this sweep knows how to expand, named exactly as
+   * their directories are. Anything dynamic and absent is skipped wholesale.
    */
-  const EXPANDABLE = {
-    '[locale]': routing.locales,
-    '[unit]': UNITS,
-  } satisfies Record<string, readonly string[]>
+  const EXPANDABLE = new Set(['[locale]', '[unit]', '[side]'])
 
-  const isExpandable = (segment: string) => segment in EXPANDABLE
+  const isExpandable = (segment: string) => EXPANDABLE.has(segment)
 
   if (
     segments.some((segment) => segment.includes('[') && !isExpandable(segment))
@@ -129,27 +128,55 @@ function toRoutes(relativePagePath: string): string[] {
   )
 
   /*
-   * Every combination of the expandable segments, in path order.
-   *
-   * A fold rather than the nested `routing.locales.map` this used to be:
-   * with two expandable segments the old shape would have had to nest, and
-   * with three it would have had to nest again. The fold takes any number,
-   * so `[side]` joining the table in F1-04 is one line there and none here.
+   * Every valid combination of the expandable segments, in path order.
+   * The expansion carries the selected unit so `[side]` can read only that
+   * unit's tuple rather than every side in the site.
    */
+  interface Expansion {
+    path: string
+    unit?: Unit
+  }
+
   return staticSegments
-    .reduce<string[]>(
+    .reduce<Expansion[]>(
       (paths, segment) => {
-        const values: readonly string[] =
-          segment in EXPANDABLE
-            ? EXPANDABLE[segment as keyof typeof EXPANDABLE]
-            : [segment]
-        return paths.flatMap((prefix) =>
-          values.map((value) => `${prefix}/${value}`)
-        )
+        if (segment === '[locale]') {
+          return paths.flatMap((entry) =>
+            routing.locales.map((locale) => ({
+              ...entry,
+              path: `${entry.path}/${locale}`,
+            }))
+          )
+        }
+
+        if (segment === '[unit]') {
+          return paths.flatMap((entry) =>
+            UNITS.map((unit) => ({
+              path: `${entry.path}/${unit}`,
+              unit,
+            }))
+          )
+        }
+
+        if (segment === '[side]') {
+          return paths.flatMap((entry) =>
+            entry.unit === undefined
+              ? []
+              : SIDES[entry.unit].map((side) => ({
+                  ...entry,
+                  path: `${entry.path}/${side}`,
+                }))
+          )
+        }
+
+        return paths.map((entry) => ({
+          ...entry,
+          path: `${entry.path}/${segment}`,
+        }))
       },
-      ['']
+      [{ path: '' }]
     )
-    .map((path) => path || '/')
+    .map(({ path }) => path || '/')
 }
 
 function discoverRoutes(): string[] {

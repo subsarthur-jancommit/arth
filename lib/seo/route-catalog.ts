@@ -1,6 +1,13 @@
 import type { MetadataRoute } from 'next'
 
-import { type Unit, UNITS, unitTemplate } from '@/lib/content/units'
+import {
+  SIDES,
+  type Side,
+  sideTemplate,
+  type Unit,
+  UNITS,
+  unitTemplate,
+} from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import { type Locale, routing } from '@/lib/i18n/routing'
 import { type Localized, SITE } from '@/lib/seo/site'
@@ -87,6 +94,47 @@ const UNIT_DESCRIPTIONS = {
   },
 } satisfies Record<Unit, Localized<string>>
 
+const SIDE_LABELS = {
+  'pelaku-proyek': { en: 'People running a project', id: 'Pelaku proyek' },
+  'pemilik-bangunan': { en: 'Building owners', id: 'Pemilik bangunan' },
+  'siap-pakai': { en: 'Ready to use', id: 'Siap pakai' },
+  'paham-teknis': { en: 'Technically fluent', id: 'Paham teknis' },
+  'pemilik-usaha': { en: 'Business owners', id: 'Pemilik usaha' },
+  jaringan: { en: 'The seller network', id: 'Jaringan penjual' },
+} satisfies Record<Side, Localized<string>>
+
+/*
+ * Side descriptions remain taxonomy, not sales copy. They tell a machine
+ * which unit and reader vantage point a URL represents without filling the
+ * three owner-controlled beats on the visible page with invented claims.
+ */
+const SIDE_DESCRIPTIONS = {
+  'pelaku-proyek': {
+    en: 'The Konstruksi side for people running a project.',
+    id: 'Sisi Konstruksi untuk pelaku proyek.',
+  },
+  'pemilik-bangunan': {
+    en: 'The Konstruksi side for people who own the building.',
+    id: 'Sisi Konstruksi untuk pemilik bangunan.',
+  },
+  'siap-pakai': {
+    en: 'The Teknologi side for people who want something ready to use.',
+    id: 'Sisi Teknologi untuk pembaca yang menginginkan hasil siap pakai.',
+  },
+  'paham-teknis': {
+    en: 'The Teknologi side for technically fluent readers.',
+    id: 'Sisi Teknologi untuk pembaca yang paham teknis.',
+  },
+  'pemilik-usaha': {
+    en: 'The Peekabo side for business owners.',
+    id: 'Sisi Peekabo untuk pemilik usaha.',
+  },
+  jaringan: {
+    en: 'The Peekabo side for the seller network.',
+    id: 'Sisi Peekabo untuk jaringan penjual.',
+  },
+} satisfies Record<Side, Localized<string>>
+
 export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
   {
     path: '/',
@@ -126,8 +174,8 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
     priority: 0.9,
   },
   /*
-   * One entry per unit. Side routes join when F1-04 builds their pages — a
-   * sitemap must not advertise a page that does not answer yet.
+   * One entry per unit, followed by its two side routes. A sitemap only
+   * advertises the sides now that F1-04 gives each one a page that answers.
    *
    * These are not filter permutations of `/work` — they are `○` static pages
    * with their own `<h1>`, their own description and their own canonical, and
@@ -144,6 +192,15 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
     changeFrequency: 'weekly',
     priority: 0.7,
   })),
+  ...UNITS.flatMap((unit) =>
+    SIDES[unit].map((side): StaticRoute => ({
+      path: sideTemplate(unit, side),
+      label: SIDE_LABELS[side],
+      description: SIDE_DESCRIPTIONS[side],
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    }))
+  ),
 ]
 
 /**

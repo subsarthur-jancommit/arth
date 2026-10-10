@@ -11,11 +11,27 @@
 
 import { describe, expect, it } from 'bun:test'
 
+import { SIDES, sideTemplate, UNITS } from '@/lib/content/units'
+
 import {
   buildRoutesFromDocuments,
   STATIC_ROUTE_TEMPLATES,
   STATIC_ROUTES,
 } from './routes'
+
+describe('the static route catalogue', () => {
+  it('advertises every valid unit-side pair exactly once', () => {
+    const expected: string[] = UNITS.flatMap((unit) =>
+      SIDES[unit].map((side) => sideTemplate(unit, side))
+    )
+    const advertised = STATIC_ROUTE_TEMPLATES.filter((route) =>
+      expected.includes(route.path)
+    ).map((route) => route.path)
+
+    expect(advertised).toEqual(expected)
+    expect(new Set(advertised).size).toBe(UNITS.length * 2)
+  })
+})
 
 describe('buildRoutesFromDocuments', () => {
   it('skips a single malformed document without dropping the valid ones', () => {
