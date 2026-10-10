@@ -38,13 +38,14 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 | F1-01 Merek Arthur dari satu sumber   | #14 | `a052ace` | **Selesai**      | Prosa `SITE` dan `home-fallback` ikut dibereskan di F1-02 (U11)                                      |
 | F1-02 Tiga unit menggantikan praktik  | #14 | `a052ace` | **Selesai**      | Medan Sanity masih bernama `practice` (U12); `?practice=` → `?unit=` tanpa pengalih (U13)            |
 | F1-03 Rute unit                       | #14 | `a052ace` | **Selesai**      | Halaman CMS pindah ke `/halaman/<slug>` (U14); tiga gerbang e2e melemah (U15)                        |
+| F1-04 Rute sisi                       | #16 | —         | **Dalam PR**     | E2E lokal tidak dijalankan; deploy dan uji produksi ditunda atas instruksi pemilik                   |
 | F0-02 Uji terbit menampilkan isi baru | —   | —         | Belum mulai      | Bergantung F0-06                                                                                     |
 | F0-03 Token produksi hanya Viewer     | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                                      |
 | F0-04 Token dev dicabut               | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                                         |
 | F0-05 Ruleset cabang `main`           | —   | —         | Menunggu pemilik | Tindakan dasbor. Terakhir diukur `gh api …/rules/branches/main` → `[]`, belum aktif                  |
 | F0-06 Dataset `ci` terpisah           | —   | —         | Menunggu pemilik | Tindakan dasbor; memblokir F0-02 dan F2-09                                                           |
 
-F1-04 ke atas belum mulai; lihat Backlog.
+F1-05 ke atas belum mulai; lihat Backlog.
 
 **F1-01, F1-02 dan F1-03 berada di satu PR**, dan itu penyimpangan dari "satu
 PR per paket" yang disebut terang-terangan di sini dan di deskripsi PR-nya.
