@@ -56,7 +56,20 @@ export const NOT_FOUND_STATUS = 404
  * practices renamed. `410` tells a crawler to drop the URL instead of
  * re-checking it, which is what should happen to a page with no successor.
  */
-export const GONE_PREFIXES = ['/practice', '/work/practice'] as const
+export const GONE_PREFIXES = [
+  '/practice',
+  '/work/practice',
+  /*
+   * The Indonesian spelling, which was a row in `lib/i18n/guessed-paths.ts`
+   * answering `/id/praktik` with a 308 to a home-page anchor. Found by
+   * `e2e/route-status.e2e.ts` on the first CI run: without it the reader who
+   * typed the label they were shown got a generic `404` while the reader who
+   * typed the English one got `410`, which is two different stories about the
+   * same retired subject. A unit's own segment needs no second spelling — it
+   * is the same string in both languages by construction.
+   */
+  '/praktik',
+] as const
 
 /**
  * Single segments under a locale that a page really answers.

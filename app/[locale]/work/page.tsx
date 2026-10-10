@@ -22,7 +22,7 @@ import { Catalogue } from './catalogue'
  * all: the home page showed a selection, and nothing showed the rest
  * (`docs/AUDIT-2026-08.md` §2.1 and §2.2).
  *
- * ## It reads `?practice=` again, and the measurement that allows it
+ * ## It reads `?unit=` again, and the measurement that allows it
  *
  * Tahap 10 removed the query string, and `catalogue.tsx` records why: under
  * `cacheComponents`, `searchParams` outside a `<Suspense>` failed the build,
@@ -37,13 +37,13 @@ import { Catalogue } from './catalogue'
  * | URL | characters | `<h1>` | project links |
  * | --- | ---------: | ------ | ------------: |
  * | `/en/work` | 813 | `Work` | 6 |
- * | `/en/work?practice=consulting` | **612** | **`Consulting`** | **2** |
- * | `/en/work?practice=nonsense` | 813 | `Work` | 6 |
+ * | `/en/work?unit=konstruksi` | **612** | **`Konstruksi`** | **2** |
+ * | `/en/work?unit=nonsense` | 813 | `Work` | 6 |
  *
  * Build green, no Suspense, no *Loading*. Tahap 10's failure does not
  * reproduce, so the filter can be a filter again — and the chips can finally
  * show which one is selected, which they never could while this file
- * hardcoded `practice={null}`.
+ * hardcoded the active filter to `null`.
  *
  * ## What it costs, said plainly
  *
@@ -58,14 +58,14 @@ import { Catalogue } from './catalogue'
  * its whole catalogue without JavaScript, filtered or not — the property the
  * cache header was standing in for.
  *
- * The three `/practice/<value>` pages are untouched: still `○`, still
- * separately indexable, still topic pages rather than filter permutations.
+ * The three `/{unit}` pages are untouched: still `○`, still separately
+ * indexable, still topic pages rather than filter permutations.
  * `docs/stages/TAHAP-15.md` §5.1's argument survives intact.
  */
 export const instant = false
 
 interface WorkPageProps {
-  searchParams: Promise<{ practice?: string | string[] }>
+  searchParams: Promise<{ unit?: string | string[] }>
 }
 
 export default async function WorkPage({ searchParams }: WorkPageProps) {
@@ -74,22 +74,22 @@ export default async function WorkPage({ searchParams }: WorkPageProps) {
   const requested = await localeRootParam()
   const locale = isLocale(requested) ? requested : routing.defaultLocale
 
-  const { practice } = await searchParams
+  const { unit } = await searchParams
   /*
    * An unknown value falls back to the whole catalogue rather than 404ing.
    *
-   * `?practice=sculpture` is a request that cannot be met, not a page that is
-   * missing — the distinction `app/[locale]/practice/[value]/page.tsx` makes
-   * in the other direction, where a bad *segment* really is a 404 because it
-   * names a practice the studio does not have.
+   * `?unit=sculpture` is a request that cannot be met, not a page that is
+   * missing — the distinction `app/[locale]/[unit]/page.tsx` makes in the
+   * other direction, where a bad *segment* really is a 404 because it names
+   * a unit Arthur does not have.
    *
-   * `Array.isArray` rather than a `typeof` check: `?practice=a&practice=b`
-   * arrives as an array, `isUnit` takes a single value, and the project's
-   * own lint rule treats a runtime `typeof` as a smell worth justifying.
-   * There is nothing to justify here — a repeated key is not a selection.
+   * `Array.isArray` rather than a `typeof` check: `?unit=a&unit=b` arrives as
+   * an array, `isUnit` takes a single value, and the project's own lint rule
+   * treats a runtime `typeof` as a smell worth justifying. There is nothing
+   * to justify here — a repeated key is not a selection.
    */
-  const requestedPractice = Array.isArray(practice) ? undefined : practice
-  const active = isUnit(requestedPractice) ? requestedPractice : null
+  const requestedUnit = Array.isArray(unit) ? undefined : unit
+  const active = isUnit(requestedUnit) ? requestedUnit : null
 
   return <Catalogue locale={locale} practice={active} />
 }

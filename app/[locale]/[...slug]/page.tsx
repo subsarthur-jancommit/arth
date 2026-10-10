@@ -43,16 +43,30 @@ import { notFound } from 'next/navigation'
  * prerendering"*, measured on the build, the same class of failure
  * `app/[locale]/work/catalogue.tsx` records at length.
  *
- * It used to get away with it because this directory carried a `loading.tsx`,
- * which made the segment `◐` and gave the dynamic access a hole to stream
- * into. That file moved to the CMS route with the rest of the page, and
- * bringing it back would mean the 404 arrives in a chunk only JavaScript can
- * commit — which `e2e/site-reach.e2e.ts` measured at 28 characters of served
- * HTML.
+ * Nothing here needs the segment anyway: every path that reaches this file is
+ * a path nothing answers at. So it takes no props.
  *
- * Nothing here needs the segment: every path that reaches this file is a path
- * nothing answers at. So it takes no props, prerenders, and serves the 404 as
- * static HTML.
+ * ## The `loading.tsx` beside this file, and the trade it buys
+ *
+ * Measured on the production build with it removed: this route's prerendered
+ * document carried `status: 404` — a *real* one — and **1657 bytes** of HTML
+ * with no heading, no recovery links and no 404 copy at all. The route is
+ * `◐` regardless, because the locale layout has Suspense boundaries of its
+ * own, so the 404 view is postponed either way; without `loading.tsx` there
+ * is simply nothing in its place.
+ *
+ * So the file stays, and the trade is stated rather than discovered: this
+ * route answers **200** (Cache Components flushes the shell's status before
+ * `notFound()` resolves — `e2e/not-found.e2e.ts` documents the mechanism) and
+ * in exchange `components/ui/route-loading`'s `<noscript>` serves both front
+ * doors to a reader without JavaScript, which `e2e/no-javascript-404.e2e.ts`
+ * asserts and which was a defect measured on the live site.
+ *
+ * That trade is only acceptable because the depth that matters is covered
+ * elsewhere: a **single** segment is the depth a crawler is handed in a
+ * sitemap, and `proxy.ts` answers it with a real 404 and a complete document
+ * before any of this runs (`lib/seo/route-status.ts`). Nothing advertises a
+ * path two segments deep that does not exist.
  */
 export default function DeepNotFound() {
   notFound()
