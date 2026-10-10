@@ -23,10 +23,16 @@ import { expect, test } from '@playwright/test'
  * to be information.
  */
 
+/*
+ * `/en/practice/consulting` was the third entry here and is retired. The unit
+ * page that replaces it is **not** added: it is one screen long until F3-02
+ * gives it content, and this file's own rule is that a progress bar on a page
+ * one scroll long is a decoration pretending to be information. Adding it
+ * would have turned that rule into its opposite.
+ */
 const LONG_READS = [
   '/en/journal/scope-is-the-deliverable',
   '/en/work/arus-balik',
-  '/en/practice/consulting',
 ]
 
 const SHORT = ['/en', '/en/journal', '/en/work']

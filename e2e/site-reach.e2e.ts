@@ -244,9 +244,14 @@ test.describe('every page offers a way onward', () => {
     }
   })
 
+  /*
+   * `/en/practice/consulting` was here and is retired. The unit page is not
+   * its replacement in this sweep: it renders no breadcrumb trail, because it
+   * is a top-level page with nothing above it but the home page. F3-02 can
+   * add one when the unit sits inside a hierarchy of sides and chapters.
+   */
   for (const route of [
     `/en/work/${FEATURED_WORK}`,
-    '/en/practice/consulting',
     '/en/journal/scope-is-the-deliverable',
   ]) {
     test(`${route} publishes a breadcrumb trail`, async ({ request }) => {

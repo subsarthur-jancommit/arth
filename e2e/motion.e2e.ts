@@ -690,7 +690,7 @@ test.describe('motion', () => {
     const morph = await captureMorph(
       page,
       '/en',
-      '/en/practice/consulting',
+      '/en/konstruksi',
       async (p) => {
         // Open the disclosure, then let its panel finish arriving so the link
         // is not still moving when it is clicked.
@@ -701,7 +701,7 @@ test.describe('motion', () => {
 
     expect(morph.calls, 'no view transition was started').toBeGreaterThan(0)
 
-    const name = transitionName('practice-consulting')
+    const name = transitionName('practice-konstruksi')
     expect(morph.names, 'the shared name was never applied').toContain(name)
 
     // A `group` pseudo-element exists only when the browser matched an old and

@@ -43,11 +43,11 @@ import { expect, test } from '@playwright/test'
  *
  * ## What was wrong, measured before any of this was built
  *
- * `vault/blocks/practice-filter` renders "All" plus one chip per practice, in
+ * `vault/blocks/practice-filter` renders "All" plus one chip per unit, in
  * a `<nav>`, with `aria-current` on the selected one. It looks exactly like a
  * filter. It was not one:
  *
- *   - `app/[locale]/work/page.tsx` hardcoded `practice={null}`, so the
+ *   - `app/[locale]/work/page.tsx` hardcoded the active filter to `null`, so the
  *     `active` prop was **always** `null` — "All" was permanently current and
  *     **no chip could ever appear selected**;
  *   - pressing a chip **left the catalogue** for `/practice/<value>`, a
@@ -74,16 +74,32 @@ import { expect, test } from '@playwright/test'
  * suite, and the alternative is an assertion that passes on the wrong
  * element.
  */
+/*
+ * The first unit, and its reader-facing label.
+ *
+ * Spelled out rather than read from `messages/*.json`, because for a unit the
+ * two happen to coincide — `konstruksi` and "Konstruksi" — and a test that
+ * imported the dictionary to prove the dictionary is what the chip shows
+ * would be asserting against itself. `lib/content/units.test.ts` is where the
+ * key-to-label agreement is checked.
+ *
+ * The filter's attribute is still `data-practice-filter`: `vault/blocks/` is
+ * a library of the practice-era blocks that the F3 unit templates replace,
+ * and renaming its hooks now would be churn with no reader behind it.
+ * Recorded in `docs/PROGRES-ARTHUR.md`.
+ */
+const UNIT_LABEL = 'Konstruksi'
+
 test.describe('the filter filters', () => {
   const FILTER = '[data-practice-filter]'
 
-  test('a practice chip narrows the catalogue in place', async ({ page }) => {
+  test('a unit chip narrows the catalogue in place', async ({ page }) => {
     await page.goto('/en/work')
 
     const all = await page.locator('article[data-span]').count()
     expect(all, 'no work to filter').toBeGreaterThan(1)
 
-    await page.goto('/en/work?practice=consulting')
+    await page.goto('/en/work?unit=konstruksi')
     await page.waitForLoadState('networkidle')
 
     // Still the catalogue, not another page: same route, narrower list.
@@ -92,14 +108,14 @@ test.describe('the filter filters', () => {
     const narrowed = await page.locator('article[data-span]').count()
     expect(
       narrowed,
-      `filtering to consulting changed nothing: ${all} -> ${narrowed}`
+      `filtering to konstruksi changed nothing: ${all} -> ${narrowed}`
     ).toBeLessThan(all)
     // Anti-vacuum: narrowing to nothing would also satisfy "fewer".
     expect(narrowed).toBeGreaterThan(0)
   })
 
   test('the selected chip says so, and only it does', async ({ page }) => {
-    await page.goto('/en/work?practice=consulting')
+    await page.goto('/en/work?unit=konstruksi')
     await page.waitForLoadState('networkidle')
 
     const chips = page.locator(FILTER).locator('a')
@@ -109,11 +125,11 @@ test.describe('the filter filters', () => {
      * The chip's *name*, not its `textContent` — Tahap 43.
      *
      * Since Tahap 43 a chip also renders how many works it narrows to, in an
-     * `aria-hidden` span, so `textContent` reads "Consulting02" while the
-     * control's accessible name is still "Consulting". This assertion is
+     * `aria-hidden` span, so `textContent` reads "Konstruksi02" while the
+     * control's accessible name is still "Konstruksi". This assertion is
      * about which chip is marked current, and the answer to that question is
      * the name a reader is given, so the count is excluded here rather than
-     * baked into the expectation — an expectation of "Consulting02" would go
+     * baked into the expectation — an expectation of "Konstruksi02" would go
      * red the next time a work is published, which is not a defect.
      */
     const current = await chips.evaluateAll((nodes) =>
@@ -135,19 +151,19 @@ test.describe('the filter filters', () => {
     )
 
     expect(current, `chips marked current: ${current.join(', ')}`).toEqual([
-      'Consulting',
+      UNIT_LABEL,
     ])
   })
 
-  test('an unknown practice falls back to the whole catalogue', async ({
+  test('an unknown unit falls back to the whole catalogue', async ({
     page,
   }) => {
-    // Not a 404: `?practice=nonsense` is a request that cannot be met, not a
+    // Not a 404: `?unit=nonsense` is a request that cannot be met, not a
     // page that is missing. The full catalogue is the honest answer.
     await page.goto('/en/work')
     const all = await page.locator('article[data-span]').count()
 
-    await page.goto('/en/work?practice=nonsense')
+    await page.goto('/en/work?unit=nonsense')
     await page.waitForLoadState('networkidle')
 
     expect(await page.locator('article[data-span]').count()).toBe(all)
@@ -158,20 +174,20 @@ test.describe('the filter filters', () => {
     /*
      * The measurement that decided this stage's shape.
      *
-     * Tahap 10 removed `?practice=` because, behind the Suspense boundary
+     * Tahap 10 removed the query filter because, behind the Suspense boundary
      * `cacheComponents` then required, `/en/work` rendered its heading, the
      * word "Loading", and zero projects. `export const instant = false` did
      * not exist yet. With it, measured on the production build:
      *
      *   /en/work                      813 chars  <h1>Work</h1>        6 links
-     *   /en/work?practice=consulting  612 chars  <h1>Consulting</h1>  2 links
+     *   /en/work?unit=konstruksi  612 chars  <h1>Konstruksi</h1>  2 links
      *
      * Those numbers are what this pins.
      */
     const context = await browser.newContext({ javaScriptEnabled: false })
     const page = await context.newPage()
     try {
-      await page.goto('/en/work?practice=consulting', {
+      await page.goto('/en/work?unit=konstruksi', {
         waitUntil: 'domcontentloaded',
       })
 
@@ -185,7 +201,7 @@ test.describe('the filter filters', () => {
         rendered.chars,
         `only rendered ${rendered.chars} characters`
       ).toBeGreaterThan(400)
-      expect(rendered.heading).toBe('Consulting')
+      expect(rendered.heading).toBe('Konstruksi')
       expect(
         rendered.cards,
         'the filtered catalogue rendered no work server-side'
@@ -201,7 +217,7 @@ test.describe('the filter filters', () => {
  *
  * ## What was verified by hand before these were written
  *
- * On the production build, filtering `/en/work` to consulting (6 cards -> 2):
+ * On the production build, filtering `/en/work` by unit (6 cards -> 2):
  *
  * ```
  * survivor fixture-arus-balik   from translate3d(0, -33.22px, 0)  800ms  delay 0
@@ -226,7 +242,7 @@ test.describe('catalogue-sift', () => {
     await page.waitForTimeout(600)
 
     await page
-      .locator('[data-practice-filter] a', { hasText: 'Consulting' })
+      .locator('[data-practice-filter] a', { hasText: UNIT_LABEL })
       .click()
     await page.waitForTimeout(100)
 
@@ -290,7 +306,7 @@ test.describe('catalogue-sift', () => {
     const before = await page.locator('li[data-flip-id]').count()
 
     await page
-      .locator('[data-practice-filter] a', { hasText: 'Consulting' })
+      .locator('[data-practice-filter] a', { hasText: UNIT_LABEL })
       .click()
     await page.waitForTimeout(90)
 
@@ -332,7 +348,7 @@ test.describe('catalogue-sift', () => {
       await page.waitForTimeout(600)
 
       await page
-        .locator('[data-practice-filter] a', { hasText: 'Consulting' })
+        .locator('[data-practice-filter] a', { hasText: UNIT_LABEL })
         .click()
       await page.waitForTimeout(120)
 

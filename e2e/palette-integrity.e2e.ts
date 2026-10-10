@@ -110,7 +110,7 @@ const ROUTES = [
   { path: '/en/journal', theme: 'light' },
   { path: '/id/journal', theme: 'light' },
   { path: '/en/studio', theme: 'dark' },
-  { path: '/en/practice/consulting', theme: 'dark' },
+  { path: '/en/konstruksi', theme: 'dark' },
   { path: `/en/work/${FEATURED_WORK}`, theme: 'dark' },
 ] as const
 

@@ -14,7 +14,18 @@ import { BRAND_NAME } from '../lib/brand'
 test.describe('a 404 without JavaScript offers the front doors', () => {
   test.use({ javaScriptEnabled: false })
 
-  for (const path of ['/en/no-such-page-here', '/id/tidak-ada']) {
+  /*
+   * Two segments each, deliberately.
+   *
+   * These were `/en/no-such-page-here` and `/id/tidak-ada`, one segment. A
+   * single segment is now answered by `proxy.ts` with a real 404 and a
+   * complete static document — the streaming hole this test exists for does
+   * not apply to it, and `e2e/route-status.e2e.ts` asserts that answer
+   * instead. Below one segment the in-chrome 404 is still streamed, so this
+   * keeps measuring the defect it was written for rather than passing for a
+   * new reason.
+   */
+  for (const path of ['/en/no-such/page-here', '/id/tidak/ada']) {
     test(path, async ({ page }) => {
       await page.goto(path)
 

@@ -28,7 +28,21 @@ test.describe('branded 404', () => {
       pageErrors.push(error.message)
     })
 
-    const response = await page.goto('/this-route-does-not-exist-e2e')
+    /*
+     * Two segments, not one, and the difference is the subject of this file.
+     *
+     * This used to request `/this-route-does-not-exist-e2e`. A single segment
+     * under a locale is now answered by `proxy.ts` with a **real 404** and a
+     * standalone branded document — F1-03, `lib/seo/route-status.ts` — so it
+     * no longer reaches the in-chrome 404 this file measures.
+     * `e2e/route-status.e2e.ts` owns that case and asserts the status.
+     *
+     * Below one segment the trade is deliberately taken the other way round:
+     * the designed page with the site's chrome, at 200. That is what is left
+     * to measure here, and it is still worth measuring — it is the page a
+     * lost reader actually sees.
+     */
+    const response = await page.goto('/en/this-route/does-not-exist-e2e')
 
     // Empirically verified (both `next dev` and a `next build && next start`
     // production run, via curl and Playwright): this route's top-level

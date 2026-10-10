@@ -2,6 +2,7 @@ import cn from 'clsx'
 import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { locale as localeRootParam } from 'next/root-params'
+import { ViewTransition } from 'react'
 
 import { Wrapper } from '@/components/layout/wrapper'
 import { Link } from '@/components/ui/link'
@@ -11,6 +12,7 @@ import { ownerPlaceholder } from '@/lib/content/sample-content'
 import { isUnit, UNITS, unitTemplate } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
+import { transitionName } from '@/lib/motion/transition-name'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 
 import s from './page.module.css'
@@ -90,7 +92,25 @@ export default async function UnitPage({ params }: UnitPageProps) {
   return (
     <Wrapper theme="light">
       <article className={s.page}>
-        <SectionHeader as="h1" eyebrow={t('eyebrow')} title={t(unit)} />
+        {/*
+          The receiving half of the home page's morph.
+        
+          `vault/blocks/practice-list` names the unit's `<h3>` on the home
+          page with the same key, and React pairs `<ViewTransition>` elements
+          by name — so without this the heading the reader pressed would fade
+          out and a different heading would fade in, which is the thing a
+          shared name exists to avoid. `e2e/motion.e2e.ts` asserts the pair.
+        
+          One pair per navigation and no more: nothing else on this page
+          carries a name.
+        */}
+        <ViewTransition
+          name={transitionName(`practice-${unit}`)}
+          share="morph"
+          default="none"
+        >
+          <SectionHeader as="h1" eyebrow={t('eyebrow')} title={t(unit)} />
+        </ViewTransition>
         <SampleContent
           label={tSample('label')}
           note={tSample('unitNote')}

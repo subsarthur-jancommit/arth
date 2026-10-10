@@ -175,7 +175,7 @@ const ROUTES: { path: string }[] = [
    * nothing on this route has asked for one yet. When a stage wants it, it
    * adds `three` here and says why.
    */
-  { path: '/en/practice/consulting' },
+  { path: '/en/konstruksi' },
   /*
    * The studio page (Tahap 24) opts into `gsap` and nothing else.
    *
