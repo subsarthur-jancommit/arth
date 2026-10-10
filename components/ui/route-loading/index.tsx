@@ -1,3 +1,5 @@
+import { BRAND_NAME } from '@/lib/brand'
+
 import s from './route-loading.module.css'
 
 /**
@@ -68,13 +70,13 @@ export function RouteLoading() {
             <li>
               {/* oxlint-disable-next-line react/forbid-elements, nextjs/no-html-link-for-pages -- no-JS fallback inside a prerendered shell; see the note above */}
               <a href="/en" className={s.door}>
-                Arth — English
+                {BRAND_NAME} — English
               </a>
             </li>
             <li lang="id">
               {/* oxlint-disable-next-line react/forbid-elements, nextjs/no-html-link-for-pages -- no-JS fallback inside a prerendered shell; see the note above */}
               <a href="/id" className={s.door}>
-                Arth — Bahasa Indonesia
+                {BRAND_NAME} — Bahasa Indonesia
               </a>
             </li>
           </ul>

@@ -1,3 +1,4 @@
+import { BRAND_ALTERNATE_NAMES, BRAND_NAME } from '@/lib/brand'
 import { APP_BASE_URL } from '@/lib/env'
 import { type Locale, routing } from '@/lib/i18n/routing'
 
@@ -118,8 +119,8 @@ export const BASE_URL = APP_BASE_URL.replace(/\/+$/, '')
  * hand over before launch.
  */
 export const SITE: SiteFacts = {
-  name: 'Arth',
-  alternateNames: ['Arth Agency'],
+  name: BRAND_NAME,
+  alternateNames: [...BRAND_ALTERNATE_NAMES],
   url: BASE_URL,
   logo: `${BASE_URL}/icon.png`,
   description: {

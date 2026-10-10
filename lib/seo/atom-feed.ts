@@ -1,3 +1,4 @@
+import { BRAND_NAME } from '@/lib/brand'
 import type { Locale } from '@/lib/i18n/routing'
 
 /**
@@ -40,8 +41,8 @@ export interface Feed {
 
 /** The feed's title per language, shared with the `<link>` that announces it. */
 export const FEED_TITLES = {
-  en: 'Arth — Journal',
-  id: 'Arth — Jurnal',
+  en: `${BRAND_NAME} — Journal`,
+  id: `${BRAND_NAME} — Jurnal`,
 } as const satisfies Record<Locale, string>
 
 /** The feed's path under a locale, for the route and its announcements. */

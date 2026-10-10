@@ -1,6 +1,8 @@
 import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
+import { BRAND_NAME } from '../lib/brand'
+
 /**
  * The header's rule stands under the current route — Tata & Gerak, stage 2
  * (`vault/motion/route-marker`).
@@ -57,7 +59,7 @@ test.describe('the route marker stands under the current route', () => {
 
     await page
       .getByRole('banner')
-      .getByRole('link', { name: 'Arth — home' })
+      .getByRole('link', { name: `${BRAND_NAME} — home` })
       .click()
     await expect(page).toHaveURL(/\/en\/?$/)
     /*

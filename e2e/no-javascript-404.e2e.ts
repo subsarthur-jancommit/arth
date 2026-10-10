@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { BRAND_NAME } from '../lib/brand'
+
 /**
  * Without JavaScript, a 404 still leads somewhere.
  *
@@ -16,9 +18,11 @@ test.describe('a 404 without JavaScript offers the front doors', () => {
     test(path, async ({ page }) => {
       await page.goto(path)
 
-      const english = page.getByRole('link', { name: 'Arth — English' })
+      const english = page.getByRole('link', {
+        name: `${BRAND_NAME} — English`,
+      })
       const indonesian = page.getByRole('link', {
-        name: 'Arth — Bahasa Indonesia',
+        name: `${BRAND_NAME} — Bahasa Indonesia`,
       })
       await expect(english).toBeVisible()
       await expect(indonesian).toBeVisible()
