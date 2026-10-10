@@ -53,11 +53,17 @@ dibutuhkan `playwright-core` 1.62.1 (`chromium-1234`) tidak ada di sesi, hanya
 `chromium-1194`. Daftar di bawah untuk mesin lokal pemilik.
 
 ```bash
+# MESIN LOKAL PEMILIK — bukan sesi cloud. Di sesi, hanya dua baris pertama,
+# dan `bun run build` hanya bila perubahannya menyentuh rendering.
 bun run check              # oxlint, oxfmt, type-aware, tsc, unit, aset
 bun run build              # build produksi
+
+# Tiga baris berikut TIDAK dijalankan di sesi: CLAUDE.md "Melihat hasil"
+# menyatakan e2e hanya di CI dan tidak ada yang ditinggalkan menyala.
 bun run start              # server produksi — biarkan menyala
 bunx playwright test --workers=2   # Playwright + axe, terhadap server itu
 bun run build-storybook
+
 bun run brand:assets       # render ulang kartu OG + ikon dari token
 ```
 

@@ -20,19 +20,45 @@ klaim penulisnya sendiri.
 
 ## Urutan penutup — tidak boleh dipotong
 
+`docs/PROSEDUR-KERJA.md` §3 mengikat, dan ia yang menentukan urutan ini.
+
 ```bash
+bun --version          # harus 1.3.5, atau berhenti (§2)
 bun run check
-bun run build
-bun run build-storybook
-CI=true bun run test:e2e
 ```
 
-Lalu **lihat halamannya berjalan**, kedua locale, desktop dan mobile. Lalu
-`/code-review` sebelum commit.
+Lalu **satu** build produksi, dan hanya kalau perubahannya menyentuh
+rendering — dengan ketiga variabel `NEXT_PUBLIC_SANITY_*` diberikan langsung
+di perintah itu, bukan diekspor global (§2 mencatat satu unit test gagal
+kalau diekspor):
 
-Commit per tahap, dengan pesan yang menjelaskan **cacat apa yang ditemukan**,
-bukan hanya file apa yang berubah. Push ke branch yang ditentukan sesi. Jangan
-buat pull request kecuali diminta.
+```bash
+NEXT_PUBLIC_SANITY_PROJECT_ID=… NEXT_PUBLIC_SANITY_DATASET=… \
+NEXT_PUBLIC_SANITY_API_VERSION=… bun run build
+```
+
+**Jangan jalankan suite e2e di sesi, dan jangan menyalakan server dev.** Versi
+sebelumnya file ini menyuruh `CI=true bun run test:e2e` lalu "lihat halamannya
+berjalan" — keduanya bertentangan dengan `CLAUDE.md` bagian "Melihat hasil",
+yang menyatakan CI di GitHub Actions adalah satu-satunya tempat
+`bunx playwright test` berjalan, dan tidak ada yang ditinggalkan hidup. Yang
+melihat halamannya adalah pemilik, lewat pratinjau Vercel di PR — setiap URL
+pratinjau ada di balik login Vercel.
+
+Lalu `/code-review` sebelum commit.
+
+Commit dengan pesan yang menjelaskan **cacat apa yang ditemukan**, bukan hanya
+file apa yang berubah. Tidak ada nomor tahap lagi, jadi tidak ada "commit per
+tahap"; satu paket kerja, satu PR.
+
+Push ke branch yang ditentukan sesi, lalu **buka PR draft** — itu wajib, bukan
+opsional. Versi sebelumnya file ini mengatakan "jangan buat pull request
+kecuali diminta", dan itu bertentangan dengan `CLAUDE.md` #22: tidak ada yang
+masuk `main` selain PR dengan `ci` dan `e2e` hijau pada head SHA. Tunggu
+keduanya hijau, lapor sesuai §3 langkah 6 (nomor PR, head SHA, nomor run CI
+dan hitungan tesnya, tautan pratinjau, risiko), lalu **berhenti**. Merge hanya
+setelah pemilik menulis `ok merge #<n>` untuk SHA itu — jangan pernah merge
+sendiri.
 
 ## Penutup laporan
 

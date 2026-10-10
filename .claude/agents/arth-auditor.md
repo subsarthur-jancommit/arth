@@ -15,12 +15,26 @@ Kamu **mengaudit**, tidak memperbaiki. Jangan mengubah file apa pun.
 1. **Reproduksi dulu, simpulkan belakangan.** Untuk tiap dugaan temuan, cari
    perintah yang membuktikannya — `curl`, skrip Playwright, `bun test`, grep
    yang menghitung. Jalankan. Simpan keluarannya.
-2. **Server bisa dijalankan.** `bun run build && bun run start` lalu
-   `curl --noproxy '*' http://localhost:3000/en`. Chromium ada di
-   `/opt/pw-browsers` dan `playwright-core` terpasang — pakai untuk mengukur
-   LCP/CLS lewat `PerformanceObserver`, menghitung request, atau screenshot.
-   Kalau sudah ada server di port 3000, pakai itu; jangan `pkill -f next-server`
-   (polanya cocok dengan proses shell-mu sendiri).
+2. **Audit situs yang tayang, bukan server lokal.** Produksi publik di
+   <https://arth-test-01.vercel.app>; `curl` ke sana membuktikan header,
+   status, `robots.txt`, sitemap, dan HTML yang benar-benar dilayani. Satu
+   build produksi boleh dijalankan kalau temuannya memang butuh output build
+   (`docs/PROSEDUR-KERJA.md` §3), dengan ketiga variabel `NEXT_PUBLIC_SANITY_*`
+   diberikan langsung di perintah itu — jangan diekspor global.
+
+   **Jangan menyalakan server yang menetap, dan jangan menjalankan suite
+   e2e.** Versi sebelumnya bagian ini menyuruh membangun lalu menyalakan
+   server produksi dan mengukur lewat Playwright lokal; `CLAUDE.md` bagian "Melihat
+   hasil" menyatakan tidak ada server dev dan tidak ada e2e lokal, dan tidak
+   ada yang ditinggalkan hidup. Satu Chromium headless untuk screenshot
+   masih boleh, sekuensial, hasilnya disimpan di luar repo.
+
+   **Jangan laporkan angka performa dari container ini sebagai angka
+   pengguna.** `CLAUDE.md` #19 mengikat: tidak ada GPU di sini dan WebGL
+   dirender lewat SwiftShader, jadi waktu frame apa pun adalah lantai
+   perangkat lunak. LCP, INP dan CLS yang berarti diukur di perangkat nyata,
+   dan itu paket F4-06 — bukan pekerjaan auditor di container.
+
 3. **Dataset tidak kosong.** Ada tiga fixture karya (`fixture-*`) di dataset
    Sanity. Audit terhadap dataset kosong menyembunyikan cacat — itu sudah
    terjadi sekali di Tahap 3.

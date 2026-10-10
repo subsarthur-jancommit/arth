@@ -117,7 +117,10 @@ Stated plainly rather than left to be found:
    is a budget, not a profiler result.
 3. **Art direction is open** — accent colour, typeface, and voice are
    deliberately undecided. The system is built to accept them.
-4. **Confirm GSAP plugin licensing before launch** — see `docs/PROVENANCE.md` §2.
+4. **GSAP plugin licensing is settled**, and is no longer a gap. Checked
+   2026-09-18; `docs/PROVENANCE.md` §2 carries the terms and the correction —
+   the plugin list this entry used to cite was itself wrong, naming a
+   `Draggable` the source has never imported.
 
 ---
 
