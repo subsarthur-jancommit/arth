@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
 
+import { UNITS } from '../lib/content/units'
 import { FEATURED_WORK } from './fixtures'
 
 /**
@@ -43,11 +44,16 @@ import { FEATURED_WORK } from './fixtures'
  * status is available — and an assertion that never checked the status would
  * pass just as happily against a soft 404.
  */
+/*
+ * `/en/practice` and `/id/praktik` were rows here, landing on a `#practice`
+ * anchor. They are gone with the practice routes: both now answer `410 Gone`,
+ * which `e2e/route-status.e2e.ts` asserts. A 308 to the home page would have
+ * claimed the subject moved there, and it did not — Arthur's three units are
+ * not the three practices renamed.
+ */
 const GUESSED: [typed: string, lands: string][] = [
   ['/en/contact', '/en#contact'],
   ['/id/kontak', '/id#contact'],
-  ['/en/practice', '/en#practice'],
-  ['/id/praktik', '/id#practice'],
   ['/id/karya', '/id/work'],
 ]
 
@@ -83,10 +89,10 @@ test.describe('a URL guessed from a nav label goes somewhere', () => {
   }
 
   test('a real route is never redirected away', async ({ page }) => {
-    // `/en/work` is the catalogue and `/en/practice/consulting` a real page;
-    // a redirect table that caught either would be worse than the 404s it
+    // `/en/work` is the catalogue and `/en/konstruksi` a unit page; a
+    // redirect table that caught either would be worse than the 404s it
     // exists to remove.
-    for (const route of ['/en/work', '/id/work', '/en/practice/consulting']) {
+    for (const route of ['/en/work', '/id/work', `/en/${UNITS[0]}`]) {
       await page.goto(route)
       expect(new URL(page.url()).pathname, `${route} was redirected`).toBe(
         route
@@ -110,6 +116,11 @@ test.describe('a URL guessed from a nav label goes somewhere', () => {
  * | `/en/work`             |            10 |                     0 |
  * | `/en/work/<slug>`      |         **1** |                     0 |
  * | `/en/practice/<v>`     |             3 |                     0 |
+ *
+ * The practice row is history: the route is retired and `/en/<unit>` stands
+ * in its place in the sweep below. A unit page offers two sibling units and
+ * nothing else yet, which is why the floor this file asserts is what it is
+ * rather than what that row measured.
  * | `/en/studio`           |         **1** |                     0 |
  * | `/en/journal`          |             3 |                     0 |
  * | `/en/journal/<slug>`   |         **1** |                     0 |
@@ -125,7 +136,7 @@ const HUMAN_ROUTES = [
   '/en',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
-  '/en/practice/consulting',
+  `/en/${UNITS[0]}`,
   '/en/studio',
   '/en/journal',
   '/en/journal/scope-is-the-deliverable',

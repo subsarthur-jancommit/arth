@@ -2,7 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { locale as localeRootParam } from 'next/root-params'
 
-import { isPractice } from '@/lib/content/practices'
+import { isUnit } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
@@ -84,12 +84,12 @@ export default async function WorkPage({ searchParams }: WorkPageProps) {
    * names a practice the studio does not have.
    *
    * `Array.isArray` rather than a `typeof` check: `?practice=a&practice=b`
-   * arrives as an array, `isPractice` takes a single value, and the project's
+   * arrives as an array, `isUnit` takes a single value, and the project's
    * own lint rule treats a runtime `typeof` as a smell worth justifying.
    * There is nothing to justify here — a repeated key is not a selection.
    */
   const requestedPractice = Array.isArray(practice) ? undefined : practice
-  const active = isPractice(requestedPractice) ? requestedPractice : null
+  const active = isUnit(requestedPractice) ? requestedPractice : null
 
   return <Catalogue locale={locale} practice={active} />
 }

@@ -1,6 +1,5 @@
 import { expect, test } from '@playwright/test'
 
-import { PRACTICE_SEGMENT } from '../lib/content/practices'
 import { LOCALE_TAGS, ogLocale, routing } from '../lib/i18n/routing'
 
 /**
@@ -90,15 +89,16 @@ test.describe('sitemap and page metadata agree', () => {
       ...(await sitemap.text()).matchAll(/<loc>([^<]+)<\/loc>/g),
     ]
       .map((match) => new URL(match[1] ?? '').pathname)
-      // Work pages only. `/work/practice/ai-data` shares the prefix but is
-      // a catalogue view, not a work: it has no cover of its own, so the
-      // site-wide card is the correct card for it and asserting otherwise
-      // would fail on a page that is behaving properly.
-      .filter(
-        (path) =>
-          path.includes('/work/') &&
-          !path.includes(`/work/${PRACTICE_SEGMENT}/`)
-      )
+      /*
+       * Work pages only.
+       *
+       * This also excluded `/work/practice/<value>`, a catalogue view with no
+       * cover of its own, for which the site-wide card was the correct card.
+       * That route is retired — `lib/seo/route-status.ts` answers it `410` —
+       * so nothing static sits under `/work/` and the prefix now means
+       * exactly one thing.
+       */
+      .filter((path) => path.includes('/work/'))
 
     expect(workUrls.length).toBeGreaterThan(0)
 

@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
-import { RESERVED_SLUGS, UNIT_STUDIO_TITLES, UNITS } from '@/lib/content/units'
+import { UNIT_STUDIO_TITLES, UNITS } from '@/lib/content/units'
 
 import { localeValue, requireEveryLocale } from '../utils/i18n-array'
 
@@ -62,21 +62,26 @@ export const project = defineType({
           if (slug?.current?.includes('.')) {
             return 'Slug cannot contain a dot ("."). Dotted paths are treated as static files and are excluded from the sitemap, llms.txt, and Markdown negotiation.'
           }
-          // Next matches a static segment before a dynamic one, so a
-          // document on a slug that a static route already answers is
-          // shadowed and never renders, with no error anywhere.
-          //
-          // This guarded one segment, `practice`, when the filter lived under
-          // `/work`. Arthur has no such prefix — each unit IS a top-level
-          // segment — so three slugs are spoken for instead of one, and the
-          // umbrella's fixed pages take more. See `lib/content/units.ts`.
-          const reserved = slug?.current
-          if (
-            reserved &&
-            (RESERVED_SLUGS as readonly string[]).includes(reserved)
-          ) {
-            return `Slug cannot be "${reserved}". A fixed page already answers at /${reserved}, and a document using it would be unreachable.`
-          }
+          /*
+           * No reserved-slug guard, and the absence is deliberate.
+           *
+           * One stood here: it forbade `practice`, because `/work/practice/`
+           * was a static segment *inside* `/work` and a project slugged
+           * `practice` would have been shadowed by it. That route is retired
+           * (`lib/seo/route-status.ts`), so nothing static answers under
+           * `/work/` any more and there is nothing left for a project slug
+           * to collide with.
+           *
+           * An earlier version of this change pointed the guard at the
+           * umbrella's own reserved list instead, which was wrong: a project
+           * lives at `/work/<slug>`, so a project slugged `konstruksi` sits
+           * at `/work/konstruksi` and never meets `/konstruksi`. The guard
+           * would have refused a legitimate slug for a collision that cannot
+           * happen.
+           *
+           * The moment a static segment is added under `/work/`, it needs a
+           * guard here naming that segment — not a list of top-level pages.
+           */
           return true
         }),
     }),
@@ -136,7 +141,7 @@ export const project = defineType({
 
     defineField({
       name: 'practice',
-      title: 'Practice',
+      title: 'Unit',
       type: 'string',
       description:
         'Which kind of work this is. Drives the filter on /work and the structured data.',

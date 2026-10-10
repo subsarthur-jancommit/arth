@@ -1,4 +1,4 @@
-import { type Practice, practiceTemplate } from '@/lib/content/practices'
+import { type Unit, unitTemplate } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import type { Locale } from '@/lib/i18n/routing'
 
@@ -10,8 +10,8 @@ import type { Locale } from '@/lib/i18n/routing'
  * nothing points at. `lib/i18n/paths.ts` explains the template-versus-
  * localized-path distinction this composes.
  */
-export function practiceHref(locale: Locale, value: Practice): string {
-  return localizedPath(locale, practiceTemplate(value))
+export function practiceHref(locale: Locale, value: Unit): string {
+  return localizedPath(locale, unitTemplate(value))
 }
 
 /**
@@ -24,6 +24,6 @@ export function practiceHref(locale: Locale, value: Practice): string {
  * `docs/stages/TAHAP-15.md` §5.1 drew that line and this keeps it — one
  * subject still has one topic page, and the filter is not a second one.
  */
-export function filteredWorkHref(locale: Locale, value: Practice): string {
+export function filteredWorkHref(locale: Locale, value: Unit): string {
   return `${localizedPath(locale, '/work')}?practice=${value}`
 }

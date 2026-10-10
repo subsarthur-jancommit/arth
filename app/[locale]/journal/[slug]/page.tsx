@@ -14,9 +14,9 @@ import {
   type JournalEntry,
   resolveJournalEntries,
 } from '@/lib/content/journal-fallback'
-import { practiceTemplate } from '@/lib/content/practices'
 import { countWords, minutesFor } from '@/lib/content/reading-time'
 import { studioContact } from '@/lib/content/studio-contact'
+import { unitTemplate } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
@@ -273,7 +273,7 @@ export default async function JournalEntryPage({ params }: EntryPageProps) {
             */}
             {entry.practice ? (
               <Link
-                href={practiceTemplate(entry.practice)}
+                href={unitTemplate(entry.practice)}
                 className={s.practice}
                 aria-label={`${tNav('relatedPractice')}: ${tWork(entry.practice)}`}
                 data-press="practice"

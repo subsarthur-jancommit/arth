@@ -9,6 +9,8 @@
 
 import { describe, expect, it } from 'bun:test'
 
+import { UNITS } from '@/lib/content/units'
+
 import {
   GUESSED_KEYS,
   guessedDestination,
@@ -38,8 +40,24 @@ describe('guessed paths', () => {
   it('answers to both spellings of a label', () => {
     expect(guessedDestination('/id/kontak')).toBe('/id#contact')
     expect(guessedDestination('/en/contact')).toBe('/en#contact')
-    expect(guessedDestination('/id/praktik')).toBe('/id#practice')
-    expect(guessedDestination('/en/practice')).toBe('/en#practice')
+  })
+
+  /*
+   * The practice rows were removed in F1-03, and their absence is asserted
+   * rather than left as a gap: `/en/practice` must reach `proxy.ts`'s
+   * `410 Gone` instead of being redirected to a home-page anchor, and a row
+   * silently reinstated here would take that answer away again.
+   */
+  it('no longer redirects the retired practice segments', () => {
+    expect(guessedDestination('/en/practice')).toBeNull()
+    expect(guessedDestination('/id/praktik')).toBeNull()
+  })
+
+  it('leaves a unit segment to its own page', () => {
+    for (const unit of UNITS) {
+      expect(guessedDestination(`/en/${unit}`)).toBeNull()
+      expect(guessedDestination(`/id/${unit}`)).toBeNull()
+    }
   })
 
   it('leaves real routes and deeper paths alone', () => {
@@ -48,8 +66,7 @@ describe('guessed paths', () => {
     expect(guessedDestination('/id/work')).toBeNull()
     // The machine view.
     expect(guessedDestination('/en/studio')).toBeNull()
-    // Three segments: a real practice page, and a real project page.
-    expect(guessedDestination('/en/practice/consulting')).toBeNull()
+    // Three segments: a real project page.
     expect(guessedDestination('/en/work/arus-balik')).toBeNull()
   })
 

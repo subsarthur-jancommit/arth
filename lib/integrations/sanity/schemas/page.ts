@@ -73,7 +73,7 @@ export const page = defineType({
     prepare({ title, slug }) {
       return {
         title: title || 'Untitled',
-        subtitle: slug ? `/${slug}` : 'No slug',
+        subtitle: slug ? `/halaman/${slug}` : 'No slug',
       }
     },
   },

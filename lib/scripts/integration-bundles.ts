@@ -121,13 +121,19 @@ export const INTEGRATION_BUNDLES = defineBundles({
     // by `setup:project` (see `pruneExampleRoutes` in setup-project.ts) so it
     // never ships to a scaffolded project regardless of whether Sanity is
     // kept — it's a wiring tutorial for this repo's own contributors, not
-    // real site content. app/[locale]/[...slug]/page.tsx (the in-chrome 404
-    // handler) is deliberately absent too: it must survive even when Sanity
-    // is dropped, so it's stripped in place via codeTransforms below instead
-    // of being deleted with the bundle — see this bundle's `overwriteFiles`.
+    // real site content.
+    //
+    // app/[locale]/halaman/[slug] joined this list in F1-03. It used to be
+    // app/[locale]/[...slug]/page.tsx, which was both the CMS page *and* the
+    // in-chrome 404, so it could not be deleted with the bundle and was
+    // stripped in place by a fifteen-op transform below instead. The 404 job
+    // now lives in a `[...slug]` route with no Sanity import at all, so the
+    // CMS page is an ordinary single-owner route folder and the transform,
+    // its `overwriteFiles` entry and their reasoning are all gone with it.
     folders: [
       'lib/integrations/sanity',
       'components/ui/sanity-image',
+      'app/[locale]/halaman',
       /*
        * The real path, at last. This read `app/studio` — a directory that
        * has not existed since the `(chrome)` restructure, so dropping Sanity
@@ -308,86 +314,6 @@ export const INTEGRATION_BUNDLES = defineBundles({
           },
         ],
       },
-      // app/[locale]/[...slug]/page.tsx is the in-chrome 404 handler (it
-      // REPLACES app/[locale]/[...slug]/page.tsx) — it must survive with
-      // or without Sanity, so instead of living in `folders` above, it's
-      // stripped in place down to a lean `notFound()` stub, single-owner and
-      // required (same reasoning as lib/seo/routes.ts above): this array
-      // runs exactly once against pristine source per setup() run. The
-      // `void params` lines silence noUnusedParameters — there is no
-      // remove-function-parameter-entirely op (only removeFunctionParameter,
-      // which removes one binding from a destructured pattern and would
-      // leave `{}: CmsPageProps`, tripping oxlint's no-empty-pattern), so the
-      // stripped body reads the parameter instead of dropping it.
-      {
-        file: 'app/[locale]/[...slug]/page.tsx',
-        ops: [
-          { kind: 'removeImport', specifier: 'next-sanity', required: true },
-          {
-            kind: 'removeImport',
-            specifier: '@/components/layout/wrapper',
-            required: true,
-          },
-          {
-            kind: 'removeImport',
-            specifier: '@/components/ui/link',
-            required: true,
-          },
-          {
-            kind: 'removeImport',
-            specifier: '@/integrations/registry',
-            required: true,
-          },
-          {
-            kind: 'removeImport',
-            specifier: '@/integrations/sanity/components/rich-text',
-            required: true,
-          },
-          {
-            kind: 'removeImport',
-            specifier: '@/integrations/sanity/live',
-            required: true,
-          },
-          {
-            kind: 'removeImport',
-            specifier: '@/integrations/sanity/queries',
-            required: true,
-          },
-          {
-            kind: 'removeImport',
-            specifier: '@/integrations/sanity/utils/link',
-            required: true,
-          },
-          {
-            kind: 'removeImport',
-            specifier: '@/utils/metadata',
-            required: true,
-          },
-          { kind: 'removeImport', specifier: 'next/headers', required: true },
-          {
-            kind: 'removeVariableStatement',
-            name: 'fetchPage',
-            required: true,
-          },
-          {
-            kind: 'removeVariableStatement',
-            name: 'fetchPageForRequest',
-            required: true,
-          },
-          {
-            kind: 'replaceFunctionBody',
-            functionName: 'CmsPage',
-            replacement: '{\n  void params\n  notFound()\n}',
-            required: true,
-          },
-          {
-            kind: 'replaceFunctionBody',
-            functionName: 'generateMetadata',
-            replacement: '{\n  void params\n  return\n}',
-            required: true,
-          },
-        ],
-      },
     ],
     // app/[locale]/layout.tsx has complex Sanity wiring (SanityLive, VisualEditing,
     // isConfigured call) that cannot be re-injected statement-by-statement
@@ -397,14 +323,7 @@ export const INTEGRATION_BUNDLES = defineBundles({
     // app/api/revalidate/route.ts below, which Shopify also owns and must be
     // restored surgically via addTransforms instead (overwriteFiles would
     // reintroduce Shopify's wiring even when Shopify isn't kept).
-    // app/[locale]/[...slug]/page.tsx is likewise single-owner: setupLean's
-    // union pass strips it to the lean notFound() stub above, and this
-    // restores the full CMS-backed version wholesale when Sanity is kept.
-    overwriteFiles: [
-      'app/[locale]/layout.tsx',
-      'lib/seo/routes.ts',
-      'app/[locale]/[...slug]/page.tsx',
-    ],
+    overwriteFiles: ['app/[locale]/layout.tsx', 'lib/seo/routes.ts'],
     addTransforms: [
       {
         file: 'next.config.ts',

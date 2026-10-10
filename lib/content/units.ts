@@ -102,8 +102,10 @@ export function isSideOf(unit: Unit, value: string | undefined): boolean {
 /**
  * The locale-free path of a unit's page.
  *
- * A unit is a **top-level** segment — `/konstruksi`, not `/unit/konstruksi` —
- * which is what makes `RESERVED_SLUGS` below load-bearing rather than tidy.
+ * A unit is a **top-level** segment — `/konstruksi`, not `/unit/konstruksi`.
+ * That is what makes `app/[locale]/[unit]` a dynamic segment competing with
+ * every other one-segment path, which the note below this file's helpers
+ * explains the consequences of.
  */
 export function unitTemplate(unit: Unit): string {
   return `/${unit}`
@@ -114,35 +116,22 @@ export function sideTemplate(unit: Unit, side: string): string {
   return `/${unit}/${side}`
 }
 
-/**
- * Slugs a CMS page may never take, because a static route already answers
- * there.
+/*
+ * There is no reserved-slug list here, and that is the result of a decision
+ * rather than an omission.
  *
- * ## Why this is larger than the one guard it replaces
+ * A unit is a top-level segment, and `app/[locale]/[unit]` is **dynamic**, so
+ * it matches every one-segment path under a locale. A reserved list cannot
+ * fix that: it would have to name every slug anyone might ever publish. The
+ * owner chose the other remedy — Sanity `page` documents moved under a
+ * prefix, `/halaman/<slug>` — which removes the collision class outright
+ * instead of policing it. `app/[locale]/halaman/[slug]/page.tsx` records the
+ * cost that bought.
  *
- * `practices.ts` had to forbid exactly one slug, `practice`, because that was
- * the single segment its filter lived under. Arthur has no such prefix: each
- * unit **is** a top-level segment, so three slugs are spoken for instead of
- * one, and the other fixed pages of the umbrella take more.
- *
- * Next resolves static segments before `app/[locale]/[...slug]`, so the
- * static page always wins. A CMS page published at one of these slugs would
- * not error — it would simply never be reachable, and nothing would say so.
- * The schema refuses them instead, at the point where someone types one.
+ * So `halaman` is the one segment that matters, and it is not a slug anybody
+ * can take: it is a static directory, and a CMS page published at slug
+ * `halaman` simply answers at `/halaman/halaman`.
  */
-export const RESERVED_SLUGS = [
-  ...UNITS,
-  'cara-kerja',
-  'kontak',
-  'kebijakan',
-  'satu-klien-tiga-unit',
-  // Still live from the previous site, and still reachable by URL even after
-  // they leave the navigation (F1-06).
-  'work',
-  'journal',
-  // Sanity Studio, which `proxy.ts` keeps unlocalised.
-  'cms',
-] as const
 
 /**
  * The character the capability lines are authored with, between items.

@@ -10,6 +10,7 @@ import {
   resolveSearchIndex,
   searchHaystack,
 } from './search-index'
+import { UNITS } from './units'
 
 /**
  * What these assert, and why each one is here.
@@ -21,15 +22,13 @@ import {
  * and both are checked here.
  */
 
-const PRACTICE_COUNT = 3
-
 describe('page entries', () => {
   test('every static route reaches the palette, in both languages', () => {
     const en = pageEntries('en')
     const id = pageEntries('id')
 
     expect(en.length).toBe(id.length)
-    expect(en.length).toBeGreaterThan(PRACTICE_COUNT)
+    expect(en.length).toBeGreaterThan(UNITS.length)
 
     // Same routes, different prose — the failure this catches is an
     // Indonesian palette carrying English labels, which is exactly what
@@ -40,14 +39,19 @@ describe('page entries', () => {
     )
   })
 
-  test('practice pages are told apart from the rest', () => {
-    const practices = pageEntries('en').filter(
-      (entry) => entry.kind === 'practice'
+  test('unit pages are told apart from the rest', () => {
+    const units = pageEntries('en').filter((entry) => entry.kind === 'unit')
+    expect(units.length).toBe(UNITS.length)
+    /*
+     * A unit page's address is a bare segment — `/en/konstruksi` — so there
+     * is no prefix to assert on, which is exactly the collision that moved
+     * the CMS pages to `/halaman/<slug>`. The href is compared to the unit
+     * list instead, which is a stronger check than a prefix was: a chip
+     * pointing at `/en/konstruksii` would have passed the old assertion.
+     */
+    expect(units.map((entry) => entry.href).sort()).toEqual(
+      UNITS.map((unit) => `/en/${unit}`).sort()
     )
-    expect(practices.length).toBe(PRACTICE_COUNT)
-    for (const entry of practices) {
-      expect(entry.href).toStartWith('/en/practice/')
-    }
   })
 
   test('every entry carries a label, a description and a locale-prefixed href', () => {
@@ -137,7 +141,7 @@ describe('the whole index', () => {
   test('it carries all four kinds, pages first and writing last', () => {
     const kinds = index.map((entry) => entry.kind)
     expect(new Set(kinds)).toEqual(
-      new Set(['page', 'practice', 'project', 'journal'])
+      new Set(['page', 'unit', 'project', 'journal'])
     )
     expect(kinds[0]).toBe('page')
     expect(kinds.at(-1)).toBe('journal')
@@ -155,7 +159,18 @@ describe('the whole index', () => {
 describe('match score', () => {
   const journal = journalEntries('en', resolveJournalEntries('en', null))
   const scope = journal.find((entry) => entry.label.startsWith('Scope'))
-  const home = pageEntries('en').find((entry) => entry.href === '/en')
+  /*
+   * The journal index, not the home page.
+   *
+   * The defect needs a page whose *description* carries a word another
+   * entry's *title* carries. That used to be the home page, whose
+   * description said "scopes"; `lib/seo/site.ts` now describes Arthur as an
+   * umbrella over three units and says nothing about scope. `/journal`'s own
+   * description — "how the work is scoped, decided and delivered" — carries
+   * the same passing mention, so the defect is reproduced rather than
+   * dropped.
+   */
+  const home = pageEntries('en').find((entry) => entry.href === '/en/journal')
 
   test('the defect it was written for: a title beats a passing mention', () => {
     expect(scope).toBeDefined()
@@ -163,9 +178,9 @@ describe('match score', () => {
     if (!scope || !home) return
 
     /*
-     * Measured before this function existed. The home page's description
-     * contains "scopes", so with structural ordering alone, typing the first
-     * word of this journal entry's own headline highlighted the home page and
+     * Measured before this function existed. A static page's description
+     * contains "scoped", so with structural ordering alone, typing the first
+     * word of this journal entry's own headline highlighted that page and
      * Enter opened it.
      */
     expect(searchHaystack(home)).toContain('scope')

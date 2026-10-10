@@ -204,12 +204,7 @@ function breakAfterSlashes(text: string | null): ReactNode {
 }
 
 /** The order groups appear in, which is the site's own order. */
-const KIND_ORDER: readonly SearchKind[] = [
-  'page',
-  'practice',
-  'project',
-  'journal',
-]
+const KIND_ORDER: readonly SearchKind[] = ['page', 'unit', 'project', 'journal']
 
 export function CommandPalette({
   open,
@@ -357,7 +352,7 @@ export function CommandPalette({
     onOpenChange(false)
     /*
      * SAFETY: every href in the index is built by `localizedPath` from a
-     * route this app declares — the static catalogue, a practice, a project
+     * route this app declares — the static catalogue, a unit, a project
      * slug, or a journal slug — so it names a real route by construction.
      * `Route` is a compile-time brand with no runtime check behind it, and
      * this value has crossed a JSON boundary, so the guarantee is the

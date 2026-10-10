@@ -15,7 +15,7 @@ import {
   fallbackSlugs,
   resolveJournalEntries,
 } from './journal-fallback'
-import { PRACTICES } from './practices'
+import { UNITS } from './units'
 
 describe('journal fallback', () => {
   it('yields the scaffolding when the CMS has nothing', () => {
@@ -60,17 +60,17 @@ describe('journal fallback', () => {
     expect(entries.map((entry) => entry.slug)).toEqual(['ok'])
   })
 
-  it('keeps a practice only when the site still has it', () => {
+  it('keeps a unit only when the site still has it', () => {
     const [kept] = resolveJournalEntries('en', [
       {
         slug: 'a',
         title: 'A',
         summary: 's',
         date: '2026-01-01',
-        practice: 'consulting',
+        practice: 'konstruksi',
       },
     ])
-    expect(kept?.practice).toBe('consulting')
+    expect(kept?.practice).toBe('konstruksi')
 
     const [dropped] = resolveJournalEntries('en', [
       {
@@ -95,7 +95,7 @@ describe('journal fallback', () => {
     expect(id).toEqual(en)
   })
 
-  it('gives every scaffolding entry a body and a known practice', () => {
+  it('gives every scaffolding entry a body and a known unit, or none', () => {
     for (const locale of ['en', 'id'] as const) {
       for (const entry of resolveJournalEntries(locale, null)) {
         expect(entry.body.length, `${entry.slug} has no body`).toBeGreaterThan(
@@ -106,7 +106,7 @@ describe('journal fallback', () => {
           `${entry.slug} has no summary`
         ).toBeGreaterThan(0)
         if (entry.practice !== null) {
-          expect(PRACTICES).toContain(entry.practice)
+          expect(UNITS).toContain(entry.practice)
         }
       }
     }

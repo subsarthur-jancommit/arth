@@ -5,7 +5,7 @@ import type { CSSProperties } from 'react'
 import { Link } from '@/components/ui/link'
 import { Marquee } from '@/components/ui/marquee'
 import { FALLBACK_CONTACT } from '@/lib/content/home-fallback'
-import { PRACTICES, practiceTemplate } from '@/lib/content/practices'
+import { UNITS, unitTemplate } from '@/lib/content/units'
 import { BuildStamp } from '@/vault/blocks/build-stamp'
 import { readBuild } from '@/vault/blocks/build-stamp/build'
 import { GridToggle } from '@/vault/motion/grid-underlay'
@@ -207,11 +207,9 @@ export function Footer() {
             <li>
               <IndexLink href="/journal">{tJournal('title')}</IndexLink>
             </li>
-            {PRACTICES.map((value) => (
+            {UNITS.map((value) => (
               <li key={value}>
-                <IndexLink href={practiceTemplate(value)}>
-                  {tWork(value)}
-                </IndexLink>
+                <IndexLink href={unitTemplate(value)}>{tWork(value)}</IndexLink>
               </li>
             ))}
           </ul>

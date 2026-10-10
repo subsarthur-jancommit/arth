@@ -694,7 +694,7 @@ test.describe('motion', () => {
       async (p) => {
         // Open the disclosure, then let its panel finish arriving so the link
         // is not still moving when it is clicked.
-        await p.locator('#practice summary').first().click()
+        await p.locator('#unit summary').first().click()
         await p.waitForTimeout(700)
       }
     )

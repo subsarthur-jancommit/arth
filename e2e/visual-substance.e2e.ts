@@ -4,7 +4,6 @@ import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 import sharp from 'sharp'
 
-import { PRACTICES } from '../lib/content/practices'
 import { contribution, legibility, tone } from '../lib/styles/scripts/luminance'
 import { material } from '../vault/motion/tokens'
 import { FEATURED_WORK } from './fixtures'
@@ -42,7 +41,7 @@ declare global {
  *     gate was green. "Is there a canvas" and "does the canvas draw something
  *     worth drawing" are different questions, and only the second one matters
  *     to a reader.
- *   - **Tahap 18.** Every practice page rendered its content flush against
+ *   - **Tahap 18.** Every practice page (retired) rendered its content flush against
  *     the viewport edge — `h1` at x=0 while the header's wordmark sat at 14 —
  *     on three routes, both viewports, both languages. Nothing asked where
  *     content starts.
@@ -62,9 +61,25 @@ const GUTTER_ROUTES = [
   '/en/studio',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
-  ...PRACTICES.map((value) => `/en/practice/${value}`),
   '/id',
 ]
+
+/*
+ * The three unit pages are deliberately **not** in the list above.
+ *
+ * `/en/practice/<value>` was, and it was one of the richest routes on the
+ * site: a hero with a CSS accent wash, a scrubbed statement, a work grid and
+ * a capability set. The unit pages that replace it carry a heading, a
+ * labelled sample block and two sibling links, because Arthur's own unit
+ * content is not written yet.
+ *
+ * Adding them would mean lowering this gate's floors to whatever a scaffold
+ * happens to measure, which is how a substance gate stops being able to fail.
+ * They join when F3-02 builds the unit template and there is substance to
+ * measure. Until then `/en/studio`, `/en/work`, `/en/journal` and the home
+ * page carry the gate, and that absence is recorded in
+ * `docs/PROGRES-ARTHUR.md` rather than left to be noticed.
+ */
 
 /*
  * Every route here carries the site's chrome. There used to be one exemption
@@ -88,7 +103,7 @@ const GUTTER_TOLERANCE = 2
  * page.
  *
  * The first version also measured the first `<p>` in document order as "body
- * copy". On the home page that is the hero's practice index, which is
+ * copy". On the home page that is the hero's unit index, which is
  * deliberately right-aligned — 851px against the header's 14 — so the gate
  * went red against a correct design while it was going red against three
  * genuinely broken pages. A heading is unambiguous: every page has exactly
@@ -120,7 +135,7 @@ test.describe('content does not start outside the page gutter', () => {
       /*
        * One-sided since the fork. It used to require the heading to start
        * exactly where the header does (±2px), which also forbade an indented
-       * or centred `h1`. The defect it was written for — Tahap 18's practice
+       * or centred `h1`. The defect it was written for — Tahap 18's practice-page
        * pages at x=0 — is a heading **left of** the gutter, so that is what
        * fails now (`docs/FORK.md`, step 5).
        */
@@ -165,6 +180,11 @@ test.describe('content does not start outside the page gutter', () => {
  * | `/en`                       |  390x844 |            **9.7** |
  * | `/en/practice/<v>`          |  390x844 |            **8.9** |
  *
+ * Two of those four rows are history: the CSS-accent route was the practice
+ * page, which is retired. The numbers are kept because they are what the
+ * floor was derived from, and a floor whose derivation is deleted is a floor
+ * nobody can re-check.
+ *
  * Three is a floor with real headroom, and it was checked by raising it to 99
  * and watching all four go red — a gate nobody has seen fail is a gate nobody
  * has tested. The mesh out-modulating the CSS fallback is the ordering the
@@ -173,14 +193,18 @@ test.describe('content does not start outside the page gutter', () => {
 const ACCENT_RANGE_MARGIN = 3
 
 /*
- * Every route that declares an accent, not just the one that found the bug.
+ * Every route that declares an accent.
  *
- * `/en` carries the WebGL wash; a practice page carries the same gradient in
- * CSS, because `e2e/route-budget.e2e.ts` allows three.js on exactly one route
- * and this is deliberately not it. Both are "a region the design says should
- * carry tone", so both answer to the same two questions.
+ * One, now. `/en` carries the WebGL wash; the practice page carried the same
+ * gradient in CSS — `e2e/route-budget.e2e.ts` allows three.js on exactly one
+ * route and that was deliberately not it — and it is retired. The gate is
+ * weaker for it, and saying so is better than keeping an entry that 410s.
+ *
+ * The second row comes back when a route other than the home page declares
+ * `[data-accent-region]` again, which the unit template (F3-02) is the first
+ * candidate for.
  */
-const ACCENT_ROUTES = ['/en', `/en/practice/${PRACTICES[0]}`]
+const ACCENT_ROUTES = ['/en']
 
 /**
  * What the accent gate is allowed, and what each of its waits is allowed.
@@ -220,7 +244,7 @@ const SHOT_DEADLINE_MS = 15_000
 /**
  * A frame-to-frame mean beyond which the capture, not the page, is wrong.
  *
- * Measured: this accent contributes a mean of 8.9 on
+ * Measured: this accent contributed a mean of 8.9 on the retired
  * `/en/practice/consulting` and about 5 on `/en`. A blank capture contributes
  * **228**. A hundred sits an order of magnitude above the real reading and
  * well under half the broken one, so nothing delicate depends on the number.
@@ -229,8 +253,8 @@ const BLANK_FRAME_MEAN = 100
 /**
  * How long the accent region is waited for.
  *
- * It is in the served HTML — `curl` on `/en/practice/consulting` returns it
- * — so on an idle machine it attaches in **17ms**. The only reason it would
+ * It is in the served HTML — `curl` on `/en` returns it — so on an idle
+ * machine it attaches in **17ms**. The only reason it would
  * not is a worker so starved that the document has not been parsed, which this
  * laptop reproduces: under two mobile workers a bare `page.evaluate` reading
  * `innerWidth` once ran past **120 seconds**.
@@ -464,8 +488,9 @@ test.describe('a declared accent carries tone, and never subtracts it', () => {
          * a run that passes and everything is written for one that does not.
          * A first attempt at "near the floor" used twice the margin and
          * attached on every healthy run of `/en`, which measures 4.93-5.00
-         * against a floor of 3 while `/en/practice/consulting` measures
-         * 8.0-8.9. Mirroring the assertion needs no threshold of its own.
+         * against a floor of 3 while the retired `/en/practice/consulting`
+         * measured 8.0-8.9. Mirroring the assertion needs no threshold of
+         * its own.
          */
         if (added.range <= ACCENT_RANGE_MARGIN || added.coverage <= 0.5) {
           const paint = await page.evaluate(() => {

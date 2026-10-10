@@ -5,7 +5,7 @@ import { locale as localeRootParam } from 'next/root-params'
 import { ProgressText } from '@/components/effects/progress-text'
 import { Wrapper } from '@/components/layout/wrapper'
 import { Link } from '@/components/ui/link'
-import { PRACTICES, practiceTemplate } from '@/lib/content/practices'
+import { UNITS, unitTemplate } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
@@ -379,7 +379,7 @@ export default async function StudioPage() {
               {t('capabilitiesEyebrow')}
             </p>
             <dl className={s.capabilityList}>
-              {PRACTICES.map((practice) => (
+              {UNITS.map((practice) => (
                 <div className={s.capability} data-reveal-item key={practice}>
                   {/*
                     The name is the link — Tahap 38.
@@ -394,7 +394,7 @@ export default async function StudioPage() {
                   */}
                   <dt className={cn('h3', s.capabilityName)}>
                     <Link
-                      href={practiceTemplate(practice)}
+                      href={unitTemplate(practice)}
                       className={s.capabilityLink}
                       // `MOTION-SPEC.md` §9 — INTENT and COMMIT on a noun the
                       // reader can press.

@@ -1,6 +1,6 @@
 import type { Locale } from '@/lib/i18n/routing'
 
-import { PRACTICES, type Practice } from './practices'
+import { UNITS, type Unit } from './units'
 
 /**
  * Scaffolding entries for the journal, in both languages.
@@ -44,10 +44,35 @@ export interface JournalEntry {
   summary: string
   /** The body, as plain paragraphs. Portable Text takes over from the CMS. */
   body: readonly string[]
-  /** The practice this belongs under, or `null` when it belongs to none. */
-  practice: Practice | null
+  /**
+   * The unit this belongs under, or `null` when it belongs to none.
+   *
+   * Named `practice` because that is still the Sanity field name; F2-02
+   * renames the field and its stored data together. The *values* are unit
+   * keys — `lib/integrations/sanity/schemas/journalEntry.ts` records why the
+   * two halves move at the same time or not at all.
+   */
+  practice: Unit | null
 }
 
+/*
+ * Every scaffolding entry is filed under no unit, and that is a decision.
+ *
+ * These three were written for the portfolio site this project was forked
+ * from, and they are about the practices it had — one on consulting, one on
+ * decision records, one on AI evaluation. The content rules are explicit that
+ * dummy text is never edited into Arthur's own content and never used as a
+ * source, so the prose stays exactly as it was: it is here to give motion and
+ * layout something real-shaped to be judged against, and nothing else.
+ *
+ * Filing them under a unit would have meant choosing one, and any choice
+ * would be an invented claim about which unit publishes what. `null` is the
+ * field's own answer for an entry that belongs to none, so it is used.
+ *
+ * `vault/blocks/practice-tally` still renders a row per unit — it counts from
+ * the unit list rather than from the entries — so the journal's table shows
+ * three units carrying zero entries each, which is exactly true.
+ */
 const ENTRIES = {
   en: [
     {
@@ -62,7 +87,7 @@ const ENTRIES = {
         'The objection is always that this is time spent not building. It is. It is also the only time in a project that costs a week instead of a quarter. A decision made in the first fortnight can be argued with; the same decision discovered in the third month is a rewrite with a deadline attached.',
         'What we have found is that clients rarely disagree with this in principle and almost always feel it as a delay. That tension is worth naming out loud at the start, because a scope that is quietly resented gets skipped, and a skipped scope reappears later wearing a much larger invoice.',
       ],
-      practice: 'consulting',
+      practice: null,
     },
     {
       slug: 'a-decision-you-can-defend',
@@ -76,7 +101,7 @@ const ENTRIES = {
         'Six months later the world moves. A dependency is deprecated, a volume assumption doubles, a team member leaves. With the reasoning on record, the team can ask the right question (has the thing that made this true stopped being true?) instead of the wrong one, which is whether to keep trusting a consultant they no longer have access to.',
         'This is also why we would rather be overruled with the facts in hand than agreed with on authority. An overruled recommendation that left a record behind is a better outcome than an accepted one that did not.',
       ],
-      practice: 'consulting',
+      practice: null,
     },
     {
       slug: 'evaluation-before-pipeline',
@@ -90,7 +115,7 @@ const ENTRIES = {
         'The immediate effect is that conversations change register. "It feels better" becomes "it moved from 71 to 78 on the cases we agreed matter, and it got worse on two of them, here they are." That is a conversation a team can have without a specialist in the room.',
         'The second effect is slower and more valuable: it becomes possible to say no. A change that does not move the number is a change that does not ship, and a team that can decline work on evidence is a team that stops shipping on enthusiasm.',
       ],
-      practice: 'ai-data',
+      practice: null,
     },
   ],
   id: [
@@ -106,7 +131,7 @@ const ENTRIES = {
         'Keberatannya selalu bahwa ini waktu yang tidak dipakai membangun. Memang. Ia juga satu-satunya waktu dalam sebuah proyek yang berharga seminggu alih-alih satu kuartal. Keputusan yang dibuat di dua minggu pertama masih bisa dibantah; keputusan yang sama yang baru ditemukan di bulan ketiga adalah penulisan ulang dengan tenggat menempel padanya.',
         'Yang kami temukan: klien jarang tidak setuju dengan prinsipnya dan hampir selalu merasakannya sebagai penundaan. Ketegangan itu layak disebut lantang di awal, karena lingkup yang diam-diam disesalkan akan dilewati, dan lingkup yang dilewati muncul lagi belakangan dengan tagihan yang jauh lebih besar.',
       ],
-      practice: 'consulting',
+      practice: null,
     },
     {
       slug: 'a-decision-you-can-defend',
@@ -120,7 +145,7 @@ const ENTRIES = {
         'Enam bulan kemudian dunia bergerak. Sebuah dependensi ditinggalkan, asumsi volume berlipat, satu anggota tim keluar. Dengan alasannya tercatat, tim bisa mengajukan pertanyaan yang benar (apakah hal yang membuat ini benar sudah berhenti benar?) alih-alih yang salah, yaitu apakah masih perlu mempercayai konsultan yang sudah tidak bisa mereka hubungi.',
         'Ini juga kenapa kami lebih suka dibantah dengan fakta di tangan daripada disetujui karena otoritas. Rekomendasi yang dibantah tapi meninggalkan catatan adalah hasil yang lebih baik daripada yang diterima tapi tidak.',
       ],
-      practice: 'consulting',
+      practice: null,
     },
     {
       slug: 'evaluation-before-pipeline',
@@ -134,7 +159,7 @@ const ENTRIES = {
         'Efek langsungnya, percakapan berganti register. "Rasanya lebih baik" berubah jadi "ia naik dari 71 ke 78 pada kasus yang kita sepakati penting, dan turun pada dua di antaranya, ini yang mana." Itu percakapan yang bisa dijalani tim tanpa spesialis di ruangan.',
         'Efek keduanya lebih lambat dan lebih berharga: menjadi mungkin untuk berkata tidak. Perubahan yang tidak menggerakkan angkanya adalah perubahan yang tidak dikirim, dan tim yang bisa menolak pekerjaan berdasarkan bukti adalah tim yang berhenti mengirim berdasarkan antusiasme.',
       ],
-      practice: 'ai-data',
+      practice: null,
     },
   ],
   /*
@@ -154,15 +179,15 @@ function usable(value: string | null | undefined): value is string {
 /**
  * Whether a stored practice string is one the site actually has.
  *
- * Written as a `some` comparison rather than `PRACTICES.includes(value as
- * Practice)` so there is no type assertion to justify: the narrowing is
+ * Written as a `some` comparison rather than `UNITS.includes(value as
+ * Unit)` so there is no type assertion to justify: the narrowing is
  * earned by the check instead of asserted over it. An editor can select only
  * from this list in the Studio, but a value can survive a rename of the
  * constant, and a page that renders a practice label for a practice that no
  * longer exists is worse than one that renders none.
  */
-function isPractice(value: string | null | undefined): value is Practice {
-  return PRACTICES.some((practice) => practice === value)
+function isUnit(value: string | null | undefined): value is Unit {
+  return UNITS.some((practice) => practice === value)
 }
 
 /** A `journalEntry` document as the query projects it. */
@@ -198,7 +223,7 @@ export function resolveJournalEntries(
       // Portable Text is rendered by the entry route, which fetches the
       // document itself; the index only needs what it lists.
       body: [],
-      practice: isPractice(document.practice) ? document.practice : null,
+      practice: isUnit(document.practice) ? document.practice : null,
     }))
 
   return published.length > 0 ? published : (ENTRIES[locale] ?? ENTRIES.en)

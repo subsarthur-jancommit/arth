@@ -73,6 +73,28 @@ const DELIBERATE = {
   // with one.
   'studio-note:eyebrow': 'omitted on /, with the reason at the call site',
 
+  /*
+   * Four props whose only caller was the practice page, retired in F1-03.
+   *
+   * `app/[locale]/practice/[value]/page.tsx` was the richest route on the
+   * site and the sole passer of each of these. Deleting them is the wrong
+   * reflex: `vault/` is a library, `CLAUDE.md` says so, and the F3 packages
+   * build the unit, side, chapter and offer templates these are the raw
+   * material for — `data-epic` in particular is the hook the motion
+   * dictionary (F1-08) names every moment through, so it is about to have
+   * more callers rather than fewer.
+   *
+   * They are listed rather than left failing so the gate keeps meaning what
+   * it says. If the F3 templates land and still pass none of them, that is
+   * the moment to delete the prop and this entry with it.
+   */
+  'title-block:action': 'sole caller was the retired practice page (F1-03)',
+  'title-block:data-epic':
+    'the F1-08 motion dictionary names moments through it',
+  'capability-set:data-epic':
+    'the F1-08 motion dictionary names moments through it',
+  'practice-hero:index': 'sole caller was the retired practice page (F1-03)',
+
   // `'top 85%'` — just inside the fold, and the one surface that needed a
   // different band got `components/effects/progress-text`, which owns its own
   // start and end because a short passage resolves its whole scrub in a

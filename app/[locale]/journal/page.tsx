@@ -10,8 +10,8 @@ import {
   type JournalEntry,
   resolveJournalEntries,
 } from '@/lib/content/journal-fallback'
-import { PRACTICES, practiceTemplate } from '@/lib/content/practices'
 import { countWords, minutesFor } from '@/lib/content/reading-time'
+import { UNITS, unitTemplate } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
@@ -369,10 +369,10 @@ export default async function JournalPage() {
               practice: t('tallyPractice'),
               work: t('tallyWork'),
             }}
-            rows={countByPractice(PRACTICES, entries, covers).map((row) => ({
+            rows={countByPractice(UNITS, entries, covers).map((row) => ({
               practice: row.practice,
               label: tWork(row.practice),
-              href: practiceTemplate(row.practice),
+              href: unitTemplate(row.practice),
               entries: row.entries,
               works: row.works,
               entriesLabel: t('tallyEntries', { count: row.entries }),

@@ -1,5 +1,5 @@
 import { resolveJournalEntries } from '@/lib/content/journal-fallback'
-import type { Practice } from '@/lib/content/practices'
+import type { Unit } from '@/lib/content/units'
 import type { Locale } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
@@ -29,18 +29,22 @@ async function resolvedEntries(locale: Locale) {
 }
 
 /**
- * The writing filed under a practice — read by the practice page (round 4,
- * `practice-writing`) and by each case study in it (round 5,
- * `engagement-writing`).
+ * The writing filed under a unit — read by each case study on a project page
+ * (`engagement-writing`).
  *
  * Filtered here rather than in GROQ, so the query and its generated type stay
  * the index's own; trimmed to the four fields a listing reads, so the cached
  * result carries no bodies.
+ *
+ * `entry.practice` is the Sanity field name, not the vocabulary: it holds
+ * unit keys, and F2-02 renames the field along with its stored data. See
+ * `lib/integrations/sanity/schemas/journalEntry.ts`, which records why both
+ * halves are renamed together or not at all.
  */
-export async function writingForPractice(locale: Locale, practice: Practice) {
+export async function writingForUnit(locale: Locale, unit: Unit) {
   'use cache'
   return (await resolvedEntries(locale))
-    .filter((entry) => entry.practice === practice)
+    .filter((entry) => entry.practice === unit)
     .map(({ slug, date, title, summary }) => ({ slug, date, title, summary }))
 }
 
@@ -54,5 +58,5 @@ export async function latestWriting(locale: Locale) {
   if (!entry) return null
 
   const { slug, date, title, summary, practice } = entry
-  return { slug, date, title, summary, practice }
+  return { slug, date, title, summary, unit: practice }
 }

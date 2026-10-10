@@ -1,7 +1,7 @@
 import type { Browser } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
-import { PRACTICES } from '../lib/content/practices'
+import { UNITS } from '../lib/content/units'
 import { routing } from '../lib/i18n/routing'
 
 /**
@@ -28,7 +28,8 @@ import { routing } from '../lib/i18n/routing'
  *
  *   - `draftMode()` bought live preview of *unpublished* project edits, which
  *     `docs/PANDUAN-STUDIO.md` never taught and nothing depended on;
- *   - `searchParams` bought `?practice=`, which is now three static routes.
+ *   - `searchParams` bought `?practice=`, now `?unit=`, and the three
+ *     per-unit landing pages are static routes of their own.
  *
  * Measured before the change: `/en/work/arus-balik` 28 characters,
  * `/en/work` its heading plus the word *Loading* and not one project. After:
@@ -57,16 +58,21 @@ async function renderWithoutJavaScript(browser: Browser, path: string) {
         headings: document.querySelectorAll('h1').length,
         heading: document.querySelector('h1')?.textContent?.trim() ?? '',
         // Links into a project detail page — the catalogue's actual payload.
-        // `/work/practice/…` is a filter view, not a work, so it is excluded.
-        projectLinks: [
-          ...document.querySelectorAll<HTMLAnchorElement>('a[href*="/work/"]'),
-        ].filter((a) => !a.pathname.includes('/work/practice/')).length,
+        // The `/work/practice/…` exclusion that stood here is gone with the
+        // route: nothing static sits under `/work/` any more.
+        projectLinks:
+          document.querySelectorAll<HTMLAnchorElement>('a[href*="/work/"]')
+            .length,
         // The chip the server marked active. Rendering this at all proves the
         // filter state came from the route rather than from a client effect.
         activeChip:
           document
             .querySelector('nav a[aria-current="true"]')
             ?.getAttribute('href') ?? null,
+        // The sample-content label's attribute, counted rather than read:
+        // `lib/content/sample-content.ts` owns the string, and a page that
+        // lost the label without script is the failure this catches.
+        sampleBlocks: document.querySelectorAll('[data-sample-content]').length,
         text: text.slice(0, 120),
       }
     })
@@ -102,36 +108,29 @@ test.describe('readable without JavaScript', () => {
     })
   }
 
-  for (const practice of PRACTICES) {
-    test(`/en/practice/${practice} renders server-side`, async ({
-      browser,
-    }) => {
+  for (const unit of UNITS) {
+    test(`/en/${unit} renders server-side`, async ({ browser }) => {
       /*
-       * The practice's own page, not the filtered catalogue it replaced.
+       * The unit's own page. It replaces the per-practice test that stood
+       * here, which pointed at `/en/practice/<value>`.
        *
-       * This test used to point at `/en/work/practice/<value>` and assert the
-       * filter chip's `aria-current`. Tahap 15 gave each practice a page and
-       * made that URL a permanent redirect, so the old assertion was about a
-       * control that no longer exists on the destination — a chip belongs to
-       * `/work`, and this page is not a filtered listing.
-       *
-       * What matters without JavaScript is stricter now, because the page
-       * carries prose: the statement is scrubbed word by word against scroll
-       * by `components/effects/progress-text`, and a scrub that left its words
-       * dim with JS disabled would be text nobody can read.
+       * No `MIN_CHARS` floor, and the difference is deliberate rather than a
+       * relaxation: the practice page carried a statement, and this page
+       * carries a labelled sample block and an owner placeholder, because
+       * Arthur's own unit statements are not written yet (F2-02 holds them,
+       * F3-02 shows them). A character floor here would be a floor on how
+       * much placeholder text the page must carry, which is not a property
+       * worth defending. What is worth defending without JavaScript is that
+       * the page renders, names itself once, and shows the label that says
+       * the text is sample content — because a label that only appears with
+       * script is a label that is missing exactly when the page looks most
+       * finished.
        */
-      const rendered = await renderWithoutJavaScript(
-        browser,
-        `/en/practice/${practice}`
-      )
+      const rendered = await renderWithoutJavaScript(browser, `/en/${unit}`)
 
       expect(rendered.headings, 'exactly one h1').toBe(1)
-
-      // No `projectLinks` assertion: a practice the agency has not published
-      // under yet legitimately renders its empty state, and this gate must not
-      // fail on a truthful empty page.
-      expect(rendered.chars, `only rendered: ${rendered.text}`).toBeGreaterThan(
-        MIN_CHARS
+      expect(rendered.sampleBlocks, 'the sample-content label').toBeGreaterThan(
+        0
       )
     })
   }
@@ -140,9 +139,7 @@ test.describe('readable without JavaScript', () => {
     // Take a real slug from the sitemap rather than hardcoding one, so the
     // test does not silently pass against a dataset that no longer has it.
     const sitemap = await (await request.get('/sitemap.xml')).text()
-    const match = sitemap.match(
-      /<loc>[^<]*?(\/en\/work\/(?!practice\/)[^<]+)<\/loc>/
-    )
+    const match = sitemap.match(/<loc>[^<]*?(\/en\/work\/[^<]+)<\/loc>/)
     test.skip(!match, 'no published project in the sitemap to check')
 
     const rendered = await renderWithoutJavaScript(browser, match?.[1] ?? '')

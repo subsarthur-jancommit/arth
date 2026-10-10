@@ -1,0 +1,47 @@
+/*
+ * A dashed border and a mono label, which is the one thing this block has to
+ * do: read as scaffolding rather than as the page. Solid borders are used by
+ * real panels on this site (`components/ui/not-found-view`), so a dashed one
+ * says "unfinished" without needing a colour the palette does not have.
+ */
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: calc(12 / 375 * 100vw);
+  padding: calc(24 / 375 * 100vw) calc(20 / 375 * 100vw);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+
+  @media (--desktop) {
+    gap: calc(12 / 1440 * 100vw);
+    padding: calc(28 / 1440 * 100vw) calc(32 / 1440 * 100vw);
+  }
+}
+
+.label {
+  font-family: var(--font-mono);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-secondary);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(12 / 375 * 100vw);
+
+  @media (--desktop) {
+    gap: calc(12 / 1440 * 100vw);
+  }
+}
+
+/*
+ * 70% of the secondary foreground, the same mix `not-found-view` uses for a
+ * label that must stay legible without competing. Mixed with `transparent`
+ * rather than with the background so it holds on both themes — and
+ * `lib/styles/scripts/contrast.test.ts` measures what it actually resolves
+ * to, so this is checked rather than asserted.
+ */
+.note {
+  color: color-mix(in oklab, var(--color-secondary) 70%, transparent);
+}

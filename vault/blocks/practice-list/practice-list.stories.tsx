@@ -27,19 +27,19 @@ const meta = {
     linkLabel: 'See the work',
     entries: [
       {
-        value: 'commission',
+        value: 'peekabo',
         label: 'Commission',
         intro:
           'Work made for one room and one client: a wall, a surface, and the light that falls on it.',
       },
       {
-        value: 'consulting',
+        value: 'konstruksi',
         label: 'Consulting',
         intro:
           'Strategy, architecture and the decisions that come before a build.',
       },
       {
-        value: 'ai-data',
+        value: 'teknologi',
         label: 'AI & Data',
         intro:
           'Systems that read a collection: catalogues, provenance, and the questions a studio asks of its own archive.',
@@ -62,7 +62,7 @@ export const Single: Story = {
   args: {
     entries: [
       {
-        value: 'commission',
+        value: 'peekabo',
         label: 'Commission',
         intro:
           'Work made for one room and one client: a wall, a surface, and the light that falls on it.',

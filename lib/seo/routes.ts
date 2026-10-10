@@ -200,7 +200,7 @@ export interface CmsRoutesResult {
  *
  * `'use cache'` is required: `sanityFetch` calls `cacheTag()` internally,
  * which Cache Components (`cacheComponents: true`) only allows inside a
- * `'use cache'` boundary — see `app/[locale]/[...slug]/page.tsx` for
+ * `'use cache'` boundary — see `app/[locale]/halaman/[slug]/page.tsx` for
  * the same constraint applied to a page-level fetch. `perspective`/`stega`
  * are hardcoded to the published, non-stega variant: crawlers never see
  * draft content, so there's no request-level (draft mode) state to branch

@@ -9,7 +9,7 @@
     "openMenu": "Menu",
     "closeMenu": "Close",
     "skipToContent": "Skip to main content",
-    "practice": "Practice",
+    "unit": "Units",
     "breadcrumb": "Breadcrumb",
     "crumbHome": "Home",
     "relatedPractice": "Related practice"
@@ -53,15 +53,6 @@
     "emptyAllTitle": "No engagements published yet",
     "emptyAllBody": "Completed work is listed here as it is published. Until then, the Studio page sets out how an engagement runs.",
     "emptyAllAction": "How the studio works",
-    "consulting": "Consulting",
-    "ai-data": "AI & Data",
-    "commission": "Commission",
-    "consultingTitle": "Consulting",
-    "consultingIntro": "Consulting engagements: strategy, architecture and the decisions that come before a build.",
-    "ai-dataTitle": "AI & Data",
-    "ai-dataIntro": "AI and data work: evaluation, pipelines and systems that have to hold up in production.",
-    "commissionTitle": "Commission",
-    "commissionIntro": "Commissioned work: scoped, paid engagements delivered to a brief.",
     "allWork": "All work",
     "relatedPractice": "Related practice",
     "aboutPractice": "About {practice}",
@@ -70,7 +61,16 @@
     "framePractice": "Practice",
     "frameUndated": "Undated",
     "frameUnplaced": "Other",
-    "frameKeys": "Arrow keys move between works."
+    "frameKeys": "Arrow keys move between works.",
+    "konstruksi": "Konstruksi",
+    "konstruksiTitle": "Konstruksi",
+    "konstruksiIntro": "Work filed under the Konstruksi unit.",
+    "teknologi": "Teknologi",
+    "teknologiTitle": "Teknologi",
+    "teknologiIntro": "Work filed under the Teknologi unit.",
+    "peekabo": "Peekabo",
+    "peekaboTitle": "Peekabo",
+    "peekaboIntro": "Work filed under the Peekabo unit."
   },
   "language": {
     "label": "Language",
@@ -146,30 +146,24 @@
     "elsewhere": "Elsewhere",
     "forAgents": "For agents"
   },
-  "practice": {
-    "titleLabel": "Start an engagement",
-    "titlePractice": "Practice",
-    "titleStudio": "Studio",
-    "titleEmail": "Email",
-    "enquiryLabel": "Discuss an engagement in {practice}",
-    "enquirySubject": "Enquiry: an engagement in {practice}",
-    "enquiryBody": "Hello,\n\nWe are looking at the {practice} practice and would like to discuss an engagement.\n\nOrganisation:\nWhat needs deciding:\nTimeline:\n",
-    "eyebrow": "Practice",
-    "statementEyebrow": "How we work in it",
-    "nextEyebrow": "Next practice",
-    "workTitle": "Engagements in this practice",
-    "writingTitle": "Writing from this practice",
-    "empty": "Nothing published under this practice yet.",
-    "placeholderNote": "Placeholder text. The studio has not written this statement yet.",
-    "consultingStatement": "A consulting engagement starts before anything is built. We read the system that exists, name the decisions that are actually open, and write down the trade-offs each one carries, so the choice that gets made is the one the team can defend six months later.",
-    "ai-dataStatement": "AI and data work is judged in production, not in a notebook. We build the evaluation first, so there is a number to argue with; then the pipelines, the guardrails, and the handover that lets a team run it without us.",
-    "commissionStatement": "A commission is scoped, priced and delivered against a brief. The brief is the work: most of what goes wrong in a commissioned engagement was decided, or left undecided, before the first line was written.",
-    "emptyAction": "See all work"
+  "unit": {
+    "eyebrow": "Unit",
+    "konstruksi": "Konstruksi",
+    "teknologi": "Teknologi",
+    "peekabo": "Peekabo",
+    "statementNeed": "the statement for this unit",
+    "statementExample": "e.g. \"one paragraph on what this unit takes on\"",
+    "metaDescription": "One of the three units Arthur is read by.",
+    "othersLabel": "The other units"
+  },
+  "sample": {
+    "label": "Sample content",
+    "unitNote": "The unit statement is written once the content type exists to hold it. Nothing here is a claim."
   },
   "studio": {
     "eyebrow": "Studio",
     "title": "Studio",
-    "lead": "Arth is a small practice built around one habit: scope a piece of work honestly, then finish it. We take consulting, AI and data, and commissioned build. Three practices that share a method rather than a medium.",
+    "lead": "Arthur is an umbrella over three units: Konstruksi, Teknologi, and Peekabo, the agency among them. Each unit is read from two sides, because the same work looks different depending on which side of it you stand.",
     "facts": {
       "founded": "Founded",
       "foundedValue": "2021",
@@ -197,11 +191,11 @@
       "deliverTitle": "Deliver",
       "deliverBody": "Built, documented, and handed over so the team can run it without us. The engagement ends on a date we named at the start, not when the budget does."
     },
-    "capabilitiesEyebrow": "What that covers",
+    "capabilitiesEyebrow": "The two sides of each unit",
     "capabilities": {
-      "consulting": "Architecture review · System mapping · Technical due diligence · Decision records",
-      "ai-data": "Evaluation harnesses · Retrieval pipelines · Data modelling · Production guardrails",
-      "commission": "Design systems · Interface build · Motion and interaction · Handover documentation"
+      "konstruksi": "People running a project · Building owners",
+      "teknologi": "Ready to use · Technically fluent",
+      "peekabo": "Business owners · The seller network"
     },
     "capabilitiesSeenIn": "Seen in",
     "colophonEyebrow": "Colophon",
@@ -252,7 +246,7 @@
     "close": "Close search",
     "groups": {
       "page": "Pages",
-      "practice": "Practices",
+      "unit": "Units",
       "project": "Work",
       "journal": "Journal"
     },
