@@ -27,17 +27,25 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 
 ## Paket
 
-| Paket                                 | PR  | SHA merge | Status           | Dilewati / ditunda                                                                  |
-| ------------------------------------- | --- | --------- | ---------------- | ----------------------------------------------------------------------------------- |
-| F0-01 Noindex selama dummy            | —   | —         | PR siap tinjau   | Pengecualian domain dibangun tapi daftarnya kosong (lihat U3)                       |
-| F0-07 Dokumen repo diselaraskan       | —   | —         | Belum mulai      | —                                                                                   |
-| F0-02 Uji terbit menampilkan isi baru | —   | —         | Belum mulai      | Bergantung F0-06                                                                    |
-| F0-03 Token produksi hanya Viewer     | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                     |
-| F0-04 Token dev dicabut               | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                        |
-| F0-05 Ruleset cabang `main`           | —   | —         | Menunggu pemilik | Tindakan dasbor. Terakhir diukur `gh api …/rules/branches/main` → `[]`, belum aktif |
-| F0-06 Dataset `ci` terpisah           | —   | —         | Menunggu pemilik | Tindakan dasbor; memblokir F0-02 dan F2-09                                          |
+| Paket                                 | PR  | SHA merge | Status           | Dilewati / ditunda                                                                                   |
+| ------------------------------------- | --- | --------- | ---------------- | ---------------------------------------------------------------------------------------------------- |
+| F0-01 Noindex selama dummy            | #12 | `2491472` | **Selesai**      | Pengecualian domain dibangun tapi daftarnya kosong (lihat U3); lokasinya pindah dari `proxy.ts` (U4) |
+| F0-07 Dokumen repo diselaraskan       | —   | —         | PR siap tinjau   | FORK.md tidak disunting (U1); `ROADMAP.md` dan `docs/stages/` tidak disentuh (U8)                    |
+| F0-02 Uji terbit menampilkan isi baru | —   | —         | Belum mulai      | Bergantung F0-06                                                                                     |
+| F0-03 Token produksi hanya Viewer     | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                                      |
+| F0-04 Token dev dicabut               | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                                         |
+| F0-05 Ruleset cabang `main`           | —   | —         | Menunggu pemilik | Tindakan dasbor. Terakhir diukur `gh api …/rules/branches/main` → `[]`, belum aktif                  |
+| F0-06 Dataset `ci` terpisah           | —   | —         | Menunggu pemilik | Tindakan dasbor; memblokir F0-02 dan F2-09                                                           |
 
 Paket F1 ke atas belum mulai; lihat Backlog.
+
+**Verifikasi produksi F0-01**, diukur 2026-10-10 sesudah merge `2491472`: CI
+`push` di `main` hijau (`ci` dan `e2e`, run 38017067555); deployment untuk SHA
+itu READY; uji asap §3 langkah 9 lulus (`/` → `/en`, `/en` dan `/id` 200,
+`/cms` 200, hreflang dan sitemap pada domain sebenarnya). `X-Robots-Tag:
+noindex, nofollow` terbit di `/`, `/id`, `/robots.txt`, `/sitemap.xml`,
+`/icon.png` dan `/en/journal/feed.xml`; `robots.txt` produksi menolak kedelapan
+perayap AI dan tetap `Allow: /` untuk `*`; meta robots ada di `/id`.
 
 ## Utang dokumen
 
@@ -100,3 +108,27 @@ dicatat: §6b mendokumentasikan URL filter yang hidup hari ini
 Lukisan/Mural/Ilustrasi, sedangkan rute unit/sisi baru ada setelah F1-03/F1-04
 dan tipe Sanity setelah F2-02/F2-03. Dan F2-11 memang sudah ditugasi menulis
 ulang bab itu, jadi pekerjaannya dua kali.
+
+**U8 — `docs/ROADMAP.md` dan `docs/stages/TAHAP-*.md` tidak disunting.**
+Keduanya memuat "discipline" dan klaim identitas lama, tapi tidak ada di
+ketujuh butir F0-07, dan `CLAUDE.md` menyatakan `docs/stages/` arsip yang
+tidak ditambah lagi. Dicatat, tidak dikerjakan.
+
+**U9 — alamat di `PANDUAN-STUDIO.md` §6b sudah mati dua kali, bukan sekali.**
+Bagian itu mendokumentasikan field `Discipline` dengan nilai Lukisan / Mural /
+Ilustrasi dan alamat `/id/work/discipline/…`. Tahap 13 sudah mengganti medannya
+ke `practice` dengan nilai agency (`lib/content/practices.ts` mencatat
+alasannya sendiri), jadi alamat-alamat itu mati jauh sebelum Arthur. F0-07
+menulis ulang bagian itu ke keadaan yang benar hari ini plus ke mana ia
+berpindah; F2-11 masih akan menulis ulang babnya penuh, jadi pekerjaannya tetap
+dua kali seperti dicatat di U7.
+
+**U10 — klaim fixture di `arth-auditor.md` belum diverifikasi.** Definisi agen
+itu menyatakan "ada tiga fixture karya (`fixture-*`) di dataset Sanity".
+Katalog produksi hari ini menampilkan enam karya dengan slug biasa
+(`arus-balik`, `bacaan-mesin`, `lantai-dua`, `pelabuhan`, `pusat-beban`,
+`takar`), bukan berawalan `fixture-`, dan tab Audit menyebut 20 dokumen
+fixture. Ketiga angka itu tidak bisa dicocokkan tanpa membaca dataset, dan
+konektor Sanity di sesi ini belum terotorisasi. Tidak disentuh di F0-07 karena
+di luar ketujuh butir dan tidak terverifikasi; F2-09 (fixture bentuk Arthur)
+yang akan menyentuhnya.

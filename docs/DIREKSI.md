@@ -8,7 +8,7 @@
 
 ---
 
-## 1. ARTH adalah agency
+## 1. Arthur adalah payung tiga unit
 
 Selama lima puluh sembilan tahap, repo ini dibangun sebagai situs studio karya
 komisi di bawah batasan yang ketat. **Itu perancah, bukan tujuan.** Dua
@@ -22,8 +22,19 @@ pendekatan itu ada untuk mencapai dua kemampuan:
 Keduanya sekarang ada, dan **keduanya tetap dipakai**. Yang berubah adalah apa
 yang situs ini _untuk_:
 
-> **ARTH adalah agency. Animasi yang memukau adalah kail yang membawa klien
-> masuk — bukan kemewahan yang harus dijatah.**
+> **Arthur adalah payung atas tiga unit — Konstruksi, Teknologi, dan Peekabo,
+> yang adalah agency-nya. Animasi yang memukau adalah kail yang membawa klien
+> masuk ke ketiganya — bukan kemewahan yang harus dijatah.**
+
+Tiga unit itu, dan dua sisi pembeli di tiap unit, adalah struktur situs yang
+sedang dibangun. Rencananya — rute, model isi, dan urutan paket kerjanya —
+bukan di dokumen ini: ia ada di artefak _Rencana Implementasi Website Arthur_,
+dan kemajuannya dicatat di [`PROGRES-ARTHUR.md`](./PROGRES-ARTHUR.md). Yang
+dokumen ini pegang tetap sama: kenapa gerak itu ada, dan batas mana yang
+berlaku.
+
+Nama lama "ARTH" masih tersebar di kode dan di dokumen lain. Menggantinya dari
+satu sumber tunggal adalah paket F1-01, bukan pekerjaan dokumen ini.
 
 ---
 
@@ -37,17 +48,29 @@ Penyisiran 39 berkas e2e itu menemukan lebih banyak dari yang dibacanya. Tiga
 gerbang membatasi tinggi, hanya tidak memakai kata "tinggi" (dikoreksi Tahap
 61, lihat `docs/stages/TAHAP-61.md` §4.1):
 
-| gerbang                            | menahan                         | yang dituntut                                             |
-| ---------------------------------- | ------------------------------- | --------------------------------------------------------- |
-| `e2e/first-screen.e2e.ts:113`      | `/work`, `/journal`             | item pertama mulai `< 85%` layar **dan** `opacity > 0.99` |
-| `e2e/project-detail.e2e.ts:100`    | `/work/<slug>`                  | `<dl>` fakta memotong fold **800px** di viewport 1280×800 |
-| `e2e/navigation-landing.e2e.ts:95` | `/practice/<v>`, `/work/<slug>` | `h1` mendarat di layar pertama sesudah navigasi           |
+| gerbang                            | menahan                         | yang dituntut                                               |
+| ---------------------------------- | ------------------------------- | ----------------------------------------------------------- |
+| `e2e/first-screen.e2e.ts`          | `/work`, `/journal`             | ~~item pertama mulai `< 85%` layar~~ — **dicabut fork**     |
+| `e2e/project-detail.e2e.ts`        | `/work/<slug>`                  | ~~`<dl>` fakta memotong fold **800px**~~ — **dicabut fork** |
+| `e2e/navigation-landing.e2e.ts:95` | `/practice/<v>`, `/work/<slug>` | `h1` mendarat di layar pertama sesudah navigasi             |
 
-Dua yang pertama **gerbang kebenaran, bukan selera**, jadi menurut §3.1 di
-bawah keduanya TETAP. `first-screen.e2e.ts` menuliskan alasannya dengan angka:
-`60svh` di `/work` menaruh sampul pertama di **886px dari 900 (98%)**, lewat
-garis 75% milik `useReveal`, sehingga setiap sampul tinggal di `opacity: 0` dan
-`catalogue-sift` bermain di tempat yang tidak bisa dilihat siapa pun.
+**Dua yang pertama tidak lagi berlaku, dan versi dokumen ini sebelumnya salah
+soal itu.** Ia menyebut keduanya "gerbang kebenaran, bukan selera" dan
+menyimpulkan keduanya TETAP. Fork mencabut justru tuntutan ambangnya, dan
+menyimpan separuh yang melindungi pembaca —
+[`FORK.md`](./FORK.md) §2 langkah 5 mencatat keduanya baris per baris:
+
+- `first-screen`: yang keluar "item pertama wajib di atas 85% viewport"; yang
+  tinggal "item yang **ada di layar** tak boleh tertahan `opacity: 0` menunggu
+  gulir".
+- `project-detail`: yang keluar "daftar fakta wajib memotong lipatan
+  1280×800"; yang tinggal 404, axe, sitemap, locale, dan spine.
+
+Jadi tinggi hero tidak lagi dibatasi angka oleh kedua gerbang itu. Yang masih
+dijaga adalah hal yang bisa dilihat pembaca: konten yang sudah di layar harus
+terlihat, bukan menunggu gulir. Garis `useReveal` sendiri juga sudah bergeser
+sejak itu (−25% → −8%, `FORK.md` §3.2), jadi angka 75% yang dulu dikutip di
+sini pun tidak lagi berlaku.
 
 Ruang tinggi yang benar-benar tersisa, terukur 1440×900:
 
@@ -56,7 +79,7 @@ Ruang tinggi yang benar-benar tersisa, terukur 1440×900:
 | `/`               | 100svh   | nol — sudah penuh layar                   |
 | `/studio`         | 87%      | kecil                                     |
 | `/practice/<v>`   | 70%      | **nol** — diukur Tahap 65, lihat di bawah |
-| `/work/<slug>`    | 95%      | **nol** — fold 800px                      |
+| `/work/<slug>`    | 95%      | nyata sejak fold 800px dicabut            |
 | `/journal/<slug>` | —        | nyata                                     |
 | `/work`           | 31%      | **nol** — `first-screen`                  |
 | `/journal`        | 39%      | **nol** — `first-screen`                  |
@@ -242,9 +265,9 @@ lama di Tahap 28, kini ditangkap tanpa membatasi berat yang disengaja.
 
 ## 5. Permukaan
 
-| permukaan           | isi                                            | gerbang selera                 |
-| ------------------- | ---------------------------------------------- | ------------------------------ |
-| **`arth.<domain>`** | Situs agency. Tempat animasi memukau itu hidup | berlaku, dengan pelebaran §3.2 |
-| **`lab.<domain>`**  | Sandbox mentah: eksperimen UI dan efek         | **tidak berlaku**              |
+| permukaan           | isi                                          | gerbang selera                 |
+| ------------------- | -------------------------------------------- | ------------------------------ |
+| **`arth.<domain>`** | Situs Arthur: payung, tiga unit, dan sisinya | berlaku, dengan pelebaran §3.2 |
+| **`lab.<domain>`**  | Sandbox mentah: eksperimen UI dan efek       | **tidak berlaku**              |
 
 Gerbang kebenaran (§3.1) berlaku penuh di keduanya.

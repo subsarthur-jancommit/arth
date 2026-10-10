@@ -1,8 +1,20 @@
 # MOTION SPEC
 
-Binding rules for every animation in this project. Derived from measured
+How the motion in this project was built, and why. Derived from measured
 production CSS of ten award-winning sites — see `TEARDOWN.md` for the
 evidence and `teardown-data.json` for raw counts.
+
+**This is a reference, not law.** `CLAUDE.md` demoted it there, and the fork
+retired the parts of it that decided taste in advance — the duration bands,
+the token-only easing, the "3D is an accent" ceiling. Read it to understand
+what exists and to stay idiomatic, not to get permission.
+
+Four motion rules do still bind, and they live in `CLAUDE.md`, not here:
+animate `transform` and `opacity` (#4); `prefers-reduced-motion` is mandatory
+and content must end fully visible under it (#5); one RAF loop, shared by
+Lenis, GSAP and Tempus (#6); always clean up — `kill()` ScrollTriggers and
+revert GSAP contexts on unmount (#7). Each protects a reader rather than a
+preference.
 
 The single most important idea: **motion quality comes from a small set of
 consistent decisions, not from more animation.** A site with three timings
@@ -432,7 +444,18 @@ alone: they are raw curves, which rule #1 forbids in a component, and a bounce
 is the wrong register for this site — rejected for the same reason in Tahap
 11c. Settling happens through `--ease-out-expo`.
 
-### 9.4 Five rules, binding
+### 9.4 Seven rules that are not taste
+
+These are not binding because this document says so — this document is a
+reference. They hold for three other reasons, and it is worth knowing which is
+which. **1–4** restate rules that bind from `CLAUDE.md` (#5 and #7) or protect
+a reader directly: a stuck screen, a moment no keyboard can reach, content
+stranded invisible, a page that does nothing without JavaScript. **6** is not a
+preference at all — React strips a `view-transition-name` from an element
+outside the viewport at commit, so the platform decides it. **5** and **7**
+were kept through the fork on measured legibility, not on taste.
+
+The count was wrong too: the heading said five and the list has seven.
 
 1. **Interruptible, with a defined resolution.** A double click, or Back
    pressed mid-TRANSPORT, must never leave a stuck screen. This is a failure

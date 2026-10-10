@@ -359,7 +359,7 @@ public anyway — but do not put anything private in it.
 **No performance measurement has been done.** Every performance figure in this
 repository is a budget, not a profiler result. See `docs/RESOURCES.md`.
 
-**The build needs Sanity to be reachable.** The catalogue, the three discipline
+**The build needs Sanity to be reachable.** The catalogue, the three practice
 views and every project page are prerendered from the CMS at build time, so a
 transient network failure fails the whole build rather than degrading one page.
 It happened once during Tahap 10 (`HTTP 503 — DNS resolution failed`) and

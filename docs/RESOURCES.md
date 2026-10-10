@@ -130,7 +130,7 @@ specific need appears.
 | `CLAUDE.md`               | Project-specific hard rules for agents. Short by design.           |
 | `docs/TEARDOWN.md`        | You want evidence for a design decision. Real measured numbers.    |
 | `docs/DESIGN-SYSTEM.md`   | Choosing colour, type, spacing, grid.                              |
-| `docs/MOTION-SPEC.md`     | Writing any animation. Binding.                                    |
+| `docs/MOTION-SPEC.md`     | Writing any animation. Reference, not law — see `CLAUDE.md`.       |
 | `docs/PROVENANCE.md`      | Adding a dependency or copying any external code.                  |
 | `references/`             | Architectural context from projects we may not copy.               |
 | `docs/teardown-data.json` | Checking a claim in `TEARDOWN.md` against raw counts.              |
@@ -153,8 +153,10 @@ Stated plainly rather than left to be discovered.
    those are labelled as inference in `TEARDOWN.md`.
 4. **Art direction is not decided.** Accent colour, typeface, and voice are
    deliberately open — the system is built to accept them.
-5. **GSAP plugin licensing needs confirming before launch** — see
-   `PROVENANCE.md` §2.
+5. **GSAP plugin licensing is settled**, and is no longer a gap. Checked
+   2026-09-18; `PROVENANCE.md` §2 carries the terms and the correction — the
+   plugin list this entry used to cite was itself wrong, naming a `Draggable`
+   the source has never imported.
 6. **One end-to-end test is flaky against the dev server, and only there.**
    `e2e/not-found.e2e.ts` asserts the 404 page logs no console errors. Under
    `bun run dev`, Next's on-demand route compilation sometimes races its

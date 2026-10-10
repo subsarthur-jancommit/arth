@@ -32,25 +32,25 @@ Di kolom kiri pilih **Project → +** (tanda tambah).
 Isi dari atas ke bawah. Yang bertanda **wajib** akan menolak disimpan kalau
 kosong.
 
-| Field               | Wajib | Isi apa                                                                |
-| ------------------- | ----- | ---------------------------------------------------------------------- |
-| **Title**           | ✅    | Judul karya. Ada **dua kotak**: EN dan ID.                             |
-| **Slug**            | ✅    | Alamat karya. Klik **Generate** — jangan diketik manual.               |
-| **Cover image**     | ✅    | Foto utama. Ini yang muncul di grid dan saat dibagikan.                |
-| **Alt text**        | ✅    | Deskripsi gambar, dua bahasa. Lihat §4 — ini penting.                  |
-| **Gallery**         |       | Foto tambahan. Tiap foto juga butuh alt text.                          |
-| **Client**          |       | Nama pemesan. Satu bahasa saja — nama tidak diterjemahkan.             |
-| **Year**            |       | Tahun, angka saja: `2026`.                                             |
-| **Discipline**      | ✅    | Lukisan / Mural / Ilustrasi. Ini yang dipakai filter di halaman Karya. |
-| **Medium**          |       | Contoh: `Acrylic on canvas` / `Akrilik di atas kanvas`.                |
-| **Dimensions**      |       | Contoh: `120 × 90 cm`. Satu bahasa — satuan sama di mana pun.          |
-| **Description**     |       | Cerita karyanya. Dua bahasa.                                           |
-| **Order**           |       | Angka kecil tampil lebih dulu. Default `100`.                          |
-| **Featured**        |       | Nyalakan supaya muncul di **halaman depan**.                           |
-| **Listed publicly** |       | Nyalakan = tampil di katalog publik. Lihat §7.                         |
-| **Grid span**       |       | `Half` = setengah lebar, `Full` = selebar layar.                       |
-| **Published at**    |       | Terisi otomatis. Biarkan saja.                                         |
-| **SEO & Metadata**  |       | Boleh dikosongkan — lihat §5.                                          |
+| Field               | Wajib | Isi apa                                                                         |
+| ------------------- | ----- | ------------------------------------------------------------------------------- |
+| **Title**           | ✅    | Judul karya. Ada **dua kotak**: EN dan ID.                                      |
+| **Slug**            | ✅    | Alamat karya. Klik **Generate** — jangan diketik manual.                        |
+| **Cover image**     | ✅    | Foto utama. Ini yang muncul di grid dan saat dibagikan.                         |
+| **Alt text**        | ✅    | Deskripsi gambar, dua bahasa. Lihat §4 — ini penting.                           |
+| **Gallery**         |       | Foto tambahan. Tiap foto juga butuh alt text.                                   |
+| **Client**          |       | Nama pemesan. Satu bahasa saja — nama tidak diterjemahkan.                      |
+| **Year**            |       | Tahun, angka saja: `2026`.                                                      |
+| **Practice**        | ✅    | Yang dipakai filter di halaman Karya. **Sedang berpindah ke Unit** — lihat §6b. |
+| **Medium**          |       | Contoh: `Acrylic on canvas` / `Akrilik di atas kanvas`.                         |
+| **Dimensions**      |       | Contoh: `120 × 90 cm`. Satu bahasa — satuan sama di mana pun.                   |
+| **Description**     |       | Cerita karyanya. Dua bahasa.                                                    |
+| **Order**           |       | Angka kecil tampil lebih dulu. Default `100`.                                   |
+| **Featured**        |       | Nyalakan supaya muncul di **halaman depan**.                                    |
+| **Listed publicly** |       | Nyalakan = tampil di katalog publik. Lihat §7.                                  |
+| **Grid span**       |       | `Half` = setengah lebar, `Full` = selebar layar.                                |
+| **Published at**    |       | Terisi otomatis. Biarkan saja.                                                  |
+| **SEO & Metadata**  |       | Boleh dikosongkan — lihat §5.                                                   |
 
 Setelah selesai, tekan **Publish** (tombol hijau, kanan bawah). Situs akan
 memperbarui dirinya sendiri dalam beberapa detik. **Tidak perlu memanggil siapa
@@ -156,25 +156,44 @@ peluncuran** (mintalah ke yang mengelola deploy, ini bukan lewat Studio):
 ## 6b. Halaman Karya dan filternya
 
 Semua karya yang **Listed publicly** tampil di halaman katalog, dan pengunjung
-bisa menyaringnya per disiplin. Alamatnya bisa dibagikan langsung:
+bisa menyaringnya. Alamatnya bisa dibagikan langsung:
 
 ```
 /id/work                              semua karya
-/id/work/discipline/mural             hanya mural
-/id/work/discipline/painting          hanya lukisan
-/id/work/discipline/illustration      hanya ilustrasi
+/id/work/practice/<nilai>             hanya satu kelompok
 ```
 
-Yang menentukan sebuah karya masuk kelompok mana adalah field **Discipline** —
+Yang menentukan sebuah karya masuk kelompok mana adalah field **Practice** —
 bukan **Medium**. Medium adalah kalimat bebas ("Akrilik di atas kanvas");
-Discipline adalah satu dari tiga pilihan tetap. Sebuah disiplin hanya muncul
-sebagai tombol filter kalau ada karya di dalamnya.
+Practice adalah satu dari tiga pilihan tetap, dan daftarnya hidup di satu
+tempat, `lib/content/practices.ts`. Sebuah kelompok hanya muncul sebagai
+tombol filter kalau ada karya di dalamnya.
 
-> **Satu slug yang tidak boleh dipakai: `discipline`.** Kata itu sudah menjadi
-> alamat filter di atas. Kalau sebuah karya diberi slug `discipline`, halaman
+> **Satu slug yang tidak boleh dipakai: `practice`.** Kata itu sudah menjadi
+> alamat filter di atas. Kalau sebuah karya diberi slug `practice`, halaman
 > karyanya tidak akan pernah bisa dibuka. Studio akan menolaknya saat Publish,
 > jadi ini bukan sesuatu yang perlu diingat-ingat — cukup tahu kenapa
 > peringatannya muncul.
+
+### Ke mana ini berpindah
+
+Struktur Arthur menggantikan kelompok ini: **tiga unit** — Konstruksi,
+Teknologi, dan Peekabo — masing-masing dengan **dua sisi** pembeli, berisi
+**bab**, berisi **offer**. Istilah itulah yang akan Anda pakai di Studio.
+
+Belum sekarang, dan tanggalnya tidak ditebak di sini. Rute unit dan sisi
+dibangun di paket F1-03 dan F1-04; tipe Sanity `unit`, `side`, `bab` dan
+`offer` di F2-02 sampai F2-04; dan bab ini ditulis ulang penuh — dengan alur
+status dan urutan terbitnya — di F2-11. Sampai itu, yang ada di Studio adalah
+field **Practice** di atas, dan panduan ini menjelaskan yang ada.
+
+Kemajuannya di [`PROGRES-ARTHUR.md`](./PROGRES-ARTHUR.md).
+
+Catatan untuk yang membaca versi lama dokumen ini: bagian ini pernah menyebut
+field **Discipline** dengan nilai Lukisan / Mural / Ilustrasi dan alamat
+`/id/work/discipline/…`. Itu sudah tidak ada sejak Tahap 13, yang mengganti
+nama medannya — `lib/content/practices.ts` mencatat sendiri kenapa. Jadi
+alamat-alamat itu sudah mati jauh sebelum Arthur, bukan karena Arthur.
 
 ---
 

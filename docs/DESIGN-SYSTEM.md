@@ -433,28 +433,44 @@ e2e suite for height limits, read only that file, and wrote down "no gate
 limits hero height" — which is false, and `docs/stages/TAHAP-61.md` §4.1
 records the correction. Two others bind:
 
-| gate                               | holds                           | what it demands                                          |
-| ---------------------------------- | ------------------------------- | -------------------------------------------------------- |
-| `e2e/project-detail.e2e.ts:100`    | `/work/<slug>`                  | the fact `<dl>` intersects an **800px** fold at 1280×800 |
-| `e2e/navigation-landing.e2e.ts:95` | `/practice/<v>`, `/work/<slug>` | the `h1` lands on the first screen after a navigation    |
+| gate                               | holds                           | what it demands                                                            |
+| ---------------------------------- | ------------------------------- | -------------------------------------------------------------------------- |
+| ~~`e2e/project-detail.e2e.ts`~~    | `/work/<slug>`                  | ~~the fact `<dl>` intersects an **800px** fold~~ — **retired by the fork** |
+| `e2e/navigation-landing.e2e.ts:95` | `/practice/<v>`, `/work/<slug>` | the `h1` lands on the first screen after a navigation                      |
 
-The first is why `/work/<slug>`'s 95% is a ceiling and not a starting point: a
-hero grown past it pushes the facts below an 800px fold, and the reader who
-never scrolls is no longer told who the work was for. The second is a rule
-about a tall hero's _contents_ rather than its height — grow the hero all you
-like, but the headline cannot ride down with it, or a morph arriving from
-another page has nothing on screen to morph into.
+**The first no longer binds, and this document used to claim it did.** It
+argued the 800px fold was "not taste" and would stay; the fork retired exactly
+that demand and kept the reader-protecting half. `FORK.md` §2 step 5 records
+it: what left `project-detail` was "daftar fakta wajib memotong lipatan
+1280×800"; what stayed is 404, axe, sitemap, locale and spine. So
+`/work/<slug>`'s 95% is no longer a ceiling set by a gate.
 
-Neither is taste. Both stay.
+What still binds is the second, and it is a rule about a tall hero's
+_contents_ rather than its height — grow the hero all you like, but the
+headline cannot ride down with it, or a morph arriving from another page has
+nothing on screen to morph into. That one is not taste, and it stays.
 
 `svh` and never `vh`, everywhere: `vh` includes the collapsing mobile toolbar,
 so a `vh` block is taller than the visible viewport on first paint.
 
 ## 4. Motion
 
-Owned entirely by `MOTION-SPEC.md`. Summary: durations 200 / 400 / 1000 ms
-by band, easing from `--ease-*` tokens only, `transform` and `opacity` only,
-`prefers-reduced-motion` mandatory.
+`MOTION-SPEC.md` is the reference, not the owner — `CLAUDE.md` demoted it, and
+the binding motion rules are `CLAUDE.md` #4–#7. What still binds: `transform`
+and `opacity` only, `prefers-reduced-motion` mandatory and content left fully
+visible under it, one RAF loop, and cleanup on unmount.
+
+What this section used to also demand, and no longer does. Kept here only so
+an old citation still resolves — none of these is a rule any more.
+
+| #   | was                                                              |
+| --- | ---------------------------------------------------------------- |
+| 1   | easing only from `--ease-*` tokens, never a raw `cubic-bezier()` |
+| 2   | no bare `ease` / `ease-in-out`                                   |
+| 3   | durations 200 / 400 / 1000 ms by band                            |
+
+Pick a duration and a curve by looking at the result on a screen. The reasons
+are in [`FORK.md`](./FORK.md) §1.1.
 
 ---
 
@@ -463,8 +479,15 @@ by band, easing from `--ease-*` tokens only, `transform` and `opacity` only,
 - `next/image` for all raster imagery; never a bare `<img>` for content.
 - **Always reserve space.** CLS from an unsized image undoes every other
   quality signal on the page.
-- WebGL stays behind the existing feature flag (`lib/webgl` + `lib/features`).
-  3D is an accent. A hero that cannot render without a GPU is a liability.
+- **Always ship a non-WebGL path**, and let no page depend on WebGL to be
+  usable or readable; dispose geometries, materials and textures on unmount
+  (`CLAUDE.md` #14, #15). The fallback should look intentional, not broken.
+
+  What this bullet used to demand, and no longer does — retired rule **#13**,
+  "3D is an accent, kept behind a feature flag". Three.js may be used anywhere
+  now; the reader-protecting half of that rule is what survives above, as #14.
+  `FORK.md` §3 has the reasoning.
+
 - Bruno Simon's fully-3D site loads **2 scripts**; Iventions loads 36. WebGL
   is not what makes a site heavy — script sprawl is. Guard the script count
   before blaming the canvas.
@@ -473,20 +496,29 @@ by band, easing from `--ease-*` tokens only, `transform` and `opacity` only,
 
 ## 6. Component rules
 
-1. **No hardcoded values.** Colour, spacing, duration, easing, and type all
-   come from tokens. A raw `#fff`, `16px`, or `400ms` in a component is a
-   defect.
-2. **Semantic tokens, not literals.** `var(--color-primary)`, not
-   `var(--color-ink)`. The literals are palette entries that the themes map
-   onto roles; referencing one directly breaks theme switching.
-3. **Tailwind v4 utilities first**, CSS Modules when a component needs real
+1. **Tokens are the default idiom, not a requirement.** Colour, spacing,
+   duration, easing and type read well from tokens, and reaching for one first
+   is still the sane move — but a raw value is no longer a defect.
+
+   Rules **#8** ("no hardcoded design values — no raw hex, no `16px`, no
+   `400ms`") and **#9** ("semantic tokens only, never literals") were retired
+   by the fork, along with **#10** (colour authored only in `oklch()`). Kept
+   here only so an old citation resolves; none is a rule any more.
+
+   Two things from that family do still hold, for reasons that are not taste:
+   the palette stays the single source of truth for colour, and theme switching
+   breaks if a component references a palette literal where a role is meant —
+   so `var(--color-primary)` over `var(--color-ink)` remains the right call
+   when a component is theme-aware. Judge it by looking, not by a lint rule.
+
+2. **Tailwind v4 utilities first**, CSS Modules when a component needs real
    structure. Both read the same tokens, so they cannot drift.
-4. **Every primitive gets a Storybook story**, including its reduced-motion
+3. **Every primitive gets a Storybook story**, including its reduced-motion
    state.
-5. **Accessibility is not a later pass.** Focus states visible, targets
+4. **Accessibility is not a later pass.** Focus states visible, targets
    ≥44×44px, contrast checked. `@axe-core/playwright` is already installed —
    there is no excuse for guessing.
-6. **A sticky or fixed element carries its own ground.** Anything that leaves
+5. **A sticky or fixed element carries its own ground.** Anything that leaves
    the flow and sits over the page must set a `background-color` from a token,
    because what scrolls under it is not knowable from the component. A
    transparent sticky element has the contrast of whatever happens to pass
