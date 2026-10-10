@@ -18,6 +18,7 @@ import { isConfigured } from '@/lib/integrations/registry'
 import { SanityLive } from '@/lib/integrations/sanity/live'
 import { routeAlternates } from '@/lib/seo/alternates'
 import { JsonLd } from '@/lib/seo/json-ld'
+import { parseIndexableHosts } from '@/lib/seo/robots-policy'
 import { organizationSchema, websiteSchema } from '@/lib/seo/schemas'
 import { SITE, siteFacts } from '@/lib/seo/site'
 import { themes } from '@/lib/styles/colors'
@@ -42,6 +43,25 @@ import '@/lib/styles/css/index.css'
 const APP_NAME = SITE.name
 const APP_DEFAULT_TITLE = SITE.name
 const APP_TITLE_TEMPLATE = `%s — ${SITE.name}`
+
+/**
+ * The second layer of the placeholder-site noindex, under the
+ * `X-Robots-Tag` header that `next.config.ts` puts on every response.
+ *
+ * Read from the same `INDEXABLE_HOSTS` list as the header, so the two can
+ * never disagree: while no host is vouched for, both say noindex, and filling
+ * the list at F5-05 silences both. Without that coupling the meta tag would
+ * outlive the header and keep the final domain out of the index after the
+ * header had stopped asking for it — the more restrictive of the two wins.
+ *
+ * Deliberately NOT per-request, and the cost is the point: reading the request
+ * host inside `generateMetadata` would opt every page out of prerendering, and
+ * this site is almost entirely prerendered behind `'use cache'`. So this layer
+ * is build-time and blunt, the header carries the per-host answer, and a page
+ * that wants its own `robots` still overrides this by setting one
+ * (`lib/utils/metadata.ts`'s `noIndex`).
+ */
+const NO_INDEX_META = parseIndexableHosts(env.INDEXABLE_HOSTS).length === 0
 
 /**
  * Locale-aware metadata.
@@ -121,6 +141,7 @@ export async function generateMetadata(): Promise<Metadata> {
     // The site's author is the studio it belongs to. The starter's own credit
     // is kept where it belongs — the footer, as the MIT notice requires.
     authors: [{ name: SITE.name, url: SITE.url }],
+    ...(NO_INDEX_META && { robots: { index: false, follow: false } }),
   }
 
   if (env.NEXT_PUBLIC_FACEBOOK_APP_ID) {

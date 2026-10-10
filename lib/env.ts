@@ -28,6 +28,14 @@ const declaredEnv = z.object({
   // the base URL's fallback when NEXT_PUBLIC_BASE_URL is unset
   // (`lib/base-url.ts`).
   VERCEL_PROJECT_PRODUCTION_URL: z.string().optional(),
+  // Hosts that may be indexed, comma-separated. Unset or empty — which is the
+  // state today, because the final domain is undecided — means every response
+  // carries `X-Robots-Tag: noindex, nofollow` and every page a meta robots
+  // tag, because the site still serves labelled placeholder content. Not
+  // `NEXT_PUBLIC_`: it is read by `next.config.ts` and on the server only, and
+  // `docs/DEPLOYMENT.md` §0 is explicit about not widening that prefix.
+  // Reasoning in `lib/seo/robots-policy.ts`; filled at F5-05.
+  INDEXABLE_HOSTS: z.string().optional(),
 
   // Sanity (supports both Satus and Vercel Marketplace conventions)
   NEXT_PUBLIC_SANITY_PROJECT_ID: z.string().optional(),

@@ -84,6 +84,26 @@ canonical domain should be one Vercel does not know yet. On any other host,
 leave it unset and the build warns, then publishes `localhost` URLs to search
 engines.
 
+### Indexability — leave this unset until real content ships
+
+| Variable          | Value                    | Notes                                     |
+| ----------------- | ------------------------ | ----------------------------------------- |
+| `INDEXABLE_HOSTS` | **unset** while in build | Comma-separated hosts that may be indexed |
+
+Unset — which is the state today — means every response carries
+`X-Robots-Tag: noindex, nofollow` and every page a `<meta name="robots">`,
+because the site still serves labelled placeholder content. Measured on
+2026-10-10, before this existed: no `X-Robots-Tag` on any response, no meta
+robots anywhere, and `robots.txt` allowing every AI crawler — the placeholder
+site was fully indexable and harvestable.
+
+Set it to the final domain only when real content is live, and list nothing
+else: a host named here is a host someone vouched for, and an unlisted host
+stays noindex, which is the safe direction. Not `NEXT_PUBLIC_` — it is read by
+`next.config.ts` and on the server only, and §0 above is explicit about not
+widening that prefix. The reasoning, including why the decision is per-request
+rather than per-build, is in `lib/seo/robots-policy.ts`.
+
 ### Recommended
 
 | Variable                   | Value              | Needed for                        |

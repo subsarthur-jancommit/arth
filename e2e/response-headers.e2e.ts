@@ -136,4 +136,72 @@ test.describe('response headers', () => {
     const response = await request.get('/en')
     expect((response.headers().vary ?? '').toLowerCase()).toContain('accept')
   })
+
+  /*
+   * The placeholder site stays out of every index.
+   *
+   * Measured on the live site on 2026-10-10, before this gate existed: not one
+   * response carried `X-Robots-Tag` and no page carried a meta robots tag,
+   * while `robots.txt` allowed every AI crawler — the whole placeholder site
+   * was indexable and harvestable.
+   *
+   * The machine files are the part worth holding. `proxy.ts` cannot reach them
+   * — its matcher deliberately excludes `robots.txt`, `sitemap.xml`,
+   * `favicon.ico` and every image extension, and `proxy.test.ts` asserts that
+   * exclusion — so the header comes from `next.config.ts`'s `headers()`
+   * instead. If anyone ever moves it back into the proxy, these four paths go
+   * bare and nothing else would notice.
+   *
+   * Images are listed for a reason a meta tag cannot cover: a header is the
+   * only way to keep a PNG out of an image index.
+   */
+  test('every response refuses indexing while the content is placeholder', async ({
+    request,
+  }) => {
+    const paths = [
+      '/en',
+      '/id',
+      '/en/work',
+      '/sitemap.xml',
+      '/robots.txt',
+      '/llms.txt',
+      '/icon.png',
+      '/opengraph-image.png',
+    ]
+
+    for (const path of paths) {
+      const response = await request.get(path)
+      const value = response.headers()['x-robots-tag'] ?? ''
+
+      expect(value, `${path} must refuse indexing`).toContain('noindex')
+      expect(
+        value,
+        `${path} must refuse link-following, or a crawler walks the site`
+      ).toContain('nofollow')
+    }
+  })
+
+  test('pages carry a meta robots tag as well as the header', async ({
+    request,
+  }) => {
+    /*
+     * Second layer, deliberately blunt: the header answers per host, this is
+     * baked at build. See the note in `app/[locale]/layout.tsx`.
+     *
+     * `/en/work` is in the list on purpose. It is a dynamic route (`ƒ`,
+     * `no-store` — see the catalogue test above), so its prerendered shell
+     * carries no resolved metadata and the layout's `robots` is only applied
+     * when the real response is built. Measured in the local build: 32 of 60
+     * prerendered HTML files carry the tag, and this route's shell is one of
+     * the ones that does not. Whether the *served* response carries it is a
+     * different question from whether the shell does, and this is the only
+     * place that can ask it.
+     */
+    for (const path of ['/en', '/id', '/en/work', '/id/studio']) {
+      const html = await (await request.get(path)).text()
+      expect(html, `${path} must carry meta robots`).toMatch(
+        /<meta name="robots" content="[^"]*noindex/
+      )
+    }
+  })
 })

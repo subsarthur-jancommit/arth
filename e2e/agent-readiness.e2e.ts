@@ -9,6 +9,7 @@ import { expect, test } from '@playwright/test'
  * means the suite was holding the *wrong* identity in place rather than
  * guarding the right one.
  */
+import { AI_CRAWLERS } from '../lib/seo/robots-policy'
 import { SITE } from '../lib/seo/site'
 const NEXT_VARY_FIELDS = [
   'rsc',
@@ -353,7 +354,41 @@ test.describe('machine-readable discovery files', () => {
     const robotsBody = await robots.text()
     expect(robots.status()).toBe(200)
     expect(robots.headers()['content-type']).toContain('text/plain')
-    expect(robotsBody).toContain('User-Agent: GPTBot')
     expect(robotsBody).toContain('Sitemap:')
+
+    /*
+     * Every AI crawler is refused by name, and search engines are not.
+     *
+     * The asymmetry is the assertion, not an accident. A crawler has to be
+     * able to fetch a page to see its `noindex`, so refusing search engines
+     * here would make the whole noindex unreadable — and a URL refused in
+     * robots.txt can still surface on inbound links alone. These crawlers
+     * are here to harvest the text rather than index the URL, so there is
+     * nothing to let them read.
+     *
+     * Checked per crawler against the list the route itself emits, so adding
+     * one to `AI_CRAWLERS` without refusing it fails here rather than
+     * shipping an implicit allow.
+     */
+    for (const crawler of AI_CRAWLERS) {
+      const block = robotsBody
+        .split(/\n\s*\n/)
+        .find((section) => section.includes(`User-Agent: ${crawler}`))
+
+      expect(
+        block,
+        `${crawler} must have its own robots.txt block`
+      ).toBeDefined()
+      expect(block, `${crawler} must be refused`).toContain('Disallow: /')
+    }
+
+    const wildcard = robotsBody
+      .split(/\n\s*\n/)
+      .find((section) => section.includes('User-Agent: *'))
+    expect(wildcard, 'the * block must exist').toBeDefined()
+    expect(
+      wildcard,
+      'search engines must stay allowed, or they never read the noindex'
+    ).toContain('Allow: /')
   })
 })
