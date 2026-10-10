@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
-import { PRACTICE_SEGMENT } from '@/lib/content/practices'
+import { RESERVED_SLUGS, UNIT_STUDIO_TITLES, UNITS } from '@/lib/content/units'
 
 import { localeValue, requireEveryLocale } from '../utils/i18n-array'
 
@@ -62,12 +62,20 @@ export const project = defineType({
           if (slug?.current?.includes('.')) {
             return 'Slug cannot contain a dot ("."). Dotted paths are treated as static files and are excluded from the sitemap, llms.txt, and Markdown negotiation.'
           }
-          // `/work/practice/<value>` is a real route, and Next matches a
-          // static segment before a dynamic one. A project on this slug would
-          // be shadowed by the filter view and never render, with no error
-          // anywhere. See `lib/content/practices.ts`.
-          if (slug?.current === PRACTICE_SEGMENT) {
-            return `Slug cannot be "${PRACTICE_SEGMENT}". That path is reserved for the practice filter (/work/${PRACTICE_SEGMENT}/mural), and a project using it would be unreachable.`
+          // Next matches a static segment before a dynamic one, so a
+          // document on a slug that a static route already answers is
+          // shadowed and never renders, with no error anywhere.
+          //
+          // This guarded one segment, `practice`, when the filter lived under
+          // `/work`. Arthur has no such prefix — each unit IS a top-level
+          // segment — so three slugs are spoken for instead of one, and the
+          // umbrella's fixed pages take more. See `lib/content/units.ts`.
+          const reserved = slug?.current
+          if (
+            reserved &&
+            (RESERVED_SLUGS as readonly string[]).includes(reserved)
+          ) {
+            return `Slug cannot be "${reserved}". A fixed page already answers at /${reserved}, and a document using it would be unreachable.`
           }
           return true
         }),
@@ -137,28 +145,32 @@ export const project = defineType({
        *
        * `engagement` below is free prose and stays that way — "Retainer, six
        * months" is a description, not a category. But `lib/seo/site.ts` advertises
-       * exactly three practices in three places (`services`, `knowsAbout`,
+       * exactly three units in three places (`services`, `knowsAbout`,
        * `description`) and nothing in the schema could express which one a
        * work belongs to, so neither a visitor nor an agent could act on the
        * claim.
        *
        * The value is a key; the label is translated in `messages/*.json`.
        * Localizing the value would give one work two different filter URLs,
-       * and `/work/practice/mural` would stop meaning the same thing in
+       * and `/konstruksi` would stop meaning the same thing in
        * each language. The canonical list lives in
-       * `lib/content/practices.ts`; this `list` is the editor-facing half
-       * of it.
+       * `lib/content/units.ts`; this `list` is derived from it below, so
+       * the two cannot disagree.
        */
       options: {
-        list: [
-          { title: 'Consulting', value: 'consulting' },
-          { title: 'AI & Data', value: 'ai-data' },
-          { title: 'Commission', value: 'commission' },
-        ],
+        // Derived, not copied. This list used to be written out here with the
+        // note that `lib/content/practices.ts` held the canonical one — which
+        // made the Studio a second source that could silently disagree with
+        // the routes. Mapping `UNITS` means a unit added there appears here,
+        // and one removed cannot linger as a pickable value.
+        list: UNITS.map((unit) => ({
+          title: UNIT_STUDIO_TITLES[unit],
+          value: unit,
+        })),
         layout: 'radio',
       },
       validation: (Rule) => Rule.required(),
-      initialValue: 'consulting',
+      initialValue: UNITS[0],
     }),
 
     defineField({
