@@ -8,6 +8,11 @@ import createNextIntlPlugin from 'next-intl/plugin'
 // imports and everything they pull in must use relative paths.
 import { LOCAL_BASE_URL, resolveBaseUrl } from './lib/base-url'
 import { composeCsp } from './lib/integrations/csp'
+import {
+  indexableHostConditions,
+  NOINDEX_VALUE,
+  ROBOTS_HEADER,
+} from './lib/seo/robots-policy'
 
 // --- Content-Security-Policy --------------------------------------------------
 // Composed at config-eval time from the integration registry (see
@@ -49,6 +54,18 @@ const PUBLIC_BASE_URL = resolveBaseUrl({
   explicit: process.env.NEXT_PUBLIC_BASE_URL,
   vercelProductionHost: process.env.VERCEL_PROJECT_PRODUCTION_URL,
 })
+// -----------------------------------------------------------------------------
+
+// --- Indexability -------------------------------------------------------------
+// Every route serves labelled placeholder content while Arthur is being built,
+// so every response carries `X-Robots-Tag: noindex, nofollow` except on a host
+// someone has vouched for in `INDEXABLE_HOSTS`. That list is empty today —
+// the final domain is still undecided — so nothing is exempt, and the header
+// is unconditional. The reasoning, and why the decision is per-request rather
+// than per-build, is in `lib/seo/robots-policy.ts`.
+const INDEXABLE_HOST_CONDITIONS = indexableHostConditions(
+  process.env.INDEXABLE_HOSTS
+)
 // -----------------------------------------------------------------------------
 
 // --- Build stamp ---------------------------------------------------------------
@@ -237,6 +254,33 @@ const nextConfig: NextConfig = {
           value: 'strict-origin-when-cross-origin',
         },
       ],
+    },
+    {
+      /*
+       * Keep the placeholder site out of every index.
+       *
+       * Its own entry rather than a header in the block above, and that
+       * separation is load-bearing: this is the one rule that must stop
+       * applying on the final domain, and `missing` is per-entry. Folding it
+       * into the security block would mean the day someone fills
+       * `INDEXABLE_HOSTS`, the final domain silently loses CSP, HSTS and
+       * nosniff along with its noindex.
+       *
+       * `/(.*)` here, not the proxy. `proxy.ts`'s matcher deliberately
+       * excludes `robots.txt`, `sitemap.xml`, `favicon.ico` and every image
+       * and font extension — `proxy.test.ts` asserts that exclusion — so the
+       * proxy cannot reach the machine files this has to cover. This source
+       * does: measured on the live site on 2026-10-10, the block above
+       * reaches `/robots.txt`, `/sitemap.xml`, `/icon.png` and `/llms.txt`,
+       * all four carrying its `nosniff`. Images matter in particular, because
+       * a header is the only way to keep one out of an image index — a meta
+       * tag cannot describe a PNG.
+       */
+      source: '/(.*)',
+      headers: [{ key: ROBOTS_HEADER, value: NOINDEX_VALUE }],
+      ...(INDEXABLE_HOST_CONDITIONS.length > 0 && {
+        missing: INDEXABLE_HOST_CONDITIONS,
+      }),
     },
     {
       /*
