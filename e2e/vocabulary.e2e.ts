@@ -30,9 +30,27 @@ import { expect, test } from '@playwright/test'
 /**
  * Words this site no longer does.
  *
- * `commission` is deliberately absent: it is one of the three practices now
- * ("Commission" / "Pesanan"), so banning it would ban the answer along with
- * the problem. What is banned is the *craft* vocabulary of a painting studio.
+ * Two layers, both retired, both for the same reason: a machine surface that
+ * still names them is making a claim about a business that does not exist.
+ *
+ *  - the *craft* vocabulary of the painting studio this was before Tahap 13;
+ *  - the *practice* vocabulary of the agency it was before Arthur — the three
+ *    practices were `consulting`, `ai-data` and `commission`, and F1-03
+ *    retired their routes.
+ *
+ * Three words are deliberately **absent** from the practice half, and the
+ * omissions are the interesting part:
+ *
+ *  - `commission` and `komisi`, because the content rules *require* a
+ *    commission-disclosure sentence on any page that recommends a vendor,
+ *    financier or insurer. Banning the word would ban the disclosure.
+ *  - `pesanan`, which is ordinary Indonesian for an order — "pesanan masuk ke
+ *    dapur tanpa lewat kasir" is one of the content rules' own examples of a
+ *    sentence Arthur may write.
+ *
+ * `ai-data` is absent too, but only because `\b` does not bracket a hyphen
+ * the way this pattern needs; `consulting` and `konsultasi` catch the same
+ * drift on the surfaces below.
  */
 const RETIRED = [
   'painting',
@@ -48,6 +66,12 @@ const RETIRED = [
   'akrilik',
   'artwork',
   'karya seni',
+  // The practice vocabulary, retired in F1-03.
+  'practice',
+  'practices',
+  'praktik',
+  'consulting',
+  'konsultasi',
 ]
 
 const PATTERN = new RegExp(`\\b(${RETIRED.join('|')})\\b`, 'gi')

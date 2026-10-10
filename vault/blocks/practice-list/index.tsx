@@ -56,14 +56,14 @@ import { type ReactNode, ViewTransition } from 'react'
 
 import { Link } from '@/components/ui/link'
 import { SectionHeader } from '@/components/ui/section-header'
-import { type Practice, practiceTemplate } from '@/lib/content/practices'
+import { type Unit, unitTemplate } from '@/lib/content/units'
 import { transitionName } from '@/lib/motion/transition-name'
 import { Reveal } from '@/vault/motion/reveal'
 
 import s from './practice-list.module.css'
 
 interface PracticeEntry {
-  value: Practice
+  value: Unit
   /** The practice's name, localized. */
   label: string
   /** One sentence on what it is — the catalogue's own masthead line. */
@@ -151,7 +151,7 @@ export function PracticeList({
             <div className={s.panel}>
               <p className={cn('p-big', s.intro)}>{entry.intro}</p>
               <Link
-                href={practiceTemplate(entry.value)}
+                href={unitTemplate(entry.value)}
                 className={cn('caption', s.link)}
                 // Stands the route-change overlay down for this navigation so
                 // the name above can morph into the page's heading instead of

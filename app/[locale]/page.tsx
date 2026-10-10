@@ -6,8 +6,8 @@ import { Wrapper } from '@/components/layout/wrapper'
 import { SanityImage } from '@/components/ui/sanity-image'
 import { SectionHeader } from '@/components/ui/section-header'
 import { resolveHomeContent } from '@/lib/content/home-fallback'
-import { latestWriting } from '@/lib/content/practice-writing'
-import { PRACTICES } from '@/lib/content/practices'
+import { latestWriting } from '@/lib/content/unit-writing'
+import { UNITS } from '@/lib/content/units'
 import { isLocale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
 import { RichText } from '@/lib/integrations/sanity/components/rich-text'
@@ -35,7 +35,7 @@ import s from './page.module.css'
 const FLOWMAP_SIM: ('fluid' | 'flowmap')[] = ['flowmap']
 
 /*
- * Same `'use cache'` + draftMode shape as `app/[locale]/[...slug]/page.tsx`.
+ * Same `'use cache'` + draftMode shape as `app/[locale]/halaman/[slug]/page.tsx`.
  *
  * The fetch calls `cacheTag()` internally, which under Cache Components is
  * only legal inside a `'use cache'` function. Locale is an argument rather
@@ -219,7 +219,7 @@ export default async function Home() {
          * own doc describes the result as shipped: *"The text elements sit on
          * a diagonal: the index in the top right, the headline and its action
          * at the bottom left."* `lib/content/practices.ts` says the same
-         * thing — *"the hero's right-hand column has been labelled `Practice`
+         * thing — *"the hero's right-hand column has been labelled `Unit`
          * / `Praktik` since Tahap 12d"* — and `home.heroIndexLabel` sits in
          * both dictionaries.
          *
@@ -230,13 +230,13 @@ export default async function Home() {
          * composition the prop's own doc records Tahap 12 removing.
          *
          * The words are the ones the rest of the page already uses:
-         * `PracticeList` below is built from the same `PRACTICES` constant
+         * `PracticeList` below is built from the same `UNITS` constant
          * and the same `workIndex.<practice>` labels. Nothing here is copy
          * invented for the hero.
          */
         index={{
           label: t('heroIndexLabel'),
-          items: PRACTICES.map((practice) => tWork(practice)),
+          items: UNITS.map((unit) => tWork(unit)),
         }}
         action={
           /* oxlint-disable-next-line react/forbid-elements -- deliberate native
@@ -308,23 +308,23 @@ export default async function Home() {
         {/*
           What the studio takes on, opened one practice at a time.
 
-          The three values come from `lib/content/practices.ts` — the same
-          list that drives the schema, the `/work/practice/<value>` routes and
-          the catalogue's filter chips — and each panel shows the sentence
-          that catalogue already uses as its masthead. Nothing here is copy
-          invented for this section, which is why it carries no placeholder
-          note: it says what the rest of the site says.
+          The three values come from `lib/content/units.ts` — the same list
+          that drives the schema, the `/{unit}` routes and the catalogue's
+          filter chips — and each panel shows the sentence that catalogue
+          already uses as its masthead. Nothing here is copy invented for this
+          section, which is why it carries no placeholder note: it says what
+          the rest of the site says.
         */}
         <PracticeList
-          id="practice"
+          id="unit"
           className={s.section}
           eyebrow={t('practiceEyebrow')}
           title={t('practiceTitle')}
           linkLabel={t('practiceLink')}
-          entries={PRACTICES.map((practice) => ({
-            value: practice,
-            label: tWork(practice),
-            intro: tWork(`${practice}Intro`),
+          entries={UNITS.map((unit) => ({
+            value: unit,
+            label: tWork(unit),
+            intro: tWork(`${unit}Intro`),
           }))}
         />
 
@@ -334,7 +334,7 @@ export default async function Home() {
           /*
            * No eyebrow either. "Studio" duplicated the header's own anchor
            * label sitting a few hundred pixels above it, and "How we work"
-           * needs no category. Two eyebrows remain on this page — `Practice`
+           * needs no category. Two eyebrows remain on this page — `Unit`
            * and `Commissions` — because each names something its headline
            * does not.
            */
@@ -391,7 +391,7 @@ export default async function Home() {
             className={s.section}
             eyebrow={t('journalEyebrow')}
             entry={latest}
-            practice={latest.practice ? tWork(latest.practice) : undefined}
+            practice={latest.unit ? tWork(latest.unit) : undefined}
             allLabel={t('journalAll')}
             locale={locale}
           />

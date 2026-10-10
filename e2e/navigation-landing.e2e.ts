@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
-import { PRACTICES } from '../lib/content/practices'
+import { UNITS } from '../lib/content/units'
 import { FEATURED_WORK } from './fixtures'
 
 /**
@@ -13,8 +13,8 @@ import { FEATURED_WORK } from './fixtures'
  * internal navigation kept the **previous** page's scroll offset. Measured on
  * the production build before the fix:
  *
- *   - `/en` at scroll 3520 (the practice disclosure) to
- *     `/en/practice/consulting` → landed at 1522, the page's maximum, with its
+ *   - `/en` at scroll 3520 (the unit disclosure) to
+ *     `/en/konstruksi` → landed at 1522, the page's maximum, with its
  *     `<h1>` 1136px above the fold;
  *   - `/en` to `/en/work/arus-balik` → landed at 1047, title 917px out of view;
  *   - `/en/work` to the same project → landed at 394.
@@ -104,18 +104,13 @@ function assertLandedAtTheTop(
 }
 
 test.describe('a navigation lands at the top of the page it asked for', () => {
-  test('home → a practice page', async ({ page }) => {
-    const result = await navigate(
-      page,
-      '/en',
-      `/en/practice/${PRACTICES[0]}`,
-      async (p) => {
-        // The link lives inside a closed `<details>`; a reader opens it first.
-        await p.locator('#practice summary').first().click()
-        await p.waitForTimeout(700)
-      }
-    )
-    assertLandedAtTheTop(result, 'home → practice')
+  test('home → a unit page', async ({ page }) => {
+    const result = await navigate(page, '/en', `/en/${UNITS[0]}`, async (p) => {
+      // The link lives inside a closed `<details>`; a reader opens it first.
+      await p.locator('#unit summary').first().click()
+      await p.waitForTimeout(700)
+    })
+    assertLandedAtTheTop(result, 'home → unit')
   })
 
   test('home → a project page', async ({ page }) => {
@@ -128,12 +123,8 @@ test.describe('a navigation lands at the top of the page it asked for', () => {
     assertLandedAtTheTop(result, 'catalogue → project')
   })
 
-  test('a practice page → the next practice', async ({ page }) => {
-    const result = await navigate(
-      page,
-      `/en/practice/${PRACTICES[0]}`,
-      `/en/practice/${PRACTICES[1]}`
-    )
-    assertLandedAtTheTop(result, 'practice → next practice')
+  test('a unit page → the next unit', async ({ page }) => {
+    const result = await navigate(page, `/en/${UNITS[0]}`, `/en/${UNITS[1]}`)
+    assertLandedAtTheTop(result, 'unit → next unit')
   })
 })

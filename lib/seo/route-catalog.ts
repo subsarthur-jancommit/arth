@@ -1,10 +1,6 @@
 import type { MetadataRoute } from 'next'
 
-import {
-  PRACTICES,
-  type Practice,
-  practiceTemplate,
-} from '@/lib/content/practices'
+import { type Unit, UNITS, unitTemplate } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import { type Locale, routing } from '@/lib/i18n/routing'
 import { type Localized, SITE } from '@/lib/seo/site'
@@ -48,7 +44,7 @@ export interface LocalizedStaticRoute extends Omit<
  * `lib/i18n/paths.ts` for why the two are deliberately kept distinct.
  */
 /*
- * Labels and descriptions for the practice views.
+ * Labels and descriptions for the unit views.
  *
  * Deliberately not read from `messages/*.json`. This catalogue feeds
  * `/llms.txt`, the Markdown representations and the sitemap, all of which are
@@ -58,26 +54,38 @@ export interface LocalizedStaticRoute extends Omit<
  * page's own `<h1>` does come from the message files, which is why these read
  * as descriptions of a listing rather than as page titles.
  */
-const PRACTICE_LABELS = {
-  consulting: { en: 'Consulting', id: 'Konsultasi' },
-  'ai-data': { en: 'AI and data', id: 'AI dan data' },
-  commission: { en: 'Commissioned work', id: 'Karya pesanan' },
-} satisfies Record<Practice, Localized<string>>
+const UNIT_LABELS = {
+  konstruksi: { en: 'Konstruksi', id: 'Konstruksi' },
+  teknologi: { en: 'Teknologi', id: 'Teknologi' },
+  peekabo: { en: 'Peekabo', id: 'Peekabo' },
+} satisfies Record<Unit, Localized<string>>
 
-const PRACTICE_DESCRIPTIONS = {
-  consulting: {
-    en: 'Consulting engagements: strategy, architecture and the decisions that come before a build.',
-    id: 'Penugasan konsultasi: strategi, arsitektur, dan keputusan yang datang sebelum pembangunan.',
+/*
+ * Structural, not promotional, and deliberately so.
+ *
+ * These say who each unit is read by — which is sourced, from the plan's own
+ * side table — rather than what each unit sells, which is not. The Master
+ * Brief's unit headers are the ready-to-publish source for the second kind of
+ * sentence, and they are read when the unit pages are written, not here.
+ *
+ * So no sample label is needed on these: a sentence that only states what is
+ * true does not need to be marked as a placeholder. An invented description of
+ * offerings would, and is the reason this file does not carry one.
+ */
+const UNIT_DESCRIPTIONS = {
+  konstruksi: {
+    en: 'Konstruksi, read from two sides: the people running a project, and the people who own the building.',
+    id: 'Konstruksi, dibaca dari dua sisi: yang menjalankan proyek, dan yang memiliki bangunannya.',
   },
-  'ai-data': {
-    en: 'AI and data work: evaluation, pipelines and systems that have to hold up in production.',
-    id: 'Pekerjaan AI dan data: evaluasi, pipeline, dan sistem yang harus bertahan di produksi.',
+  teknologi: {
+    en: 'Teknologi, read from two sides: buyers who want a finished thing, and buyers who read the build.',
+    id: 'Teknologi, dibaca dari dua sisi: pembeli yang mau hasil siap pakai, dan pembeli yang paham teknis.',
   },
-  commission: {
-    en: 'Commissioned work: scoped, paid engagements delivered to a brief.',
-    id: 'Karya pesanan: penugasan berbayar dengan lingkup jelas, dikerjakan sesuai brief.',
+  peekabo: {
+    en: "Peekabo, Arthur's agency, read from two sides: brand and business owners, and the seller network.",
+    id: 'Peekabo, agency-nya Arthur, dibaca dari dua sisi: pemilik usaha dan brand, dan jaringan penjual.',
   },
-} satisfies Record<Practice, Localized<string>>
+} satisfies Record<Unit, Localized<string>>
 
 export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
   {
@@ -91,8 +99,8 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
     path: '/journal',
     label: { en: 'Journal', id: 'Jurnal' },
     description: {
-      en: 'Notes on how the studio scopes, decides and delivers: method rather than announcements.',
-      id: 'Catatan tentang bagaimana studio menentukan lingkup, memutuskan, dan mengirim: metode, bukan pengumuman.',
+      en: 'Notes on how the work is scoped, decided and delivered: method rather than announcements.',
+      id: 'Catatan tentang bagaimana pekerjaan ditentukan lingkupnya, diputuskan, dan dikirim: metode, bukan pengumuman.',
     },
     changeFrequency: 'weekly',
     priority: 0.6,
@@ -101,8 +109,8 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
     path: '/studio',
     label: { en: 'Studio', id: 'Studio' },
     description: {
-      en: 'How the studio scopes, decides and delivers, the practices it covers, and the colophon for this site.',
-      id: 'Bagaimana studio ini menentukan lingkup, memutuskan, dan mengirim, praktik yang dicakupnya, serta kolofon situs ini.',
+      en: 'How the work is scoped, decided and delivered, the units it runs through, and the colophon for this site.',
+      id: 'Bagaimana pekerjaan ditentukan lingkupnya, diputuskan, dan dikirim, unit yang menjalankannya, serta kolofon situs ini.',
     },
     changeFrequency: 'monthly',
     priority: 0.7,
@@ -118,21 +126,21 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
     priority: 0.9,
   },
   /*
-   * One entry per practice.
+   * One entry per unit. Side routes join when F1-04 builds their pages — a
+   * sitemap must not advertise a page that does not answer yet.
    *
    * These are not filter permutations of `/work` — they are `○` static pages
    * with their own `<h1>`, their own description and their own canonical, and
-   * they are the pages that should rank for "commissioned mural" rather than
-   * the generic index. `app/[locale]/work/catalogue.tsx` records why the
-   * filter is a route at all instead of `?practice=`.
+   * they are the pages that should rank for a unit's own name rather than
+   * the generic index.
    *
    * Generated from the same constant the route's `generateStaticParams` uses,
    * so the sitemap cannot list a view that is not built, or omit one that is.
    */
-  ...PRACTICES.map((value): StaticRoute => ({
-    path: practiceTemplate(value),
-    label: PRACTICE_LABELS[value],
-    description: PRACTICE_DESCRIPTIONS[value],
+  ...UNITS.map((unit): StaticRoute => ({
+    path: unitTemplate(unit),
+    label: UNIT_LABELS[unit],
+    description: UNIT_DESCRIPTIONS[unit],
     changeFrequency: 'weekly',
     priority: 0.7,
   })),

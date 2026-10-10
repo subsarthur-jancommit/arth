@@ -77,7 +77,7 @@ const SUBJECTS = [
   // The filtered catalogue is a real entry point, not only a click away: the
   // practice pages link straight to it (`app/[locale]/work/hrefs.ts`).
   {
-    path: '/en/work?practice=consulting',
+    path: '/en/work?unit=konstruksi',
     subject: 'li[data-flip-id]',
     what: 'covers',
     one: 'cover',

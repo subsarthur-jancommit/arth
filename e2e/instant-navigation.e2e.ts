@@ -16,7 +16,15 @@ test.describe('instant navigation', () => {
   test('404 -> home shell paints instantly, without waiting on the network', async ({
     page,
   }) => {
-    await page.goto('/this-route-does-not-exist-e2e')
+    /*
+     * Two segments, deliberately.
+     *
+     * A single segment under a locale is answered by `proxy.ts` with a real 404
+     * and a complete static document (F1-03, `lib/seo/route-status.ts`), so it
+     * never reaches the in-chrome 404 this test is about.
+     * `e2e/route-status.e2e.ts` covers that case.
+     */
+    await page.goto('/en/this-route/does-not-exist-e2e')
 
     await expect(page.getByRole('heading', { name: '404' })).toBeVisible()
 

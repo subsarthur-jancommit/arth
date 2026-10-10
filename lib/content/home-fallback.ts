@@ -1,3 +1,4 @@
+import { BRAND_NAME } from '@/lib/brand'
 import type { Locale } from '@/lib/i18n/routing'
 
 /**
@@ -75,7 +76,7 @@ const FALLBACK_COPY = {
  * omit it and the human surfaces label it. `docs/stages/TAHAP-35.md` §3.1.
  */
 export const FALLBACK_CONTACT = {
-  name: 'Arth',
+  name: BRAND_NAME,
   email: 'studio@arth.example',
   socials: [
     { label: 'Instagram', url: 'https://instagram.com/' },

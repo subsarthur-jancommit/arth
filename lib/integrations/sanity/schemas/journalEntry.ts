@@ -1,6 +1,6 @@
 import { defineField, defineType } from 'sanity'
 
-import { PRACTICES } from '@/lib/content/practices'
+import { UNIT_STUDIO_TITLES, UNITS } from '@/lib/content/units'
 
 import { requireEveryLocale } from '../utils/i18n-array'
 
@@ -86,14 +86,29 @@ export const journalEntry = defineType({
 
     defineField({
       name: 'practice',
-      title: 'Practice',
+      title: 'Unit',
       type: 'string',
       description:
-        'Which practice this belongs under. Optional — an entry may belong to none.',
+        'Which unit this belongs under. Optional — an entry may belong to none.',
       options: {
-        // From the same constant the routes, the footer index and the studio
-        // page read, so a practice cannot exist here and nowhere else.
-        list: PRACTICES.map((value) => ({ title: value, value })),
+        /*
+         * From the same constant the routes, the footer index and the studio
+         * page read, so a unit cannot exist here and nowhere else.
+         *
+         * The **field name** is still `practice`, and that is debt rather
+         * than a choice: renaming a Sanity field renames it in every stored
+         * document, and this one is read by `journalEntriesQuery` and typed
+         * in the generated `sanity.types.ts`. The dataset holds zero
+         * `journalEntry` documents today (counted 2026-10-10), so the rename
+         * is free of data migration — but `project.practice` holds eight and
+         * is not, so renaming one and not the other would leave the two
+         * halves of the same vocabulary disagreeing. F2-02 replaces both
+         * with the real `unit` reference and renames them together.
+         */
+        list: UNITS.map((value) => ({
+          title: UNIT_STUDIO_TITLES[value],
+          value,
+        })),
         layout: 'radio',
       },
     }),

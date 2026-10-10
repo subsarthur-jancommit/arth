@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { PRACTICES } from '../lib/content/practices'
+import { UNITS } from '../lib/content/units'
 
 /**
  * What the server actually puts in its headers.
@@ -28,7 +28,7 @@ test.describe('response headers', () => {
       '/en',
       '/id',
       /*
-       * The practice views. `/en/work` and `/id/work` are **not** here any
+       * The unit pages. `/en/work` and `/id/work` are **not** here any
        * more, and that is a deliberate move rather than an omission.
        *
        * They were listed from Tahap 10, with the comment "listing them here
@@ -43,7 +43,7 @@ test.describe('response headers', () => {
        * instead, below and in `e2e/catalogue-layout.e2e.ts`: the catalogue
        * must render in full, server-side, filtered or not.
        */
-      ...PRACTICES.map((value) => `/en/work/practice/${value}`),
+      ...UNITS.map((unit) => `/en/${unit}`),
     ]
 
     for (const path of paths) {
@@ -66,11 +66,7 @@ test.describe('response headers', () => {
      * a shell — which is exactly the failure Tahap 10 found and
      * `docs/AUDIT-2026-08.md` §2.1 was about.
      */
-    for (const path of [
-      '/en/work',
-      '/id/work',
-      '/en/work?practice=consulting',
-    ]) {
+    for (const path of ['/en/work', '/id/work', `/en/work?unit=${UNITS[0]}`]) {
       const response = await request.get(path)
       expect(response.status(), path).toBe(200)
 
@@ -92,9 +88,7 @@ test.describe('response headers', () => {
     // than hardcoded, so the test cannot pass against a slug that no longer
     // exists.
     const sitemap = await (await request.get('/sitemap.xml')).text()
-    const path = sitemap.match(
-      /<loc>[^<]*?(\/en\/work\/(?!practice\/)[^<]+)<\/loc>/
-    )?.[1]
+    const path = sitemap.match(/<loc>[^<]*?(\/en\/work\/[^<]+)<\/loc>/)?.[1]
     test.skip(!path, 'no published project in the sitemap to check')
 
     const response = await request.get(path ?? '')

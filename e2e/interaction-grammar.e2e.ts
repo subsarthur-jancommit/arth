@@ -282,7 +282,7 @@ test.describe('interaction grammar', () => {
      * defect Tahap 50 found on `/studio`. The lesson was that an unmarked
      * moment is not an absent one.
      */
-    { path: '/en/practice/consulting' },
+    { path: '/en/konstruksi' },
     { path: '/en/studio' },
     { path: '/en/journal' },
     { path: '/en/journal/scope-is-the-deliverable' },

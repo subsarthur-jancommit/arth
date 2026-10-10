@@ -22,7 +22,9 @@ app/
 │   ├── error.tsx         # Error boundary (thin wrapper over components/ui/error-view)
 │   ├── not-found.tsx     # 404 page
 │   ├── articles/[slug]/   # Sanity article pages
-│   ├── [...slug]/         # Catch-all: renders one-segment Sanity pages by slug, 404 otherwise
+│   ├── [unit]/            # One page per Arthur unit (konstruksi, teknologi, peekabo)
+│   ├── halaman/[slug]/   # Sanity `page` documents, one per slug
+│   ├── [...slug]/         # Catch-all: the in-chrome 404 for anything deeper
 │   └── (examples)/
 │       └── sanity/       # Manual's Sanity tutorial route (kept on purpose)
 ├── api/

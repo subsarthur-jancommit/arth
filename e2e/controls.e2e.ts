@@ -46,7 +46,7 @@ const ROUTES = [
   '/id',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
-  '/en/practice/consulting',
+  '/en/konstruksi',
   '/en/studio',
   '/en/journal',
   `/en/journal/${JOURNAL_ENTRY}`,

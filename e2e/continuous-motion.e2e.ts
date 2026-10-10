@@ -289,7 +289,7 @@ test.describe('the footer answers the reader', () => {
     expect(before, 'no counter rendered').not.toBe('')
 
     await page
-      .locator('[data-practice-filter] a', { hasText: 'Consulting' })
+      .locator('[data-practice-filter] a', { hasText: 'Konstruksi' })
       .click()
     await page.waitForTimeout(1500)
 

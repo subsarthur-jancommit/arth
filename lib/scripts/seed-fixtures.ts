@@ -35,6 +35,8 @@ import { join } from 'node:path'
 import sharp from 'sharp'
 import { z } from 'zod'
 
+import { BRAND_NAME } from '@/lib/brand'
+
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production'
 const token = process.env.SANITY_API_WRITE_TOKEN
@@ -947,7 +949,7 @@ async function seed() {
       createOrReplace: {
         _id: `${PREFIX}studioSettings`,
         _type: 'studioSettings',
-        name: 'Arth',
+        name: BRAND_NAME,
         headline: i18n('Work that has to hold up', 'Karya yang harus bertahan'),
         subline: i18nText(
           'Consulting, AI and data, and commissioned build, scoped to a brief and delivered against it.',

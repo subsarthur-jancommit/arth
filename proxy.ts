@@ -32,6 +32,13 @@ import {
   MARKDOWN_SOURCE_PATH_HEADER,
   routePathFromMarkdown,
 } from '@/lib/seo/markdown-path'
+import {
+  brandedStatusDocument,
+  GONE_STATUS,
+  isGonePath,
+  isUnknownSingleSegment,
+  NOT_FOUND_STATUS,
+} from '@/lib/seo/route-status'
 import { getClientIP, rateLimit, rateLimiters } from '@/lib/utils/rate-limit'
 
 /**
@@ -158,6 +165,22 @@ function addAcceptVary(
   return response
 }
 
+function brandedStatusResponse(
+  status: typeof GONE_STATUS | typeof NOT_FOUND_STATUS,
+  pathname: string
+): NextResponse {
+  return new NextResponse(brandedStatusDocument(status, pathname), {
+    status,
+    headers: {
+      'content-type': 'text/html; charset=utf-8',
+      // Neither answer depends on Accept, but both share a URL space with
+      // pages that do, so the negotiation key is declared rather than
+      // letting a cache serve this body to a client that asked for Markdown.
+      vary: 'Accept',
+    },
+  })
+}
+
 export function proxy(request: NextRequest) {
   // Rate limit API routes
   if (request.nextUrl.pathname.startsWith('/api/')) {
@@ -206,6 +229,32 @@ export function proxy(request: NextRequest) {
   const markdownRoute = routePathFromMarkdown(request.nextUrl.pathname)
   if (!isPageDocumentRequest(request, markdownRoute !== null)) {
     return NextResponse.next()
+  }
+
+  /*
+   * The two honest statuses, answered before anything renders.
+   *
+   * Placed after `isPageDocumentRequest` on purpose: that guard has already
+   * excluded `/api`, `/_next`, router and prefetch requests and dotted asset
+   * paths, so what reaches here is a request for a document a reader or a
+   * crawler asked for. A prefetch for a dead URL falls through to the
+   * router's own soft 404 instead, which costs a reader nothing.
+   *
+   * Tested against `markdownRoute ?? pathname` so a `.md` alias of a retired
+   * page is retired too — `/id/practice/consulting.md` must not outlive
+   * `/id/practice/consulting`.
+   *
+   * `lib/seo/route-status.ts` holds both decisions, the documents they
+   * return, and why a real status is only available at this layer.
+   */
+  const documentPath = markdownRoute ?? request.nextUrl.pathname
+
+  if (isGonePath(documentPath)) {
+    return brandedStatusResponse(GONE_STATUS, documentPath)
+  }
+
+  if (isUnknownSingleSegment(documentPath)) {
+    return brandedStatusResponse(NOT_FOUND_STATUS, documentPath)
   }
 
   // The markdown handler redirects here with this param when a client's

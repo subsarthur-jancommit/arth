@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
-import { PRACTICE_SEGMENT } from '@/lib/content/practices'
+import { UNIT_STUDIO_TITLES, UNITS } from '@/lib/content/units'
 
 import { localeValue, requireEveryLocale } from '../utils/i18n-array'
 
@@ -62,13 +62,26 @@ export const project = defineType({
           if (slug?.current?.includes('.')) {
             return 'Slug cannot contain a dot ("."). Dotted paths are treated as static files and are excluded from the sitemap, llms.txt, and Markdown negotiation.'
           }
-          // `/work/practice/<value>` is a real route, and Next matches a
-          // static segment before a dynamic one. A project on this slug would
-          // be shadowed by the filter view and never render, with no error
-          // anywhere. See `lib/content/practices.ts`.
-          if (slug?.current === PRACTICE_SEGMENT) {
-            return `Slug cannot be "${PRACTICE_SEGMENT}". That path is reserved for the practice filter (/work/${PRACTICE_SEGMENT}/mural), and a project using it would be unreachable.`
-          }
+          /*
+           * No reserved-slug guard, and the absence is deliberate.
+           *
+           * One stood here: it forbade `practice`, because `/work/practice/`
+           * was a static segment *inside* `/work` and a project slugged
+           * `practice` would have been shadowed by it. That route is retired
+           * (`lib/seo/route-status.ts`), so nothing static answers under
+           * `/work/` any more and there is nothing left for a project slug
+           * to collide with.
+           *
+           * An earlier version of this change pointed the guard at the
+           * umbrella's own reserved list instead, which was wrong: a project
+           * lives at `/work/<slug>`, so a project slugged `konstruksi` sits
+           * at `/work/konstruksi` and never meets `/konstruksi`. The guard
+           * would have refused a legitimate slug for a collision that cannot
+           * happen.
+           *
+           * The moment a static segment is added under `/work/`, it needs a
+           * guard here naming that segment — not a list of top-level pages.
+           */
           return true
         }),
     }),
@@ -128,7 +141,7 @@ export const project = defineType({
 
     defineField({
       name: 'practice',
-      title: 'Practice',
+      title: 'Unit',
       type: 'string',
       description:
         'Which kind of work this is. Drives the filter on /work and the structured data.',
@@ -137,28 +150,32 @@ export const project = defineType({
        *
        * `engagement` below is free prose and stays that way — "Retainer, six
        * months" is a description, not a category. But `lib/seo/site.ts` advertises
-       * exactly three practices in three places (`services`, `knowsAbout`,
+       * exactly three units in three places (`services`, `knowsAbout`,
        * `description`) and nothing in the schema could express which one a
        * work belongs to, so neither a visitor nor an agent could act on the
        * claim.
        *
        * The value is a key; the label is translated in `messages/*.json`.
        * Localizing the value would give one work two different filter URLs,
-       * and `/work/practice/mural` would stop meaning the same thing in
+       * and `/konstruksi` would stop meaning the same thing in
        * each language. The canonical list lives in
-       * `lib/content/practices.ts`; this `list` is the editor-facing half
-       * of it.
+       * `lib/content/units.ts`; this `list` is derived from it below, so
+       * the two cannot disagree.
        */
       options: {
-        list: [
-          { title: 'Consulting', value: 'consulting' },
-          { title: 'AI & Data', value: 'ai-data' },
-          { title: 'Commission', value: 'commission' },
-        ],
+        // Derived, not copied. This list used to be written out here with the
+        // note that `lib/content/practices.ts` held the canonical one — which
+        // made the Studio a second source that could silently disagree with
+        // the routes. Mapping `UNITS` means a unit added there appears here,
+        // and one removed cannot linger as a pickable value.
+        list: UNITS.map((unit) => ({
+          title: UNIT_STUDIO_TITLES[unit],
+          value: unit,
+        })),
         layout: 'radio',
       },
       validation: (Rule) => Rule.required(),
-      initialValue: 'consulting',
+      initialValue: UNITS[0],
     }),
 
     defineField({

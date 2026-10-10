@@ -13,6 +13,7 @@ import { describe, expect, it } from 'bun:test'
 import { LOCALE_TAGS, routing } from '@/lib/i18n/routing'
 
 import { routeAlternates } from './alternates'
+import { FEED_TITLES } from './atom-feed'
 import { STATIC_ROUTES } from './route-catalog'
 
 /**
@@ -73,13 +74,13 @@ describe('routeAlternates', () => {
 
   it("announces the journal's feed on the journal's pages, in their language", () => {
     expect(alternates('/en/journal').types?.['application/atom+xml']).toEqual([
-      { url: '/en/journal/feed.xml', title: 'Arth — Journal' },
+      { url: '/en/journal/feed.xml', title: FEED_TITLES.en },
     ])
     expect(
       alternates('/id/journal/scope-is-the-deliverable').types?.[
         'application/atom+xml'
       ]
-    ).toEqual([{ url: '/id/journal/feed.xml', title: 'Arth — Jurnal' }])
+    ).toEqual([{ url: '/id/journal/feed.xml', title: FEED_TITLES.id }])
     expect(alternates('/en/studio').types?.['application/atom+xml']).toBe(
       undefined
     )

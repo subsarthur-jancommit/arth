@@ -1,0 +1,50 @@
+/*
+ * The scaffold's layout, and no more than that.
+ *
+ * F3-02 builds the unit template; this page exists so the route, its status
+ * handling and its sweep coverage can be proved before there is content to
+ * show. So the stylesheet stays at the level of "a readable column with the
+ * site's own gutters" rather than inventing a composition the template will
+ * replace.
+ */
+.page {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  gap: var(--gap);
+  padding: calc(64 / 375 * 100vw) calc(20 / 375 * 100vw) calc(96 / 375 * 100vw);
+
+  @media (--desktop) {
+    padding: calc(96 / 1440 * 100vw) calc(64 / 1440 * 100vw)
+      calc(128 / 1440 * 100vw);
+  }
+}
+
+.sample {
+  /* minmax(0, …) rather than a bare width: CLAUDE.md #12's reason applies to
+     a flex item too — long unbroken placeholder text would otherwise push
+     the column wider than its track. */
+  max-width: min(100%, calc(720 / 1440 * 100vw));
+}
+
+/*
+ * The way off the page. A row of chips rather than a list, because there are
+ * two of them and they are peers — the same shape the project page uses for
+ * its related links, so a reader meets one idiom and not two.
+ */
+.others {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(8 / 375 * 100vw);
+
+  @media (--desktop) {
+    gap: calc(8 / 1440 * 100vw);
+  }
+}
+
+.other {
+  padding: 0.5em 1em;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-full);
+  text-decoration: none;
+}

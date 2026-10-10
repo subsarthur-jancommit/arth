@@ -14,6 +14,7 @@ import {
 import { CommandTrigger } from '@/components/ui/command'
 import { LanguageSwitcher } from '@/components/ui/language-switcher'
 import { getLinkIntent, Link } from '@/components/ui/link'
+import { BRAND_NAME } from '@/lib/brand'
 import { usePathname } from '@/lib/i18n/navigation'
 import { RouteMarker } from '@/vault/motion/route-marker'
 
@@ -114,7 +115,7 @@ const STORYBOOK_ENABLED =
  *
  * So the nav answers one question — *what pages does this site have* — and
  * the home page's sections answer a different one, by being scrolled to. The
- * wordmark to the left is the home link and carries `aria-label="Arth —
+ * wordmark to the left is the home link and carries `aria-label="<brand> —
  * home"`; a fourth item spelling "Home" beside it would be the same duplicate
  * this change removes.
  *
@@ -371,8 +372,8 @@ export function Header() {
 
   return (
     <header className={s.header}>
-      <Link href="/" className={s.brand} aria-label="Arth — home">
-        Arth
+      <Link href="/" className={s.brand} aria-label={`${BRAND_NAME} — home`}>
+        {BRAND_NAME}
       </Link>
 
       <nav

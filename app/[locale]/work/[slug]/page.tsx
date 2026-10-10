@@ -8,9 +8,9 @@ import { Wrapper } from '@/components/layout/wrapper'
 import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import { Link } from '@/components/ui/link'
 import { nextProject } from '@/lib/content/next-project'
-import { writingForPractice } from '@/lib/content/practice-writing'
-import { PRACTICE_SEGMENT, isPractice } from '@/lib/content/practices'
 import { studioContact } from '@/lib/content/studio-contact'
+import { writingForUnit } from '@/lib/content/unit-writing'
+import { isUnit, unitTemplate } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, LOCALE_TAGS, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
@@ -103,7 +103,7 @@ async function fetchProject(slug: string, locale: string) {
 /**
  * One commissioned work, at `/[locale]/work/[slug]`.
  *
- * ## Why `/work/` and not the `[...slug]` catch-all
+ * ## Why `/work/` and not a bare CMS-page slug
  *
  * Sanity enforces slug uniqueness per type, not across types, so a work and a
  * page may both be called "About". Sharing the catch-all would let one
@@ -241,9 +241,14 @@ export async function generateStaticParams() {
     return [{ slug: EMPTY_DATASET_SENTINEL }]
   }
 
-  const slugs = (data ?? []).filter(
-    (slug): slug is string => Boolean(slug) && slug !== PRACTICE_SEGMENT
-  )
+  /*
+   * No slug is excluded any more, and the exclusion that was here is worth a
+   * note. It dropped `practice`, because `/work/practice/<value>` was a
+   * static route and a project slugged `practice` would have been shadowed by
+   * it. That route is retired (`lib/seo/route-status.ts` answers it `410`),
+   * so nothing static sits under `/work/` and every project slug is reachable.
+   */
+  const slugs = (data ?? []).filter((slug): slug is string => Boolean(slug))
 
   return slugs.length > 0
     ? slugs.map((slug) => ({ slug }))
@@ -278,12 +283,6 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const { slug } = await params
 
   if (!isConfigured('sanity')) notFound()
-  // Belt and braces for the reserved segment. The router never routes
-  // `/work/practice` here — the static segment wins — but `dynamicParams`
-  // means a document on this slug would otherwise be served at a URL that
-  // contradicts the practice route one level down.
-  if (slug === PRACTICE_SEGMENT) notFound()
-
   const requested = await localeRootParam()
   const locale = isLocale(requested) ? requested : routing.defaultLocale
 
@@ -300,15 +299,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   /*
    * The writing filed under this work's practice — round 5. The same cached
-   * read the practice page makes (`lib/content/practice-writing`), so the two
+   * read the unit writing helper makes (`lib/content/unit-writing`), so the two
    * cannot list different entries.
    */
   const practice =
-    project.practice !== null && isPractice(project.practice)
+    project.practice !== null && isUnit(project.practice)
       ? project.practice
       : null
   const [writing, contact] = await Promise.all([
-    practice ? writingForPractice(locale, practice) : [],
+    practice ? writingForUnit(locale, practice) : [],
     studioContact(locale),
   ])
 
@@ -675,7 +674,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <nav aria-label={tNav('relatedPractice')} className={s.practices}>
                 <Link
                   className={cn('caption', s.practiceChip)}
-                  href={`/${PRACTICE_SEGMENT}/${project.practice}`}
+                  href={unitTemplate(project.practice)}
                   data-press="chip"
                   data-intent=""
                 >

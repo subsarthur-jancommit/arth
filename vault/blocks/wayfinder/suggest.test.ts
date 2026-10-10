@@ -16,7 +16,7 @@ function entry(
 
 const INDEX: SearchEntry[] = [
   entry('page', '/en/work', 'Work'),
-  entry('practice', '/en/practice/consulting', 'Consulting'),
+  entry('unit', '/en/practice/consulting', 'Consulting'),
   entry('project', '/en/work/arus-balik', 'Arus Balik'),
   entry('project', '/en/work/pusat-beban', 'Pusat Beban'),
   entry(

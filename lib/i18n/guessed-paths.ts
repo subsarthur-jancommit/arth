@@ -1,3 +1,5 @@
+import { UNITS } from '@/lib/content/units'
+
 import { isLocale } from './routing'
 
 /**
@@ -39,6 +41,15 @@ import { isLocale } from './routing'
  * it a real route, so it resolves rather than being redirected. It moved to
  * `REAL_SEGMENTS` below, which is where a guess must never shadow a page.
  *
+ * `practice` and `praktik` were here, pointing at a `#practice` anchor. They
+ * are gone as of F1-03: the practice routes are retired, so `/en/practice`
+ * now answers `410 Gone` from `lib/seo/route-status.ts` — a real status with
+ * a page that says the subject has no successor. A 308 to an anchor would
+ * instead have implied the subject moved to the home page, which it did
+ * not. The Indonesian spelling of a unit needs no row either: a unit's
+ * segment is the same string in both languages, by construction
+ * (`lib/content/units.ts`).
+ *
  * ## The trade-off, stated
  *
  * These segments become unreachable as CMS page slugs: a Sanity `page`
@@ -52,8 +63,6 @@ const GUESSED_SEGMENTS = new Map([
   // Home-page anchors, in both spellings of each label.
   ['contact', '#contact'],
   ['kontak', '#contact'],
-  ['practice', '#practice'],
-  ['praktik', '#practice'],
   /*
    * The catalogue, which is `/work` in both locales. `karya` is the label an
    * Indonesian reader sees, so it is the one they type; the English spelling
@@ -66,14 +75,21 @@ const GUESSED_SEGMENTS = new Map([
 /**
  * Single segments that already resolve, so a guess must never shadow them.
  *
- * `work`, `ai`, `studio` (Tahap 24) and `journal` (Tahap 26). The one still absent is `practice`, and the distinction is worth
- * stating: `/en/practice` alone 404s, because the route is `practice/[value]`,
- * which this function never sees (it matches two path parts only).
+ * `work`, `studio` (Tahap 24), `journal` (Tahap 26) and, since F1-03, the
+ * three units — each of which is a one-segment page, which is exactly the
+ * depth this function matches.
+ *
+ * `ai` was in this list for a machine view Tahap 84 removed, so for several
+ * stages it protected a route that did not exist. Removed: nothing answers
+ * at `/en/ai`, and `lib/seo/route-status.ts` is now the thing that decides
+ * what an unanswered single segment gets, which it could not do for a
+ * segment this list claimed was real.
  *
  * Kept as data so `guessed-paths.test.ts` can assert the two lists never
- * name the same segment.
+ * name the same segment, and so `route-status.test.ts` can assert this list
+ * stays a subset of the segments something actually answers.
  */
-export const REAL_SEGMENTS = new Set(['work', 'ai', 'studio', 'journal'])
+export const REAL_SEGMENTS = new Set([...UNITS, 'work', 'studio', 'journal'])
 
 /** Every key the table answers to. Exported for the unit test. */
 export const GUESSED_KEYS = [...GUESSED_SEGMENTS.keys()]
@@ -81,7 +97,7 @@ export const GUESSED_KEYS = [...GUESSED_SEGMENTS.keys()]
 /**
  * Where a guessed path should send the reader, or `null` to leave it alone.
  *
- * Matches only `/{locale}/{one-segment}`: `/en/practice/consulting` is a real
+ * Matches only `/{locale}/{one-segment}`: `/en/work/arus-balik` is a real
  * page and must pass straight through, so anything deeper is never touched.
  */
 export function guessedDestination(pathname: string): string | null {

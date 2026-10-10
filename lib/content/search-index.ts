@@ -3,7 +3,7 @@ import type { Locale } from '@/lib/i18n/routing'
 import { STATIC_ROUTE_TEMPLATES } from '@/lib/seo/route-catalog'
 
 import { type JournalEntry, resolveJournalEntries } from './journal-fallback'
-import { PRACTICE_SEGMENT } from './practices'
+import { isUnit } from './units'
 
 /**
  * What the command palette searches, assembled from sources that already
@@ -31,7 +31,7 @@ import { PRACTICE_SEGMENT } from './practices'
  * with it rather than lingering as a result that leads nowhere.
  */
 
-export type SearchKind = 'page' | 'practice' | 'project' | 'journal'
+export type SearchKind = 'page' | 'unit' | 'project' | 'journal'
 
 export interface SearchEntry {
   /** Stable, unique within one index. Also the DOM id the listbox points at. */
@@ -81,20 +81,24 @@ function joinMeta(
 }
 
 /**
- * The static pages, including one entry per practice.
+ * The static pages, including one entry per unit.
  *
- * The practice pages are already in `STATIC_ROUTE_TEMPLATES` — they are `○`
+ * The unit pages are already in `STATIC_ROUTE_TEMPLATES` — they are `○`
  * static routes with their own `<h1>` and canonical, not filter permutations
  * — so they arrive here for free and only need to be told apart by kind, so
  * the palette can group them.
+ *
+ * A unit is recognised by its *whole* path being a unit segment, which is
+ * what `/konstruksi` is. The predicate used to compare a `/practice/` prefix;
+ * a unit has no prefix to compare, so the segment itself is the test.
  */
 export function pageEntries(locale: Locale): SearchEntry[] {
   return STATIC_ROUTE_TEMPLATES.map((route) => {
-    const isPractice = route.path.startsWith(`/${PRACTICE_SEGMENT}/`)
+    const isUnitPage = isUnit(route.path.replace(/^\//, ''))
 
     return {
       id: `page:${route.path}`,
-      kind: isPractice ? ('practice' as const) : ('page' as const),
+      kind: isUnitPage ? ('unit' as const) : ('page' as const),
       label: route.label[locale],
       description: route.description[locale],
       href: localizedPath(locale, route.path),
@@ -187,7 +191,7 @@ export function buildSearchIndex(
 
   return [
     ...pages.filter((entry) => entry.kind === 'page'),
-    ...pages.filter((entry) => entry.kind === 'practice'),
+    ...pages.filter((entry) => entry.kind === 'unit'),
     ...projectEntries(locale, sources.projects),
     ...journalEntries(locale, sources.journal),
   ]

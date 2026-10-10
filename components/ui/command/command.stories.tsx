@@ -89,7 +89,7 @@ const entries: SearchEntry[] = [
   },
   {
     id: 'page:/practice/consulting',
-    kind: 'practice',
+    kind: 'unit',
     label: 'Consulting',
     description:
       'Consulting engagements — strategy, architecture and the decisions that come before a build.',

@@ -540,15 +540,15 @@
           "of": [
             {
               "type": "string",
-              "value": "consulting"
+              "value": "konstruksi"
             },
             {
               "type": "string",
-              "value": "ai-data"
+              "value": "teknologi"
             },
             {
               "type": "string",
-              "value": "commission"
+              "value": "peekabo"
             }
           ]
         },
@@ -1157,15 +1157,15 @@
           "of": [
             {
               "type": "string",
-              "value": "consulting"
+              "value": "konstruksi"
             },
             {
               "type": "string",
-              "value": "ai-data"
+              "value": "teknologi"
             },
             {
               "type": "string",
-              "value": "commission"
+              "value": "peekabo"
             }
           ]
         },

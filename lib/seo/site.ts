@@ -1,3 +1,4 @@
+import { BRAND_ALTERNATE_NAMES, BRAND_NAME } from '@/lib/brand'
 import { APP_BASE_URL } from '@/lib/env'
 import { type Locale, routing } from '@/lib/i18n/routing'
 
@@ -118,52 +119,58 @@ export const BASE_URL = APP_BASE_URL.replace(/\/+$/, '')
  * hand over before launch.
  */
 export const SITE: SiteFacts = {
-  name: 'Arth',
-  alternateNames: ['Arth Agency'],
+  name: BRAND_NAME,
+  alternateNames: [...BRAND_ALTERNATE_NAMES],
   url: BASE_URL,
   logo: `${BASE_URL}/icon.png`,
   description: {
-    en: 'Arth is an agency working in consulting, AI and data, and commissioned build. Engagements are scoped to a brief and delivered against it.',
-    id: 'Arth adalah agency yang mengerjakan konsultasi, AI dan data, serta pengerjaan pesanan. Penugasannya punya lingkup yang jelas dan dikerjakan sesuai itu.',
+    en: 'Arthur is an umbrella over three units: Konstruksi, Teknologi, and Peekabo, the agency among them. Each unit is read from two sides.',
+    id: 'Arthur adalah payung atas tiga unit: Konstruksi, Teknologi, dan Peekabo, agency di antaranya. Tiap unit dibaca dari dua sisi.',
   },
   areaServed: { en: 'Worldwide', id: 'Seluruh dunia' },
   /*
-   * One entry per practice, and `practices.test.ts` enforces the arithmetic.
+   * One entry per unit, and `lib/content/units.test.ts` enforces the
+   * arithmetic: this list must not advertise a different number of things
+   * than the catalogue can filter by, which is the drift that happens when a
+   * unit is added in one place and forgotten in the other.
    *
-   * These are prose for an answer engine, not the keys — "Strategy and
-   * architecture consulting" rather than `consulting` — so they cannot be
-   * compared to `PRACTICES` word for word. What is checked is that this list
-   * does not advertise a different number of things than the catalogue can
-   * filter by, which is the drift that actually happens when a practice is
-   * added in one place and forgotten in the other.
+   * ## Why each entry is a name and a domain, and nothing more
+   *
+   * The previous entries read as offerings — "Strategy and architecture
+   * consulting" — and were written when the site described a different
+   * business. Arthur's own description of what each unit sells exists, in the
+   * Master Brief's unit headers, and the content rules require those be used
+   * **without changing a word**. They are read when the unit content type
+   * exists to hold them, not paraphrased here from the unit's name.
+   *
+   * What is left is what is sourced: the three unit names, from the plan, and
+   * the plain meaning of each — construction, technology, and, for Peekabo,
+   * that it is the agency among them, which the plan states outright. A
+   * fourth clause about capability would be an invented claim about a
+   * business, which is the one thing the rules refuse.
    */
   services: {
     en: [
-      'Strategy and architecture consulting',
-      'AI and data engineering',
-      'Commissioned build work',
+      'Konstruksi — construction',
+      'Teknologi — technology',
+      'Peekabo — the agency unit',
     ],
     id: [
-      'Konsultasi strategi dan arsitektur',
-      'Rekayasa AI dan data',
-      'Pengerjaan pesanan',
+      'Konstruksi — konstruksi',
+      'Teknologi — teknologi',
+      'Peekabo — unit agency',
     ],
   },
+  /*
+   * Topics, at the same width as `services` and for the same reason: three
+   * domains, sourced from the three unit names, rather than a longer list
+   * claiming expertise nothing in the plan establishes. `lib/seo/schemas.ts`
+   * omits the field entirely when it is empty, so a shorter honest list
+   * costs nothing a longer invented one would have bought.
+   */
   knowsAbout: {
-    en: [
-      'Technical strategy',
-      'Systems architecture',
-      'AI evaluation',
-      'Data engineering',
-      'Commissioned software',
-    ],
-    id: [
-      'Strategi teknis',
-      'Arsitektur sistem',
-      'Evaluasi AI',
-      'Rekayasa data',
-      'Perangkat lunak pesanan',
-    ],
+    en: ['Construction', 'Technology', 'Agency work'],
+    id: ['Konstruksi', 'Teknologi', 'Pekerjaan agency'],
   },
   /*
    * No email, on purpose — Tahap 35.
@@ -193,38 +200,38 @@ export const SITE: SiteFacts = {
     en: {
       whenToUse: [
         {
-          name: 'Scope an engagement',
+          name: 'Find the right unit',
           description:
-            'Use Arth when someone needs consulting, AI and data work, or a commissioned build scoped to a brief, rather than an off-the-shelf product.',
+            'Use Arthur to find which of its three units — Konstruksi, Teknologi or Peekabo — covers a piece of work, and which side of that unit a reader stands on.',
         },
         {
-          name: 'Review past engagements',
+          name: 'Review past work',
           description:
-            'Use Arth to review completed work with its client, year, engagement shape and scope before making an approach.',
+            'Use Arthur to review completed work with its client, year, engagement shape and scope before making an approach.',
         },
       ],
       howToUse: [
-        'Browse the full catalogue at /en/work (English) or /id/work (Indonesian); narrow it at /en/practice/consulting, /en/practice/ai-data or /en/practice/commission. Each engagement lists client, year, engagement and scope.',
-        'Email the agency with the problem, the constraint that makes it hard, and when a decision is needed.',
+        'Start at /en/konstruksi, /en/teknologi or /en/peekabo (Indonesian: /id/konstruksi and its siblings). Each unit page is the entry to that unit.',
+        'Browse the full catalogue at /en/work (English) or /id/work (Indonesian), narrowed by unit at /en/work?unit=konstruksi. Each entry lists client, year, engagement and scope.',
         'Expect a scope and an estimate before anything is agreed rather than after.',
       ],
     },
     id: {
       whenToUse: [
         {
-          name: 'Menyusun lingkup penugasan',
+          name: 'Menemukan unit yang tepat',
           description:
-            'Pakai Arth kalau seseorang butuh konsultasi, pekerjaan AI dan data, atau pengerjaan pesanan dengan lingkup sesuai brief, bukan produk jadi.',
+            'Pakai Arthur untuk menemukan unit mana di antara Konstruksi, Teknologi, dan Peekabo yang mencakup sebuah pekerjaan, dan dari sisi mana pembacanya berdiri.',
         },
         {
-          name: 'Menelusuri penugasan sebelumnya',
+          name: 'Menelusuri pekerjaan sebelumnya',
           description:
-            'Pakai Arth untuk menelusuri pekerjaan yang sudah selesai beserta klien, tahun, bentuk keterlibatan, dan lingkupnya sebelum menghubungi.',
+            'Pakai Arthur untuk menelusuri pekerjaan yang sudah selesai beserta klien, tahun, bentuk keterlibatan, dan lingkupnya sebelum menghubungi.',
         },
       ],
       howToUse: [
-        'Telusuri katalog lengkapnya di /id/work (Bahasa Indonesia) atau /en/work (Inggris); persempit di /id/practice/consulting, /id/practice/ai-data, atau /id/practice/commission. Tiap penugasan mencantumkan klien, tahun, keterlibatan, dan lingkup.',
-        'Kirim surel berisi masalahnya, kendala yang membuatnya sulit, dan kapan keputusannya dibutuhkan.',
+        'Mulai di /id/konstruksi, /id/teknologi, atau /id/peekabo (Inggris: /en/konstruksi dan seterusnya). Halaman unit adalah pintu masuk unit itu.',
+        'Telusuri katalog lengkapnya di /id/work (Bahasa Indonesia) atau /en/work (Inggris), dipersempit per unit di /id/work?unit=konstruksi. Tiap entri mencantumkan klien, tahun, keterlibatan, dan lingkup.',
         'Lingkup dan perkiraan diberikan sebelum apa pun disepakati, bukan sesudah.',
       ],
     },

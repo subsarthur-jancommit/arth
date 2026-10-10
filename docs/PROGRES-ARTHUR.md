@@ -7,6 +7,10 @@ bukan sesudahnya, supaya ia tidak bisa kedaluwarsa tanpa terlihat di diff.
 _Backlog implementasi_, lalu tabel keputusan K1–K9. Itu cukup untuk mulai
 bekerja — tidak perlu membaca ulang keempat artefak atau dokumen repo.
 
+**Bekerja dari workspace lain?** [`KONTEKS-TIM.md`](./KONTEKS-TIM.md) memuat
+tautan keempat dokumen konteks, urutan kewenangannya, pagar yang berlaku terus,
+dan keadaan kode hari ini. Itu titik masuknya; berkas ini papan statusnya.
+
 Rencana lengkapnya ada di artefak Claude Docs _Rencana Implementasi Website
 Arthur_ (51 paket, enam fase F0–F5) dan urutan kerjanya di _Tahap 2 — Instruksi
 Prompting_. Prosedur per PR mengikat di
@@ -30,14 +34,26 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 | Paket                                 | PR  | SHA merge | Status           | Dilewati / ditunda                                                                                   |
 | ------------------------------------- | --- | --------- | ---------------- | ---------------------------------------------------------------------------------------------------- |
 | F0-01 Noindex selama dummy            | #12 | `2491472` | **Selesai**      | Pengecualian domain dibangun tapi daftarnya kosong (lihat U3); lokasinya pindah dari `proxy.ts` (U4) |
-| F0-07 Dokumen repo diselaraskan       | —   | —         | PR siap tinjau   | FORK.md tidak disunting (U1); `ROADMAP.md` dan `docs/stages/` tidak disentuh (U8)                    |
+| F0-07 Dokumen repo diselaraskan       | #13 | `45f220b` | **Selesai**      | FORK.md tidak disunting (U1); `ROADMAP.md` dan `docs/stages/` tidak disentuh (U8)                    |
+| F1-01 Merek Arthur dari satu sumber   | #14 | —         | PR siap tinjau   | Prosa `SITE` dan `home-fallback` ikut dibereskan di F1-02 (U11)                                      |
+| F1-02 Tiga unit menggantikan praktik  | #14 | —         | PR siap tinjau   | Medan Sanity masih bernama `practice` (U12); rute/sitemap mendarat bersama F1-03 (U13)               |
+| F1-03 Rute unit                       | #14 | —         | PR siap tinjau   | Halaman CMS pindah ke `/halaman/<slug>` (U14); tiga gerbang e2e melemah (U15)                        |
 | F0-02 Uji terbit menampilkan isi baru | —   | —         | Belum mulai      | Bergantung F0-06                                                                                     |
 | F0-03 Token produksi hanya Viewer     | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                                      |
 | F0-04 Token dev dicabut               | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                                         |
 | F0-05 Ruleset cabang `main`           | —   | —         | Menunggu pemilik | Tindakan dasbor. Terakhir diukur `gh api …/rules/branches/main` → `[]`, belum aktif                  |
 | F0-06 Dataset `ci` terpisah           | —   | —         | Menunggu pemilik | Tindakan dasbor; memblokir F0-02 dan F2-09                                                           |
 
-Paket F1 ke atas belum mulai; lihat Backlog.
+F1-04 ke atas belum mulai; lihat Backlog.
+
+**F1-01, F1-02 dan F1-03 berada di satu PR**, dan itu penyimpangan dari "satu
+PR per paket" yang disebut terang-terangan di sini dan di deskripsi PR-nya.
+Alasannya mekanis, bukan kenyamanan: kriteria "selesai bila" F1-02 menuntut
+`UNITS` menggerakkan **sitemap**, dan kriteria F1-03 yang membangun halaman
+`/{unit}`. Memisahkannya berarti satu PR yang sitemap dan chip-nya menunjuk
+halaman yang belum menjawab — mengiklankan 404. Pemilik boleh meminta ini
+dipecah; pemecahan yang jujur hanya mungkin dengan menunda baris sitemap, bukan
+dengan menunda halamannya.
 
 **Verifikasi produksi F0-01**, diukur 2026-10-10 sesudah merge `2491472`: CI
 `push` di `main` hijau (`ci` dan `e2e`, run 38017067555); deployment untuk SHA
@@ -132,3 +148,89 @@ fixture. Ketiga angka itu tidak bisa dicocokkan tanpa membaca dataset, dan
 konektor Sanity di sesi ini belum terotorisasi. Tidak disentuh di F0-07 karena
 di luar ketujuh butir dan tidak terverifikasi; F2-09 (fixture bentuk Arthur)
 yang akan menyentuhnya.
+
+**U11 — F1-01 meninggalkan prosa yang masih menyebut "Arth".** Kriterianya
+berbunyi "SITE … memakai Arthur", dan `SITE.name` memang sudah membaca
+`BRAND_NAME`. Yang tertinggal adalah prosa di dalamnya: `SITE.description` dan
+keempat kalimat `agentGuidance` masih menulis "Arth" sebagai kata, begitu juga
+`lib/content/home-fallback.ts`. Dibereskan di F1-02, karena kalimat yang sama
+juga menyebut ketiga praktik lama dan harus ditulis ulang sekali saja. Yang
+**belum** dibereskan: berkas `*.stories.tsx` di `vault/` (argumen demo
+Storybook, bukan permukaan pembaca) dan beberapa komentar sejarah. Dicatat,
+tidak dikerjakan.
+
+**U12 — medan Sanity masih bernama `practice`, nilainya sudah kunci unit.**
+Daftar tertutupnya sekarang diturunkan dari `UNITS`
+(`lib/integrations/sanity/schemas/project.ts` dan `journalEntry.ts`), dan
+fixture-nya sudah dipindahkan ke nilai unit. Nama medannya tidak: ada delapan
+dokumen `project` yang memakainya, jadi mengganti nama medan adalah migrasi
+data yang butuh `ok tulis`. `journalEntry` nol dokumen dan karenanya gratis,
+tapi mengganti satu dan bukan yang lain membuat dua paruh kosakata yang sama
+berselisih. **F2-02 mengganti nama kedua medan bersama datanya.** Sampai saat
+itu kode membaca `entry.practice` dan `project.practice` dan setiap tempatnya
+mencatat kenapa.
+
+**U13 — `?practice=` menjadi `?unit=`, dan satu parameter query berubah
+alamat.** Katalog `/work` menyaring dengan `?unit=<kunci>` sekarang. Tidak ada
+yang menautkan bentuk lama dari luar situs sejauh yang bisa diukur, dan `/work`
+sendiri keluar dari navigasi di F1-06, jadi tidak dibuatkan pengalih. Kalau
+pemilik ingin bentuk lama tetap bekerja, itu satu baris di
+`lib/seo/route-status.ts` dan perlu diminta.
+
+**U14 — halaman CMS pindah dari `/<slug>` ke `/halaman/<slug>`.** Sebuah unit
+adalah segmen **satu tingkat**, dan `app/[locale]/[unit]` segmen **dinamis**.
+Next menyelesaikan satu segmen dinamis sebelum catch-all, jadi `[unit]`
+menangkap `/about` lebih dulu dan dokumen `page` Sanity menjadi tak terjangkau
+tanpa error apa pun. Daftar slug terlarang tidak bisa memperbaikinya: ia harus
+menyebut setiap slug yang mungkin pernah diterbitkan. Pemilik memilih prefiks
+`halaman`. Biayanya: setiap URL halaman CMS berubah. Diukur 2026-10-10 —
+dataset memuat **nol** dokumen `page`, jadi tidak ada alamat yang sedang
+dipakai yang rusak. Konsekuensi yang ikut: `RESERVED_SLUGS` tidak punya lagi
+pekerjaan dan dihapus, begitu juga penjaga slug di `project.ts` yang sebelumnya
+salah memakainya (slug proyek hidup di `/work/<slug>`, jadi `konstruksi` di
+sana tidak pernah bertemu `/konstruksi`).
+
+**U15 — tiga gerbang e2e melemah karena subjeknya pensiun, dan satu dihapus.**
+Disebut satu per satu supaya tidak terbaca seperti pembersihan:
+
+- `e2e/visual-substance.e2e.ts` — halaman `/practice/<value>` adalah salah satu
+  rute terkaya di situs dan ada di sapuan "substansi" serta satu-satunya rute
+  selain beranda yang menyatakan `[data-accent-region]`. Halaman unit
+  penggantinya memuat judul, satu blok isi contoh, dan dua tautan unit lain.
+  Memasukkannya berarti menurunkan lantai gerbang ke apa pun yang kebetulan
+  diukur sebuah kerangka. Jadi halaman unit **tidak** masuk sapuan itu sampai
+  F3-02 memberinya isi, dan `ACCENT_ROUTES` tinggal satu entri.
+- `e2e/practice-capabilities.e2e.ts` — **dihapus**. Yang diukurnya adalah momen
+  tersemat `capability-set` di halaman praktik, dan momen itu hilang bersama
+  rutenya. `/studio` merender baris yang sama sebagai `<dl>` biasa, yang
+  dijaga `lib/content/units.test.ts` (isi) dan `route-sweep` (render). Momen
+  geraknya butuh gerbang baru, dan F3-04 yang akan membutuhkannya.
+- `e2e/practice-trail.e2e.ts` → `e2e/breadcrumb-trail.e2e.ts` — cacatnya
+  (jejak remah roti tertutup header tetap, WCAG 2.2 SC 2.4.11) tidak pernah
+  soal rute itu; ia soal header dan `components/ui/breadcrumbs`. Dialihkan ke
+  halaman entri jurnal, yang `journal-fallback.ts` menjamin ada di kedua
+  bahasa, jadi gerbangnya tidak bisa lulus dengan melewati.
+- `e2e/practice-page.e2e.ts` → `e2e/unit-page.e2e.ts` — dua dari tiga
+  asersinya bertahan (halaman ada dan menamai dirinya; satu URL kanonik).
+  Asersi "menyaring katalog ke karyanya sendiri" **tidak**, karena halaman unit
+  bukan daftar; penyaringnya tetap diukur di `/work?unit=<kunci>`. Ditambah
+  satu asersi baru: label isi contoh harus ada di halaman yang dilayani.
+- `vault/vault-api.test.ts` — empat prop kehilangan satu-satunya pemanggilnya
+  (halaman praktik) dan masuk daftar `DELIBERATE` dengan alasannya, bukan
+  dihapus: `vault/` perpustakaan, dan `data-epic` justru akan punya lebih
+  banyak pemanggil setelah kamus gerak F1-08.
+
+**U16 — isi contoh jurnal tidak lagi tercatat di bawah unit mana pun.** Ketiga
+entri cadangan di `lib/content/journal-fallback.ts` ditulis untuk situs lama
+dan membahas praktik lama. Aturan isi melarang menyunting isi contoh menjadi
+isi Arthur, jadi prosanya dibiarkan apa adanya dan medan `practice`-nya diisi
+`null` — memilih satu unit untuknya berarti mengarang klaim tentang unit mana
+yang menerbitkan apa. Tabel di `/journal` tetap menampilkan satu baris per
+unit, dengan nol entri masing-masing, yang justru tepat.
+
+**U17 — `areaServed` di `lib/seo/site.ts` masih "Worldwide".** Aturan isi
+dokumen (3) menyebut wilayah yang boleh diklaim: Subang, Purwakarta, dan
+Bandung. "Worldwide" karenanya klaim yang salah hari ini. Tidak diubah di sini
+karena **F2-01** yang memiliki medan wilayah (diedit di Studio lewat
+`siteSettings`), dan memindahkannya sekarang berarti menuliskannya dua kali.
+Seluruh situs `noindex`, jadi tidak ada mesin yang sedang memakainya.

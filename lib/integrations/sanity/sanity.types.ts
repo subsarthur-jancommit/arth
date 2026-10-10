@@ -110,7 +110,7 @@ export type JournalEntry = {
   date?: string;
   summary?: InternationalizedArrayText;
   body?: InternationalizedArrayRichText;
-  practice?: "consulting" | "ai-data" | "commission";
+  practice?: "konstruksi" | "teknologi" | "peekabo";
   listed?: boolean;
 };
 
@@ -201,7 +201,7 @@ export type Project = {
   }>;
   client?: string;
   year?: number;
-  practice?: "consulting" | "ai-data" | "commission";
+  practice?: "konstruksi" | "teknologi" | "peekabo";
   engagement?: InternationalizedArrayString;
   scope?: string;
   body?: InternationalizedArrayRichText;
@@ -463,7 +463,7 @@ export type JournalEntriesQueryResult = Array<{
   _id: string;
   slug: string | null;
   date: string | null;
-  practice: "ai-data" | "commission" | "consulting" | null;
+  practice: "konstruksi" | "peekabo" | "teknologi" | null;
   title: string | null;
   summary: string | null;
 }>;
@@ -475,7 +475,7 @@ export type JournalEntryQueryResult = {
   _id: string;
   slug: string | null;
   date: string | null;
-  practice: "ai-data" | "commission" | "consulting" | null;
+  practice: "konstruksi" | "peekabo" | "teknologi" | null;
   title: string | null;
   summary: string | null;
   body: RichText | null;
@@ -496,7 +496,7 @@ export type ProjectsQueryResult = Array<{
   client: string | null;
   span: 12 | 6 | null;
   featured: boolean | null;
-  practice: "ai-data" | "commission" | "consulting" | null;
+  practice: "konstruksi" | "peekabo" | "teknologi" | null;
   cover: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -521,7 +521,7 @@ export type FeaturedProjectsQueryResult = Array<{
   client: string | null;
   span: 12 | 6 | null;
   featured: boolean | null;
-  practice: "ai-data" | "commission" | "consulting" | null;
+  practice: "konstruksi" | "peekabo" | "teknologi" | null;
   cover: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -546,7 +546,7 @@ export type WorkIndexQueryResult = Array<{
   client: string | null;
   span: 12 | 6 | null;
   featured: boolean | null;
-  practice: "ai-data" | "commission" | "consulting" | null;
+  practice: "konstruksi" | "peekabo" | "teknologi" | null;
   cover: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -565,7 +565,7 @@ export type WorkIndexQueryResult = Array<{
 // Variable: practicesQuery
 // Query: *[_type == "project" && listed != false].practice
 export type PracticesQueryResult = Array<
-  "ai-data" | "commission" | "consulting" | null
+  "konstruksi" | "peekabo" | "teknologi" | null
 >;
 
 // Source: queries.ts
@@ -578,7 +578,7 @@ export type ProjectQueryResult = {
   client: string | null;
   span: 12 | 6 | null;
   featured: boolean | null;
-  practice: "ai-data" | "commission" | "consulting" | null;
+  practice: "konstruksi" | "peekabo" | "teknologi" | null;
   cover: {
     asset?: SanityImageAssetReference;
     media?: unknown;

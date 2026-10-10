@@ -79,7 +79,7 @@ const ROUTES = [
   '/en/studio',
   '/en/journal',
   '/en/journal/scope-is-the-deliverable',
-  '/en/practice/consulting',
+  '/en/konstruksi',
   '/id/work/arus-balik',
 ] as const
 
@@ -413,7 +413,7 @@ for (const route of ROUTES) {
            * Only text an ancestor hid is a clipped run. A line whose last few
            * pixels peek over the viewport's bottom edge is too thin to sample
            * whatever clips it — measured on the first run of this counter:
-           * `/en/studio` and `/en/practice/consulting` at 1280x720 reported
+           * `/en/studio` and the retired `/en/practice/consulting` at 1280x720 reported
            * their bottom line, starting at y=715, as "clipped", which would
            * have made the over-clip guard below count the viewport's own edge.
            */

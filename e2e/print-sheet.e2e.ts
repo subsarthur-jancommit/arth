@@ -15,7 +15,7 @@ const A4 = { width: 794, height: 1123 }
 
 const ROUTES = [
   '/en/studio',
-  '/id/practice/consulting',
+  '/id/konstruksi',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
 ] as const

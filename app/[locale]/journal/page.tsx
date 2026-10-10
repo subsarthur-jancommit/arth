@@ -10,8 +10,8 @@ import {
   type JournalEntry,
   resolveJournalEntries,
 } from '@/lib/content/journal-fallback'
-import { PRACTICES, practiceTemplate } from '@/lib/content/practices'
 import { countWords, minutesFor } from '@/lib/content/reading-time'
+import { UNITS, unitTemplate } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
@@ -125,10 +125,10 @@ export async function generateMetadata() {
  * would set it, so the page would render the same zero images it renders
  * now, only with more schema.
  *
- * Every entry does carry a practice, and every practice has work behind it.
- * An essay about a practice sitting beside work from that practice is a
- * relationship the data already asserts — nothing here is invented, which is
- * what `docs/ROADMAP.md`'s standing rule 10 requires.
+ * An essay about a unit sitting beside work from that unit is a relationship
+ * the data already asserts — nothing here is invented, which is what
+ * `docs/ROADMAP.md`'s standing rule 10 requires. An entry that names no unit
+ * draws from the whole catalogue instead; see `UNFILED` below.
  *
  * ## Why a list per practice rather than one cover per practice
  *
@@ -144,6 +144,28 @@ export async function generateMetadata() {
  * given entry gets a given cover on every render rather than one that moves
  * between builds.
  */
+/**
+ * The key an entry filed under no unit draws its cover from.
+ *
+ * Not a unit, and it cannot collide with one: `lib/content/units.ts` keys are
+ * lower-case and hyphenated by construction, and this is neither.
+ *
+ * It exists because of a measured regression. The three scaffolding entries
+ * in `lib/content/journal-fallback.ts` were filed under practices that no
+ * longer exist, and F1-03 set them to `null` rather than mis-file them under
+ * a unit (`docs/PROGRES-ARTHUR.md` U16). With no pool to draw from, every row
+ * on `/en/journal` lost its cover — and `e2e/plane-edge.e2e.ts` failed with
+ * "exposed no clipped parallax frame to measure", which is the gate noticing
+ * that a whole visual layer had gone.
+ *
+ * A cover is decoration drawn from the catalogue, not an assertion that the
+ * entry belongs to the work beside it, so an unfiled entry draws from every
+ * work in catalogue order. The per-unit pools below are still preferred when
+ * an entry does name a unit, because an essay about a unit sitting beside
+ * that unit's work is a relationship the data really does assert.
+ */
+const UNFILED = '*unfiled'
+
 async function coversByPractice(locale: string) {
   'use cache'
   /*
@@ -173,13 +195,16 @@ async function coversByPractice(locale: string) {
   const byPractice = new Map<string, typeof projects.data>()
   // `?? []` as well as the guard: `data` is nullable even when Sanity *is*
   // configured, because a query that fails returns null.
-  for (const project of projects.data ?? []) {
+  const all = projects.data ?? []
+  for (const project of all) {
     if (!project.practice) continue
     byPractice.set(project.practice, [
       ...(byPractice.get(project.practice) ?? []),
       project,
     ])
   }
+  // Every work, in the query's own order, for entries that name no unit.
+  if (all.length) byPractice.set(UNFILED, all)
   return byPractice
 }
 
@@ -214,11 +239,12 @@ export default async function JournalPage() {
   const drawn = new Map<string, number>()
 
   const rows: JournalRow[] = entries.map((entry) => {
-    const pool = entry.practice ? covers.get(entry.practice) : undefined
-    const taken = entry.practice ? (drawn.get(entry.practice) ?? 0) : 0
-    if (entry.practice && pool?.length) {
-      drawn.set(entry.practice, taken + 1)
-    }
+    // One key for both cases, so the "take the next work rather than the same
+    // one again" counter works identically for an unfiled entry.
+    const key = entry.practice ?? UNFILED
+    const pool = covers.get(key)
+    const taken = drawn.get(key) ?? 0
+    if (pool?.length) drawn.set(key, taken + 1)
     // Wraps: more entries than works is the normal case as the journal grows,
     // and repeating in order is better than dropping the image entirely.
     const work = pool?.length ? pool[taken % pool.length] : undefined
@@ -369,10 +395,10 @@ export default async function JournalPage() {
               practice: t('tallyPractice'),
               work: t('tallyWork'),
             }}
-            rows={countByPractice(PRACTICES, entries, covers).map((row) => ({
+            rows={countByPractice(UNITS, entries, covers).map((row) => ({
               practice: row.practice,
               label: tWork(row.practice),
-              href: practiceTemplate(row.practice),
+              href: unitTemplate(row.practice),
               entries: row.entries,
               works: row.works,
               entriesLabel: t('tallyEntries', { count: row.entries }),

@@ -9,7 +9,7 @@ for (const [path, name] of [
   ['/en/work', 'Work'],
   ['/en/studio', 'Studio'],
   ['/id/journal', 'Jurnal'],
-  ['/id/practice/consulting', 'Konsultasi'],
+  ['/id/konstruksi', 'Konstruksi'],
 ] as const) {
   test(`${path}: the footer marks its own line, and only it`, async ({
     page,

@@ -1,7 +1,7 @@
 import type { ConsoleMessage, Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
-import { PRACTICES } from '../lib/content/practices'
+import { UNITS } from '../lib/content/units'
 
 declare global {
   /** Overlay states sampled inside the page by the probes below. */
@@ -146,7 +146,7 @@ function collectErrors(page: Page) {
 test.describe('a reader moving through the site', () => {
   test('seven hops leave nothing behind', async ({ page }) => {
     const errors = collectErrors(page)
-    const [first, second] = PRACTICES
+    const [first, second] = UNITS
 
     // Hop 0 — arrival. Everything after this is client-side.
     await page.goto('/en')
@@ -154,25 +154,26 @@ test.describe('a reader moving through the site', () => {
     expect(arrival.y, 'a fresh load should start at the top').toBe(0)
     assertSettled(arrival, 'arrival')
 
-    // Hop 1 — home to a practice, from a disclosure far down the page. This is
+    // Hop 1 — home to a unit, from a disclosure far down the page. This is
     // the exact navigation Tahap 15b measured landing at 1522.
-    await page.locator('#practice summary').first().click()
+    await page.locator('#unit summary').first().click()
     await page.waitForTimeout(700)
-    await page.locator(`a[href="/en/practice/${first}"]`).first().click()
-    await page.waitForURL(`**/practice/${first}`)
+    await page.locator(`a[href="/en/${first}"]`).first().click()
+    await page.waitForURL(`**/${first}`)
     const hop1 = await resting(page)
-    assertOpenedAtTop(hop1, 'hop 1 home → practice')
+    assertOpenedAtTop(hop1, 'hop 1 home → unit')
     assertSettled(hop1, 'hop 1')
     expect(hop1.title, 'hop 1 did not change the document title').not.toBe(
       arrival.title
     )
 
-    // Hop 2 — practice to the next practice. Same component on both ends,
-    // which is where a leaked transition name would do the most damage.
-    await page.locator(`a[href="/en/practice/${second}"]`).first().click()
-    await page.waitForURL(`**/practice/${second}`)
+    // Hop 2 — a unit to the next unit, through the sibling links the unit
+    // page carries. Same component on both ends, which is where a leaked
+    // transition name would do the most damage.
+    await page.locator(`a[href="/en/${second}"]`).first().click()
+    await page.waitForURL(`**/${second}`)
     const hop2 = await resting(page)
-    assertOpenedAtTop(hop2, 'hop 2 practice → next practice')
+    assertOpenedAtTop(hop2, 'hop 2 unit → next unit')
     assertSettled(hop2, 'hop 2')
     expect(hop2.title, 'hop 2 did not change the document title').not.toBe(
       hop1.title
@@ -181,7 +182,7 @@ test.describe('a reader moving through the site', () => {
     // Hop 3 — back. The reader is returning to something they have seen, so
     // the browser's restored position is the correct one, not the top.
     await page.goBack()
-    await page.waitForURL(`**/practice/${first}`)
+    await page.waitForURL(`**/${first}`)
     const hop3 = await resting(page)
     assertSettled(hop3, 'hop 3 back')
     expect(hop3.title, 'back did not restore the document title').toBe(
@@ -201,15 +202,15 @@ test.describe('a reader moving through the site', () => {
 
     // Hop 5 — forward through history rather than through a link.
     await page.goForward()
-    await page.waitForURL(`**/practice/${first}`)
+    await page.waitForURL(`**/${first}`)
     const hop5 = await resting(page)
     assertSettled(hop5, 'hop 5 forward')
 
     // Hop 6 — the same navigation as hop 2, six hops later. If any state
     // leaked along the way, this is where it shows: same assertions, and they
     // have to pass identically.
-    await page.locator(`a[href="/en/practice/${second}"]`).first().click()
-    await page.waitForURL(`**/practice/${second}`)
+    await page.locator(`a[href="/en/${second}"]`).first().click()
+    await page.waitForURL(`**/${second}`)
     const hop6 = await resting(page)
     assertOpenedAtTop(hop6, 'hop 6 (repeat of hop 2)')
     assertSettled(hop6, 'hop 6')
@@ -245,12 +246,12 @@ test.describe('a reader moving through the site', () => {
      * So this asserts both halves — that it moves, and that it is marked as
      * the quicker treatment.
      */
-    const [first, second] = PRACTICES
+    const [first, second] = UNITS
 
-    await page.goto(`/en/practice/${first}`)
+    await page.goto(`/en/${first}`)
     await page.waitForTimeout(1500)
-    await page.locator(`a[href="/en/practice/${second}"]`).first().click()
-    await page.waitForURL(`**/practice/${second}`)
+    await page.locator(`a[href="/en/${second}"]`).first().click()
+    await page.waitForURL(`**/${second}`)
     await page.waitForTimeout(1800)
 
     /*
@@ -294,7 +295,7 @@ test.describe('a reader moving through the site', () => {
     })
 
     await page.goBack()
-    await page.waitForURL(`**/practice/${first}`)
+    await page.waitForURL(`**/${first}`)
     await page.waitForTimeout(2200)
 
     const states = await page.evaluate(() => [...new Set(globalThis.__states)])
@@ -332,14 +333,14 @@ test.describe('a reader moving through the site', () => {
     const context = await browser.newContext({ reducedMotion: 'reduce' })
     const page = await context.newPage()
     try {
-      const [first, second] = PRACTICES
-      await page.goto(`/en/practice/${first}`)
+      const [first, second] = UNITS
+      await page.goto(`/en/${first}`)
       await page.waitForTimeout(1200)
-      await page.locator(`a[href="/en/practice/${second}"]`).first().click()
-      await page.waitForURL(`**/practice/${second}`)
+      await page.locator(`a[href="/en/${second}"]`).first().click()
+      await page.waitForURL(`**/${second}`)
       await page.waitForTimeout(1200)
       await page.goBack()
-      await page.waitForURL(`**/practice/${first}`)
+      await page.waitForURL(`**/${first}`)
       await page.waitForTimeout(1500)
 
       const after = await page.evaluate(() => ({

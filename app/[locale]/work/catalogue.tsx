@@ -3,11 +3,7 @@ import { getTranslations } from 'next-intl/server'
 
 import { Wrapper } from '@/components/layout/wrapper'
 import { Link } from '@/components/ui/link'
-import {
-  PRACTICES,
-  type Practice,
-  practiceTemplate,
-} from '@/lib/content/practices'
+import { UNITS, type Unit, unitTemplate } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import type { Locale } from '@/lib/i18n/routing'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
@@ -85,7 +81,7 @@ const FLOWMAP_SIM: ('fluid' | 'flowmap')[] = ['flowmap']
  * request-time access, and it would put this page straight back into the
  * dynamic hole the route shape above exists to escape.
  */
-async function fetchCatalogue(locale: string, practice: Practice | null) {
+async function fetchCatalogue(locale: string, practice: Unit | null) {
   'use cache'
   const [projects, practices] = await Promise.all([
     sanityFetch({
@@ -107,7 +103,7 @@ async function fetchCatalogue(locale: string, practice: Practice | null) {
 interface CatalogueProps {
   locale: Locale
   /** The practice this view is narrowed to, or `null` for everything. */
-  practice: Practice | null
+  practice: Unit | null
 }
 
 export async function Catalogue({ locale, practice }: CatalogueProps) {
@@ -170,7 +166,7 @@ export async function Catalogue({ locale, practice }: CatalogueProps) {
   // SAFETY: `practices` is typed as literal unions by TypeGen because the
   // query projects a closed schema list. Widening to `(string | null)[]` only
   // relaxes the element type for this membership check — the values are
-  // compared, not mutated, and `PRACTICES` stays the authority on which
+  // compared, not mutated, and `UNITS` stays the authority on which
   // ones are offered.
   const present = practices as readonly (string | null)[]
   /*
@@ -187,7 +183,7 @@ export async function Catalogue({ locale, practice }: CatalogueProps) {
   const countOf = (value: string) =>
     present.filter((entry) => entry === value).length
 
-  const available = PRACTICES.filter((value) => present.includes(value)).map(
+  const available = UNITS.filter((value) => present.includes(value)).map(
     (value) => ({
       value,
       label: t(value),
@@ -225,7 +221,7 @@ export async function Catalogue({ locale, practice }: CatalogueProps) {
             },
           ]
         }),
-        PRACTICES
+        UNITS
       )
 
   return (
@@ -420,7 +416,7 @@ export async function Catalogue({ locale, practice }: CatalogueProps) {
                   keysHint={t('frameKeys')}
                   practiceLink={(value) => ({
                     label: t(value),
-                    href: practiceTemplate(value),
+                    href: unitTemplate(value),
                   })}
                 />
                 {/*

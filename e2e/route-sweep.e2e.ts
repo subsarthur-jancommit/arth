@@ -5,6 +5,7 @@ import AxeBuilder from '@axe-core/playwright'
 import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
+import { UNITS } from '../lib/content/units'
 import { routing } from '../lib/i18n/routing'
 import { axeTags } from './axe-tags'
 
@@ -85,8 +86,17 @@ function findPageFiles(dir: string, base = dir): string[] {
  * entire sweep. Expanding instead means each page is smoke-tested in BOTH
  * languages, automatically, with no list to maintain.
  *
+ * `[unit]` is expanded too, from `UNITS`, for the same reason and with one
+ * more: a unit page takes no fixture data — the list in `lib/content/units.ts`
+ * *is* its data — so there is nothing to stand up and nothing to skip. A unit
+ * added there gets swept without anyone remembering to add it, which is the
+ * drift this file exists to catch. `/konstruksi` is also a bare single
+ * segment, so a route that stopped answering would otherwise be invisible
+ * here and caught only by `proxy.ts` answering it `404`.
+ *
  * Other dynamic segments (`[slug]`, `[...slug]`) are still skipped: they need
- * fixture data to render meaningfully and belong in a dedicated spec.
+ * fixture data to render meaningfully and belong in a dedicated spec —
+ * `e2e/unit-page.e2e.ts` is the unit pages' own, beyond this smoke.
  */
 function toRoutes(relativePagePath: string): string[] {
   // path.join produces `\` separators on Windows; split on both so the
@@ -95,12 +105,21 @@ function toRoutes(relativePagePath: string): string[] {
     .split(/[\\/]/)
     .filter((segment) => segment.length > 0 && segment !== 'page.tsx')
 
-  const isLocaleSegment = (segment: string) => segment === '[locale]'
+  /*
+   * The dynamic segments this sweep knows how to expand, and what into.
+   *
+   * Keyed by the directory name so the table reads as the filesystem does.
+   * Anything dynamic and absent from it is still skipped wholesale.
+   */
+  const EXPANDABLE = {
+    '[locale]': routing.locales,
+    '[unit]': UNITS,
+  } satisfies Record<string, readonly string[]>
+
+  const isExpandable = (segment: string) => segment in EXPANDABLE
 
   if (
-    segments.some(
-      (segment) => segment.includes('[') && !isLocaleSegment(segment)
-    )
+    segments.some((segment) => segment.includes('[') && !isExpandable(segment))
   ) {
     return []
   }
@@ -109,14 +128,28 @@ function toRoutes(relativePagePath: string): string[] {
     (segment) => !(segment.startsWith('(') && segment.endsWith(')'))
   )
 
-  if (!staticSegments.some(isLocaleSegment)) {
-    return [staticSegments.length === 0 ? '/' : `/${staticSegments.join('/')}`]
-  }
-
-  return routing.locales.map(
-    (locale) =>
-      `/${staticSegments.map((segment) => (isLocaleSegment(segment) ? locale : segment)).join('/')}`
-  )
+  /*
+   * Every combination of the expandable segments, in path order.
+   *
+   * A fold rather than the nested `routing.locales.map` this used to be:
+   * with two expandable segments the old shape would have had to nest, and
+   * with three it would have had to nest again. The fold takes any number,
+   * so `[side]` joining the table in F1-04 is one line there and none here.
+   */
+  return staticSegments
+    .reduce<string[]>(
+      (paths, segment) => {
+        const values: readonly string[] =
+          segment in EXPANDABLE
+            ? EXPANDABLE[segment as keyof typeof EXPANDABLE]
+            : [segment]
+        return paths.flatMap((prefix) =>
+          values.map((value) => `${prefix}/${value}`)
+        )
+      },
+      ['']
+    )
+    .map((path) => path || '/')
 }
 
 function discoverRoutes(): string[] {
