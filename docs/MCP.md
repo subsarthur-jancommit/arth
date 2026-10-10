@@ -27,6 +27,28 @@ Tiga server jalan tanpa kredensial apa pun. Dua butuh langkah Anda:
 jadi ia hanya merujuk variabel lingkungan. Aturan yang sama seperti token mana
 pun di repo ini: rahasia tinggal di lingkungan, bukan di berkas yang ter-track.
 
+Rujukannya ditulis `${CONTEXT7_API_KEY:-}`, dengan bawaan kosong. Diukur
+2026-10-09: tanpa bawaan, variabel yang tidak terset diteruskan sebagai teks
+harfiah `${CONTEXT7_API_KEY}`, dan context7 menjawab _"Invalid API key"_ untuk
+setiap panggilan. Dengan nilai kosong ia jalan tanpa key — di kuota anonim yang
+dibagi per alamat IP, yang di sesi cloud sempat menjawab _"Monthly quota
+exceeded"_. Key gratis tetap dianjurkan.
+
+### 1.1 Di sesi cloud Claude Code
+
+`chrome-devtools` dan `playwright` dijalankan lewat `tools/mcp/launch.mjs`,
+bukan `npx` langsung. Diukur 2026-10-09: dijalankan polos, keduanya mencari
+Google Chrome di `/opt/google/chrome/chrome`, yang tidak ada di kontainer, dan
+`chrome-devtools-mcp` menolak menyalakan Chrome sebagai root. Peluncur itu,
+hanya bila `CLAUDE_CODE_REMOTE=true` dan `/opt/pw-browsers/chromium` ada,
+mengarahkan keduanya ke Chromium bawaan kontainer: headless, tanpa sandbox,
+profil di memori. Dengan itu keduanya membuka situs live. Di mesin lain
+servernya dijalankan persis seperti sebelumnya.
+
+Chromium kontainer itu revisi 1194 (Chromium 141), lebih tua dari yang dipin
+`playwright-core` 1.62.1 untuk suite e2e (`chromium-1234`). Untuk MCP — melihat
+halaman — itu cukup; suite e2e tetap hanya di CI (`docs/PROSEDUR-KERJA.md` §3).
+
 ---
 
 ## 2. Yang dipasang, dan apa yang ia buka di sini
@@ -109,3 +131,8 @@ hilang lebih mahal daripada kemampuan yang didapat.
 Sesi headless tidak bisa menjalankan alur OAuth. Kalau sebuah server melapor
 belum terotorisasi, sambungkan dari sesi interaktif (`claude mcp` atau `/mcp`)
 lebih dulu — kemampuannya tidak tersedia sampai itu dilakukan.
+
+Di sesi cloud, Sanity tersedia lewat **konektor claude.ai**, bukan lewat entri
+`sanity` di `.mcp.json`. Konektor itu login OAuth sebagai akun manusia pemilik,
+dengan seluruh hak akun itu; pemilik menerimanya pada 2026-10-09. Menulis
+lewatnya tetap tunduk pada `docs/PROSEDUR-KERJA.md` §6.
