@@ -23,8 +23,10 @@ Empat fakta, diukur 2026-10-07:
 | Sesi Claude bertindak dengan identitas pemilik         | `get_me` → `subsarthur-jancommit`, izin repo `admin: true`, dan alat GitHub di sesi mencakup merge dan push berkas                                                       |
 
 Artinya, satu-satunya yang mencegah kode rusak tayang hanyalah niat baik agen.
-Prosedur ini menggantinya dengan dua pengaman: aturan yang ditegakkan GitHub
-(§5), dan izin pemilik yang terikat ke satu SHA (§3 langkah 7).
+Prosedur ini menetapkan pengaman berupa PR, `ci` dan `e2e` pada head SHA yang
+tepat, serta tinjauan pemilik atas pratinjau Vercel yang terlindungi. Jika
+ruleset §5 belum aktif, GitHub belum menegakkan syarat itu secara otomatis;
+agen tetap wajib mematuhinya dan pemilik yang mengaktifkan setelan tersebut.
 
 ---
 
@@ -32,7 +34,8 @@ Prosedur ini menggantinya dengan dua pengaman: aturan yang ditegakkan GitHub
 
 |                                      | pemilik                                      | Claude                                           |
 | ------------------------------------ | -------------------------------------------- | ------------------------------------------------ |
-| memutuskan merge                     | ya, dengan `ok merge #<n>`                   | tidak; hanya melaksanakan                        |
+| meninjau pratinjau sebelum merge     | ya                                           | menunggu konfirmasi tinjauan; tanpa frasa merge  |
+| melaksanakan merge                   | —                                            | ya, setelah semua gerbang §3 terpenuhi           |
 | setelan GitHub, Vercel, Sanity       | ya, satu-satunya                             | tidak pernah                                     |
 | token dan secret                     | membuat, mengisi, mencabut                   | memakai yang diberikan, tidak pernah menampilkan |
 | branch, commit, PR, menjaga CI hijau | —                                            | ya                                               |
@@ -115,19 +118,22 @@ Pemilik boleh merge sendiri di GitHub; ruleset di §5 tetap berlaku untuknya.
    nomor PR, head SHA, nomor run CI beserta hitungan tesnya, tautan preview,
    dan risikonya.
 
-7. **Izin pemilik.** Pemilik menulis `ok merge #<n>` di percakapan. Izin itu
-   berlaku untuk head SHA yang dilaporkan di langkah 6. Commit apa pun
-   sesudahnya, termasuk satu baris dokumen, menggugurkan izin, dan alur
-   kembali ke langkah 4.
+7. **Tinjauan pemilik.** Pemilik meninjau pratinjau Vercel yang terlindungi
+   sebelum merge dan memberi tahu agen bahwa tinjauan selesai, melalui komentar
+   PR atau percakapan. Status Vercel sukses bukan bukti bahwa isi pratinjau
+   sudah ditinjau. Tidak diperlukan frasa izin merge terpisah.
 
-   Satu pengecualian: commit yang hanya menggabungkan `main` terbaru tanpa
-   konflik tidak menggugurkan izin, tetapi `ci` dan `e2e` harus hijau lagi
-   pada head barunya sebelum merge.
+   Setelah tinjauan pemilik selesai, agen boleh merge hanya jika PR mutakhir
+   dengan `main`, dapat digabung tanpa konflik, dan `ci` serta `e2e` sukses pada
+   head SHA yang tepat. Commit apa pun setelahnya mewajibkan kedua check hijau
+   lagi pada SHA baru. Jika branch perlu diperbarui dengan `main`, periksa
+   ulang seluruh syarat ini sebelum merge.
 
-8. **Merge.** Tepat sebelum merge, periksa ulang: head SHA masih yang
-   diizinkan, `ci` dan `e2e` berstatus `success` pada SHA itu, dan PR bisa
-   di-merge tanpa konflik. Metodenya merge commit, dengan pesan
-   `Merge <ringkasan> (#<n>)` yang menyebut izin pemilik dan nomor run CI.
+8. **Merge.** Tepat sebelum merge, periksa ulang: pemilik sudah meninjau
+   pratinjau, PR mutakhir terhadap `main`, `ci` dan `e2e` berstatus `success`
+   pada head SHA persis itu, dan PR bisa digabung tanpa konflik. Metodenya
+   merge commit, dengan pesan `Merge <ringkasan> (#<n>)` yang menyebut nomor
+   run CI.
 
 9. **Sesudah merge — wajib, di sesi yang sama:**
    - run CI `push` di `main` untuk merge SHA hijau;
@@ -137,8 +143,9 @@ Pemilik boleh merge sendiri di GitHub; ruleset di §5 tetap berlaku untuknya.
 
      ```bash
      SITE=https://arth-test-01.vercel.app   # ganti saat domain sendiri aktif
-     curl -sSI "$SITE/" | grep -i '^location'                    # → /en
-     for p in /en /id /sitemap.xml /cms; do
+     curl -sSI "$SITE/" | grep -i '^location'                    # → /id
+     curl -sSI "$SITE/en" | grep -i '^location'                  # → /id
+     for p in /id /sitemap.xml; do
        curl -sSo /dev/null -w "$p %{http_code}\n" "$SITE$p"      # → 200
      done
      curl -sSo /dev/null -w '%{http_code}\n' -X POST "$SITE/api/revalidate"
@@ -157,8 +164,7 @@ Pemilik boleh merge sendiri di GitHub; ruleset di §5 tetap berlaku untuknya.
 ## 4. Larangan
 
 1. Push langsung ke `main`, force-push ke `main`, atau menghapusnya.
-2. Merge tanpa `ok merge #<n>` untuk PR itu. "Lanjut", "bagus", atau izin
-   untuk PR lain bukan izin merge.
+2. Merge sebelum pemilik menyatakan tinjauan pratinjau terlindungi selesai.
 3. Merge ketika `ci` atau `e2e` merah, masih berjalan, dibatalkan, atau hijau
    pada SHA lain.
 4. `[skip ci]`, `[ci skip]`, `[no ci]`, `[skip actions]`, `[actions skip]`,
@@ -282,6 +288,7 @@ SANITY_API_WRITE_TOKEN="$SANITY_SESSION_WRITE_TOKEN" bun lib/scripts/seed-fixtur
 
 ## 7. Mengubah prosedur ini
 
-Prosedur ini diubah lewat PR dengan alur yang sama, dan izin merge-nya harus
-menyebut dokumen ini. Kalau sebuah langkah ternyata salah, ia dikoreksi di
-tempat dengan menyebut apa yang keliru (`.claude/agents/HOUSE-RULES.md` §6).
+Prosedur ini diubah lewat PR dengan alur yang sama; tinjauan pemilik atas
+pratinjau terlindungi tetap menjadi gerbang sebelum merge. Kalau sebuah
+langkah ternyata salah, ia dikoreksi di tempat dengan menyebut apa yang
+keliru (`.claude/agents/HOUSE-RULES.md` §6).
