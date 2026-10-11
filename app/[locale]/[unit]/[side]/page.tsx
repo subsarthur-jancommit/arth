@@ -1,10 +1,11 @@
 import cn from 'clsx'
 import { getTranslations } from 'next-intl/server'
-import { notFound } from 'next/navigation'
 import { locale as localeRootParam } from 'next/root-params'
 
+import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
 import { Link } from '@/components/ui/link'
+import { NoScriptFrontDoors } from '@/components/ui/route-loading'
 import { SampleContent } from '@/components/ui/sample-content'
 import { SectionHeader } from '@/components/ui/section-header'
 import { ownerPlaceholder } from '@/lib/content/sample-content'
@@ -50,7 +51,14 @@ export function generateStaticParams() {
 export default async function SidePage({ params }: SidePageProps) {
   const { unit, side } = await params
 
-  if (!isUnit(unit) || !isSideOf(unit, side)) notFound()
+  if (!isUnit(unit) || !isSideOf(unit, side)) {
+    return (
+      <>
+        <LocalizedNotFound />
+        <NoScriptFrontDoors />
+      </>
+    )
+  }
 
   const [tUnit, tSide, tSample] = await Promise.all([
     getTranslations('unit'),
@@ -139,8 +147,10 @@ export default async function SidePage({ params }: SidePageProps) {
 }
 
 export async function generateMetadata({ params }: SidePageProps) {
-  const { unit, side } = await params
-  const requested = await localeRootParam()
+  const [{ unit, side }, requested] = await Promise.all([
+    params,
+    localeRootParam(),
+  ])
   const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
 
   if (!isUnit(unit) || !isSideOf(unit, side)) {

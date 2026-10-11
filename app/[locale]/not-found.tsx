@@ -19,7 +19,7 @@ import s from '@/components/ui/not-found-view/not-found-view.module.css'
  * `app/global-error.tsx` renders outside the intl provider and cannot
  * translate; this route passes real translations in.
  */
-export default async function NotFound() {
+export async function LocalizedNotFound() {
   const t = await getTranslations('notFound')
 
   return (
@@ -66,3 +66,5 @@ export default async function NotFound() {
     </Wrapper>
   )
 }
+
+export default LocalizedNotFound

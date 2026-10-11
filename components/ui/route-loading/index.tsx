@@ -58,30 +58,43 @@ export function RouteLoading() {
           <div className={s.bar} />
         </div>
       </output>
-      <noscript>
-        <div className={s.noscript}>
-          <p className={s.note}>
-            This page needs JavaScript to finish loading.
-          </p>
-          <p className={s.note} lang="id">
-            Halaman ini butuh JavaScript untuk selesai dimuat.
-          </p>
-          <ul className={s.doors}>
-            <li>
-              {/* oxlint-disable-next-line react/forbid-elements, nextjs/no-html-link-for-pages -- no-JS fallback inside a prerendered shell; see the note above */}
-              <a href="/en" className={s.door}>
-                {BRAND_NAME} — English
-              </a>
-            </li>
-            <li lang="id">
-              {/* oxlint-disable-next-line react/forbid-elements, nextjs/no-html-link-for-pages -- no-JS fallback inside a prerendered shell; see the note above */}
-              <a href="/id" className={s.door}>
-                {BRAND_NAME} — Bahasa Indonesia
-              </a>
-            </li>
-          </ul>
-        </div>
-      </noscript>
+      <NoScriptFrontDoors />
     </div>
+  )
+}
+
+/**
+ * The two links a streamed 404 must retain when JavaScript never runs.
+ *
+ * F1-04's `[unit]/[side]` route is more specific than the locale catch-all,
+ * so an invalid pair reaches that page rather than its `loading.tsx`. Keeping
+ * this fragment public lets the invalid-pair branch preserve the same escape
+ * hatch without giving valid side pages a loading boundary that would hide
+ * their real content from no-JavaScript readers.
+ */
+export function NoScriptFrontDoors() {
+  return (
+    <noscript>
+      <div className={s.noscript}>
+        <p className={s.note}>This page needs JavaScript to finish loading.</p>
+        <p className={s.note} lang="id">
+          Halaman ini butuh JavaScript untuk selesai dimuat.
+        </p>
+        <ul className={s.doors}>
+          <li>
+            {/* oxlint-disable-next-line react/forbid-elements, nextjs/no-html-link-for-pages -- no-JS fallback inside a prerendered shell; see the note above */}
+            <a href="/en" className={s.door}>
+              {BRAND_NAME} — English
+            </a>
+          </li>
+          <li lang="id">
+            {/* oxlint-disable-next-line react/forbid-elements, nextjs/no-html-link-for-pages -- no-JS fallback inside a prerendered shell; see the note above */}
+            <a href="/id" className={s.door}>
+              {BRAND_NAME} — Bahasa Indonesia
+            </a>
+          </li>
+        </ul>
+      </div>
+    </noscript>
   )
 }
