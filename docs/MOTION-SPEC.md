@@ -805,3 +805,189 @@ answer the grammar, and marking it there makes the gate report a silent noun
 whose CSS is perfect. In `vault/blocks/practice-list` the `<summary>` is the
 marked noun, because opening a practice is the interaction the block adds; the
 link inside the panel is ordinary navigation.
+
+---
+
+## 12. Arthur's motion language
+
+Arthur treats motion as a working drawing built in front of the reader. A
+working drawing turns intent into something that can be built; here, each
+movement points to something being measured, joined, fixed, or stamped. It is
+a plan, not proof: motion must not imply a result, client, quantity, or
+capability that the page does not state. The same grammar serves all three
+units, with a different lead and tempo for each; the movement itself carries
+one piece of information.
+
+The meanings below are the Arthur vocabulary for the existing motion
+primitives. Use a primitive only for the meaning recorded here. They describe
+design intent, not new components or permission to change the reader
+protections in `CLAUDE.md`.
+
+| Primitive                       | Working-drawing meaning                                     | Meaning in Arthur                                                             | Intended use                                      |
+| ------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------- |
+| `datum`                         | A fixed reference line from which other things are measured | The umbrella statement is the reference; the three units are measured from it | Home, hero                                        |
+| `dimension`                     | A measurement line drawn before its number is read          | Scope is set before work: what is included, and where it ends                 | Offer scope; how-we-work page                     |
+| `formwork`                      | Formwork is removed and the cast result stands on its own   | An offer leaves the catalogue and stands as a complete offer                  | Chapter, offer card                               |
+| `fixings`                       | A plate is fixed at its four corners once it is in place    | Boundaries and terms are fixed and do not drift                               | Offer boundaries and terms                        |
+| `stamp`                         | A stamp lands after something is checked or agreed          | What is agreed is written down before work begins                             | How we work; copy-address control                 |
+| `splice`                        | Two bars are joined with a plate                            | A bridge between units                                                        | One client, three units; bridge block             |
+| `brace`                         | A diagonal member steadies a frame                          | The system that keeps a business steady                                       | Technology unit                                   |
+| `bearing`                       | A load lands on a beam, compresses it briefly, then rests   | A client's problem is carried by the right unit                               | Construction unit; unit entry                     |
+| `level`                         | A beam becomes level when its supports arrive               | Work is complete when all its parts are in place                              | Completed step sequence                           |
+| `plumb`                         | A plumb line follows the reader downward                    | Long-form writing stays upright and readable                                  | How we work; policies                             |
+| `leader`                        | A line connects a note to the thing it describes            | A note points to the part being discussed                                     | Home situation-to-unit link; offer audience label |
+| `tally`                         | Tally marks are counted in groups of five                   | A visible, real quantity, such as the number of published offers in a chapter | Side and chapter; real counts only                |
+| `crop-marks`                    | Marks at the corners of a sheet show its crop               | The sheet currently selected                                                  | Offer card when highlighted                       |
+| `crosshair` and `cover-preview` | A point is read from the grid edge                          | An offer is located in the chapter by its table and type                      | Side                                              |
+| `entry-arrow`                   | An arrow marks an entrance on a plan                        | The point where the reader enters by following a link                         | Linked-to offer block                             |
+| `north-arrow`                   | An arrow gives orientation                                  | A way back when the reader is lost                                            | 404 page                                          |
+| `route-marker`                  | A marker identifies the sheet currently held                | The reader's position in the set                                              | Header; side switcher                             |
+
+The plan also assigns the existing mechanisms these roles: `text-reveal`
+makes a buyer's statement readable word by word; `horizontal` carries a row
+sideways; `flip` filters cards; `page-transition` exchanges sheets; `curtain`
+opens the set once per session; and `reading-progress` marks how far the
+reader has read. These descriptions do not authorize invented buyer quotes,
+claims, counters, or client marks.
+
+### 12.1 Unit dialects
+
+The grammar and tokens stay shared. Only the leading primitive and tempo vary;
+the palette stays monochrome so the units are distinguished by motion and
+working-drawing marks, not by colour.
+
+| Unit       | Character           | Leading primitives                                     | Tempo                                                                                         | Avoid                               |
+| ---------- | ------------------- | ------------------------------------------------------ | --------------------------------------------------------------------------------------------- | ----------------------------------- |
+| Konstruksi | Weighty and precise | `bearing`, `formwork`, `level`, `fixings`, `dimension` | Long settle, 800–1200 ms with `ease-out-expo`; one object moves at a time                     | Light, floating movement            |
+| Teknologi  | Sequenced           | `brace`, `dimension`, `step-sequence`, `leader`        | Short ordered steps, 150–200 ms each with `ease-out-quart`; the sequence reveals the workflow | Simultaneous movement without order |
+| Peekabo    | Lively              | `text-reveal`, `horizontal`, `parallax`, `crop-marks`  | Scroll-linked with `ease-gleasing`, responsive to scroll velocity; rows travel sideways       | Overshoot and countdowns            |
+
+The dialect is a parameter in one token file (planned for F4-02), not a
+separate component per unit. The home page, One client / three units, and How
+we work use the base grammar because they belong to Arthur, not to one unit.
+
+## 13. Arthur moment cards — design brief for later packages
+
+These seven cards define future design work; F1-08 records them but does not
+build their templates. The explicit `data-epic` names are observability labels
+for the interaction-grammar report, not a promise that the moment is already
+implemented. The page named by each card must retain its complete static
+state; reduced motion changes the transition, never whether the information
+is available. `CLAUDE.md`'s hard reader protections continue to apply.
+
+### 13.1 Lembar ditukar — sheet exchange (F3-03)
+
+| Field                | Specification                                                                                                                                                                                                    |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data-epic`          | `side-sheet-swap`                                                                                                                                                                                                |
+| Trigger              | The reader activates the side switch, an ordinary link to the other side route.                                                                                                                                  |
+| Sequence and timing  | INTENT 200 ms (`ease-out-quart`): the switch marker begins to move. TRANSPORT 400 ms (`ease-in-out-quart`): the old sheet lifts and fades. SETTLE 800 ms (`ease-out-expo`): the new sheet's title block settles. |
+| Pinning              | None.                                                                                                                                                                                                            |
+| Touch                | Same sequence, triggered by a tap.                                                                                                                                                                               |
+| Without JavaScript   | The link navigates normally.                                                                                                                                                                                     |
+| Reduced motion       | The new sheet appears immediately and focus moves to its page title.                                                                                                                                             |
+| Verification planned | No-JavaScript link behavior, reduced-motion final state, and a named moment in the interaction-grammar report.                                                                                                   |
+
+### 13.2 Kartu dari bekisting — card from formwork (F3-04)
+
+| Field                | Specification                                                                                                                                                                                                                           |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data-epic`          | `bab-formwork` for arrival; `bab-sift` for filtering.                                                                                                                                                                                   |
+| Trigger              | A card enters through the reveal contract; the reader activates a market filter.                                                                                                                                                        |
+| Sequence and timing  | Arrival and formwork removal use the primitive's default timing. Cards arrive in reading order, spaced by `--stagger-cards` (70 ms), capped at 600 ms total. Filtering uses FLIP for 400 ms (`ease-out-quart`), as in `catalogue-sift`. |
+| Pinning              | None.                                                                                                                                                                                                                                   |
+| Touch                | Same behavior.                                                                                                                                                                                                                          |
+| Without JavaScript   | All cards are visible without formwork; the filter is not shown.                                                                                                                                                                        |
+| Reduced motion       | Cards appear without formwork; filtering updates results immediately.                                                                                                                                                                   |
+| Verification planned | No-JavaScript and reduced-motion states on the chapter fixture; chapter routes enter the sweep in F3-12.                                                                                                                                |
+
+### 13.3 Batas dipaku — boundaries fixed (F3-05)
+
+| Field                | Specification                                                                                        |
+| -------------------- | ---------------------------------------------------------------------------------------------------- |
+| `data-epic`          | `offer-fixings`                                                                                      |
+| Trigger              | The boundaries-and-terms block enters view.                                                          |
+| Sequence and timing  | Use the `fixings` primitive's default timing; attach the four corner marks clockwise, one at a time. |
+| Pinning              | None.                                                                                                |
+| Touch                | Same behavior.                                                                                       |
+| Without JavaScript   | The block and marks are present in their final state.                                                |
+| Reduced motion       | The corner marks are already in place.                                                               |
+| Verification planned | Reduced-motion state on the offer fixture.                                                           |
+
+### 13.4 Alur uang empat langkah — four-step money flow (F3-06)
+
+| Field                | Specification                                                                                                                       |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `data-epic`          | `network-money-flow`                                                                                                                |
+| Trigger              | The reader scrolls through the referrer-path section.                                                                               |
+| Sequence and timing  | A leader line follows scroll using a CSS view timeline, like `plumb`, with no JavaScript loop. Stamp each step when it enters view. |
+| Pinning              | None; all four steps remain vertically ordered at every width.                                                                      |
+| Touch                | Same behavior.                                                                                                                      |
+| Without JavaScript   | The four steps, complete line, and stamps are visible.                                                                              |
+| Reduced motion       | Same final state as without JavaScript.                                                                                             |
+| Content boundary     | No numbers, rates, or income simulation.                                                                                            |
+| Verification planned | No-JavaScript and reduced-motion states; `continuous-motion` confirms step prose does not move.                                     |
+
+### 13.5 Janji dicap — promises stamped (F3-08)
+
+| Field                | Specification                                                                                    |
+| -------------------- | ------------------------------------------------------------------------------------------------ |
+| `data-epic`          | `promise-stamp`                                                                                  |
+| Trigger              | Each written promise enters view.                                                                |
+| Sequence and timing  | Use the `stamp` primitive's default timing, once per promise; do not replay when scrolling back. |
+| Pinning              | None.                                                                                            |
+| Touch                | Same behavior.                                                                                   |
+| Without JavaScript   | The stamp is already visible.                                                                    |
+| Reduced motion       | The stamp is already visible.                                                                    |
+| Verification planned | Reduced-motion state on the How we work page.                                                    |
+
+### 13.6 Situasi menunjuk unit — situation points to a unit (F3-01)
+
+| Field                | Specification                                                                                                                               |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data-epic`          | `situation-leader`                                                                                                                          |
+| Trigger              | Wide screens: hover or keyboard focus on a situation. Touch screens and viewports below 800 px: draw the line as the situation enters view. |
+| Sequence and timing  | INTENT 200 ms (`ease-out-quart`), using the `leader` primitive.                                                                             |
+| Pinning              | None.                                                                                                                                       |
+| Without JavaScript   | Each situation is a link whose text names its destination unit.                                                                             |
+| Reduced motion       | Do not draw the line; keep the destination unit named in text.                                                                              |
+| Verification planned | `keyboard-focus`; the interaction-grammar report checks keyboard INTENT.                                                                    |
+
+### 13.7 Masuk lebih dalam ke set — enter deeper into the set (F4-03)
+
+| Field                | Specification                                                                                                                                                                      |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data-epic`          | `set-depth`                                                                                                                                                                        |
+| Trigger              | Navigation between Arthur pages that have no dedicated transition in the navigation table.                                                                                         |
+| Sequence and timing  | COMMIT 150 ms: the link is pressed. TRANSPORT 400 ms: a detail-circle expands from the link (`ease-in-out-quart`). SETTLE 800 ms: the destination title settles (`ease-out-expo`). |
+| Back navigation      | Use a faster closing panel (150 + 200 ms), not a shrinking morph, per §9.4 rule 7: restored scroll position can put the paired element outside the viewport.                       |
+| Interruption         | A new navigation cancels the old transition and resolves directly to the new destination's final state.                                                                            |
+| Without JavaScript   | Ordinary navigation.                                                                                                                                                               |
+| Reduced motion       | The page changes without a transition.                                                                                                                                             |
+| Verification planned | Keep `instant-navigation` and `navigation-landing` green; add coverage for Back and double activation when this is implemented.                                                    |
+
+### 13.8 Navigation precedence
+
+One activation starts exactly one transition. When more than one could apply,
+use this precedence. Card 7 replaces the legacy per-route `work-transport`
+and `journal-transport` transitions, except for the first three specific
+pairs in this table. Its detail circle is the working-drawing mark that
+references another sheet.
+
+| From                                            | To                            | Transition                                                                                     |
+| ----------------------------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------- |
+| Home                                            | Unit                          | `practice-morph`: the unit name travels from its doorway.                                      |
+| Side                                            | Another side in the same unit | Card 1, `side-sheet-swap`.                                                                     |
+| Chapter                                         | Offer                         | `offer-arrival`, derived from `project-arrival` without a photo.                               |
+| Any Arthur page                                 | Another Arthur page           | Card 7, `set-depth`, unless a more specific row above applies.                                 |
+| Browser Back or Forward                         | The prior or next page        | A faster closing panel (150 + 200 ms), not a morph; the first-session curtain does not replay. |
+| A new destination while a transition is running | The newly requested page      | Cancel the old transition and resolve directly to the new destination's final state.           |
+
+The Back/Forward choice follows §9.4 rule 7: restored scroll position can put
+the paired shared element outside the viewport. With JavaScript disabled, all
+these links remain ordinary navigation.
+
+The cards are subordinate to the navigation precedence defined by the Arthur
+project context. If an implementation needs a value or behavior that conflicts
+with a hard rule, pause and report both statements; do not resolve the conflict
+by silently changing either this design brief or the hard rule.
