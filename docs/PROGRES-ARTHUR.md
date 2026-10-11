@@ -18,12 +18,12 @@ Prompting_. Prosedur per PR mengikat di
 
 ## Keputusan pemilik yang berlaku
 
-| Keputusan          | Isi                                                                                        |
-| ------------------ | ------------------------------------------------------------------------------------------ |
-| K1, K2             | Bahasa bawaan Indonesia, `/` → `/id`, Inggris menyusul, `/en` tanpa terjemahan 307 → `/id` |
-| K3, K4, K6, K7, K8 | Berlaku sementara pada bawaannya; tidak memblokir                                          |
-| **K5**             | **Belum diputuskan.** Paket yang membutuhkannya berhenti dan bertanya. Pertama kali: F2-01 |
-| K9                 | Belum diputuskan; jatuh tempo sebelum noindex dilepas di F5-05                             |
+| Keputusan          | Isi                                                                                                                                                                                      |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| K1, K2             | Bahasa bawaan Indonesia, `/` → `/id`, Inggris menyusul, `/en` tanpa terjemahan 307 → `/id`                                                                                               |
+| K3, K4, K6, K7, K8 | Berlaku sementara pada bawaannya; tidak memblokir                                                                                                                                        |
+| **K5**             | **Belum diputuskan.** Email/alamat contoh hanya dummy; kanal nyata dan waktu balas belum dipilih. F2-01 boleh memakai dummy ber-NOTE; hentikan F3-09/F5-06 bila membutuhkan kanal nyata. |
+| K9                 | Belum diputuskan; jatuh tempo sebelum noindex dilepas di F5-05                                                                                                                           |
 
 Urutan paket pertama diubah pemilik dari dokumen Tahap 2: **F0-01 lebih dulu,
 baru F0-07**, karena `robots.txt` produksi sedang mengizinkan semua perayap AI
@@ -31,20 +31,29 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 
 ## Paket
 
-| Paket                                 | PR  | SHA merge | Status           | Dilewati / ditunda                                                                                   |
-| ------------------------------------- | --- | --------- | ---------------- | ---------------------------------------------------------------------------------------------------- |
-| F0-01 Noindex selama dummy            | #12 | `2491472` | **Selesai**      | Pengecualian domain dibangun tapi daftarnya kosong (lihat U3); lokasinya pindah dari `proxy.ts` (U4) |
-| F0-07 Dokumen repo diselaraskan       | #13 | `45f220b` | **Selesai**      | FORK.md tidak disunting (U1); `ROADMAP.md` dan `docs/stages/` tidak disentuh (U8)                    |
-| F1-01 Merek Arthur dari satu sumber   | #14 | `a052ace` | **Selesai**      | Prosa `SITE` dan `home-fallback` ikut dibereskan di F1-02 (U11)                                      |
-| F1-02 Tiga unit menggantikan praktik  | #14 | `a052ace` | **Selesai**      | Medan Sanity masih bernama `practice` (U12); `?practice=` → `?unit=` tanpa pengalih (U13)            |
-| F1-03 Rute unit                       | #14 | `a052ace` | **Selesai**      | Halaman CMS pindah ke `/halaman/<slug>` (U14); tiga gerbang e2e melemah (U15)                        |
-| F0-02 Uji terbit menampilkan isi baru | —   | —         | Belum mulai      | Bergantung F0-06                                                                                     |
-| F0-03 Token produksi hanya Viewer     | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                                      |
-| F0-04 Token dev dicabut               | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                                         |
-| F0-05 Ruleset cabang `main`           | —   | —         | Menunggu pemilik | Tindakan dasbor. Terakhir diukur `gh api …/rules/branches/main` → `[]`, belum aktif                  |
-| F0-06 Dataset `ci` terpisah           | —   | —         | Menunggu pemilik | Tindakan dasbor; memblokir F0-02 dan F2-09                                                           |
+| Paket                                       | PR  | SHA merge | Status           | Dilewati / ditunda                                                                                                                                                                                                                                              |
+| ------------------------------------------- | --- | --------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F0-01 Noindex selama dummy                  | #12 | `2491472` | **Selesai**      | Pengecualian domain dibangun tapi daftarnya kosong (lihat U3); lokasinya pindah dari `proxy.ts` (U4)                                                                                                                                                            |
+| F0-07 Dokumen repo diselaraskan             | #13 | `45f220b` | **Selesai**      | FORK.md tidak disunting (U1); `ROADMAP.md` dan `docs/stages/` tidak disentuh (U8)                                                                                                                                                                               |
+| F1-01 Merek Arthur dari satu sumber         | #14 | `a052ace` | **Selesai**      | Prosa `SITE` dan `home-fallback` ikut dibereskan di F1-02 (U11)                                                                                                                                                                                                 |
+| F1-02 Tiga unit menggantikan praktik        | #14 | `a052ace` | **Selesai**      | Medan Sanity masih bernama `practice` (U12); `?practice=` → `?unit=` tanpa pengalih (U13)                                                                                                                                                                       |
+| F1-03 Rute unit                             | #14 | `a052ace` | **Selesai**      | Halaman CMS pindah ke `/halaman/<slug>` (U14); tiga gerbang e2e melemah (U15)                                                                                                                                                                                   |
+| F1-04 Rute sisi                             | #16 | —         | **Dalam PR**     | GitHub `ci` dan `e2e` hijau pada head `d89481c`; perlu mutakhir terhadap `main` sesudah PR dokumentasi gerbang dan tinjauan pratinjau pemilik                                                                                                                   |
+| F1-05 Cara kami bekerja menggantikan studio | —   | —         | **Dalam branch** | Commit ada di `codex/f1-08-kamus-gerak`; belum dipisah ke PR paket, jadi `ci`/`e2e` wajib berjalan pada PR tersendiri; isi halaman tetap contoh sampai ditinjau pemilik                                                                                         |
+| F1-06 Navigasi Arthur                       | —   | —         | **Dalam branch** | Commit ada di `codex/f1-08-kamus-gerak`; belum dipisah ke PR paket, jadi `ci`/`e2e` wajib berjalan pada PR tersendiri; `/work` dan `/journal` masih hidup dan belum dipromosikan                                                                                |
+| F1-07 Bahasa bawaan dan segmen URL          | —   | —         | **Dalam branch** | Commit ada di `codex/f1-08-kamus-gerak`; belum dipisah ke PR paket, jadi `ci`/`e2e` wajib berjalan pada PR tersendiri; EN tidak diindeks atau ditawarkan                                                                                                        |
+| F1-08 Kamus gerak dan nama momen            | —   | —         | **Dalam branch** | Commit ada di `codex/f1-08-kamus-gerak`; spesifikasi saja, implementasi tujuh momen tetap untuk F3/F4; checks wajib pada PR paket tersendiri                                                                                                                    |
+| F2-01 Pengaturan situs                      | —   | —         | **Dalam branch** | NOTE: `kontak@arth.invalid` dan alamat contoh hanya dummy; ganti sebelum kontak diterbitkan. Alamat bukan lokasi nyata/kunjungan. K5 belum diputuskan; migrasi Sanity menunggu izin §6; teks beranda lama menunggu F3-01; checks wajib pada PR paket tersendiri |
+| F0-02 Uji terbit menampilkan isi baru       | —   | —         | Belum mulai      | Bergantung F0-06                                                                                                                                                                                                                                                |
+| F0-03 Token produksi hanya Viewer           | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                                                                                                                                                                                                 |
+| F0-04 Token dev dicabut                     | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                                                                                                                                                                                                    |
+| F0-05 Ruleset cabang `main`                 | —   | —         | Menunggu pemilik | Tindakan dasbor. Terakhir diukur `gh api …/rules/branches/main` → `[]`, belum aktif                                                                                                                                                                             |
+| F0-06 Dataset `ci` terpisah                 | —   | —         | Menunggu pemilik | Tindakan dasbor; memblokir F0-02 dan F2-09                                                                                                                                                                                                                      |
 
-F1-04 ke atas belum mulai; lihat Backlog.
+F1-05 sampai F2-01 sudah memiliki commit pada cabang lanjutan yang sama, tetapi
+belum memiliki PR per paket. Sebelum dipublikasikan, pisahkan commit tersebut
+satu paket per PR; jangan menganggap checks dari PR lain sebagai validasi untuk
+branch baru. Paket berikutnya lihat Backlog.
 
 **F1-01, F1-02 dan F1-03 berada di satu PR**, dan itu penyimpangan dari "satu
 PR per paket" yang disebut terang-terangan di sini dan di deskripsi PR-nya.
@@ -101,12 +110,11 @@ produksi sesudah merge" sebetulnya sudah terbukti jalan. **Pemilik melarang
 menyunting FORK.md**, karena F0-07 memakainya sebagai sumber kebenaran. Dicatat
 saja.
 
-**U2 — uji asap `/` → `/en` menunggu F1-07.** `docs/DEPLOYMENT.md` §3 dan §6
-serta `PROSEDUR-KERJA.md` §3 langkah 9 sama-sama mengharapkan `/` mengarah ke
-`/en`. F1-07 mengubahnya ke `/id`. Keputusan pemilik: DEPLOYMENT.md diperbaiki
-**langsung di PR F1-07** karena ia panduan, bukan dokumen mengikat; hanya
-PROSEDUR-KERJA §3 langkah 9 yang lewat jalur §7. Diukur 2026-10-10: `/` masih
-307 ke `/en`, jadi keduanya masih benar hari ini.
+**U2 — ekspektasi uji asap prosedur diselaraskan dalam PR dokumentasi
+gerbang.** `PROSEDUR-KERJA.md` kini mengharapkan `/` → `/id`, `/en` → `/id`
+(307), dan `/id` 200. `docs/DEPLOYMENT.md` diperbarui dalam PR F1-07 sesuai
+keputusan pemilik. Verifikasi produksi untuk perilaku bahasa dilakukan setelah
+F1-07 masuk `main`; belum dinyatakan lulus di sini.
 
 **U3 — daftar `INDEXABLE_HOSTS` kosong.** F0-01 membangun mekanisme
 pengecualian domain, tapi daftarnya kosong karena K4 (domain akhir) belum
