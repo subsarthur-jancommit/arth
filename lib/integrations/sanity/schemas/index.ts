@@ -25,10 +25,10 @@ import { metadata } from './metadata'
 import { page } from './page'
 import { project } from './project'
 import { richText } from './richText'
-import { studioSettings } from './studioSettings'
+import { siteSettings } from './siteSettings'
 
 // Re-export all schemas for convenience
-export { journalEntry, link, metadata, page, project, richText, studioSettings }
+export { journalEntry, link, metadata, page, project, richText, siteSettings }
 
 // Schema collection for Sanity configuration
 export const schema = {
@@ -48,6 +48,6 @@ export const schema = {
     project,
 
     // Singleton types (one-off content)
-    studioSettings,
+    siteSettings,
   ],
 } satisfies { types: SchemaTypeDefinition[] }

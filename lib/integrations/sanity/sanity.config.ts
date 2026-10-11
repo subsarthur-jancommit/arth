@@ -4,6 +4,7 @@
  * to host it at https://<project>.sanity.studio.
  */
 
+import { CogIcon } from '@sanity/icons/Cog'
 import { visionTool } from '@sanity/vision'
 import { defineConfig } from 'sanity'
 import { internationalizedArray } from 'sanity-plugin-internationalized-array'
@@ -12,6 +13,7 @@ import {
   defineLocations,
   presentationTool,
 } from 'sanity/presentation'
+import type { StructureResolver } from 'sanity/structure'
 import { structureTool } from 'sanity/structure'
 
 import { apiVersion, dataset, previewURL, projectId } from './env'
@@ -33,6 +35,27 @@ import { schema } from './schemas'
  * editor working in Indonesian can switch locale inside the previewed site.
  */
 const PREVIEW_LOCALE = 'id'
+
+const SINGLETON_TYPES = new Set(['siteSettings'])
+
+const structure: StructureResolver = (S) =>
+  S.list()
+    .title('Arthur')
+    .items([
+      S.listItem()
+        .title('Pengaturan situs')
+        .icon(CogIcon)
+        .child(
+          S.document()
+            .schemaType('siteSettings')
+            .documentId('siteSettings')
+            .title('Pengaturan Arthur')
+        ),
+      S.divider(),
+      ...S.documentTypeListItems().filter(
+        (item) => !SINGLETON_TYPES.has(item.getId() ?? '')
+      ),
+    ])
 
 function resolveHref(documentType?: string, slug?: string): string | undefined {
   switch (documentType) {
@@ -151,7 +174,7 @@ export default projectId && dataset
           // disappears from the Studio.
           fieldTypes: ['string', 'text', 'richText'],
         }),
-        structureTool(),
+        structureTool({ structure }),
         // Vision is for querying with GROQ from inside the Studio
         // https://www.sanity.io/docs/the-vision-plugin
         visionTool({ defaultApiVersion: apiVersion }),

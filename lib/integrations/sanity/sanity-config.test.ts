@@ -80,3 +80,15 @@ describe('sanity.config.ts locale wiring', () => {
     expect(source).toContain("fieldTypes: ['string', 'text', 'richText']")
   })
 })
+
+describe('sanity.config.ts singleton structure', () => {
+  it('opens one fixed site settings document and removes it from generic lists', async () => {
+    const source = await readConfig()
+
+    expect(source).toContain("schemaType('siteSettings')")
+    expect(source).toContain("documentId('siteSettings')")
+    expect(source).toContain('S.documentTypeListItems()')
+    expect(source).toContain('SINGLETON_TYPES.has')
+    expect(source).toContain('structureTool({ structure })')
+  })
+})

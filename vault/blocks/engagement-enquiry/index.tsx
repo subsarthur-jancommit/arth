@@ -32,24 +32,34 @@ interface EngagementEnquiryProps {
   href: string
   /** Already localized — "Discuss a similar engagement". */
   label: string
+  /** Shown when the destination address is still a reserved dummy value. */
+  note?: string | undefined
   className?: string | undefined
 }
 
 export function EngagementEnquiry({
   href,
   label,
+  note,
   className,
 }: EngagementEnquiryProps) {
   return (
-    <p className={cn(s.enquiry, className)}>
-      <Link
-        href={href}
-        className={cn('p-big', s.link)}
-        data-press="email"
-        data-intent=""
-      >
-        {label}
-      </Link>
-    </p>
+    <div className={cn(s.enquiry, className)}>
+      <p>
+        <Link
+          href={href}
+          className={cn('p-big', s.link)}
+          data-press="email"
+          data-intent=""
+        >
+          {label}
+        </Link>
+      </p>
+      {note && (
+        <p data-placeholder-note className="caption">
+          {note}
+        </p>
+      )}
+    </div>
   )
 }

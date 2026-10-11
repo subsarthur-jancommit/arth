@@ -71,10 +71,6 @@ export const pageQuery = defineQuery(`
 const localizedTitle = `"title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value)`
 const localizedEngagement = `"engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value)`
 const localizedCoverAlt = `"coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)`
-const localizedHeadline = `"headline": coalesce(headline[_key == $locale][0].value, headline[_key == "id"][0].value)`
-const localizedSubline = `"subline": coalesce(subline[_key == $locale][0].value, subline[_key == "id"][0].value)`
-const localizedStatement = `"statement": coalesce(statement[_key == $locale][0].value, statement[_key == "id"][0].value)`
-
 /** Fields shared by the work grid and the project detail page. */
 const projectCardFields = `
   _id,
@@ -283,18 +279,42 @@ export const projectSlugsQuery = defineQuery(`
   *[_type == "project" && defined(slug.current)].slug.current
 `)
 
-/** The studio singleton — hero copy, statement, contact. */
-export const studioSettingsQuery = defineQuery(`
-  *[_type == "studioSettings"][0] {
+/**
+ * Arthur's site singleton. `studioSettings` stays in this read path until its
+ * one existing production fixture is migrated through procedure §6.
+ */
+export const siteSettingsQuery = defineQuery(`
+  *[_type in ["siteSettings", "studioSettings"]]
+    | order((_type == "siteSettings") desc, _updatedAt desc)[0] {
     _id,
     name,
-    email,
-    socials,
+    "email": coalesce(kanal.email, email),
+    "socials": coalesce(akunSosial, socials),
     portrait,
     metadata,
-    ${localizedHeadline},
-    ${localizedSubline},
+    "headline": coalesce(
+      heroJudul[_key == $locale][0].value,
+      heroJudul[_key == "id"][0].value,
+      headline[_key == $locale][0].value,
+      headline[_key == "id"][0].value
+    ),
+    "subline": coalesce(
+      heroSubjudul[_key == $locale][0].value,
+      heroSubjudul[_key == "id"][0].value,
+      subline[_key == $locale][0].value,
+      subline[_key == "id"][0].value
+    ),
     "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),
-    ${localizedStatement}
+    "statement": coalesce(
+      pernyataanPemilik[_key == $locale][0].value,
+      pernyataanPemilik[_key == "id"][0].value,
+      statement[_key == $locale][0].value,
+      statement[_key == "id"][0].value
+    ),
+    "address": coalesce(alamat[_key == $locale][0].value, alamat[_key == "id"][0].value),
+    "wilayah": wilayah[]{
+      _key,
+      "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)
+    }
   }
 `)

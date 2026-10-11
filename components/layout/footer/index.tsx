@@ -1,5 +1,5 @@
 import cn from 'clsx'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import type { CSSProperties } from 'react'
 
 import { Link } from '@/components/ui/link'
@@ -58,18 +58,24 @@ const YEAR = new Date().getFullYear()
 /*
  * One source, not a third copy — Tahap 35.
  *
- * These were literals here: `studio@arth.example` and two bare domains,
- * duplicating `lib/content/home-fallback.ts` exactly. The home page resolves
+ * This used to be a literal here: `studio@arth.example`, duplicating
+ * `lib/content/home-fallback.ts`. The home page resolves
  * the same fields against the CMS; this footer cannot, because it renders
  * inside the client `Wrapper` and has no server data of its own. Sharing the
  * constant is what makes that a *fallback* rather than a second opinion, and
- * what makes wiring the CMS through later one edit instead of three.
+ * what makes wiring the CMS through later one edit instead of three. No
+ * social profile is linked until Arthur's official accounts are supplied.
  *
  * They are marked as placeholders in the markup below, for the same reason
  * the home page's statement is: showing scaffolding is fine, showing it
  * unlabelled is not.
  */
-const { name: SITE_NAME, email: EMAIL, socials: SOCIAL } = FALLBACK_CONTACT
+const {
+  name: SITE_NAME,
+  email: EMAIL,
+  address: ADDRESS,
+  socials: SOCIAL,
+} = FALLBACK_CONTACT
 
 /*
  * The address's length, for the stylesheet to fit it to its column
@@ -92,6 +98,7 @@ const BUILD = readBuild({
 
 export function Footer() {
   const t = useTranslations('footer')
+  const locale = useLocale()
   /*
    * Two more namespaces rather than new strings.
    *
@@ -161,6 +168,16 @@ export function Footer() {
           >
             {EMAIL}
           </Link>
+          <p data-placeholder-note className={cn('caption', s.note)}>
+            {t('contactPlaceholderNote')}
+          </p>
+          <p className={cn('caption', s.note)}>{t('addressHeading')}</p>
+          <p className={cn('caption', s.note)}>
+            {locale === 'id' ? ADDRESS.id : ADDRESS.en}
+          </p>
+          <p data-placeholder-note className={cn('caption', s.note)}>
+            {t('addressPlaceholderNote')}
+          </p>
         </section>
 
         {/* The footer index keeps the three units and work-method page
@@ -182,15 +199,21 @@ export function Footer() {
 
         <section className={s.column}>
           <h2 className={cn('caption', s.heading)}>{t('elsewhere')}</h2>
-          <ul className={s.list}>
-            {SOCIAL.map((item) => (
-              <li key={item.url}>
-                <Link href={item.url} className={cn('caption', s.link)}>
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          {SOCIAL.length > 0 ? (
+            <ul className={s.list}>
+              {SOCIAL.map((item) => (
+                <li key={item.url}>
+                  <Link href={item.url} className={cn('caption', s.link)}>
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p data-placeholder-note className={cn('caption', s.note)}>
+              {t('elsewherePlaceholderNote')}
+            </p>
+          )}
         </section>
 
         <section className={s.column}>

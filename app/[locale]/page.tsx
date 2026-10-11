@@ -14,7 +14,7 @@ import { RichText } from '@/lib/integrations/sanity/components/rich-text'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
 import {
   featuredProjectsQuery,
-  studioSettingsQuery,
+  siteSettingsQuery,
 } from '@/lib/integrations/sanity/queries'
 import { toImageSource } from '@/lib/integrations/sanity/utils/image'
 import { ContactBlock } from '@/vault/blocks/contact-block'
@@ -50,7 +50,7 @@ async function fetchHome(
   'use cache'
   const [settings, projects] = await Promise.all([
     sanityFetch({
-      query: studioSettingsQuery,
+      query: siteSettingsQuery,
       params: { locale },
       perspective,
       stega,
@@ -346,7 +346,7 @@ export default async function Home() {
             `data-statement` names where this prose came from, and the note
             below is driven by the same fact rather than by a second one.
             They were separate until Tahap 35: the note asked "does a
-            `studioSettings` document exist?" while the prose asked "does it
+            `siteSettings` document exist?" while the prose asked "does it
             have a statement?", and with the fixture document present the
             answers disagreed — placeholder paragraphs shipped with no label.
           */}
@@ -403,6 +403,12 @@ export default async function Home() {
           eyebrow={t('contactEyebrow')}
           title={t('contactTitle')}
           email={content.email}
+          address={content.address}
+          addressHeading={t('addressHeading')}
+          addressIsPlaceholder={content.fallbacks.address}
+          {...(content.fallbacks.address && {
+            addressNote: t('addressPlaceholderNote'),
+          })}
           emailLabel={t('emailLabel', { name: content.name })}
           socials={content.socials}
           {...(content.fallbacks.email && {

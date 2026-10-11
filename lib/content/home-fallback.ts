@@ -4,23 +4,24 @@ import type { Locale } from '@/lib/i18n/routing'
 /**
  * Placeholder copy for the home page, in both languages.
  *
- * **Every field here loses to the CMS.** The moment a `studioSettings`
+ * **Every field here loses to the CMS.** The moment a `siteSettings`
  * document exists with a value, that value is used instead — see
  * `resolveHomeContent` below. Nothing in this file is meant to survive
  * contact with the real studio's words.
  *
  * ## Why it exists at all
  *
- * The `production` dataset currently holds zero documents (measured, see
- * `docs/stages/TAHAP-3.md` §0). A home page fed entirely from an empty CMS
- * renders with no `<h1>` and almost no text, which fails
+ * The `production` dataset has no `siteSettings` document yet; its one legacy
+ * `studioSettings` fixture remains readable until the owner approves the
+ * migration. A home page fed without Arthur's new settings renders with no
+ * `<h1>` and almost no text, which fails
  * `e2e/agent-readiness.e2e.ts` and cannot be judged by anyone. The two
  * alternatives were worse: shipping a blank page, or writing invented engagements
  * into the agency's real content library.
  *
  * ## Why it is not in `messages/*.json`
  *
- * `schemas/studioSettings.ts` draws the line and it is worth keeping:
+ * `schemas/siteSettings.ts` draws the line and it is worth keeping:
  * `messages/` holds **interface** text — nav labels, button copy — that ships
  * with the code and changes when the code changes. Editorial copy belongs to
  * the studio and must be editable without a deploy. This file is editorial
@@ -62,7 +63,6 @@ const FALLBACK_COPY = {
   },
 } as const satisfies Record<Locale, HomeCopy>
 
-/** Placeholder contact details. Replaced by `studioSettings` when it exists. */
 /**
  * The one placeholder contact, shared.
  *
@@ -72,16 +72,18 @@ const FALLBACK_COPY = {
  * its real address would have found two of the three.
  *
  * `lib/seo/site.ts` no longer carries one at all: a reserved-TLD address is a
- * placeholder to a person and a fact to a crawler, so the machine surfaces
- * omit it and the human surfaces label it. `docs/stages/TAHAP-35.md` §3.1.
+ * placeholder to a person and a fact to a crawler, so machine surfaces omit
+ * it and every human surface labels it. The temporary `.invalid` value cannot
+ * reach a real mailbox. `docs/stages/TAHAP-35.md` §3.1.
  */
 export const FALLBACK_CONTACT = {
   name: BRAND_NAME,
-  email: 'studio@arth.example',
-  socials: [
-    { label: 'Instagram', url: 'https://instagram.com/' },
-    { label: 'Are.na', url: 'https://are.na/' },
-  ],
+  email: 'kontak@arth.invalid',
+  address: {
+    en: '0 Example Street, Example City, Indonesia',
+    id: 'Jl. Contoh No. 00, Kota Contoh, Indonesia',
+  },
+  socials: [] as readonly { label: string; url: string }[],
 } as const
 
 export interface HomeContent {
@@ -89,6 +91,7 @@ export interface HomeContent {
   headline: string
   subline: string
   email: string
+  address: string
   socials: readonly { label: string; url: string }[]
   portraitCaption: string
   /** Portable Text from the CMS, or `null` when the fallback paragraphs are used. */
@@ -99,7 +102,7 @@ export interface HomeContent {
    * Which rendered fields came from this file rather than from the CMS.
    *
    * Per field, because the resolution below is per field. It used to be one
-   * boolean meaning "no `studioSettings` document exists at all", and that is
+   * boolean meaning "no `siteSettings` document exists at all", and that is
    * a different question: with a half-filled document present — the normal
    * state while a studio is onboarding, and the exact case this resolver was
    * written for — the flag read `false` while the fallback paragraphs
@@ -111,6 +114,7 @@ export interface HomeContent {
     headline: boolean
     subline: boolean
     email: boolean
+    address: boolean
     socials: boolean
     statement: boolean
   }
@@ -137,10 +141,26 @@ function pick(
     : { value: fallback, fromCms: false }
 }
 
+const RESERVED_PLACEHOLDER_TLDS = [
+  'example',
+  'invalid',
+  'localhost',
+  'test',
+] as const
+
+function isPublishableEmail(value: string | null | undefined): value is string {
+  if (!usable(value)) return false
+
+  const domain = value.slice(value.lastIndexOf('@') + 1).toLowerCase()
+  return !RESERVED_PLACEHOLDER_TLDS.some(
+    (tld) => domain === tld || domain.endsWith(`.${tld}`)
+  )
+}
+
 /**
  * The CMS wins per field, not per document.
  *
- * A half-filled `studioSettings` — a name but no statement yet — is the normal
+ * A half-filled `siteSettings` — a name but no statement yet — is the normal
  * state while a studio is onboarding, and it must not blank out the sections
  * the editor has not reached. So each field falls back independently, and an
  * empty string counts as absent: Sanity keeps `""` for a field an editor
@@ -153,6 +173,7 @@ export function resolveHomeContent(
     headline?: string | null
     subline?: string | null
     email?: string | null
+    address?: string | null
     statement?: unknown[] | null
     socials?: readonly { label?: string; url?: string }[] | null
   } | null
@@ -169,7 +190,17 @@ export function resolveHomeContent(
   const name = pick(settings?.name, FALLBACK_CONTACT.name)
   const headline = pick(settings?.headline, copy.headline)
   const subline = pick(settings?.subline, copy.subline)
-  const email = pick(settings?.email, FALLBACK_CONTACT.email)
+  const cmsEmail = settings?.email
+  const email = isPublishableEmail(cmsEmail)
+    ? { value: cmsEmail, fromCms: true }
+    : { value: FALLBACK_CONTACT.email, fromCms: false }
+  const cmsAddress = settings?.address
+  const isDummyAddress =
+    !usable(cmsAddress) ||
+    /(?:example|contoh|dummy|placeholder)/i.test(cmsAddress)
+  const address = isDummyAddress
+    ? { value: FALLBACK_CONTACT.address[locale], fromCms: false }
+    : { value: cmsAddress, fromCms: true }
   const statement =
     settings?.statement && settings.statement.length > 0
       ? settings.statement
@@ -180,6 +211,7 @@ export function resolveHomeContent(
     headline: headline.value,
     subline: subline.value,
     email: email.value,
+    address: address.value,
     socials: socials.length > 0 ? socials : FALLBACK_CONTACT.socials,
     portraitCaption: copy.portraitCaption,
     statement,
@@ -188,6 +220,7 @@ export function resolveHomeContent(
       headline: !headline.fromCms,
       subline: !subline.fromCms,
       email: !email.fromCms,
+      address: !address.fromCms,
       socials: socials.length === 0,
       statement: statement === null,
     },

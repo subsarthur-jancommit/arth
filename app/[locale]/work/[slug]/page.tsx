@@ -697,7 +697,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               it before the lists. No `data-region`, for the reason the
               writing below gives.
             */}
-            <EngagementEnquiry href={enquiry} label={t('enquiryLabel')} />
+            <EngagementEnquiry
+              href={enquiry}
+              label={t('enquiryLabel')}
+              {...(contact.emailIsPlaceholder && {
+                note: t('contactPlaceholderNote'),
+              })}
+            />
 
             {/*
               The practice's engagements, this one marked among them — round

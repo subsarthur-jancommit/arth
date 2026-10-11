@@ -155,12 +155,9 @@ test.describe('locale parity', () => {
  */
 test.describe('the site does not assert what it does not know', () => {
   /*
-   * `.example` is RFC 2606's reserved TLD: it exists so that an address can
-   * never resolve. Showing one to a person is a placeholder; publishing one
-   * as `schema.org/Organization.email` hands a machine a fact it will index.
-   *
-   * Human surfaces are deliberately not covered here — see
-   * `docs/stages/TAHAP-35.md` §3.1 for why the split runs where it does.
+   * Reserved placeholder domains belong only on labeled human surfaces.
+   * Publishing one as `schema.org/Organization.email` hands a machine a fact
+   * it will index. Human-facing contact tests below require a visible note.
    */
   const MACHINE_SURFACES = ['/llms.txt', '/sitemap.xml'] as const
 
@@ -170,9 +167,16 @@ test.describe('the site does not assert what it does not know', () => {
 
       // Anti-vacuum: an empty response must not pass.
       expect(body.length, `${path} returned nothing`).toBeGreaterThan(200)
-      expect(body, `${path} publishes a .example address`).not.toContain(
-        '.example'
-      )
+      for (const domain of ['.example', '.invalid']) {
+        expect(body, `${path} publishes a ${domain} address`).not.toContain(
+          domain
+        )
+      }
+      for (const placeholder of ['Example City', 'Kota Contoh']) {
+        expect(body, `${path} publishes a dummy postal address`).not.toContain(
+          placeholder
+        )
+      }
     })
   }
 
@@ -189,10 +193,38 @@ test.describe('the site does not assert what it does not know', () => {
 
       expect(blocks.length, 'no JSON-LD on the page').toBeGreaterThan(0)
       for (const block of blocks) {
-        expect(block, 'JSON-LD publishes a .example address').not.toContain(
-          '.example'
-        )
+        for (const domain of ['.example', '.invalid']) {
+          expect(block, `JSON-LD publishes a ${domain} address`).not.toContain(
+            domain
+          )
+        }
+        for (const placeholder of ['Example City', 'Kota Contoh']) {
+          expect(
+            block,
+            'JSON-LD publishes a dummy postal address'
+          ).not.toContain(placeholder)
+        }
       }
+    })
+  }
+
+  for (const locale of routing.locales) {
+    test(`${locale} labels a reserved contact address as temporary`, async ({
+      page,
+    }) => {
+      await page.goto(`/${locale}`)
+      const contact = page.locator('#contact')
+      const reservedAddress = contact.getByText(/\.(?:example|invalid)$/i)
+
+      if ((await reservedAddress.count()) > 0) {
+        await expect(contact.locator('[data-placeholder-note]')).toBeVisible()
+      }
+      await expect(
+        contact.getByText(/Contoh No\. 00|Example Street/i)
+      ).toBeVisible()
+      await expect(
+        contact.locator('[data-placeholder-note]').last()
+      ).toBeVisible()
     })
   }
 
