@@ -94,9 +94,10 @@ Ini bukan preferensi. Ini instruksi pemilik yang masih berlaku:
 
 - **Tidak ada yang masuk `main` selain PR dengan `ci` dan `e2e` hijau pada
   head SHA persis yang digabung.** Tanpa pengecualian. (`CLAUDE.md` #22)
-- **Merge:** pemilik mencabut kewajiban menunggu `ok merge #<n>` —
-  "LANGSUNG LAKUKAN MERGE SAJA KEDEPANNYA". Yang dicabut **hanya** jabat
-  tangan itu. Syarat CI hijau di atas tetap.
+- **Merge:** pemilik mencabut kewajiban menunggu frasa `ok merge #<n>`.
+  Pemilik tetap meninjau pratinjau Vercel yang terlindungi; setelah tinjauan
+  selesai, agen melakukan merge hanya bila PR mutakhir terhadap `main` dan
+  `ci` serta `e2e` hijau pada head SHA persis yang digabung.
 - **Menulis ke Sanity hanya setelah pemilik menulis `ok tulis <ringkasan>`.**
   Masih berlaku penuh.
 - **Jangan pernah mengubah setelan GitHub, Vercel, atau Sanity.**
@@ -123,9 +124,10 @@ Kita tidak bisa saling melihat sesi. Jadi:
    apa yang tidak dikerjakan.
 2. **Perbarui `PROGRES-ARTHUR.md` di dalam PR itu.** Itu papan status kita
    satu-satunya.
-3. **Cabang:** jangan push ke `main`. Cabang sesi ini
-   `claude/affectionate-shannon-u2xbvu`. Kalau kamu melanjutkan di cabang
-   lain, sebutkan di deskripsi PR cabang mana yang kamu teruskan.
+3. **Cabang:** jangan push ke `main`. Mulai tiap paket dari `main` terbaru dan
+   pisahkan paket ke PR masing-masing. Jika meneruskan commit paket yang sudah
+   ada, sebutkan cabang sumbernya di deskripsi PR dan jangan menggabungkan
+   beberapa paket ke satu PR.
 4. **Kalau kamu tidak setuju dengan keputusan yang sudah diambil di sini**,
    tulis di komentar PR, jangan diam-diam membalikkannya — alasan setiap
    keputusan ada di docstring berkasnya, dan docstring itu memang panjang
@@ -147,9 +149,12 @@ Sudah digabung ke `main`:
   perayap AI `Disallow: /` (PR #12, `2491472`).
 - **F0-07** dokumen repo diselaraskan ke identitas Arthur (PR #13,
   `45f220b`).
+- **F1-01, F1-02, F1-03** merek, kosakata unit, dan rute unit (PR #14,
+  `a052ace`).
 
-Sedang dalam PR (cabang di atas): **F1-01, F1-02, F1-03** — merek, kosakata
-unit, dan rute unit. Yang berubah dan mudah mengejutkan:
+Sedang dalam PR: **F1-04** rute sisi (PR #16, head `d89481c`). Cabang lanjutan
+`codex/f1-08-kamus-gerak` juga memuat commit F1-05 sampai F2-01; paket-paket itu
+harus tetap dipisahkan ke PR masing-masing. Yang berubah dan mudah mengejutkan:
 
 | Hal                               | Sebelum                                                            | Sekarang                                                                                |
 | --------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
