@@ -106,11 +106,16 @@ test.describe('the WebGL canvas survives a round trip', () => {
       'a fresh load already had a dead canvas, so this run proves nothing'
     ).toEqual([])
 
-    await page.locator('a[href="/en/work"]').first().click({ force: true })
-    await page.waitForURL('**/en/work')
+    await page
+      .getByRole('navigation', { name: 'Primary' })
+      .getByRole('link', { name: 'Konstruksi', exact: true })
+      .click({ force: true })
+    await page.waitForURL('**/en/konstruksi')
     await page.waitForTimeout(2000)
 
-    await page.locator('a[href="/en"]').first().click({ force: true })
+    await page.getByRole('banner').locator('a[href="/en"]').click({
+      force: true,
+    })
     await page.waitForURL(/\/en$/)
     await page.waitForTimeout(2500)
     // The reader's own scroll is restored by the router; measure the same band.
@@ -135,10 +140,15 @@ test.describe('the WebGL canvas survives a round trip', () => {
     await page.goto('/en', { waitUntil: 'networkidle' })
     await page.waitForTimeout(2500)
 
-    await page.locator('a[href="/en/work"]').first().click({ force: true })
-    await page.waitForURL('**/en/work')
+    await page
+      .getByRole('navigation', { name: 'Primary' })
+      .getByRole('link', { name: 'Konstruksi', exact: true })
+      .click({ force: true })
+    await page.waitForURL('**/en/konstruksi')
     await page.waitForTimeout(2000)
-    await page.locator('a[href="/en"]').first().click({ force: true })
+    await page.getByRole('banner').locator('a[href="/en"]').click({
+      force: true,
+    })
     await page.waitForURL(/\/en$/)
     await page.waitForTimeout(2500)
     await page.evaluate(() => window.scrollTo(0, 0))

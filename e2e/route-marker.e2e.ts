@@ -37,11 +37,11 @@ async function expectUnder(page: Page, name: string) {
 test.describe('the route marker stands under the current route', () => {
   test.use({ viewport: { width: 1440, height: 900 } })
 
-  test('under Work on /work, and under How we work once pressed', async ({
+  test('under Konstruksi on its unit route, then under How we work', async ({
     page,
   }) => {
-    await page.goto('/en/work')
-    await expectUnder(page, 'Work')
+    await page.goto('/en/konstruksi')
+    await expectUnder(page, 'Konstruksi')
 
     await page
       .getByRole('navigation', { name: 'Primary' })
@@ -54,8 +54,8 @@ test.describe('the route marker stands under the current route', () => {
   test('gone where no route is current', async ({ page }) => {
     // From a placed rule, so its absence on arrival is not a page that never
     // ran its script.
-    await page.goto('/en/work')
-    await expectUnder(page, 'Work')
+    await page.goto('/en/konstruksi')
+    await expectUnder(page, 'Konstruksi')
 
     await page
       .getByRole('banner')

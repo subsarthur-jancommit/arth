@@ -103,9 +103,10 @@ broken one. The procedure, its evidence and that one-time setup are in
 22. **Nothing reaches `main` except a pull request** whose `ci` and `e2e`
     checks are green on the exact head SHA being merged. No direct push, no
     force-push, and no `[skip ci]` on a commit headed for `main`.
-23. **Merge only on the owner's `ok merge #<n>`**, given for that PR at its
-    reported head SHA. Any later commit voids it, except a conflict-free merge
-    of the latest `main`, which still needs green CI on the new head.
+23. **Merge only after the owner has reviewed the protected Vercel preview**
+    and the PR is current with `main`, with `ci` and `e2e` green on the exact
+    head SHA being merged. No separate `ok merge #<n>` phrase is required.
+    Any later commit requires both checks to pass again on the new head.
 24. **Verify production after every merge** — the deployment for the merge
     SHA is READY and the smoke checks pass — and report it. Never promote, roll
     back or redeploy on Vercel; propose it to the owner.

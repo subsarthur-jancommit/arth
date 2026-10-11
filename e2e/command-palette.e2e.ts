@@ -175,7 +175,7 @@ test.describe('the search palette', () => {
       'focus did not land in the search field when the palette opened'
     ).toBe('combobox')
 
-    await page.keyboard.type('journal')
+    await page.keyboard.type('konstruksi')
     await page.waitForTimeout(400)
     await page.keyboard.press('ArrowDown')
     await page.waitForTimeout(200)
