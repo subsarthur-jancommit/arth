@@ -27,6 +27,10 @@
   max-width: min(100%, calc(720 / 1440 * 100vw));
 }
 
+.introduction {
+  max-width: min(100%, calc(720 / 1440 * 100vw));
+}
+
 /*
  * The way off the page. A row of chips rather than a list, because there are
  * two of them and they are peers — the same shape the project page uses for

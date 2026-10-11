@@ -8,6 +8,7 @@ import { Wrapper } from '@/components/layout/wrapper'
 import { Link } from '@/components/ui/link'
 import { SampleContent } from '@/components/ui/sample-content'
 import { SectionHeader } from '@/components/ui/section-header'
+import { unitContent } from '@/lib/content/arthur-content'
 import { ownerPlaceholder } from '@/lib/content/sample-content'
 import {
   isUnit,
@@ -93,11 +94,15 @@ export default async function UnitPage({ params }: UnitPageProps) {
 
   if (!isUnit(unit)) notFound()
 
-  const [t, tSide, tSample] = await Promise.all([
+  const requested = await localeRootParam()
+  const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
+  const [t, tSide, tSample, content] = await Promise.all([
     getTranslations('unit'),
     getTranslations('side'),
     getTranslations('sample'),
+    unitContent(locale, unit),
   ])
+  const title = content?.judul ?? t(unit)
 
   return (
     <Wrapper theme="light">
@@ -119,8 +124,11 @@ export default async function UnitPage({ params }: UnitPageProps) {
           share="morph"
           default="none"
         >
-          <SectionHeader as="h1" eyebrow={t('eyebrow')} title={t(unit)} />
+          <SectionHeader as="h1" eyebrow={t('eyebrow')} title={title} />
         </ViewTransition>
+        {content?.pembuka ? (
+          <p className={cn('p-big', s.introduction)}>{content.pembuka}</p>
+        ) : null}
         <SampleContent
           label={tSample('label')}
           note={tSample('unitNote')}
@@ -183,9 +191,11 @@ export async function generateMetadata({ params }: UnitPageProps) {
     })
   }
 
+  const content = await unitContent(locale, unit)
+
   return generatePageMetadata({
-    title: t(unit),
-    description: t('metaDescription'),
+    title: content?.judul ?? t(unit),
+    description: content?.pembuka ?? t('metaDescription'),
     // Localized, not the bare template: canonical, og:url and og:locale all
     // come from this one string. See `lib/utils/metadata.ts`.
     url: localizedPath(locale, unitTemplate(unit)),

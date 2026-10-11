@@ -31,24 +31,25 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 
 ## Paket
 
-| Paket                                       | PR  | SHA merge | Status           | Dilewati / ditunda                                                                                                                                 |
-| ------------------------------------------- | --- | --------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| F0-01 Noindex selama dummy                  | #12 | `2491472` | **Selesai**      | Pengecualian domain dibangun tapi daftarnya kosong (lihat U3); lokasinya pindah dari `proxy.ts` (U4)                                               |
-| F0-07 Dokumen repo diselaraskan             | #13 | `45f220b` | **Selesai**      | FORK.md tidak disunting (U1); `ROADMAP.md` dan `docs/stages/` tidak disentuh (U8)                                                                  |
-| F1-01 Merek Arthur dari satu sumber         | #14 | `a052ace` | **Selesai**      | Prosa `SITE` dan `home-fallback` ikut dibereskan di F1-02 (U11)                                                                                    |
-| F1-02 Tiga unit menggantikan praktik        | #14 | `a052ace` | **Selesai**      | Medan Sanity masih bernama `practice` (U12); `?practice=` → `?unit=` tanpa pengalih (U13)                                                          |
-| F1-03 Rute unit                             | #14 | `a052ace` | **Selesai**      | Halaman CMS pindah ke `/halaman/<slug>` (U14); tiga gerbang e2e melemah (U15)                                                                      |
-| F1-04 Rute sisi                             | #16 | —         | **Dalam PR**     | E2E lokal tidak dijalankan; deploy dan uji produksi ditunda atas instruksi pemilik                                                                 |
-| F1-05 Cara kami bekerja menggantikan studio | —   | —         | **Dalam branch** | CI dan e2e dilewati atas instruksi pemilik; isi halaman tetap ditandai contoh hingga ditinjau pemilik                                              |
-| F1-06 Navigasi Arthur                       | —   | —         | **Dalam branch** | CI dan e2e dilewati atas instruksi pemilik; `/work` dan `/journal` tetap hidup tetapi tidak dipromosikan                                           |
-| F1-07 Bahasa bawaan dan segmen URL          | —   | —         | **Dalam branch** | CI dan e2e dilewati; EN tidak diindeks atau ditawarkan; usulan perubahan prosedur §3 langkah 9 menunggu pemilik                                    |
-| F1-08 Kamus gerak dan nama momen            | —   | —         | **Dalam branch** | Dokumentasi spesifikasi saja; implementasi tujuh momen tetap untuk F3/F4; PR ditunda selama e2e dilarang                                           |
-| F2-01 Pengaturan situs                      | —   | —         | **Dalam branch** | `siteSettings` dan fallback tersedia; `studioSettings` tetap baca-saja hingga migrasi yang disetujui; dummy kontak wajib diganti sebelum publikasi |
-| F0-02 Uji terbit menampilkan isi baru       | —   | —         | Belum mulai      | Bergantung F0-06                                                                                                                                   |
-| F0-03 Token produksi hanya Viewer           | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                                                                                    |
-| F0-04 Token dev dicabut                     | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                                                                                       |
-| F0-05 Ruleset cabang `main`                 | —   | —         | Menunggu pemilik | Tindakan dasbor. Terakhir diukur `gh api …/rules/branches/main` → `[]`, belum aktif                                                                |
-| F0-06 Dataset `ci` terpisah                 | —   | —         | Menunggu pemilik | Tindakan dasbor; memblokir F0-02 dan F2-09                                                                                                         |
+| Paket                                       | PR  | SHA merge | Status           | Dilewati / ditunda                                                                                                                                                |
+| ------------------------------------------- | --- | --------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F0-01 Noindex selama dummy                  | #12 | `2491472` | **Selesai**      | Pengecualian domain dibangun tapi daftarnya kosong (lihat U3); lokasinya pindah dari `proxy.ts` (U4)                                                              |
+| F0-07 Dokumen repo diselaraskan             | #13 | `45f220b` | **Selesai**      | FORK.md tidak disunting (U1); `ROADMAP.md` dan `docs/stages/` tidak disentuh (U8)                                                                                 |
+| F1-01 Merek Arthur dari satu sumber         | #14 | `a052ace` | **Selesai**      | Prosa `SITE` dan `home-fallback` ikut dibereskan di F1-02 (U11)                                                                                                   |
+| F1-02 Tiga unit menggantikan praktik        | #14 | `a052ace` | **Selesai**      | Medan Sanity masih bernama `practice` (U12); `?practice=` → `?unit=` tanpa pengalih (U13)                                                                         |
+| F1-03 Rute unit                             | #14 | `a052ace` | **Selesai**      | Halaman CMS pindah ke `/halaman/<slug>` (U14); tiga gerbang e2e melemah (U15)                                                                                     |
+| F1-04 Rute sisi                             | #16 | —         | **Dalam PR**     | E2E lokal tidak dijalankan; deploy dan uji produksi ditunda atas instruksi pemilik                                                                                |
+| F1-05 Cara kami bekerja menggantikan studio | —   | —         | **Dalam branch** | CI dan e2e dilewati atas instruksi pemilik; isi halaman tetap ditandai contoh hingga ditinjau pemilik                                                             |
+| F1-06 Navigasi Arthur                       | —   | —         | **Dalam branch** | CI dan e2e dilewati atas instruksi pemilik; `/work` dan `/journal` tetap hidup tetapi tidak dipromosikan                                                          |
+| F1-07 Bahasa bawaan dan segmen URL          | —   | —         | **Dalam branch** | CI dan e2e dilewati; EN tidak diindeks atau ditawarkan; usulan perubahan prosedur §3 langkah 9 menunggu pemilik                                                   |
+| F1-08 Kamus gerak dan nama momen            | —   | —         | **Dalam branch** | Dokumentasi spesifikasi saja; implementasi tujuh momen tetap untuk F3/F4; PR ditunda selama e2e dilarang                                                          |
+| F2-01 Pengaturan situs                      | —   | —         | **Dalam branch** | `siteSettings` dan fallback tersedia; `studioSettings` tetap baca-saja hingga migrasi yang disetujui; dummy kontak wajib diganti sebelum publikasi                |
+| F2-02 Unit dan sisi                         | —   | —         | **Dalam branch** | Skema dan pembacaan fallback disiapkan; relasi offer menunggu F2-04; delapan `project.practice` belum dipindahkan ke `unit` tanpa rencana tulis §6 yang disetujui |
+| F0-02 Uji terbit menampilkan isi baru       | —   | —         | Belum mulai      | Bergantung F0-06                                                                                                                                                  |
+| F0-03 Token produksi hanya Viewer           | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                                                                                                   |
+| F0-04 Token dev dicabut                     | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                                                                                                      |
+| F0-05 Ruleset cabang `main`                 | —   | —         | Menunggu pemilik | Tindakan dasbor. Terakhir diukur `gh api …/rules/branches/main` → `[]`, belum aktif                                                                               |
+| F0-06 Dataset `ci` terpisah                 | —   | —         | Menunggu pemilik | Tindakan dasbor; memblokir F0-02 dan F2-09                                                                                                                        |
 
 F1-05 sampai F2-01 telah dipisah ke branch paket masing-masing. Checks dari PR
 lain bukan validasi bagi branch baru. Paket selanjutnya lihat Backlog.
@@ -318,3 +319,39 @@ tersedia; referensi lemah tidak diarahkan ke tipe yang belum terdaftar.
 `rangkaianPilihan` menunggu tipe `sequence` di F2-05. Wilayah dan situasi
 tersedia di Studio, tetapi pemakaian halaman yang lengkap datang di F3-01 dan
 F3-09. Ini staging skema yang disengaja, bukan konten yang sudah tayang.
+
+**U21 — F2-02 menunggu mutasi `practice` → `unit` yang disetujui.** Delapan
+dokumen `project` memakai medan lama `practice`; `journalEntry` tercatat nol.
+Skema dan query sementara membaca `unit` lebih dulu lalu `practice`, dan medan
+lama tetap baca-saja supaya halaman tidak kosong saat migrasi belum berjalan.
+Rencana tulis §6 yang diperlukan: ekspor cadangan di luar repo; query jumlah
+dan nilai `practice` sebelum mutasi; patch masing-masing `project` ke `unit`
+dengan nilai sama; pastikan jumlah, slug, dan hasil query katalog sebelum/sesudah
+tetap sama; baru kosongkan medan lama setelah izin penghapusan terpisah. Tidak
+ada mutasi atau penghapusan Sanity dilakukan di branch ini.
+
+**U22 — cache incremental TypeScript tidak aman untuk registry TypeGen
+Sanity.** Setelah skema atau query Sanity berubah, TypeScript 7 dapat memakai
+`tsconfig.tsbuildinfo` lama dan menurunkan semua hasil `defineQuery()` menjadi
+`unknown`, meski pemeriksaan tanpa cache lulus. Ini bukan galat data Sanity;
+hasil sumbernya tetap benar. `check`, `typecheck`, dan hook pre-commit sekarang
+menonaktifkan incremental agar registry selalu dibaca ulang. Biayanya adalah
+pemeriksaan lokal lebih lambat; biayanya lebih kecil daripada false negative
+yang menyamarkan perubahan skema.
+
+**U23 — ekstraksi skema Sanity memakai Node, bukan Bun.** Bun 1.3.5 tetap
+runtime proyek dan menjalankan pemeriksaan, tetapi worker `sanity schema
+extract` menghasilkan `Attempted to assign to readonly property` saat
+dijalankan melalui Bun. CLI yang sama melalui Node 26 mengekstrak 31 tipe,
+termasuk `unit` dan `side`, lalu TypeGen selesai normal. Skrip
+`sanity:extract` dan `sanity:typegen` karena itu memanggil binary Sanity
+dengan Node; biaya keputusan ini adalah satu pengecualian runtime yang dicatat
+terang, bukan skema yang tampak diterapkan tetapi tidak pernah masuk
+`schema.json`.
+
+**U24 — relasi weak dari unit ke offer menunggu F2-04.** `contohOffer` dan
+`jembatan.offer` tidak didaftarkan sebelum tipe `offer` benar-benar ada.
+Referensi ke tipe yang belum dapat diedit memberi Studio tujuan semu dan
+menghasilkan skema yang tidak utuh. F2-04 menambah keduanya sebagai referensi
+lemah bersamaan dengan tipe targetnya; tidak ada konten atau relasi yang
+hilang karena dokumen unit belum ditulis.

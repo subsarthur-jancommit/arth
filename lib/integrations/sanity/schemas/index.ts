@@ -25,8 +25,10 @@ import { metadata } from './metadata'
 import { page } from './page'
 import { project } from './project'
 import { richText } from './richText'
+import { side } from './side'
 import { siteSettings } from './siteSettings'
 import { studioSettings } from './studioSettings'
+import { unit } from './unit'
 
 // Re-export all schemas for convenience
 export {
@@ -36,8 +38,10 @@ export {
   page,
   project,
   richText,
+  side,
   siteSettings,
   studioSettings,
+  unit,
 }
 
 // Schema collection for Sanity configuration
@@ -61,5 +65,9 @@ export const schema = {
     siteSettings,
     // Retained read-only until data migration has completed.
     studioSettings,
+
+    // Arthur's content hierarchy. Side references its unit strongly.
+    unit,
+    side,
   ],
 } satisfies { types: SchemaTypeDefinition[] }

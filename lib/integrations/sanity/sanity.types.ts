@@ -15,12 +15,159 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type UnitReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "unit";
+};
+
+export type Side = {
+  _id: string;
+  _type: "side";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  unit?: UnitReference;
+  kunci?:
+    | "pelaku-proyek"
+    | "pemilik-bangunan"
+    | "siap-pakai"
+    | "paham-teknis"
+    | "pemilik-usaha"
+    | "jaringan";
+  nama?: InternationalizedArrayString;
+  judul?: InternationalizedArrayString;
+  caraMembeli?: Array<{
+    teks?: InternationalizedArrayString;
+    _key: string;
+  }>;
+  langkahPertama?: {
+    label?: InternationalizedArrayString;
+    sesudahnya?: InternationalizedArrayText;
+  };
+  urutan?: number;
+  jaringan?: {
+    caraKerja?: InternationalizedArrayText;
+    asalKomisi?: InternationalizedArrayText;
+    yangTidakAda?: InternationalizedArrayText;
+    syarat?: InternationalizedArrayText;
+    ajakanDaftar?: {
+      label?: InternationalizedArrayString;
+      sesudahnya?: InternationalizedArrayText;
+    };
+  };
+  metadata?: Metadata;
+};
+
 export type SanityImageAssetReference = {
   _ref: string;
   _type: "reference";
   _weak?: boolean;
   [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
 };
+
+export type Metadata = {
+  _type: "metadata";
+  title?: string;
+  description?: string;
+  keywords?: Array<string>;
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  noIndex?: boolean;
+};
+
+export type InternationalizedArrayText = Array<
+  {
+    _key: string;
+  } & InternationalizedArrayTextValue
+>;
+
+export type InternationalizedArrayString = Array<
+  {
+    _key: string;
+  } & InternationalizedArrayStringValue
+>;
+
+export type Unit = {
+  _id: string;
+  _type: "unit";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  kunci?: "konstruksi" | "teknologi" | "peekabo";
+  nama?: InternationalizedArrayString;
+  judul?: InternationalizedArrayString;
+  pembuka?: InternationalizedArrayText;
+  masalah?: Array<{
+    teks?: InternationalizedArrayString;
+    _key: string;
+  }>;
+  caraKerja?: Array<{
+    teks?: InternationalizedArrayString;
+    _key: string;
+  }>;
+  ajakan?: {
+    label?: InternationalizedArrayString;
+    sesudahnya?: InternationalizedArrayText;
+  };
+  metadata?: Metadata;
+};
+
+export type StudioSettings = {
+  _id: string;
+  _type: "studioSettings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  headline?: InternationalizedArrayString;
+  subline?: InternationalizedArrayText;
+  statement?: InternationalizedArrayRichText;
+  portrait?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: InternationalizedArrayString;
+    _type: "image";
+  };
+  email?: string;
+  socials?: Array<{
+    label?: string;
+    url?: string;
+    _key: string;
+  }>;
+  metadata?: Metadata;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
+export type InternationalizedArrayRichText = Array<
+  {
+    _key: string;
+  } & InternationalizedArrayRichTextValue
+>;
 
 export type SiteSettings = {
   _id: string;
@@ -69,87 +216,6 @@ export type SiteSettings = {
   metadata?: Metadata;
 };
 
-/**
- * Read-only legacy singleton. Retained while the production document is
- * migrated to SiteSettings through the documented, owner-approved procedure.
- */
-export type StudioSettings = {
-  _id: string;
-  _type: "studioSettings";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name?: string;
-  headline?: InternationalizedArrayString;
-  subline?: InternationalizedArrayText;
-  statement?: InternationalizedArrayRichText;
-  portrait?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: InternationalizedArrayString;
-    _type: "image";
-  };
-  email?: string;
-  socials?: Array<{
-    label?: string;
-    url?: string;
-    _key: string;
-  }>;
-  metadata?: Metadata;
-};
-
-export type Metadata = {
-  _type: "metadata";
-  title?: string;
-  description?: string;
-  keywords?: Array<string>;
-  image?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-  };
-  noIndex?: boolean;
-};
-
-export type InternationalizedArrayText = Array<
-  {
-    _key: string;
-  } & InternationalizedArrayTextValue
->;
-
-export type InternationalizedArrayString = Array<
-  {
-    _key: string;
-  } & InternationalizedArrayStringValue
->;
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
-
-export type InternationalizedArrayRichText = Array<
-  {
-    _key: string;
-  } & InternationalizedArrayRichTextValue
->;
-
 export type JournalEntry = {
   _id: string;
   _type: "journalEntry";
@@ -161,6 +227,7 @@ export type JournalEntry = {
   date?: string;
   summary?: InternationalizedArrayText;
   body?: InternationalizedArrayRichText;
+  unit?: "konstruksi" | "teknologi" | "peekabo";
   practice?: "konstruksi" | "teknologi" | "peekabo";
   listed?: boolean;
 };
@@ -252,6 +319,7 @@ export type Project = {
   }>;
   client?: string;
   year?: number;
+  unit?: "konstruksi" | "teknologi" | "peekabo";
   practice?: "konstruksi" | "teknologi" | "peekabo";
   engagement?: InternationalizedArrayString;
   scope?: string;
@@ -401,15 +469,18 @@ export type Geopoint = {
 };
 
 export type AllSanitySchemaTypes =
+  | UnitReference
+  | Side
   | SanityImageAssetReference
-  | SiteSettings
-  | StudioSettings
   | Metadata
   | InternationalizedArrayText
   | InternationalizedArrayString
+  | Unit
+  | StudioSettings
   | SanityImageCrop
   | SanityImageHotspot
   | InternationalizedArrayRichText
+  | SiteSettings
   | JournalEntry
   | Slug
   | RichText
@@ -510,7 +581,7 @@ export type PageQueryResult = {
 
 // Source: queries.ts
 // Variable: journalEntriesQuery
-// Query: *[_type == "journalEntry" && listed != false] | order(date desc) {      _id,  "slug": slug.current,  date,  practice,  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),  "summary": coalesce(summary[_key == $locale][0].value, summary[_key == "id"][0].value)  }
+// Query: *[_type == "journalEntry" && listed != false] | order(date desc) {      _id,  "slug": slug.current,  date,  // Keep the compatibility response key used by legacy journal views.  "practice": coalesce(unit, practice),  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),  "summary": coalesce(summary[_key == $locale][0].value, summary[_key == "id"][0].value)  }
 export type JournalEntriesQueryResult = Array<{
   _id: string;
   slug: string | null;
@@ -522,7 +593,7 @@ export type JournalEntriesQueryResult = Array<{
 
 // Source: queries.ts
 // Variable: journalEntryQuery
-// Query: *[_type == "journalEntry" && listed != false && slug.current == $slug][0] {      _id,  "slug": slug.current,  date,  practice,  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),  "summary": coalesce(summary[_key == $locale][0].value, summary[_key == "id"][0].value),    "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)  }
+// Query: *[_type == "journalEntry" && listed != false && slug.current == $slug][0] {      _id,  "slug": slug.current,  date,  // Keep the compatibility response key used by legacy journal views.  "practice": coalesce(unit, practice),  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),  "summary": coalesce(summary[_key == $locale][0].value, summary[_key == "id"][0].value),    "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)  }
 export type JournalEntryQueryResult = {
   _id: string;
   slug: string | null;
@@ -540,7 +611,7 @@ export type JournalSlugsQueryResult = Array<string | null>;
 
 // Source: queries.ts
 // Variable: projectsQuery
-// Query: *[_type == "project" && listed != false] | order(order asc, publishedAt desc) {      _id,  slug,  year,  client,  span,  featured,  practice,  cover{ ..., "lqip": asset->metadata.lqip },  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)  }
+// Query: *[_type == "project" && listed != false] | order(order asc, publishedAt desc) {      _id,  slug,  year,  client,  span,  featured,  // The response key remains practice while legacy work views are migrated.  // Source documents prefer the F2-02 unit field and fall back to practice.  "practice": coalesce(unit, practice),  cover{ ..., "lqip": asset->metadata.lqip },  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)  }
 export type ProjectsQueryResult = Array<{
   _id: string;
   slug: Slug | null;
@@ -565,7 +636,7 @@ export type ProjectsQueryResult = Array<{
 
 // Source: queries.ts
 // Variable: featuredProjectsQuery
-// Query: *[_type == "project" && listed != false && featured == true] | order(order asc, publishedAt desc) {      _id,  slug,  year,  client,  span,  featured,  practice,  cover{ ..., "lqip": asset->metadata.lqip },  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)  }
+// Query: *[_type == "project" && listed != false && featured == true] | order(order asc, publishedAt desc) {      _id,  slug,  year,  client,  span,  featured,  // The response key remains practice while legacy work views are migrated.  // Source documents prefer the F2-02 unit field and fall back to practice.  "practice": coalesce(unit, practice),  cover{ ..., "lqip": asset->metadata.lqip },  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)  }
 export type FeaturedProjectsQueryResult = Array<{
   _id: string;
   slug: Slug | null;
@@ -590,7 +661,7 @@ export type FeaturedProjectsQueryResult = Array<{
 
 // Source: queries.ts
 // Variable: workIndexQuery
-// Query: *[_type == "project" && listed != false && ($practice == null || practice == $practice)]    | order(order asc, publishedAt desc) {      _id,  slug,  year,  client,  span,  featured,  practice,  cover{ ..., "lqip": asset->metadata.lqip },  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)  }
+// Query: *[_type == "project" && listed != false && ($practice == null || coalesce(unit, practice) == $practice)]    | order(order asc, publishedAt desc) {      _id,  slug,  year,  client,  span,  featured,  // The response key remains practice while legacy work views are migrated.  // Source documents prefer the F2-02 unit field and fall back to practice.  "practice": coalesce(unit, practice),  cover{ ..., "lqip": asset->metadata.lqip },  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)  }
 export type WorkIndexQueryResult = Array<{
   _id: string;
   slug: Slug | null;
@@ -615,14 +686,14 @@ export type WorkIndexQueryResult = Array<{
 
 // Source: queries.ts
 // Variable: practicesQuery
-// Query: *[_type == "project" && listed != false].practice
+// Query: *[_type == "project" && listed != false]{ "unit": coalesce(unit, practice) }.unit
 export type PracticesQueryResult = Array<
   "konstruksi" | "peekabo" | "teknologi" | null
 >;
 
 // Source: queries.ts
 // Variable: projectQuery
-// Query: *[_type == "project" && slug.current == $slug][0] {      _id,  slug,  year,  client,  span,  featured,  practice,  cover{ ..., "lqip": asset->metadata.lqip },  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value),    scope,    publishedAt,    metadata,    _updatedAt,    "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)[]{      ...,      markDefs[]{        ...,        _type == "link" => {          ...,          internalLink->{_type, slug, title}        }      }    },    gallery[]{      ...,      "lqip": asset->metadata.lqip,      "alt": coalesce(alt[_key == $locale][0].value, alt[_key == "id"][0].value)    },    // The arc. Projected inline for the same reason gallery is: the shape is    // used by exactly one query, so a shared constant would buy nothing.    // The _key taken here is the chapter's own -- the _key inside each    // coalesce scopes to the localized array being filtered, not to this one    // -- and it is what StepSequence takes as its stable key.    //    // No backticks in this comment, and that is not style. Everything from    // the opening backtick of defineQuery to its close is one JS template    // literal, so a backtick here ends the string early. Typegen then exits    // 0, reports "0 queries and 27 schema types", and every query type in    // sanity.types.ts silently disappears. The note above this query warns    // about block comments for the same reason; this is the neighbouring    // hazard, found by walking into it.    chapters[]{      _key,      "heading": coalesce(heading[_key == $locale][0].value, heading[_key == "id"][0].value),      "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)    },    "outcome": coalesce(outcome[_key == $locale][0].value, outcome[_key == "id"][0].value),    // Metadata-only projections. See the note above this query.    "excerpt": pt::text(      coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)    ),    "ogImage": cover.asset->{      url,      "width": metadata.dimensions.width,      "height": metadata.dimensions.height    }  }
+// Query: *[_type == "project" && slug.current == $slug][0] {      _id,  slug,  year,  client,  span,  featured,  // The response key remains practice while legacy work views are migrated.  // Source documents prefer the F2-02 unit field and fall back to practice.  "practice": coalesce(unit, practice),  cover{ ..., "lqip": asset->metadata.lqip },  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value),    scope,    publishedAt,    metadata,    _updatedAt,    "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)[]{      ...,      markDefs[]{        ...,        _type == "link" => {          ...,          internalLink->{_type, slug, title}        }      }    },    gallery[]{      ...,      "lqip": asset->metadata.lqip,      "alt": coalesce(alt[_key == $locale][0].value, alt[_key == "id"][0].value)    },    // The arc. Projected inline for the same reason gallery is: the shape is    // used by exactly one query, so a shared constant would buy nothing.    // The _key taken here is the chapter's own -- the _key inside each    // coalesce scopes to the localized array being filtered, not to this one    // -- and it is what StepSequence takes as its stable key.    //    // No backticks in this comment, and that is not style. Everything from    // the opening backtick of defineQuery to its close is one JS template    // literal, so a backtick here ends the string early. Typegen then exits    // 0, reports "0 queries and 27 schema types", and every query type in    // sanity.types.ts silently disappears. The note above this query warns    // about block comments for the same reason; this is the neighbouring    // hazard, found by walking into it.    chapters[]{      _key,      "heading": coalesce(heading[_key == $locale][0].value, heading[_key == "id"][0].value),      "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)    },    "outcome": coalesce(outcome[_key == $locale][0].value, outcome[_key == "id"][0].value),    // Metadata-only projections. See the note above this query.    "excerpt": pt::text(      coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)    ),    "ogImage": cover.asset->{      url,      "width": metadata.dimensions.width,      "height": metadata.dimensions.height    }  }
 export type ProjectQueryResult = {
   _id: string;
   slug: Slug | null;
@@ -726,49 +797,135 @@ export type ProjectSlugsQueryResult = Array<string | null>;
 // Source: queries.ts
 // Variable: siteSettingsQuery
 // Query: *[_type in ["siteSettings", "studioSettings"]]    | order((_type == "siteSettings") desc, _updatedAt desc)[0] {    _id,    name,    "email": coalesce(kanal.email, email),    "socials": coalesce(akunSosial, socials),    portrait,    metadata,    "headline": coalesce(      heroJudul[_key == $locale][0].value,      heroJudul[_key == "id"][0].value,      headline[_key == $locale][0].value,      headline[_key == "id"][0].value    ),    "subline": coalesce(      heroSubjudul[_key == $locale][0].value,      heroSubjudul[_key == "id"][0].value,      subline[_key == $locale][0].value,      subline[_key == "id"][0].value    ),    "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),    "statement": coalesce(      pernyataanPemilik[_key == $locale][0].value,      pernyataanPemilik[_key == "id"][0].value,      statement[_key == $locale][0].value,      statement[_key == "id"][0].value    ),    "address": coalesce(alamat[_key == $locale][0].value, alamat[_key == "id"][0].value),    "wilayah": wilayah[]{      _key,      "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)    }  }
-export type SiteSettingsQueryResult = {
-  _id: string;
-  name: string | null;
-  email: string | null;
-  socials: Array<{
-    label?: string;
-    url?: string;
+export type SiteSettingsQueryResult =
+  | {
+      _id: string;
+      name: string | null;
+      email: string | null;
+      socials: Array<{
+        label?: string;
+        url?: string;
+        _key: string;
+      }> | null;
+      portrait: {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: InternationalizedArrayString;
+        _type: "image";
+      } | null;
+      metadata: Metadata | null;
+      headline: string | null;
+      subline: string | null;
+      portraitAlt: string | null;
+      statement: RichText | null;
+      address: null;
+      wilayah: null;
+    }
+  | {
+      _id: string;
+      name: string | null;
+      email: string | null;
+      socials: Array<{
+        label?: string;
+        url?: string;
+        _key: string;
+      }> | null;
+      portrait: {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: InternationalizedArrayString;
+        _type: "image";
+      } | null;
+      metadata: Metadata | null;
+      headline: string | null;
+      subline: string | null;
+      portraitAlt: string | null;
+      statement: RichText | null;
+      address: string | null;
+      wilayah: Array<{
+        _key: string;
+        name: string | null;
+      }> | null;
+    }
+  | null;
+
+// Source: queries.ts
+// Variable: unitPageQuery
+// Query: *[_type == "unit" && kunci == $unit][0] {    kunci,    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),    "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),    "masalah": masalah[]{      _key,      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)    },    "caraKerja": caraKerja[]{      _key,      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)    },    "ajakan": {      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)    }  }
+export type UnitPageQueryResult = {
+  kunci: "konstruksi" | "peekabo" | "teknologi" | null;
+  nama: string | null;
+  judul: string | null;
+  pembuka: string | null;
+  masalah: Array<{
     _key: string;
+    teks: string | null;
   }> | null;
-  portrait: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: InternationalizedArrayString;
-    _type: "image";
-  } | null;
-  metadata: Metadata | null;
-  headline: string | null;
-  subline: string | null;
-  portraitAlt: string | null;
-  statement: RichText | null;
-  address: string | null;
-  wilayah: Array<{
+  caraKerja: Array<{
     _key: string;
-    name: string | null;
+    teks: string | null;
   }> | null;
+  ajakan: {
+    label: string | null;
+    sesudahnya: string | null;
+  };
+} | null;
+
+// Source: queries.ts
+// Variable: sidePageQuery
+// Query: *[_type == "side" && kunci == $side && unit->kunci == $unit][0] {    kunci,    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),    "caraMembeli": caraMembeli[]{      _key,      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)    },    "langkahPertama": {      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)    },    urutan,    "jaringan": {      "caraKerja": coalesce(jaringan.caraKerja[_key == $locale][0].value, jaringan.caraKerja[_key == "id"][0].value),      "asalKomisi": coalesce(jaringan.asalKomisi[_key == $locale][0].value, jaringan.asalKomisi[_key == "id"][0].value),      "yangTidakAda": coalesce(jaringan.yangTidakAda[_key == $locale][0].value, jaringan.yangTidakAda[_key == "id"][0].value),      "syarat": coalesce(jaringan.syarat[_key == $locale][0].value, jaringan.syarat[_key == "id"][0].value),      "ajakanDaftar": {        "label": coalesce(jaringan.ajakanDaftar.label[_key == $locale][0].value, jaringan.ajakanDaftar.label[_key == "id"][0].value),        "sesudahnya": coalesce(jaringan.ajakanDaftar.sesudahnya[_key == $locale][0].value, jaringan.ajakanDaftar.sesudahnya[_key == "id"][0].value)      }    }  }
+export type SidePageQueryResult = {
+  kunci:
+    | "jaringan"
+    | "paham-teknis"
+    | "pelaku-proyek"
+    | "pemilik-bangunan"
+    | "pemilik-usaha"
+    | "siap-pakai"
+    | null;
+  nama: string | null;
+  judul: string | null;
+  caraMembeli: Array<{
+    _key: string;
+    teks: string | null;
+  }> | null;
+  langkahPertama: {
+    label: string | null;
+    sesudahnya: string | null;
+  };
+  urutan: number | null;
+  jaringan: {
+    caraKerja: string | null;
+    asalKomisi: string | null;
+    yangTidakAda: string | null;
+    syarat: string | null;
+    ajakanDaftar: {
+      label: string | null;
+      sesudahnya: string | null;
+    };
+  };
 } | null;
 
 // Query TypeMap
 declare global {
   interface SanityQueries {
     '\n  *[_type == "page" && slug.current == $slug][0] {\n    _id,\n    title,\n    slug,\n    \n  content[]{\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => {\n        ...,\n        internalLink->{_type, slug, title}\n      }\n    }\n  }\n,\n    \n  link {\n    ...,\n    internalLink->{_type, slug, title}\n  }\n,\n    metadata,\n    publishedAt,\n    _updatedAt\n  }\n': PageQueryResult;
-    '\n  *[_type == "journalEntry" && listed != false] | order(date desc) {\n    \n  _id,\n  "slug": slug.current,\n  date,\n  practice,\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "summary": coalesce(summary[_key == $locale][0].value, summary[_key == "id"][0].value)\n\n  }\n': JournalEntriesQueryResult;
-    '\n  *[_type == "journalEntry" && listed != false && slug.current == $slug][0] {\n    \n  _id,\n  "slug": slug.current,\n  date,\n  practice,\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "summary": coalesce(summary[_key == $locale][0].value, summary[_key == "id"][0].value)\n,\n    "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)\n  }\n': JournalEntryQueryResult;
+    '\n  *[_type == "journalEntry" && listed != false] | order(date desc) {\n    \n  _id,\n  "slug": slug.current,\n  date,\n  // Keep the compatibility response key used by legacy journal views.\n  "practice": coalesce(unit, practice),\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "summary": coalesce(summary[_key == $locale][0].value, summary[_key == "id"][0].value)\n\n  }\n': JournalEntriesQueryResult;
+    '\n  *[_type == "journalEntry" && listed != false && slug.current == $slug][0] {\n    \n  _id,\n  "slug": slug.current,\n  date,\n  // Keep the compatibility response key used by legacy journal views.\n  "practice": coalesce(unit, practice),\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "summary": coalesce(summary[_key == $locale][0].value, summary[_key == "id"][0].value)\n,\n    "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)\n  }\n': JournalEntryQueryResult;
     '\n  *[_type == "journalEntry" && listed != false].slug.current\n': JournalSlugsQueryResult;
-    '\n  *[_type == "project" && listed != false] | order(order asc, publishedAt desc) {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  practice,\n  cover{ ..., "lqip": asset->metadata.lqip },\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),\n  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)\n\n  }\n': ProjectsQueryResult;
-    '\n  *[_type == "project" && listed != false && featured == true] | order(order asc, publishedAt desc) {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  practice,\n  cover{ ..., "lqip": asset->metadata.lqip },\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),\n  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)\n\n  }\n': FeaturedProjectsQueryResult;
-    '\n  *[_type == "project" && listed != false && ($practice == null || practice == $practice)]\n    | order(order asc, publishedAt desc) {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  practice,\n  cover{ ..., "lqip": asset->metadata.lqip },\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),\n  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)\n\n  }\n': WorkIndexQueryResult;
-    '\n  *[_type == "project" && listed != false].practice\n': PracticesQueryResult;
-    '\n  *[_type == "project" && slug.current == $slug][0] {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  practice,\n  cover{ ..., "lqip": asset->metadata.lqip },\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),\n  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)\n,\n    scope,\n    publishedAt,\n    metadata,\n    _updatedAt,\n    "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)[]{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n          ...,\n          internalLink->{_type, slug, title}\n        }\n      }\n    },\n    gallery[]{\n      ...,\n      "lqip": asset->metadata.lqip,\n      "alt": coalesce(alt[_key == $locale][0].value, alt[_key == "id"][0].value)\n    },\n    // The arc. Projected inline for the same reason gallery is: the shape is\n    // used by exactly one query, so a shared constant would buy nothing.\n    // The _key taken here is the chapter\'s own -- the _key inside each\n    // coalesce scopes to the localized array being filtered, not to this one\n    // -- and it is what StepSequence takes as its stable key.\n    //\n    // No backticks in this comment, and that is not style. Everything from\n    // the opening backtick of defineQuery to its close is one JS template\n    // literal, so a backtick here ends the string early. Typegen then exits\n    // 0, reports "0 queries and 27 schema types", and every query type in\n    // sanity.types.ts silently disappears. The note above this query warns\n    // about block comments for the same reason; this is the neighbouring\n    // hazard, found by walking into it.\n    chapters[]{\n      _key,\n      "heading": coalesce(heading[_key == $locale][0].value, heading[_key == "id"][0].value),\n      "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)\n    },\n    "outcome": coalesce(outcome[_key == $locale][0].value, outcome[_key == "id"][0].value),\n    // Metadata-only projections. See the note above this query.\n    "excerpt": pt::text(\n      coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)\n    ),\n    "ogImage": cover.asset->{\n      url,\n      "width": metadata.dimensions.width,\n      "height": metadata.dimensions.height\n    }\n  }\n': ProjectQueryResult;
+    '\n  *[_type == "project" && listed != false] | order(order asc, publishedAt desc) {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  // The response key remains practice while legacy work views are migrated.\n  // Source documents prefer the F2-02 unit field and fall back to practice.\n  "practice": coalesce(unit, practice),\n  cover{ ..., "lqip": asset->metadata.lqip },\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),\n  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)\n\n  }\n': ProjectsQueryResult;
+    '\n  *[_type == "project" && listed != false && featured == true] | order(order asc, publishedAt desc) {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  // The response key remains practice while legacy work views are migrated.\n  // Source documents prefer the F2-02 unit field and fall back to practice.\n  "practice": coalesce(unit, practice),\n  cover{ ..., "lqip": asset->metadata.lqip },\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),\n  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)\n\n  }\n': FeaturedProjectsQueryResult;
+    '\n  *[_type == "project" && listed != false && ($practice == null || coalesce(unit, practice) == $practice)]\n    | order(order asc, publishedAt desc) {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  // The response key remains practice while legacy work views are migrated.\n  // Source documents prefer the F2-02 unit field and fall back to practice.\n  "practice": coalesce(unit, practice),\n  cover{ ..., "lqip": asset->metadata.lqip },\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),\n  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)\n\n  }\n': WorkIndexQueryResult;
+    '\n  *[_type == "project" && listed != false]{ "unit": coalesce(unit, practice) }.unit\n': PracticesQueryResult;
+    '\n  *[_type == "project" && slug.current == $slug][0] {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  // The response key remains practice while legacy work views are migrated.\n  // Source documents prefer the F2-02 unit field and fall back to practice.\n  "practice": coalesce(unit, practice),\n  cover{ ..., "lqip": asset->metadata.lqip },\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),\n  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)\n,\n    scope,\n    publishedAt,\n    metadata,\n    _updatedAt,\n    "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)[]{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n          ...,\n          internalLink->{_type, slug, title}\n        }\n      }\n    },\n    gallery[]{\n      ...,\n      "lqip": asset->metadata.lqip,\n      "alt": coalesce(alt[_key == $locale][0].value, alt[_key == "id"][0].value)\n    },\n    // The arc. Projected inline for the same reason gallery is: the shape is\n    // used by exactly one query, so a shared constant would buy nothing.\n    // The _key taken here is the chapter\'s own -- the _key inside each\n    // coalesce scopes to the localized array being filtered, not to this one\n    // -- and it is what StepSequence takes as its stable key.\n    //\n    // No backticks in this comment, and that is not style. Everything from\n    // the opening backtick of defineQuery to its close is one JS template\n    // literal, so a backtick here ends the string early. Typegen then exits\n    // 0, reports "0 queries and 27 schema types", and every query type in\n    // sanity.types.ts silently disappears. The note above this query warns\n    // about block comments for the same reason; this is the neighbouring\n    // hazard, found by walking into it.\n    chapters[]{\n      _key,\n      "heading": coalesce(heading[_key == $locale][0].value, heading[_key == "id"][0].value),\n      "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)\n    },\n    "outcome": coalesce(outcome[_key == $locale][0].value, outcome[_key == "id"][0].value),\n    // Metadata-only projections. See the note above this query.\n    "excerpt": pt::text(\n      coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)\n    ),\n    "ogImage": cover.asset->{\n      url,\n      "width": metadata.dimensions.width,\n      "height": metadata.dimensions.height\n    }\n  }\n': ProjectQueryResult;
     '\n  *[_type == "project" && defined(slug.current)].slug.current\n': ProjectSlugsQueryResult;
     '\n  *[_type in ["siteSettings", "studioSettings"]]\n    | order((_type == "siteSettings") desc, _updatedAt desc)[0] {\n    _id,\n    name,\n    "email": coalesce(kanal.email, email),\n    "socials": coalesce(akunSosial, socials),\n    portrait,\n    metadata,\n    "headline": coalesce(\n      heroJudul[_key == $locale][0].value,\n      heroJudul[_key == "id"][0].value,\n      headline[_key == $locale][0].value,\n      headline[_key == "id"][0].value\n    ),\n    "subline": coalesce(\n      heroSubjudul[_key == $locale][0].value,\n      heroSubjudul[_key == "id"][0].value,\n      subline[_key == $locale][0].value,\n      subline[_key == "id"][0].value\n    ),\n    "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),\n    "statement": coalesce(\n      pernyataanPemilik[_key == $locale][0].value,\n      pernyataanPemilik[_key == "id"][0].value,\n      statement[_key == $locale][0].value,\n      statement[_key == "id"][0].value\n    ),\n    "address": coalesce(alamat[_key == $locale][0].value, alamat[_key == "id"][0].value),\n    "wilayah": wilayah[]{\n      _key,\n      "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)\n    }\n  }\n': SiteSettingsQueryResult;
+    '\n  *[_type == "unit" && kunci == $unit][0] {\n    kunci,\n    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n    "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),\n    "masalah": masalah[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "caraKerja": caraKerja[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "ajakan": {\n      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)\n    }\n  }\n': UnitPageQueryResult;
+    '\n  *[_type == "side" && kunci == $side && unit->kunci == $unit][0] {\n    kunci,\n    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n    "caraMembeli": caraMembeli[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "langkahPertama": {\n      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)\n    },\n    urutan,\n    "jaringan": {\n      "caraKerja": coalesce(jaringan.caraKerja[_key == $locale][0].value, jaringan.caraKerja[_key == "id"][0].value),\n      "asalKomisi": coalesce(jaringan.asalKomisi[_key == $locale][0].value, jaringan.asalKomisi[_key == "id"][0].value),\n      "yangTidakAda": coalesce(jaringan.yangTidakAda[_key == $locale][0].value, jaringan.yangTidakAda[_key == "id"][0].value),\n      "syarat": coalesce(jaringan.syarat[_key == $locale][0].value, jaringan.syarat[_key == "id"][0].value),\n      "ajakanDaftar": {\n        "label": coalesce(jaringan.ajakanDaftar.label[_key == $locale][0].value, jaringan.ajakanDaftar.label[_key == "id"][0].value),\n        "sesudahnya": coalesce(jaringan.ajakanDaftar.sesudahnya[_key == $locale][0].value, jaringan.ajakanDaftar.sesudahnya[_key == "id"][0].value)\n      }\n    }\n  }\n': SidePageQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

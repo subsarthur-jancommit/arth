@@ -79,7 +79,9 @@ const projectCardFields = `
   client,
   span,
   featured,
-  practice,
+  // The response key remains practice while legacy work views are migrated.
+  // Source documents prefer the F2-02 unit field and fall back to practice.
+  "practice": coalesce(unit, practice),
   cover{ ..., "lqip": asset->metadata.lqip },
   ${localizedTitle},
   ${localizedEngagement},
@@ -119,7 +121,8 @@ const journalCardFields = `
   _id,
   "slug": slug.current,
   date,
-  practice,
+  // Keep the compatibility response key used by legacy journal views.
+  "practice": coalesce(unit, practice),
   ${localizedTitle},
   ${localizedSummary}
 `
@@ -159,20 +162,21 @@ export const featuredProjectsQuery = defineQuery(`
 `)
 
 /**
- * The work index, optionally narrowed to one practice.
+ * The work index, optionally narrowed to one unit.
  *
- * `$practice` is null for the unfiltered view, and GROQ's `||` short-circuits
+ * `$practice` is a transitional parameter name whose value is a unit key.
+ * It is null for the unfiltered view, and GROQ's `||` short-circuits
  * so the comparison is skipped entirely rather than matching nothing.
  */
 export const workIndexQuery = defineQuery(`
-  *[${isListed} && ($practice == null || practice == $practice)]
+  *[${isListed} && ($practice == null || coalesce(unit, practice) == $practice)]
     | order(order asc, publishedAt desc) {
     ${projectCardFields}
   }
 `)
 
 /**
- * Every listed work's practice, for the filter chips.
+ * Every listed work's unit, for the filter chips.
  *
  * ## Why the raw list rather than `array::unique`
  *
@@ -192,7 +196,7 @@ export const workIndexQuery = defineQuery(`
  * Nulls are filtered where the values are counted.
  */
 export const practicesQuery = defineQuery(`
-  *[${isListed}].practice
+  *[${isListed}]{ "unit": coalesce(unit, practice) }.unit
 `)
 
 /**
@@ -315,6 +319,56 @@ export const siteSettingsQuery = defineQuery(`
     "wilayah": wilayah[]{
       _key,
       "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)
+    }
+  }
+`)
+
+/** Published reader-facing content for one Arthur unit. */
+export const unitPageQuery = defineQuery(`
+  *[_type == "unit" && kunci == $unit][0] {
+    kunci,
+    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
+    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+    "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),
+    "masalah": masalah[]{
+      _key,
+      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
+    },
+    "caraKerja": caraKerja[]{
+      _key,
+      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
+    },
+    "ajakan": {
+      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),
+      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)
+    }
+  }
+`)
+
+/** Published reader-facing content for one side of an Arthur unit. */
+export const sidePageQuery = defineQuery(`
+  *[_type == "side" && kunci == $side && unit->kunci == $unit][0] {
+    kunci,
+    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
+    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+    "caraMembeli": caraMembeli[]{
+      _key,
+      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
+    },
+    "langkahPertama": {
+      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),
+      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)
+    },
+    urutan,
+    "jaringan": {
+      "caraKerja": coalesce(jaringan.caraKerja[_key == $locale][0].value, jaringan.caraKerja[_key == "id"][0].value),
+      "asalKomisi": coalesce(jaringan.asalKomisi[_key == $locale][0].value, jaringan.asalKomisi[_key == "id"][0].value),
+      "yangTidakAda": coalesce(jaringan.yangTidakAda[_key == $locale][0].value, jaringan.yangTidakAda[_key == "id"][0].value),
+      "syarat": coalesce(jaringan.syarat[_key == $locale][0].value, jaringan.syarat[_key == "id"][0].value),
+      "ajakanDaftar": {
+        "label": coalesce(jaringan.ajakanDaftar.label[_key == $locale][0].value, jaringan.ajakanDaftar.label[_key == "id"][0].value),
+        "sesudahnya": coalesce(jaringan.ajakanDaftar.sesudahnya[_key == $locale][0].value, jaringan.ajakanDaftar.sesudahnya[_key == "id"][0].value)
+      }
     }
   }
 `)

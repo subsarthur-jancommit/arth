@@ -8,6 +8,7 @@ import { Link } from '@/components/ui/link'
 import { NoScriptFrontDoors } from '@/components/ui/route-loading'
 import { SampleContent } from '@/components/ui/sample-content'
 import { SectionHeader } from '@/components/ui/section-header'
+import { sideContent } from '@/lib/content/arthur-content'
 import { ownerPlaceholder } from '@/lib/content/sample-content'
 import {
   isSideOf,
@@ -60,10 +61,13 @@ export default async function SidePage({ params }: SidePageProps) {
     )
   }
 
-  const [tUnit, tSide, tSample] = await Promise.all([
+  const requested = await localeRootParam()
+  const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
+  const [tUnit, tSide, tSample, content] = await Promise.all([
     getTranslations('unit'),
     getTranslations('side'),
     getTranslations('sample'),
+    sideContent(locale, unit, side),
   ])
   const [firstSide, secondSide] = SIDES[unit]
   const otherSide = side === firstSide ? secondSide : firstSide
@@ -74,7 +78,7 @@ export default async function SidePage({ params }: SidePageProps) {
         <SectionHeader
           as="h1"
           eyebrow={tSide('eyebrow', { unit: tUnit(unit) })}
-          title={tSide(side)}
+          title={content?.judul ?? tSide(side)}
         />
 
         <p className={cn('p-big', s.orientation)}>
@@ -162,19 +166,22 @@ export async function generateMetadata({ params }: SidePageProps) {
     })
   }
 
-  const [tUnit, tSide] = await Promise.all([
+  const [tUnit, tSide, content] = await Promise.all([
     getTranslations('unit'),
     getTranslations('side'),
+    sideContent(locale, unit, side),
   ])
   const unitLabel = tUnit(unit)
   const sideLabel = tSide(side)
 
   return generatePageMetadata({
-    title: `${sideLabel} — ${unitLabel}`,
-    description: tSide('metaDescription', {
-      side: sideLabel,
-      unit: unitLabel,
-    }),
+    title: content?.judul ?? `${sideLabel} — ${unitLabel}`,
+    description:
+      content?.langkahPertama?.sesudahnya ??
+      tSide('metaDescription', {
+        side: sideLabel,
+        unit: unitLabel,
+      }),
     url: localizedPath(locale, sideTemplate(unit, side)),
   })
 }
