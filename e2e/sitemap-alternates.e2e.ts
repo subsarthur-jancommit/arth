@@ -32,16 +32,13 @@ test('the sitemap carries hreflang and honest dates', async ({ request }) => {
   // A page that lists nothing has no date to claim.
   expect(workMethod).not.toContain('<lastmod>')
 
-  // The journal index is as new as its newest entry, not as new as the build.
-  const journal = urlBlock(xml, '/en/journal')
+  // F1-06 keeps the catalogue and journal index out of machine listings,
+  // while individual published journal entries remain advertised.
+  expect(xml).not.toMatch(/<loc>[^<]*\/en\/(?:work|journal)<\/loc>/)
   const entryDates = [
     ...xml.matchAll(
       /<loc>[^<]*\/en\/journal\/[^<]+<\/loc>[\s\S]*?<lastmod>([^<]+)<\/lastmod>/g
     ),
   ].map((match) => Date.parse(match[1] ?? ''))
   expect(entryDates.length).toBeGreaterThan(0)
-  const indexDate = Date.parse(
-    journal.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1] ?? ''
-  )
-  expect(indexDate).toBe(Math.max(...entryDates))
 })

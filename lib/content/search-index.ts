@@ -23,12 +23,12 @@ import { isUnit } from './units'
  * its `'use cache'` boundary, and a pure function is the part worth unit
  * testing.
  *
- * ## The pages it lists are the footer's pages
+ * ## The pages it lists are the advertised destinations
  *
- * A palette that omits pages the footer offers is a second, quieter site map
- * that disagrees with the first. That argument is why the `/ai` machine view
- * was in here — and why, when Tahap 84 removed that page, it left this index
- * with it rather than lingering as a result that leads nowhere.
+ * A palette that omits an advertised destination is a second, quieter site
+ * map that disagrees with the first. `/work` and `/journal` indexes are
+ * intentionally absent from the shared static catalogue; their project and
+ * journal entries remain searchable from the content index.
  */
 
 export type SearchKind = 'page' | 'unit' | 'project' | 'journal'
@@ -93,7 +93,7 @@ function joinMeta(
  * a unit has no prefix to compare, so the segment itself is the test.
  */
 export function pageEntries(locale: Locale): SearchEntry[] {
-  return STATIC_ROUTE_TEMPLATES.map((route) => {
+  const pages = STATIC_ROUTE_TEMPLATES.map((route) => {
     const isUnitPage = isUnit(route.path.replace(/^\//, ''))
 
     return {
@@ -116,6 +116,18 @@ export function pageEntries(locale: Locale): SearchEntry[] {
       meta: route.path,
     }
   })
+
+  return [
+    ...pages,
+    {
+      id: 'page:contact',
+      kind: 'page',
+      label: locale === 'id' ? 'Kontak' : 'Contact',
+      description: '',
+      href: localizedPath(locale, '/#contact'),
+      meta: null,
+    },
+  ]
 }
 
 export function projectEntries(

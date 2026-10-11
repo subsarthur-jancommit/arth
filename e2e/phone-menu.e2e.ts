@@ -129,10 +129,13 @@ test.describe('the phone menu', () => {
       await openMenu(page)
 
       const menu = menuOf(page)
-      const work = menu.getByRole('link', { name: 'Work', exact: true })
-      await expect(work).toBeInViewport()
+      const konstruksi = menu.getByRole('link', {
+        name: 'Konstruksi',
+        exact: true,
+      })
+      await expect(konstruksi).toBeInViewport()
 
-      const size = await work.evaluate((link) =>
+      const size = await konstruksi.evaluate((link) =>
         Number.parseFloat(getComputedStyle(link).fontSize)
       )
       expect(size, `the route words are ${size}px`).toBeGreaterThanOrEqual(
@@ -152,8 +155,8 @@ test.describe('the phone menu', () => {
        * stability; the harness does, so it is given a still target.
        */
       await settle(page)
-      await menu.getByRole('link', { name: 'Journal', exact: true }).click()
-      await expect(page).toHaveURL(/\/en\/journal$/)
+      await konstruksi.click()
+      await expect(page).toHaveURL(/\/en\/konstruksi$/)
     } finally {
       await context.close()
     }
@@ -398,8 +401,10 @@ test.describe('the phone menu', () => {
     await openMenu(page)
     await settle(page)
 
-    await menuOf(page).getByRole('link', { name: 'Work', exact: true }).click()
-    await expect(page).toHaveURL(/\/en\/work$/)
+    await menuOf(page)
+      .getByRole('link', { name: 'Teknologi', exact: true })
+      .click()
+    await expect(page).toHaveURL(/\/en\/teknologi$/)
     await expect(menuOf(page)).toBeHidden()
 
     /*
@@ -514,7 +519,13 @@ test.describe('the same nav on desktop', () => {
     await expect(menuOf(page)).toBeVisible()
     // Each route once, by name — not a count, which `next dev` breaks with
     // its fourth, Storybook, link (found in review).
-    for (const name of ['Work', 'How we work', 'Journal']) {
+    for (const name of [
+      'Konstruksi',
+      'Teknologi',
+      'Peekabo',
+      'How we work',
+      'Contact',
+    ]) {
       await expect(
         page.getByRole('banner').getByRole('link', { name, exact: true })
       ).toHaveCount(1)

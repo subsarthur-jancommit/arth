@@ -6,10 +6,10 @@ import { expect, test } from '@playwright/test'
  * `aria-current="page"`, and marked by more than ink.
  */
 for (const [path, name] of [
-  ['/en/work', 'Work'],
+  ['/en/peekabo', 'Peekabo'],
   ['/en/cara-kerja', 'How we work'],
-  ['/id/journal', 'Jurnal'],
   ['/id/konstruksi', 'Konstruksi'],
+  ['/id/teknologi', 'Teknologi'],
 ] as const) {
   test(`${path}: the footer marks its own line, and only it`, async ({
     page,
@@ -25,11 +25,10 @@ for (const [path, name] of [
   })
 }
 
-test('a page the index does not name marks nothing there', async ({ page }) => {
+test('the journal remains open but is not in the footer index', async ({
+  page,
+}) => {
   await page.goto('/en/journal/scope-is-the-deliverable')
-  // Anti-vacuum: the index is there, with its links.
-  await expect(
-    page.locator('footer a[href="/en/journal"]').first()
-  ).toBeAttached()
+  await expect(page.locator('footer a[href="/en/journal"]')).toHaveCount(0)
   await expect(page.locator('footer [aria-current]')).toHaveCount(0)
 })

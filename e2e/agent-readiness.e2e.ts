@@ -341,6 +341,10 @@ test.describe('machine-readable discovery files', () => {
     for (const path of advertised) {
       expect(path).toMatch(/^\/(en|id)(\/|$)/)
     }
+    for (const locale of ['en', 'id']) {
+      expect(advertised).not.toContain(`/${locale}/work`)
+      expect(advertised).not.toContain(`/${locale}/journal`)
+    }
 
     /*
      * The HTML machine view used to be asserted here — `/ai`, removed in
@@ -354,6 +358,13 @@ test.describe('machine-readable discovery files', () => {
     expect(sitemap.status()).toBe(200)
     expect(sitemap.headers()['content-type']).toContain('application/xml')
     expect(sitemapBody).toContain('<urlset')
+    const sitemapPaths = [...sitemapBody.matchAll(/<loc>([^<]+)<\/loc>/g)].map(
+      (match) => new URL(match[1] ?? '').pathname
+    )
+    for (const locale of ['en', 'id']) {
+      expect(sitemapPaths).not.toContain(`/${locale}/work`)
+      expect(sitemapPaths).not.toContain(`/${locale}/journal`)
+    }
 
     const robots = await request.get('/robots.txt')
     const robotsBody = await robots.text()

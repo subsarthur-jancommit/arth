@@ -265,7 +265,7 @@
     "open": "Search",
     "shortcut": "⌘K",
     "label": "Search the site",
-    "placeholder": "Search work, practices and writing",
+    "placeholder": "Search units, projects and writing",
     "empty": "Nothing matches that.",
     "hint": "Enter to open, Escape to close.",
     "hintTouch": "Tap a result to open.",
@@ -276,7 +276,7 @@
       "project": "Work",
       "journal": "Journal"
     },
-    "emptyHint": "Try a client name, a year, or a practice.",
+    "emptyHint": "Try a unit, a client name, or a year.",
     "loading": "Building the index…",
     "failed": "Search is unavailable right now. Every page is still reachable from the header and the footer."
   },

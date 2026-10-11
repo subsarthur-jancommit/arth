@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server'
 import { Wrapper } from '@/components/layout/wrapper'
 import { Link } from '@/components/ui/link'
 import { NotFoundView } from '@/components/ui/not-found-view'
+import { UNITS, unitTemplate } from '@/lib/content/units'
 import { Wayfinder } from '@/vault/blocks/wayfinder'
 
 import s from '@/components/ui/not-found-view/not-found-view.module.css'
@@ -21,6 +22,7 @@ import s from '@/components/ui/not-found-view/not-found-view.module.css'
  */
 export async function LocalizedNotFound() {
   const t = await getTranslations('notFound')
+  const tUnit = await getTranslations('workIndex')
 
   return (
     <Wrapper theme="dark">
@@ -49,11 +51,12 @@ export async function LocalizedNotFound() {
         */
         recoveryLinks={
           <>
-            <Link href="/work">{t('work')}</Link>
-            {' · '}
-            <Link href="/cara-kerja">{t('studio')}</Link>
-            {' · '}
-            <Link href="/journal">{t('journal')}</Link>
+            {UNITS.map((unit, index) => (
+              <span key={unit}>
+                {index > 0 && ' · '}
+                <Link href={unitTemplate(unit)}>{tUnit(unit)}</Link>
+              </span>
+            ))}
           </>
         }
         /*

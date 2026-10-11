@@ -20,6 +20,15 @@ import {
 } from './routes'
 
 describe('the static route catalogue', () => {
+  it('keeps the catalogue and journal pages out of machine route listings', () => {
+    expect(STATIC_ROUTE_TEMPLATES.some((route) => route.path === '/work')).toBe(
+      false
+    )
+    expect(
+      STATIC_ROUTE_TEMPLATES.some((route) => route.path === '/journal')
+    ).toBe(false)
+  })
+
   it('advertises every valid unit-side pair exactly once', () => {
     const expected: string[] = UNITS.flatMap((unit) =>
       SIDES[unit].map((side) => sideTemplate(unit, side))

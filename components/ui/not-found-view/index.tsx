@@ -62,18 +62,18 @@ const DEFAULT_HOME_LINK = (
 const DEFAULT_RECOVERY_LINKS = (
   <>
     {/* oxlint-disable-next-line react/forbid-elements, nextjs/no-html-link-for-pages -- the root not-found variant cannot use the client Link component */}
-    <a key="work" href="/work">
-      Work
+    <a key="konstruksi" href="/konstruksi">
+      Konstruksi
     </a>
     {' · '}
     {/* oxlint-disable-next-line react/forbid-elements, nextjs/no-html-link-for-pages -- as above */}
-    <a key="studio" href="/cara-kerja">
-      How we work
+    <a key="teknologi" href="/teknologi">
+      Teknologi
     </a>
     {' · '}
     {/* oxlint-disable-next-line react/forbid-elements, nextjs/no-html-link-for-pages -- as above */}
-    <a key="journal" href="/journal">
-      Journal
+    <a key="peekabo" href="/peekabo">
+      Peekabo
     </a>
   </>
 )

@@ -102,7 +102,6 @@ export function Footer() {
    */
   const tNav = useTranslations('nav')
   const tWork = useTranslations('workIndex')
-  const tJournal = useTranslations('journal')
   return (
     // No `id="contact"`. The home page's Contact section owns that id, and two
     // elements sharing one is a `duplicate-id` violation — which now fails the
@@ -164,48 +163,14 @@ export function Footer() {
           </Link>
         </section>
 
-        {/*
-          Site navigation, and it lives here rather than in the header for a
-          measured reason.
-
-          Tahap 20 counted the onward links on every route: `/en/work` has
-          eleven, a practice page three, and **a project page one** — the next
-          project. The footer carried no navigation at all, on every route,
-          while a project page is the one most likely to be a landing page
-          from a search result or a shared link.
-
-          `components/layout/header` already decided, with a sound argument,
-          not to carry the home page's section anchors on inner routes: they
-          would be links that silently do nothing. That argument is about
-          anchors. Every link below is a **real route**, so it cannot die —
-          which is why this belongs here and the header stays untouched.
-
-          `Portfolio Grid`, the pattern this site follows, puts its primary
-          call to action at "Project Card Hover + Footer Contact". The footer
-          was already the site's second entry point; it simply had nothing to
-          enter.
-        */}
+        {/* The footer index keeps the three units and work-method page
+            reachable everywhere. Catalogue and journal indexes remain
+            addressable but are intentionally not promoted in navigation. */}
         <section className={s.column}>
           <h2 className={cn('caption', s.heading)}>{t('index')}</h2>
           <ul className={s.list}>
             <li>
-              <IndexLink href="/work">{tNav('work')}</IndexLink>
-            </li>
-            {/*
-              The studio page, which became a real route in Tahap 24.
-
-              It goes here rather than in the header because the header's nav
-              is built from the *sections* the current page rendered — in-page
-              anchors, passed only by the home page — while this column is the
-              site's route index and is on every page. Adding it here makes the
-              studio reachable from anywhere, which is what
-              `e2e/site-reach.e2e.ts` reads.
-            */}
-            <li>
               <IndexLink href="/cara-kerja">{tNav('studio')}</IndexLink>
-            </li>
-            <li>
-              <IndexLink href="/journal">{tJournal('title')}</IndexLink>
             </li>
             {UNITS.map((value) => (
               <li key={value}>

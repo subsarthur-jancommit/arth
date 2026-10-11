@@ -144,16 +144,6 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
     priority: 1,
   },
   {
-    path: '/journal',
-    label: { en: 'Journal', id: 'Jurnal' },
-    description: {
-      en: 'Notes on how the work is scoped, decided and delivered: method rather than announcements.',
-      id: 'Catatan tentang bagaimana pekerjaan ditentukan lingkupnya, diputuskan, dan dikirim: metode, bukan pengumuman.',
-    },
-    changeFrequency: 'weekly',
-    priority: 0.6,
-  },
-  {
     path: '/cara-kerja',
     label: { en: 'How we work', id: 'Cara kami bekerja' },
     description: {
@@ -162,16 +152,6 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
     },
     changeFrequency: 'monthly',
     priority: 0.7,
-  },
-  {
-    path: '/work',
-    label: { en: 'Work', id: 'Karya' },
-    description: {
-      en: 'The full catalogue of completed engagements, with client, year, engagement and scope for each.',
-      id: 'Katalog lengkap penugasan yang sudah selesai, lengkap dengan klien, tahun, bentuk keterlibatan, dan lingkupnya.',
-    },
-    changeFrequency: 'weekly',
-    priority: 0.9,
   },
   /*
    * One entry per unit, followed by its two side routes. A sitemap only

@@ -646,7 +646,7 @@ export default async function StudioPage() {
             */}
             <Magnetic>
               <Link
-                href="/work"
+                href="/#unit"
                 className={cn('caption', s.closingAction)}
                 // `MOTION-SPEC.md` §9 — the page's one forward action.
                 data-press="cta"

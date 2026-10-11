@@ -265,7 +265,7 @@
     "open": "Cari",
     "shortcut": "⌘K",
     "label": "Cari di situs ini",
-    "placeholder": "Cari karya, praktik, dan tulisan",
+    "placeholder": "Cari unit, proyek, dan tulisan",
     "empty": "Tidak ada yang cocok.",
     "hint": "Enter untuk membuka, Escape untuk menutup.",
     "hintTouch": "Ketuk hasil untuk membuka.",
@@ -276,7 +276,7 @@
       "project": "Karya",
       "journal": "Jurnal"
     },
-    "emptyHint": "Coba nama klien, tahun, atau sebuah praktik.",
+    "emptyHint": "Coba nama unit, klien, atau tahun.",
     "loading": "Menyusun indeks…",
     "failed": "Pencarian sedang tidak tersedia. Seluruh halaman tetap bisa dicapai dari header dan footer."
   },

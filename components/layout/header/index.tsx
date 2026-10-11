@@ -15,6 +15,7 @@ import { CommandTrigger } from '@/components/ui/command'
 import { LanguageSwitcher } from '@/components/ui/language-switcher'
 import { getLinkIntent, Link } from '@/components/ui/link'
 import { BRAND_NAME } from '@/lib/brand'
+import { UNITS, unitTemplate } from '@/lib/content/units'
 import { usePathname } from '@/lib/i18n/navigation'
 import { RouteMarker } from '@/vault/motion/route-marker'
 
@@ -27,16 +28,16 @@ import s from './header.module.css'
  * pathname as a debug readout, and links to darkroom's own repository. Useful
  * while forking; not something to ship on a studio's site.
  *
- * ## The in-page anchors belonged to the page, and now nothing links them
+ * ## The home page holds the sections; Contact is the one shortcut
  *
  * The home page is one long page (`docs/ROADMAP.md` §1.2), and until Tahap 54
  * this header rendered its four section anchors alongside the three routes —
  * seven links, two of them duplicating a route's own name. `ROUTE_LINKS`
  * below carries the argument and the count.
  *
- * The sections did not disappear; the *shortcut* to them did. They are
- * reached by reading the page, which is what a page that long is for, and the
- * header now answers only "what pages does this site have".
+ * Most sections remain part of the home page's reading flow. F1-06 adds one
+ * direct shortcut to Contact because it is a top-level destination; the other
+ * four links point to Arthur's three units and work-method page.
  *
  * ## Locale
  *
@@ -57,17 +58,16 @@ import s from './header.module.css'
  * Now the nav **is** a `popover="auto"`, and MENU its `popovertarget`: the
  * browser opens it, closes it on Escape or a tap outside, returns focus to
  * the button — none of it needs a script. On a phone it is a sheet under the
- * bar with the three routes at display size; on desktop the same element is
+ * bar with the current destinations at display size; on desktop the same element is
  * the header's row, as it always was.
  *
  * One element, not two. The first version of this rendered a second nav for
  * the sheet, and that put a hidden copy of every route link — and a second
  * `aria-current` — into the desktop page. Five gates walked into it, each
  * reasonably: a "first link to /en/practice/…" or "every `[data-press]`" that
- * landed on a link nobody could see. The sheet also carried the practices;
- * they are gone from it for the reason `ROUTE_LINKS` gives — this nav answers
- * "what pages does this site have", and the footer's index lists the
- * practices on every page.
+ * landed on a link nobody could see. The sheet is generated from the same
+ * five destinations as desktop navigation, while the footer repeats only
+ * the three units and work-method page.
  *
  * What the script adds (each from review): the button reads "Close" while
  * the sheet is open, read from the element so a tap before hydration counts;
@@ -95,16 +95,16 @@ const STORYBOOK_ENABLED =
   Boolean(process.env.NEXT_PUBLIC_STORYBOOK_URL)
 
 /**
- * The whole of the primary navigation: the site's routes, and nothing else.
+ * The primary navigation: three units, the work-method page, and contact.
  *
  * Locale-free templates: `components/ui/link` adds the prefix itself, and
  * handing it `/en/work` would produce `/en/en/work`.
  *
- * ## Why the home page's section anchors are no longer here
+ * ## Why this list has five destinations
  *
  * Until Tahap 54 this nav rendered the home page's four in-page anchors
- * (`#work`, `#practice`, `#studio`, `#contact`) *and* these three routes. On
- * `/en` that shipped **seven** links inside one `<nav aria-label="Primary">`,
+ * (`#work`, `#practice`, `#studio`, `#contact`) *and* three routes. On `/en`
+ * that shipped **seven** links inside one `<nav aria-label="Primary">`,
  * of which two pairs carried the same accessible name and different
  * destinations — `Work` → `#work` beside `Work` → `/en/work`, and the same
  * for `Studio`. A reader cannot tell those apart, and a screen-reader user
@@ -113,22 +113,22 @@ const STORYBOOK_ENABLED =
  * It also broke this file's own rule three lines further down: the row is
  * capped at one line, and seven is not one line.
  *
- * So the nav answers one question — *what pages does this site have* — and
- * the home page's sections answer a different one, by being scrolled to. The
- * wordmark to the left is the home link and carries `aria-label="<brand> —
+ * The nav now answers the Arthur map directly: three units, Cara kami bekerja,
+ * and Kontak. The catalogue and journal indexes remain addressable but are
+ * not promoted in navigation. The wordmark to the left is the home link and
+ * carries `aria-label="<brand> —
  * home"`; a fourth item spelling "Home" beside it would be the same duplicate
  * this change removes.
- *
- * Three and not more. `taste-skill` SKILL.md §4.7 caps the navigation at one
- * line and 80px; since the fork that is advice, not a gate. These three
- * are the site's top-level shapes: the work, the practice behind it, and the
- * writing about it — `/practice/<value>` has no index route of its own, and
- * is reached from the home page's practice list and the catalogue's chips.
  */
+const UNIT_LINKS = UNITS.map((unit) => ({
+  href: unitTemplate(unit),
+  labelKey: unit,
+}))
+
 const ROUTE_LINKS = [
-  { href: '/work', labelKey: 'work' },
-  { href: '/cara-kerja', labelKey: 'studio' },
-  { href: '/journal', labelKey: 'journal' },
+  ...UNIT_LINKS.map((link) => ({ ...link, kind: 'unit' as const })),
+  { href: '/cara-kerja', labelKey: 'studio', kind: 'nav' as const },
+  { href: '/#contact', labelKey: 'contact', kind: 'nav' as const },
 ] as const
 
 /**
@@ -192,6 +192,7 @@ export function Header() {
   const nav = useRef<HTMLElement>(null)
   const menuButton = useRef<HTMLButtonElement>(null)
   const t = useTranslations('nav')
+  const tUnit = useTranslations('workIndex')
 
   /*
    * The sheet's open state is the browser's, so it is read from the element
@@ -218,7 +219,10 @@ export function Header() {
    */
   const routeStyle = {
     '--fit-chars': Math.max(
-      ...ROUTE_LINKS.map(({ labelKey }) => Array.from(t(labelKey)).length)
+      ...ROUTE_LINKS.map(
+        ({ labelKey, kind }) =>
+          Array.from(kind === 'unit' ? tUnit(labelKey) : t(labelKey)).length
+      )
     ),
   } as CSSProperties
 
@@ -410,7 +414,7 @@ export function Header() {
             Tahap 54 removed the home-page anchors that used to sit above
             these, so this is now the whole list.
           */}
-          {ROUTE_LINKS.map(({ href, labelKey }, index) => (
+          {ROUTE_LINKS.map(({ href, labelKey, kind }, index) => (
             <li
               key={href}
               className={s.navItem}
@@ -427,7 +431,7 @@ export function Header() {
                   'aria-current': 'page' as const,
                 })}
               >
-                {t(labelKey)}
+                {kind === 'unit' ? tUnit(labelKey) : t(labelKey)}
               </Link>
             </li>
           ))}
