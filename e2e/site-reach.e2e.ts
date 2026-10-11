@@ -133,7 +133,7 @@ test.describe('a URL guessed from a nav label goes somewhere', () => {
  */
 
 const HUMAN_ROUTES = [
-  '/en',
+  '/id',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
   `/en/${UNITS[0]}`,
@@ -306,7 +306,7 @@ test.describe('every page offers a way onward', () => {
   const CHROME_MACHINE_HREFS =
     /^\/(llms\.txt|sitemap\.xml|robots\.txt|cms|api\/|agent-content)/
 
-  for (const route of ['/en', `/en/work/${FEATURED_WORK}`, '/id/cara-kerja']) {
+  for (const route of ['/id', `/en/work/${FEATURED_WORK}`, '/id/cara-kerja']) {
     test(`${route}: the chrome links to localized pages`, async ({ page }) => {
       await page.goto(route)
       await page.waitForLoadState('networkidle')

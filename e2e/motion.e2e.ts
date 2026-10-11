@@ -152,7 +152,7 @@ async function strandedItems(page: Page) {
 }
 
 test.describe('motion', () => {
-  for (const path of ['/en', '/en/work', `/en/work/${FEATURED_WORK}`]) {
+  for (const path of ['/id', '/en/work', `/en/work/${FEATURED_WORK}`]) {
     test(`${path} strands no content invisible`, async ({ page }) => {
       await installLiveRoot(page)
       await installLiveRoot(page)
@@ -253,7 +253,7 @@ test.describe('motion', () => {
     test('the route-change overlay never becomes visible', async ({
       browser,
     }) => {
-      const { context, page } = await reducedMotionPage(browser, '/en')
+      const { context, page } = await reducedMotionPage(browser, '/id')
       try {
         /*
          * Not "is never rendered", which is what this asserted first and what
@@ -448,7 +448,7 @@ test.describe('motion', () => {
      * Same assertion as the catalogue test, from a place where it used to
      * fail.
      */
-    const morph = await captureMorph(page, '/en', `/en/work/${FEATURED_WORK}`)
+    const morph = await captureMorph(page, '/id', `/en/work/${FEATURED_WORK}`)
 
     expect(morph.calls, 'no view transition was started').toBeGreaterThan(0)
 
@@ -689,7 +689,7 @@ test.describe('motion', () => {
      */
     const morph = await captureMorph(
       page,
-      '/en',
+      '/id',
       '/en/konstruksi',
       async (p) => {
         // Open the disclosure, then let its panel finish arriving so the link
@@ -827,7 +827,7 @@ test.describe('motion', () => {
     page,
   }) => {
     await installLiveRoot(page)
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(800)
 
     const overlay = page.locator(OVERLAY)
@@ -892,7 +892,7 @@ test.describe('motion', () => {
  * the route quietly ending up with neither entrance.
  */
 const HEADING_ROUTES = [
-  '/en',
+  '/id',
   '/id',
   '/en/journal',
   '/en/cara-kerja',

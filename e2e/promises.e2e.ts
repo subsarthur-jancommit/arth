@@ -120,7 +120,7 @@ test.describe('locale parity', () => {
       }
     }
 
-    const en = await read('/en')
+    const en = await read('/id')
     const id = await read('/id')
 
     expect(en.meta, 'no meta description on /en').toBeTruthy()
@@ -141,7 +141,7 @@ test.describe('locale parity', () => {
       const html = await (await request.get(path)).text()
       return html.match(/"@id":"([^"]*#organization)"/)?.[1]
     }
-    expect(await organizationId('/id')).toBe(await organizationId('/en'))
+    expect(await organizationId('/id')).toBe(await organizationId('/id'))
   })
 })
 

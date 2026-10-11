@@ -39,12 +39,12 @@ Dokumen ini menjawab tiga hal, berurutan:
 
 Keputusan yang sudah dikunci oleh user:
 
-|               |                                             |
-| ------------- | ------------------------------------------- |
-| Jenis karya   | **Still image** — ilustrasi, lukisan, mural |
-| Sumber konten | **Sanity CMS**                              |
-| Bahasa        | **Bilingual ID/EN**                         |
-| Cakupan v1    | **Single page + halaman detail proyek**     |
+|               |                                               |
+| ------------- | --------------------------------------------- |
+| Jenis karya   | **Still image** — ilustrasi, lukisan, mural   |
+| Sumber konten | **Sanity CMS**                                |
+| Bahasa        | Indonesia aktif; Inggris menunggu persetujuan |
+| Cakupan v1    | **Single page + halaman detail proyek**       |
 
 ---
 
@@ -52,11 +52,13 @@ Keputusan yang sudah dikunci oleh user:
 
 ## 1.1 Peta rute
 
-Bilingual dengan **kedua locale diberi prefix**, dan root melakukan redirect:
+Struktur rute tetap **memakai prefix locale**. Saat ini bahasa publik aktif
+adalah Indonesia; root diarahkan ke `/id` dan `/en` root ke `/id` sampai
+terjemahan Inggris disetujui:
 
 ```
-/                    → redirect ke locale hasil negosiasi (default: /en)
-/en                  → home (single page)
+/                    → redirect ke locale bawaan Indonesia (/id)
+/en                  → 307 ke /id (sampai terjemahan Inggris disetujui)
 /id                  → home (single page)
 /en/work/[slug]      → detail proyek
 /id/work/[slug]      → detail proyek
@@ -142,18 +144,18 @@ antar-bahasa sepele dan URL tetap stabil kalau nanti terjemahan berubah.
 
 Bukan perasaan. Setiap baris di bawah ini bisa dijalankan:
 
-| Gerbang             | Perintah / bukti                                                            |
-| ------------------- | --------------------------------------------------------------------------- |
-| Semua cek CI        | `bun run check` exit 0                                                      |
-| Build produksi      | `bun run build` exit 0                                                      |
-| Unit test           | `bun test` — 0 fail                                                         |
-| E2E + aksesibilitas | `CI=true bun run test:e2e` — 0 fail, axe bersih                             |
-| Katalog komponen    | `bun run build-storybook` exit 0, tiap primitive punya story                |
-| Kontras warna       | `lib/styles/scripts/contrast.test.ts` hijau, tanpa di-silence               |
-| Reduced motion      | Tiap seksi diperiksa dengan preferensi aktif; konten **terlihat penuh**     |
-| Bilingual           | `/en` & `/id` render; hreflang + `x-default` benar; sitemap memuat keduanya |
-| Token               | Nol hex/px/ms mentah di komponen (ditegakkan saat review)                   |
-| Tanpa JS            | Home tetap punya satu `<h1>` dan teks terbaca (test sudah ada)              |
+| Gerbang             | Perintah / bukti                                                        |
+| ------------------- | ----------------------------------------------------------------------- |
+| Semua cek CI        | `bun run check` exit 0                                                  |
+| Build produksi      | `bun run build` exit 0                                                  |
+| Unit test           | `bun test` — 0 fail                                                     |
+| E2E + aksesibilitas | `CI=true bun run test:e2e` — 0 fail, axe bersih                         |
+| Katalog komponen    | `bun run build-storybook` exit 0, tiap primitive punya story            |
+| Kontras warna       | `lib/styles/scripts/contrast.test.ts` hijau, tanpa di-silence           |
+| Reduced motion      | Tiap seksi diperiksa dengan preferensi aktif; konten **terlihat penuh** |
+| Bahasa              | `/` → `/id`; `/en` → `/id` sampai terjemahan Inggris disetujui          |
+| Token               | Nol hex/px/ms mentah di komponen (ditegakkan saat review)               |
+| Tanpa JS            | Home tetap punya satu `<h1>` dan teks terbaca (test sudah ada)          |
 
 **Yang sengaja TIDAK diklaim:** angka performa. Tidak ada profiling nyata yang
 mungkin di lingkungan ini (`docs/TEARDOWN.md` mencatat proxy menutup tunnel

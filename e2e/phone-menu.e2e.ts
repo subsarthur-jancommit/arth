@@ -165,7 +165,7 @@ test.describe('the phone menu', () => {
   test('the sheet fills the screen under the bar, and the bar stays', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     await openMenu(page)
 
     const sheet = await menuOf(page).evaluate((node) =>
@@ -193,7 +193,7 @@ test.describe('the phone menu', () => {
   test('Escape from inside the sheet closes it and focus comes back to MENU', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     await openMenu(page)
 
     // Focus goes into the sheet first, so the return is a return.
@@ -211,7 +211,7 @@ test.describe('the phone menu', () => {
   test('from the keyboard, Tab goes from MENU into the menu, and the stop is visible', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'load' })
+    await page.goto('/id', { waitUntil: 'load' })
     await page.getByRole('button', { name: 'Menu' }).focus()
     await page.keyboard.press('Enter')
     await expect(menuOf(page)).toBeVisible()
@@ -248,7 +248,7 @@ test.describe('the phone menu', () => {
   test('Tab past the last link never lands focus under the sheet', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     await openMenu(page)
     const links = await menuOf(page).getByRole('link').count()
     expect(links).toBeGreaterThan(0)
@@ -291,7 +291,7 @@ test.describe('the phone menu', () => {
   test('⌘K with the menu open puts the palette on top, not under the sheet', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     await openMenu(page)
 
     await page.keyboard.press('Control+k')
@@ -302,7 +302,7 @@ test.describe('the phone menu', () => {
   test('focus going anywhere outside the sheet closes it, and search from the keyboard lands on top', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
 
     /*
      * The race, inside one task — on the way to `main`.
@@ -383,7 +383,7 @@ test.describe('the phone menu', () => {
      * document now holds two `#header-nav` — measured — and a `popovertarget`
      * resolved by id takes the first one in the tree.
      */
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     await page.locator('footer a[href="/en/cara-kerja"]').first().click()
     await expect(page).toHaveURL(/\/en\/cara-kerja$/)
     await page.waitForLoadState('networkidle')
@@ -397,7 +397,7 @@ test.describe('the phone menu', () => {
   test('a link in the menu navigates, and the menu is shut when the reader comes back', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     await openMenu(page)
     await settle(page)
 
@@ -422,7 +422,7 @@ test.describe('the phone menu', () => {
   test('the page behind holds still while the sheet is open', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     await page.evaluate(() => window.scrollTo(0, 600))
     await page.waitForTimeout(300)
     await openMenu(page)
@@ -463,14 +463,14 @@ test.describe('the phone menu', () => {
     const reduced = await browser.newContext({ reducedMotion: 'reduce' })
     const page = await reduced.newPage()
     try {
-      await control.goto('/en', { waitUntil: 'networkidle' })
+      await control.goto('/id', { waitUntil: 'networkidle' })
       await control.getByRole('button', { name: 'Menu' }).click()
       expect(
         await runningInNav(control),
         'no entrance ran without the preference — this test cannot see one'
       ).toBeGreaterThan(0)
 
-      await page.goto('/en', { waitUntil: 'networkidle' })
+      await page.goto('/id', { waitUntil: 'networkidle' })
       await page.getByRole('button', { name: 'Menu' }).click()
       expect(await runningInNav(page), 'the entrance ran anyway').toBe(0)
       await expect(menuOf(page)).toBeVisible()
@@ -481,7 +481,7 @@ test.describe('the phone menu', () => {
   })
 
   test('the open menu passes axe', async ({ page }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     await openMenu(page)
     await settle(page)
 

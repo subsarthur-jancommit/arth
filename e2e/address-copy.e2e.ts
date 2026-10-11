@@ -16,7 +16,7 @@ test.describe('the studio address can be copied', () => {
     page,
   }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
-    await page.goto('/en')
+    await page.goto('/id')
 
     const contact = page.locator('#contact')
     await contact.getByRole('button', { name: 'Copy address' }).click()
@@ -37,7 +37,7 @@ test.describe('the studio address can be copied', () => {
     const page = await context.newPage()
 
     try {
-      await page.goto('/en', { waitUntil: 'domcontentloaded' })
+      await page.goto('/id', { waitUntil: 'domcontentloaded' })
 
       const contact = page.locator('#contact')
       await expect(contact.locator('[data-press="email"]')).toBeVisible()

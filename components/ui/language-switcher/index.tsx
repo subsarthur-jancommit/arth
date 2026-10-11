@@ -8,8 +8,8 @@ import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
 import {
   LOCALE_LABELS,
   LOCALE_TAGS,
+  PUBLISHED_LOCALES,
   type Locale,
-  routing,
 } from '@/lib/i18n/routing'
 import { announceNavigation } from '@/lib/motion/navigation-signal'
 
@@ -24,7 +24,9 @@ import s from './language-switcher.module.css'
 const SECTIONS = 'main [data-region][id], main section[id]'
 
 /**
- * LanguageSwitcher — two languages, so two links.
+ * LanguageSwitcher — one link per approved public language. It disappears
+ * while only one language is approved, because a switcher without a choice is
+ * noise and would advertise an unavailable destination.
  *
  * Provenance: original work for this project. No third-party code copied.
  *
@@ -83,6 +85,8 @@ export function LanguageSwitcher({
   const t = useTranslations('language')
   const router = useRouter()
 
+  if (PUBLISHED_LOCALES.length < 2) return null
+
   /**
    * Carries the section being read across the switch. A modified click (a new
    * tab, a new window) and the current language are left to the link itself.
@@ -119,7 +123,7 @@ export function LanguageSwitcher({
       data-epic="locale-sheet"
     >
       <ul className={s.list}>
-        {routing.locales.map((locale) => (
+        {PUBLISHED_LOCALES.map((locale) => (
           <li key={locale}>
             <Link
               href={pathname}

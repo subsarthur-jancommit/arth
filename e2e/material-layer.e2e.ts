@@ -78,7 +78,7 @@ async function showWorkGrid(
   page: Page,
   wait: 'networkidle' | 'load' = 'networkidle'
 ) {
-  await page.goto('/en', { waitUntil: wait })
+  await page.goto('/id', { waitUntil: wait })
   /*
    * Scroll to the first plate, not to `#work` — Tahap 49.
    *

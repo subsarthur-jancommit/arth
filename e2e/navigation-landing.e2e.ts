@@ -105,7 +105,7 @@ function assertLandedAtTheTop(
 
 test.describe('a navigation lands at the top of the page it asked for', () => {
   test('home → a unit page', async ({ page }) => {
-    const result = await navigate(page, '/en', `/en/${UNITS[0]}`, async (p) => {
+    const result = await navigate(page, '/id', `/en/${UNITS[0]}`, async (p) => {
       // The link lives inside a closed `<details>`; a reader opens it first.
       await p.locator('#unit summary').first().click()
       await p.waitForTimeout(700)
@@ -114,7 +114,7 @@ test.describe('a navigation lands at the top of the page it asked for', () => {
   })
 
   test('home → a project page', async ({ page }) => {
-    const result = await navigate(page, '/en', `/en/work/${FEATURED_WORK}`)
+    const result = await navigate(page, '/id', `/en/work/${FEATURED_WORK}`)
     assertLandedAtTheTop(result, 'home → project')
   })
 

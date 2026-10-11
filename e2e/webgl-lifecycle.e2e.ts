@@ -59,7 +59,7 @@ import { webglIntent } from './webgl-intent'
 const CYCLES = 4
 
 /** A route with a canvas, and one without, to navigate between. */
-const HOME = '/en'
+const HOME = '/id'
 const AWAY = '/en/cara-kerja'
 
 interface Counts {

@@ -44,7 +44,7 @@ export const pageQuery = defineQuery(`
  *
  * The plugin stores each localized field as `[{ _key: 'en', value: … }]`, so
  * a value is picked by filtering on `_key` and taking the first match. The
- * `coalesce` falls back to English when a translation has not been written
+ * `coalesce` falls back to Indonesian when a translation has not been written
  * yet — without it the field resolves to null and the page renders a blank
  * heading rather than an untranslated one, which is the worse failure.
  *
@@ -68,12 +68,12 @@ export const pageQuery = defineQuery(`
  * The fallback locale is a literal because typegen needs one, duplicating
  * `lib/i18n/routing.ts`. `queries.test.ts` asserts the two stay in step.
  */
-const localizedTitle = `"title": coalesce(title[_key == $locale][0].value, title[_key == "en"][0].value)`
-const localizedEngagement = `"engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "en"][0].value)`
-const localizedCoverAlt = `"coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "en"][0].value)`
-const localizedHeadline = `"headline": coalesce(headline[_key == $locale][0].value, headline[_key == "en"][0].value)`
-const localizedSubline = `"subline": coalesce(subline[_key == $locale][0].value, subline[_key == "en"][0].value)`
-const localizedStatement = `"statement": coalesce(statement[_key == $locale][0].value, statement[_key == "en"][0].value)`
+const localizedTitle = `"title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value)`
+const localizedEngagement = `"engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value)`
+const localizedCoverAlt = `"coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)`
+const localizedHeadline = `"headline": coalesce(headline[_key == $locale][0].value, headline[_key == "id"][0].value)`
+const localizedSubline = `"subline": coalesce(subline[_key == $locale][0].value, subline[_key == "id"][0].value)`
+const localizedStatement = `"statement": coalesce(statement[_key == $locale][0].value, statement[_key == "id"][0].value)`
 
 /** Fields shared by the work grid and the project detail page. */
 const projectCardFields = `
@@ -117,7 +117,7 @@ const isListed = `_type == "project" && listed != false`
  */
 const isListedEntry = `_type == "journalEntry" && listed != false`
 
-const localizedSummary = `"summary": coalesce(summary[_key == $locale][0].value, summary[_key == "en"][0].value)`
+const localizedSummary = `"summary": coalesce(summary[_key == $locale][0].value, summary[_key == "id"][0].value)`
 
 const journalCardFields = `
   _id,
@@ -139,7 +139,7 @@ export const journalEntriesQuery = defineQuery(`
 export const journalEntryQuery = defineQuery(`
   *[${isListedEntry} && slug.current == $slug][0] {
     ${journalCardFields},
-    "body": coalesce(body[_key == $locale][0].value, body[_key == "en"][0].value)
+    "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)
   }
 `)
 
@@ -227,7 +227,7 @@ export const projectQuery = defineQuery(`
     publishedAt,
     metadata,
     _updatedAt,
-    "body": coalesce(body[_key == $locale][0].value, body[_key == "en"][0].value)[]{
+    "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)[]{
       ...,
       markDefs[]{
         ...,
@@ -240,7 +240,7 @@ export const projectQuery = defineQuery(`
     gallery[]{
       ...,
       "lqip": asset->metadata.lqip,
-      "alt": coalesce(alt[_key == $locale][0].value, alt[_key == "en"][0].value)
+      "alt": coalesce(alt[_key == $locale][0].value, alt[_key == "id"][0].value)
     },
     // The arc. Projected inline for the same reason gallery is: the shape is
     // used by exactly one query, so a shared constant would buy nothing.
@@ -257,13 +257,13 @@ export const projectQuery = defineQuery(`
     // hazard, found by walking into it.
     chapters[]{
       _key,
-      "heading": coalesce(heading[_key == $locale][0].value, heading[_key == "en"][0].value),
-      "body": coalesce(body[_key == $locale][0].value, body[_key == "en"][0].value)
+      "heading": coalesce(heading[_key == $locale][0].value, heading[_key == "id"][0].value),
+      "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)
     },
-    "outcome": coalesce(outcome[_key == $locale][0].value, outcome[_key == "en"][0].value),
+    "outcome": coalesce(outcome[_key == $locale][0].value, outcome[_key == "id"][0].value),
     // Metadata-only projections. See the note above this query.
     "excerpt": pt::text(
-      coalesce(body[_key == $locale][0].value, body[_key == "en"][0].value)
+      coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)
     ),
     "ogImage": cover.asset->{
       url,
@@ -294,7 +294,7 @@ export const studioSettingsQuery = defineQuery(`
     metadata,
     ${localizedHeadline},
     ${localizedSubline},
-    "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "en"][0].value),
+    "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),
     ${localizedStatement}
   }
 `)

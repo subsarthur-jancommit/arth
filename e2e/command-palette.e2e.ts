@@ -76,7 +76,7 @@ test.describe('the search palette', () => {
   }
 
   test('it searches content, not only route names', async ({ page }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
     await openWithShortcut(page)
 
@@ -98,7 +98,7 @@ test.describe('the search palette', () => {
   })
 
   test('the words may arrive in any order', async ({ page }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
     await openWithShortcut(page)
     await page.waitForSelector('[data-search-row]')
@@ -131,7 +131,7 @@ test.describe('the search palette', () => {
   })
 
   test('a title match outranks a passing mention', async ({ page }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
     await openWithShortcut(page)
 
@@ -158,7 +158,7 @@ test.describe('the search palette', () => {
   test('it is operable from the keyboard alone, and gives focus back', async ({
     page,
   }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
 
     // Focus the trigger by tabbing to it rather than clicking, so this test
@@ -208,7 +208,7 @@ test.describe('the search palette', () => {
   })
 
   test('Enter opens the highlighted result', async ({ page }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
     await openWithShortcut(page)
 
@@ -277,7 +277,7 @@ test.describe('the search palette', () => {
    */
 
   test('the counter answers the query', async ({ page }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
     await openWithShortcut(page)
     await page.waitForSelector('[data-search-row]')
@@ -312,7 +312,7 @@ test.describe('the search palette', () => {
   test('an index still loading does not claim the query matched nothing', async ({
     page,
   }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
 
     // Hold the index back so the gap between opening and having data is real,
@@ -351,7 +351,7 @@ test.describe('the search palette', () => {
   test('a failed index says so, and says what still works', async ({
     page,
   }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
     await page.route('**/search.json', (route) =>
       route.fulfill({ status: 500, body: 'no' })
@@ -378,7 +378,7 @@ test.describe('the search palette', () => {
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
     await page.locator('[data-search-trigger]').click()
     await page.waitForSelector('[data-search-row]')
@@ -415,7 +415,7 @@ test.describe('the search palette', () => {
     const context = await browser.newContext({ javaScriptEnabled: false })
     const page = await context.newPage()
     try {
-      await page.goto('/en', { waitUntil: 'domcontentloaded' })
+      await page.goto('/id', { waitUntil: 'domcontentloaded' })
 
       // Present in the markup — the header is a client component and React
       // renders it server-side — but never shown, which is the contract.

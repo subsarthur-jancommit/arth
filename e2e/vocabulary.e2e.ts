@@ -128,7 +128,7 @@ test.describe('vocabulary', () => {
      * person while its JSON-LD still describes a different business — the two
      * come from `lib/seo/site.ts` but through different fields.
      */
-    const body = await (await request.get('/en')).text()
+    const body = await (await request.get('/id')).text()
 
     const services = /"(?:makesOffer|hasOfferCatalog|knowsAbout)":\[[^\]]*\]/g
     const blocks = body.match(services) ?? []

@@ -149,7 +149,7 @@ test.describe('a reader moving through the site', () => {
     const [first, second] = UNITS
 
     // Hop 0 — arrival. Everything after this is client-side.
-    await page.goto('/en')
+    await page.goto('/id')
     const arrival = await resting(page)
     expect(arrival.y, 'a fresh load should start at the top').toBe(0)
     assertSettled(arrival, 'arrival')
@@ -379,7 +379,7 @@ test.describe('a reader moving through the site', () => {
      * is exactly why it is written now: 16a adds that listener, and this is
      * what stops it from claiming a hash press.
      */
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1500)
 
     await page.evaluate(() => {
@@ -434,7 +434,7 @@ test.describe('the pinned passage never takes the page away', () => {
   const PASSAGE = '[data-epic="arth-passage"]'
 
   test('the pin releases and the footer is reachable', async ({ page }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(SETTLED)
 
     const spacers = await page.locator('.pin-spacer').count()
@@ -472,7 +472,7 @@ test.describe('the pinned passage never takes the page away', () => {
      * The proof that it is not hijacking, and the only one that counts. A
      * reader who never touches a wheel or a trackpad has to be able to leave.
      */
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(SETTLED)
 
     /*
@@ -537,7 +537,7 @@ test.describe('the pinned passage never takes the page away', () => {
      */
     const plain = await browser.newContext()
     const plainPage = await plain.newPage()
-    await plainPage.goto('/en')
+    await plainPage.goto('/id')
     await plainPage.waitForTimeout(SETTLED)
     const animatedHeight = await plainPage.evaluate(
       () => document.documentElement.scrollHeight
@@ -546,7 +546,7 @@ test.describe('the pinned passage never takes the page away', () => {
 
     const quiet = await browser.newContext({ reducedMotion: 'reduce' })
     const quietPage = await quiet.newPage()
-    await quietPage.goto('/en')
+    await quietPage.goto('/id')
     await quietPage.waitForTimeout(SETTLED)
     const quietHeight = await quietPage.evaluate(
       () => document.documentElement.scrollHeight

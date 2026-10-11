@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { LOCALE_TAGS, ogLocale, routing } from '../lib/i18n/routing'
+import { LOCALE_TAGS, ogLocale, PUBLISHED_LOCALES } from '../lib/i18n/routing'
 
 /**
  * Every URL the sitemap submits must agree with the page it points at.
@@ -119,7 +119,7 @@ test.describe('sitemap and page metadata agree', () => {
   test('og:locale follows the URL prefix, in OpenGraph spelling', async ({
     request,
   }) => {
-    for (const locale of routing.locales) {
+    for (const locale of PUBLISHED_LOCALES) {
       const html = await (await request.get(`/${locale}`)).text()
 
       // Underscore. `og:locale` is `language_TERRITORY`, not the hyphenated
@@ -130,7 +130,7 @@ test.describe('sitemap and page metadata agree', () => {
 
       const alternates = metaAll(html, 'og:locale:alternate')
       expect(alternates).toEqual(
-        routing.locales.filter((other) => other !== locale).map(ogLocale)
+        PUBLISHED_LOCALES.filter((other) => other !== locale).map(ogLocale)
       )
     }
   })
@@ -147,7 +147,7 @@ test.describe('sitemap and page metadata agree', () => {
      * notice stays. It lives in `messages/*.json` under `footer.builtOn`, so
      * the check below targets the metadata rather than the page text.
      */
-    const html = await (await request.get('/en')).text()
+    const html = await (await request.get('/id')).text()
 
     expect(meta(html, 'og:site_name')).not.toMatch(/satus|satūs/i)
     expect(meta(html, 'og:image:alt')).not.toMatch(/satus|satūs/i)

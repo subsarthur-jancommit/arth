@@ -37,7 +37,7 @@ test.describe('a 404 without JavaScript offers the front doors', () => {
       })
       await expect(english).toBeVisible()
       await expect(indonesian).toBeVisible()
-      await expect(english).toHaveAttribute('href', '/en')
+      await expect(english).toHaveAttribute('href', '/id')
       await expect(indonesian).toHaveAttribute('href', '/id')
     })
   }

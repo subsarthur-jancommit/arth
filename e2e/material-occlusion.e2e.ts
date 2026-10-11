@@ -60,7 +60,7 @@ import { FEATURED_WORK } from './fixtures'
  */
 
 /** Every route that mounts a material shell. */
-const MATERIAL_ROUTES = ['/en', '/en/work', `/en/work/${FEATURED_WORK}`]
+const MATERIAL_ROUTES = ['/id', '/en/work', `/en/work/${FEATURED_WORK}`]
 
 test.describe('material occlusion', () => {
   for (const route of MATERIAL_ROUTES) {

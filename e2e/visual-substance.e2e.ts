@@ -55,7 +55,7 @@ declare global {
  */
 
 const GUTTER_ROUTES = [
-  '/en',
+  '/id',
   '/en/journal',
   '/en/journal/scope-is-the-deliverable',
   '/en/cara-kerja',
@@ -204,7 +204,7 @@ const ACCENT_RANGE_MARGIN = 3
  * `[data-accent-region]` again, which the unit template (F3-02) is the first
  * candidate for.
  */
-const ACCENT_ROUTES = ['/en']
+const ACCENT_ROUTES = ['/id']
 
 /**
  * What the accent gate is allowed, and what each of its waits is allowed.
@@ -622,7 +622,7 @@ async function moved(
  */
 async function readyPlate(page: Page) {
   await page.setViewportSize({ width: 1280, height: 800 })
-  await page.goto('/en')
+  await page.goto('/id')
   await page.waitForTimeout(2500)
 
   /*

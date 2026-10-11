@@ -211,7 +211,7 @@ export const SITE: SiteFacts = {
         },
       ],
       howToUse: [
-        'Start at /en/konstruksi, /en/teknologi or /en/peekabo (Indonesian: /id/konstruksi and its siblings). Each unit page is the entry to that unit.',
+        'Start at /id/konstruksi, /id/teknologi or /id/peekabo. Each unit page is the entry to that unit.',
         'Use the Contact link on the home page to start a conversation.',
         'Expect a scope and an estimate before anything is agreed rather than after.',
       ],
@@ -230,7 +230,7 @@ export const SITE: SiteFacts = {
         },
       ],
       howToUse: [
-        'Mulai di /id/konstruksi, /id/teknologi, atau /id/peekabo (Inggris: /en/konstruksi dan seterusnya). Halaman unit adalah pintu masuk unit itu.',
+        'Mulai di /id/konstruksi, /id/teknologi, atau /id/peekabo. Halaman unit adalah pintu masuk unit itu.',
         'Gunakan tautan Kontak di beranda untuk memulai percakapan.',
         'Lingkup dan perkiraan diberikan sebelum apa pun disepakati, bukan sesudah.',
       ],

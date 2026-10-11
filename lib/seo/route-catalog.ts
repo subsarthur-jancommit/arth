@@ -9,7 +9,7 @@ import {
   unitTemplate,
 } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
-import { type Locale, routing } from '@/lib/i18n/routing'
+import { PUBLISHED_LOCALES, type Locale } from '@/lib/i18n/routing'
 import { type Localized, SITE } from '@/lib/seo/site'
 
 export interface StaticRoute {
@@ -184,8 +184,8 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
 ]
 
 /**
- * Every static route, expanded across every locale — `/en`, `/id`,
- * `/en/cara-kerja`, `/id/cara-kerja`.
+ * Every static route with approved visitor-facing copy. English stays out of
+ * machine surfaces until its translation is approved.
  *
  * This is what gets *advertised*: the sitemap, `/llms.txt`, and the
  * Markdown-representation lookup in `lib/seo/alternates.ts` all read
@@ -195,7 +195,7 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
  * index another.
  */
 export const STATIC_ROUTES: readonly LocalizedStaticRoute[] =
-  routing.locales.flatMap((locale) =>
+  PUBLISHED_LOCALES.flatMap((locale) =>
     STATIC_ROUTE_TEMPLATES.map((route) => ({
       ...route,
       label: route.label[locale],

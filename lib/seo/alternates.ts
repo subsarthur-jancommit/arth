@@ -5,7 +5,7 @@ import {
   localizedPath,
   templateFromLocalizedPath,
 } from '@/lib/i18n/paths'
-import { LOCALE_TAGS, routing } from '@/lib/i18n/routing'
+import { LOCALE_TAGS, PUBLISHED_LOCALES, routing } from '@/lib/i18n/routing'
 import { FEED_PATH, FEED_TITLES } from '@/lib/seo/atom-feed'
 import { markdownPathForRoute } from '@/lib/seo/markdown-path'
 import { STATIC_ROUTES } from '@/lib/seo/route-catalog'
@@ -21,11 +21,18 @@ export function languageAlternates(
   path: string
 ): Record<string, string> | undefined {
   const template = templateFromLocalizedPath(path)
-  if (!template) return undefined
+  const pageLocale = localeFromPath(path)
+  if (
+    !template ||
+    !pageLocale ||
+    !PUBLISHED_LOCALES.some((locale) => locale === pageLocale)
+  ) {
+    return undefined
+  }
 
   return {
     ...Object.fromEntries(
-      routing.locales.map((locale) => [
+      PUBLISHED_LOCALES.map((locale) => [
         LOCALE_TAGS[locale],
         localizedPath(locale, template),
       ])

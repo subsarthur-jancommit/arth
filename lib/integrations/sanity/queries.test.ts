@@ -7,7 +7,7 @@
  *
  *  - the fallback locale is written as a literal (typegen cannot follow a
  *    variable), duplicating `lib/i18n/routing.ts`. Add a locale, forget these,
- *    and that language serves English forever with no error anywhere.
+ *    and that language serves the wrong fallback forever with no error.
  *  - reverting to dynamic property access (`field[$locale]`) still works at
  *    runtime but makes typegen infer an array where a string comes back, so
  *    every consumer is written against a shape that never occurs.

@@ -25,7 +25,7 @@ function cacheControl(headers: Record<string, string>): string {
 test.describe('response headers', () => {
   test('statically prerendered pages are cacheable', async ({ request }) => {
     const paths = [
-      '/en',
+      '/id',
       '/id',
       /*
        * The unit pages. `/en/work` and `/id/work` are **not** here any
@@ -102,7 +102,7 @@ test.describe('response headers', () => {
   test('content-hashed build assets are immutable', async ({ request }) => {
     // Discover a real asset rather than hardcoding a hash that changes on
     // every build.
-    const html = await (await request.get('/en')).text()
+    const html = await (await request.get('/id')).text()
     const asset = html.match(/\/_next\/static\/chunks\/[\w.-]+\.js/)?.[0]
     expect(asset, 'no hashed chunk found in the page').toBeTruthy()
 
@@ -127,7 +127,7 @@ test.describe('response headers', () => {
   }) => {
     // `proxy.ts` negotiates Markdown for page documents. A cache that ignores
     // this would serve Markdown to a browser.
-    const response = await request.get('/en')
+    const response = await request.get('/id')
     expect((response.headers().vary ?? '').toLowerCase()).toContain('accept')
   })
 
@@ -153,7 +153,7 @@ test.describe('response headers', () => {
     request,
   }) => {
     const paths = [
-      '/en',
+      '/id',
       '/id',
       '/en/work',
       '/sitemap.xml',
@@ -191,7 +191,7 @@ test.describe('response headers', () => {
      * different question from whether the shell does, and this is the only
      * place that can ask it.
      */
-    for (const path of ['/en', '/id', '/en/work', '/id/cara-kerja']) {
+    for (const path of ['/id', '/id', '/en/work', '/id/cara-kerja']) {
       const html = await (await request.get(path)).text()
       expect(html, `${path} must carry meta robots`).toMatch(
         /<meta name="robots" content="[^"]*noindex/

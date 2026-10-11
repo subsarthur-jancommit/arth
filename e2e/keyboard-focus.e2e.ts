@@ -19,7 +19,7 @@ import { expect, test } from '@playwright/test'
 
 import { FEATURED_WORK } from './fixtures'
 
-const ROUTES = ['/en', `/en/work/${FEATURED_WORK}`, '/en/cara-kerja']
+const ROUTES = ['/id', `/en/work/${FEATURED_WORK}`, '/en/cara-kerja']
 const MAX_TABS = 40
 
 test.describe('keyboard focus', () => {
@@ -92,7 +92,7 @@ test.describe('keyboard focus', () => {
   }
 
   test('the skip link is the first stop and reaches main', async ({ page }) => {
-    await page.goto('/en', { waitUntil: 'domcontentloaded' })
+    await page.goto('/id', { waitUntil: 'domcontentloaded' })
     await page.keyboard.press('Tab')
 
     const first = page.locator(':focus')

@@ -93,7 +93,7 @@ import { expect, test } from '@playwright/test'
 /** Byte totals are uncompressed response bodies, not transfer size. */
 const ROUTES: { path: string }[] = [
   // The page with a scene, and the one that animates.
-  { path: '/en' },
+  { path: '/id' },
   /*
    * The Indonesian home page, which was **not measured at all** until Tahap
    * 22 added it.

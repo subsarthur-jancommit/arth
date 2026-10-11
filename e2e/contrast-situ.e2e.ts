@@ -73,7 +73,7 @@ import {
  * wrap differently and put different text under the same sticky row.
  */
 const ROUTES = [
-  '/en',
+  '/id',
   '/en/work',
   '/en/work/arus-balik',
   '/en/cara-kerja',

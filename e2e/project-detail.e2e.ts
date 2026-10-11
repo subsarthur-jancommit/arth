@@ -143,7 +143,7 @@ test.describe('project detail', () => {
      * route, so every card in the grid led to a not-found page — served with
      * a 200 status, so nothing anywhere reported a problem.
      */
-    await page.goto('/en')
+    await page.goto('/id')
     const hrefs = await page
       .locator('a[href*="/work/"]')
       .evaluateAll((links) =>

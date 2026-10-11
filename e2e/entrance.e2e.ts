@@ -99,7 +99,7 @@ test.describe('the entrance never becomes the obstacle', () => {
      */
     const context = await browser.newContext({ javaScriptEnabled: false })
     const page = await context.newPage()
-    await page.goto('/en')
+    await page.goto('/id')
 
     const headline = page.locator('h1').first()
     await expect(headline).toBeVisible()
@@ -147,7 +147,7 @@ test.describe('the entrance never becomes the obstacle', () => {
      */
     const context = await browser.newContext({ reducedMotion: 'reduce' })
     const page = await context.newPage()
-    await page.goto('/en')
+    await page.goto('/id')
 
     const curtain = page.locator('[data-curtain]')
     const count = await curtain.count()
@@ -163,7 +163,7 @@ test.describe('the entrance never becomes the obstacle', () => {
   test('the curtain leaves the viewport inside the ceiling', async ({
     page,
   }) => {
-    await page.goto('/en')
+    await page.goto('/id')
 
     const curtain = page.locator('[data-curtain]')
     expect(await curtain.count(), 'no curtain element to time').toBeGreaterThan(
@@ -204,7 +204,7 @@ test.describe('the entrance never becomes the obstacle', () => {
   test('the content still paints early, measured not assumed', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'load' })
+    await page.goto('/id', { waitUntil: 'load' })
     const lcp = await largestContentfulPaint(page)
 
     expect(lcp, 'the browser reported no LCP entry').toBeGreaterThan(0)
@@ -224,7 +224,7 @@ test.describe('the entrance never becomes the obstacle', () => {
      * the overlay is navigation only — and this is what makes that a fact
      * rather than an intention.
      */
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForFunction(() => {
       const el = document.querySelector('[data-curtain]')
       return !el || el.getBoundingClientRect().bottom <= 0

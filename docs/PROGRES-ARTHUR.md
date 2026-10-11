@@ -31,23 +31,24 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 
 ## Paket
 
-| Paket                                       | PR  | SHA merge | Status           | Dilewati / ditunda                                                                                       |
-| ------------------------------------------- | --- | --------- | ---------------- | -------------------------------------------------------------------------------------------------------- |
-| F0-01 Noindex selama dummy                  | #12 | `2491472` | **Selesai**      | Pengecualian domain dibangun tapi daftarnya kosong (lihat U3); lokasinya pindah dari `proxy.ts` (U4)     |
-| F0-07 Dokumen repo diselaraskan             | #13 | `45f220b` | **Selesai**      | FORK.md tidak disunting (U1); `ROADMAP.md` dan `docs/stages/` tidak disentuh (U8)                        |
-| F1-01 Merek Arthur dari satu sumber         | #14 | `a052ace` | **Selesai**      | Prosa `SITE` dan `home-fallback` ikut dibereskan di F1-02 (U11)                                          |
-| F1-02 Tiga unit menggantikan praktik        | #14 | `a052ace` | **Selesai**      | Medan Sanity masih bernama `practice` (U12); `?practice=` → `?unit=` tanpa pengalih (U13)                |
-| F1-03 Rute unit                             | #14 | `a052ace` | **Selesai**      | Halaman CMS pindah ke `/halaman/<slug>` (U14); tiga gerbang e2e melemah (U15)                            |
-| F1-04 Rute sisi                             | #16 | —         | **Dalam PR**     | E2E lokal tidak dijalankan; deploy dan uji produksi ditunda atas instruksi pemilik                       |
-| F1-05 Cara kami bekerja menggantikan studio | —   | —         | **Dalam branch** | CI dan e2e dilewati atas instruksi pemilik; isi halaman tetap ditandai contoh hingga ditinjau pemilik    |
-| F1-06 Navigasi Arthur                       | —   | —         | **Dalam branch** | CI dan e2e dilewati atas instruksi pemilik; `/work` dan `/journal` tetap hidup tetapi tidak dipromosikan |
-| F0-02 Uji terbit menampilkan isi baru       | —   | —         | Belum mulai      | Bergantung F0-06                                                                                         |
-| F0-03 Token produksi hanya Viewer           | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                                          |
-| F0-04 Token dev dicabut                     | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                                             |
-| F0-05 Ruleset cabang `main`                 | —   | —         | Menunggu pemilik | Tindakan dasbor. Terakhir diukur `gh api …/rules/branches/main` → `[]`, belum aktif                      |
-| F0-06 Dataset `ci` terpisah                 | —   | —         | Menunggu pemilik | Tindakan dasbor; memblokir F0-02 dan F2-09                                                               |
+| Paket                                       | PR  | SHA merge | Status           | Dilewati / ditunda                                                                                              |
+| ------------------------------------------- | --- | --------- | ---------------- | --------------------------------------------------------------------------------------------------------------- |
+| F0-01 Noindex selama dummy                  | #12 | `2491472` | **Selesai**      | Pengecualian domain dibangun tapi daftarnya kosong (lihat U3); lokasinya pindah dari `proxy.ts` (U4)            |
+| F0-07 Dokumen repo diselaraskan             | #13 | `45f220b` | **Selesai**      | FORK.md tidak disunting (U1); `ROADMAP.md` dan `docs/stages/` tidak disentuh (U8)                               |
+| F1-01 Merek Arthur dari satu sumber         | #14 | `a052ace` | **Selesai**      | Prosa `SITE` dan `home-fallback` ikut dibereskan di F1-02 (U11)                                                 |
+| F1-02 Tiga unit menggantikan praktik        | #14 | `a052ace` | **Selesai**      | Medan Sanity masih bernama `practice` (U12); `?practice=` → `?unit=` tanpa pengalih (U13)                       |
+| F1-03 Rute unit                             | #14 | `a052ace` | **Selesai**      | Halaman CMS pindah ke `/halaman/<slug>` (U14); tiga gerbang e2e melemah (U15)                                   |
+| F1-04 Rute sisi                             | #16 | —         | **Dalam PR**     | E2E lokal tidak dijalankan; deploy dan uji produksi ditunda atas instruksi pemilik                              |
+| F1-05 Cara kami bekerja menggantikan studio | —   | —         | **Dalam branch** | CI dan e2e dilewati atas instruksi pemilik; isi halaman tetap ditandai contoh hingga ditinjau pemilik           |
+| F1-06 Navigasi Arthur                       | —   | —         | **Dalam branch** | CI dan e2e dilewati atas instruksi pemilik; `/work` dan `/journal` tetap hidup tetapi tidak dipromosikan        |
+| F1-07 Bahasa bawaan dan segmen URL          | —   | —         | **Dalam branch** | CI dan e2e dilewati; EN tidak diindeks atau ditawarkan; usulan perubahan prosedur §3 langkah 9 menunggu pemilik |
+| F0-02 Uji terbit menampilkan isi baru       | —   | —         | Belum mulai      | Bergantung F0-06                                                                                                |
+| F0-03 Token produksi hanya Viewer           | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                                                 |
+| F0-04 Token dev dicabut                     | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                                                    |
+| F0-05 Ruleset cabang `main`                 | —   | —         | Menunggu pemilik | Tindakan dasbor. Terakhir diukur `gh api …/rules/branches/main` → `[]`, belum aktif                             |
+| F0-06 Dataset `ci` terpisah                 | —   | —         | Menunggu pemilik | Tindakan dasbor; memblokir F0-02 dan F2-09                                                                      |
 
-F1-07 dan seterusnya belum mulai; lihat Backlog.
+F1-08 belum mulai; lihat Backlog.
 
 **F1-01, F1-02 dan F1-03 berada di satu PR**, dan itu penyimpangan dari "satu
 PR per paket" yang disebut terang-terangan di sini dan di deskripsi PR-nya.
@@ -73,8 +74,8 @@ dengan status-status baru paket ini:
 
 | Diminta                                                   | Jawaban                                   |
 | --------------------------------------------------------- | ----------------------------------------- |
-| `/`                                                       | 307 → `/en` (masih `/en` sampai F1-07)    |
-| `/en`, `/id`                                              | 200                                       |
+| `/`                                                       | 307 → `/en` (diukur sebelum F1-07)        |
+| `/en`, `/id`                                              | 200 (diukur sebelum F1-07)                |
 | `/{en,id}/konstruksi`, `/teknologi`, `/peekabo`           | 200, keenamnya                            |
 | `/en/practice`, `/id/praktik`                             | **410**                                   |
 | `/en/practice/consulting`, `/en/work/practice/commission` | **410**                                   |
@@ -104,12 +105,18 @@ produksi sesudah merge" sebetulnya sudah terbukti jalan. **Pemilik melarang
 menyunting FORK.md**, karena F0-07 memakainya sebagai sumber kebenaran. Dicatat
 saja.
 
-**U2 — uji asap `/` → `/en` menunggu F1-07.** `docs/DEPLOYMENT.md` §3 dan §6
-serta `PROSEDUR-KERJA.md` §3 langkah 9 sama-sama mengharapkan `/` mengarah ke
-`/en`. F1-07 mengubahnya ke `/id`. Keputusan pemilik: DEPLOYMENT.md diperbaiki
-**langsung di PR F1-07** karena ia panduan, bukan dokumen mengikat; hanya
-PROSEDUR-KERJA §3 langkah 9 yang lewat jalur §7. Diukur 2026-10-10: `/` masih
-307 ke `/en`, jadi keduanya masih benar hari ini.
+**U2 — uji asap `/` → `/id` perlu penyelarasan prosedur.** `docs/DEPLOYMENT.md`
+§3 dan §6 diperbarui dalam F1-07. `PROSEDUR-KERJA.md` §3 langkah 9 tetap
+mengharapkan `/en`; sesuai §7, usulan kepada pemilik adalah mengganti harapan
+itu menjadi `/id` dan menambahkan `/en` → `/id` 307. Dokumen prosedur tidak
+diubah oleh agen. Verifikasi produksi masih menunggu pemilik; tidak dilakukan
+dalam paket ini.
+
+F1-07 mengubah bawaan aplikasi ke Indonesia, mematikan deteksi bahasa
+peramban, mengalihkan `/en` ke `/id`, memakai `id` sebagai fallback GROQ,
+menghilangkan switcher bahasa sampai Inggris disetujui, dan mengeluarkan hanya
+halaman Indonesia dari sitemap serta hreflang. Ini baru diverifikasi secara
+lokal; tidak menyatakan hasil produksi.
 
 **U3 — daftar `INDEXABLE_HOSTS` kosong.** F0-01 membangun mekanisme
 pengecualian domain, tapi daftarnya kosong karena K4 (domain akhir) belum

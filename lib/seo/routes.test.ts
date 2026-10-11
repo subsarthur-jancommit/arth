@@ -12,6 +12,7 @@
 import { describe, expect, it } from 'bun:test'
 
 import { SIDES, sideTemplate, UNITS } from '@/lib/content/units'
+import { PUBLISHED_LOCALES } from '@/lib/i18n/routing'
 
 import {
   buildRoutesFromDocuments,
@@ -20,6 +21,14 @@ import {
 } from './routes'
 
 describe('the static route catalogue', () => {
+  it('advertises only approved public locales', () => {
+    expect(PUBLISHED_LOCALES).toEqual(['id'])
+    expect(STATIC_ROUTES.every((route) => route.locale === 'id')).toBe(true)
+    expect(STATIC_ROUTES.some((route) => route.path === '/en/cara-kerja')).toBe(
+      false
+    )
+  })
+
   it('keeps the catalogue and journal pages out of machine route listings', () => {
     expect(STATIC_ROUTE_TEMPLATES.some((route) => route.path === '/work')).toBe(
       false

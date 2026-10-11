@@ -20,8 +20,8 @@ import { formatList } from './site'
  * A guard on a fix does not end because the page that exercised it did.
  */
 describe('formatList', () => {
-  it('joins the last item with "and" by default', () => {
-    expect(formatList(['a', 'b', 'c'])).toBe('a, b, and c')
+  it('joins the last item with "dan" by default', () => {
+    expect(formatList(['a', 'b', 'c'])).toBe('a, b, dan c')
   })
 
   it('joins the last item with "dan" in Indonesian', () => {

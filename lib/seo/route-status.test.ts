@@ -155,7 +155,7 @@ describe('the branded document', () => {
 
   it('falls back to the default locale when the path names none', () => {
     expect(brandedStatusDocument(NOT_FOUND_STATUS, '/practice')).toContain(
-      '<html lang="en">'
+      '<html lang="id">'
     )
   })
 

@@ -6,7 +6,7 @@ import { sanityFetch } from '@/integrations/sanity/live'
 import { urlForReference } from '@/integrations/sanity/utils/link'
 import { resolveJournalEntries } from '@/lib/content/journal-fallback'
 import { localizedPath } from '@/lib/i18n/paths'
-import { type Locale, routing } from '@/lib/i18n/routing'
+import { PUBLISHED_LOCALES, type Locale } from '@/lib/i18n/routing'
 import { MARKDOWN_HANDLER_PATH } from '@/lib/seo/markdown-path'
 import { STATIC_ROUTE_TEMPLATES, STATIC_ROUTES } from '@/lib/seo/route-catalog'
 
@@ -259,7 +259,7 @@ export function localizedContentRoutes(
   routes: readonly ContentRoute[],
   locale?: Locale
 ): ContentRoute[] {
-  const locales = locale ? [locale] : routing.locales
+  const locales = locale ? [locale] : PUBLISHED_LOCALES
 
   return routes.flatMap((route) =>
     locales.map((each) => ({
@@ -305,7 +305,7 @@ export async function getCmsRoutes(): Promise<ContentRoute[]> {
  * this is the second place it now has to be closed.
  */
 export function journalContentRoutes(locale?: Locale): ContentRoute[] {
-  const locales = locale ? [locale] : routing.locales
+  const locales = locale ? [locale] : PUBLISHED_LOCALES
 
   return locales.flatMap((each) =>
     resolveJournalEntries(each, null).map((entry) => ({

@@ -2,7 +2,12 @@ import { getTranslations } from 'next-intl/server'
 
 import { resolveJournalEntries } from '@/lib/content/journal-fallback'
 import { localizedPath } from '@/lib/i18n/paths'
-import { isLocale, LOCALE_TAGS, type Locale, routing } from '@/lib/i18n/routing'
+import {
+  isLocale,
+  LOCALE_TAGS,
+  PUBLISHED_LOCALES,
+  type Locale,
+} from '@/lib/i18n/routing'
 import { buildAtomFeed, FEED_PATH, FEED_TITLES } from '@/lib/seo/atom-feed'
 import { BASE_URL, SITE } from '@/lib/seo/site'
 
@@ -30,7 +35,7 @@ import { BASE_URL, SITE } from '@/lib/seo/site'
  */
 
 export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }))
+  return PUBLISHED_LOCALES.map((locale) => ({ locale }))
 }
 
 async function buildFeed(locale: Locale): Promise<string> {

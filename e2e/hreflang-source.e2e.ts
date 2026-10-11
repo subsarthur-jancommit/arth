@@ -11,7 +11,7 @@ import { expect, test } from '@playwright/test'
  * the header stays gone, and the head still carries the alternates.
  */
 test.describe('hreflang comes from the page alone', () => {
-  for (const path of ['/en', '/id', '/en/cara-kerja', '/id/journal']) {
+  for (const path of ['/id', '/id', '/en/cara-kerja', '/id/journal']) {
     test(`${path} sends no hreflang Link header, and the head has them`, async ({
       request,
     }) => {

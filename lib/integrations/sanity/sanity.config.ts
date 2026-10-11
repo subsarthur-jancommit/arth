@@ -32,7 +32,7 @@ import { schema } from './schemas'
  * document, and previewing the source language is the useful default. An
  * editor working in Indonesian can switch locale inside the previewed site.
  */
-const PREVIEW_LOCALE = 'en'
+const PREVIEW_LOCALE = 'id'
 
 function resolveHref(documentType?: string, slug?: string): string | undefined {
   switch (documentType) {

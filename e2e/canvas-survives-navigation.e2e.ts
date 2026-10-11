@@ -96,7 +96,7 @@ test.describe('the WebGL canvas survives a round trip', () => {
   test('/en is as dark after leaving and returning as it was fresh', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     // Past the entrance curtain, which is a full-screen panel of its own.
     await page.waitForTimeout(2500)
 
@@ -110,7 +110,7 @@ test.describe('the WebGL canvas survives a round trip', () => {
     await page.waitForURL('**/en/work')
     await page.waitForTimeout(2000)
 
-    await page.locator('a[href="/en"]').first().click({ force: true })
+    await page.locator('a[href="/id"]').first().click({ force: true })
     await page.waitForURL(/\/en$/)
     await page.waitForTimeout(2500)
     // The reader's own scroll is restored by the router; measure the same band.
@@ -132,13 +132,13 @@ test.describe('the WebGL canvas survives a round trip', () => {
   })
 
   test('the wash still draws after returning', async ({ page }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     await page.waitForTimeout(2500)
 
     await page.locator('a[href="/en/work"]').first().click({ force: true })
     await page.waitForURL('**/en/work')
     await page.waitForTimeout(2000)
-    await page.locator('a[href="/en"]').first().click({ force: true })
+    await page.locator('a[href="/id"]').first().click({ force: true })
     await page.waitForURL(/\/en$/)
     await page.waitForTimeout(2500)
     await page.evaluate(() => window.scrollTo(0, 0))

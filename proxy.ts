@@ -17,6 +17,7 @@ import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
 import { guessedDestination } from '@/lib/i18n/guessed-paths'
+import { publicLocaleRedirect } from '@/lib/i18n/public-locale-redirect'
 import { routing } from '@/lib/i18n/routing'
 import {
   type DocumentMediaType,
@@ -202,6 +203,16 @@ export function proxy(request: NextRequest) {
     }
   }
 
+  // English remains a supported Sanity field/preview locale, but the public
+  // site has not approved English as a visitor-facing language yet. Keep the
+  // URL shape stable while serving the Indonesian destination instead.
+  const indonesianPath = publicLocaleRedirect(request.nextUrl.pathname)
+  if (indonesianPath) {
+    const destination = request.nextUrl.clone()
+    destination.pathname = indonesianPath
+    return NextResponse.redirect(destination, 307)
+  }
+
   /*
    * A URL the reader guessed from a nav label, sent where it belongs.
    *
@@ -320,7 +331,7 @@ export function proxy(request: NextRequest) {
   // otherwise try to prefix it.
   const i18nResponse = handleI18nRouting(request)
 
-  // A locale redirect (`/` -> `/en`, or an unprefixed path being prefixed) is
+  // A locale redirect (`/` -> `/id`, or an unprefixed path being prefixed) is
   // not a page document. Attaching content-negotiation Vary to it would tell
   // caches to key a 307 on Accept, splitting the cache for no benefit — the
   // negotiation happens again on the followed URL anyway.

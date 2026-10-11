@@ -4,7 +4,12 @@ import {
   resolveSearchIndex,
   type SearchEntry,
 } from '@/lib/content/search-index'
-import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
+import {
+  isLocale,
+  PUBLISHED_LOCALES,
+  type Locale,
+  routing,
+} from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
 import {
@@ -39,7 +44,7 @@ import {
  */
 
 export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }))
+  return PUBLISHED_LOCALES.map((locale) => ({ locale }))
 }
 
 async function buildIndex(locale: Locale): Promise<SearchEntry[]> {

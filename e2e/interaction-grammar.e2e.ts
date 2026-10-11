@@ -130,7 +130,7 @@ test.describe('interaction grammar', () => {
      */
     test.setTimeout(90_000)
 
-    await page.goto('/en', { waitUntil: 'domcontentloaded' })
+    await page.goto('/id', { waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(600)
 
     const count = await page.locator('[data-press]').count()
@@ -199,7 +199,7 @@ test.describe('interaction grammar', () => {
      */
     test.setTimeout(90_000)
 
-    await page.goto('/en', { waitUntil: 'domcontentloaded' })
+    await page.goto('/id', { waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(600)
 
     // One real key press first: Chromium only grants `:focus-visible` to a
@@ -269,7 +269,7 @@ test.describe('interaction grammar', () => {
    * design wants, and this prints how many it did.
    */
   const EPIC_ROUTES = [
-    { path: '/en' },
+    { path: '/id' },
     { path: '/en/work' },
     { path: `/en/work/${FEATURED_WORK}` },
     /*
@@ -451,7 +451,7 @@ test.describe('interaction grammar', () => {
     const page = await context.newPage()
 
     try {
-      await page.goto('/en', { waitUntil: 'domcontentloaded' })
+      await page.goto('/id', { waitUntil: 'domcontentloaded' })
       await page.waitForTimeout(500)
 
       // Prove the emulation took before asserting anything about it. A

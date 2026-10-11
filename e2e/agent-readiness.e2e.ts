@@ -87,7 +87,7 @@ test.describe('agent-readable HTML', () => {
      * would say "no h1", which sends you looking at the page component. This
      * one names the actual failure.
      */
-    for (const path of ['/en', '/id']) {
+    for (const path of ['/id']) {
       const html = await (await request.get(path)).text()
 
       expect(
@@ -126,7 +126,7 @@ test.describe('agent-readable HTML', () => {
      *
      * `docs/stages/TAHAP-9.md` §1 carries the measurement.
      */
-    const html = await (await request.get('/en')).text()
+    const html = await (await request.get('/id')).text()
     expect(html).toContain('<h1')
     expect(readableText(html).length).toBeGreaterThanOrEqual(500)
 
@@ -134,7 +134,7 @@ test.describe('agent-readable HTML', () => {
     const page = await context.newPage()
 
     try {
-      const response = await page.goto('/en')
+      const response = await page.goto('/id')
       expect(response?.status()).toBe(200)
 
       // Present *and* exposed. The old test asserted the opposite of the
@@ -157,12 +157,12 @@ test.describe('Markdown content negotiation', () => {
   test('serves the homepage as Markdown with guidance and resource discovery', async ({
     request,
   }) => {
-    // '/en', not '/': with `localePrefix: 'always'` the bare root only ever
+    // '/id', not '/': with `localePrefix: 'always'` the bare root only ever
     // redirects, so negotiation happens on the locale home.
-    const htmlResponse = await request.get('/en', {
+    const htmlResponse = await request.get('/id', {
       headers: { Accept: 'text/html' },
     })
-    const response = await request.get('/en', {
+    const response = await request.get('/id', {
       headers: { Accept: 'text/markdown' },
     })
     const body = await response.text()
@@ -233,7 +233,7 @@ test.describe('Markdown content negotiation', () => {
   test('HEAD advertises the Markdown representation without sending a body', async ({
     request,
   }) => {
-    const response = await request.head('/en', {
+    const response = await request.head('/id', {
       headers: { Accept: 'text/markdown' },
     })
 
@@ -248,7 +248,7 @@ test.describe('Markdown content negotiation', () => {
   test('supports explicit Markdown aliases without an Accept header', async ({
     request,
   }) => {
-    // Aliases follow the localized routes: markdownPathForRoute('/en') is
+    // Aliases follow the localized routes: markdownPathForRoute('/id') is
     // '/en.md'. '/index.md' only ever existed for the unprefixed root.
     for (const path of [
       '/en.md',
@@ -361,6 +361,7 @@ test.describe('machine-readable discovery files', () => {
     const sitemapPaths = [...sitemapBody.matchAll(/<loc>([^<]+)<\/loc>/g)].map(
       (match) => new URL(match[1] ?? '').pathname
     )
+    expect(sitemapPaths.some((path) => path.startsWith('/en/'))).toBe(false)
     for (const locale of ['en', 'id']) {
       expect(sitemapPaths).not.toContain(`/${locale}/work`)
       expect(sitemapPaths).not.toContain(`/${locale}/journal`)

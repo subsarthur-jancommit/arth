@@ -70,17 +70,16 @@ describe('generatePageMetadata', () => {
     // `/studio` and `/llms.txt` carry no prefix and have no language
     // alternative to declare — the fallback is correct there, and only there.
     expect(openGraphOf(generatePageMetadata({ url: '/studio' })).locale).toBe(
-      'en_US'
+      'id_ID'
     )
   })
 
-  it('declares hreflang for both locales on a localized path', () => {
+  it('declares hreflang only for approved translations on a localized path', () => {
     const languages = generatePageMetadata({ url: '/id/cara-kerja' }).alternates
       ?.languages
     expect(languages).toMatchObject({
-      'en-US': '/en/cara-kerja',
       'id-ID': '/id/cara-kerja',
-      'x-default': '/en/cara-kerja',
+      'x-default': '/id/cara-kerja',
     })
   })
 })
