@@ -895,7 +895,7 @@ const HEADING_ROUTES = [
   '/en',
   '/id',
   '/en/journal',
-  '/en/studio',
+  '/en/cara-kerja',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
 ]
@@ -979,7 +979,7 @@ test.describe('the studio process is a held index', () => {
   test('the held index reports the step being read', async ({ page }) => {
     test.setTimeout(120_000)
     await page.setViewportSize({ width: 1280, height: 800 })
-    await page.goto('/en/studio')
+    await page.goto('/en/cara-kerja')
     await page.waitForTimeout(2600)
 
     const section = page.locator('[data-step-sequence]')
@@ -1033,7 +1033,7 @@ test.describe('the studio process is a held index', () => {
       }
     }
 
-    console.log(`HELD /en/studio step index held for ${Math.round(held)}px`)
+    console.log(`HELD /en/cara-kerja step index held for ${Math.round(held)}px`)
 
     expect(
       reported.size,
@@ -1045,7 +1045,7 @@ test.describe('the studio process is a held index', () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 })
-    await page.goto('/en/studio')
+    await page.goto('/en/cara-kerja')
     await page.waitForTimeout(2600)
 
     const opacities = await page.evaluate(() => {
@@ -1089,7 +1089,7 @@ test.describe('the studio process is a held index', () => {
  * sequence, which is the only place the question can be answered.
  */
 test.describe('the studio sequence is audited where it happens', () => {
-  for (const route of ['/en/studio', '/id/studio']) {
+  for (const route of ['/en/cara-kerja', '/id/cara-kerja']) {
     test(`${route} passes axe with a step receded`, async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 800 })
       await page.goto(route)

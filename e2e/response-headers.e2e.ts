@@ -191,7 +191,7 @@ test.describe('response headers', () => {
      * different question from whether the shell does, and this is the only
      * place that can ask it.
      */
-    for (const path of ['/en', '/id', '/en/work', '/id/studio']) {
+    for (const path of ['/en', '/id', '/en/work', '/id/cara-kerja']) {
       const html = await (await request.get(path)).text()
       expect(html, `${path} must carry meta robots`).toMatch(
         /<meta name="robots" content="[^"]*noindex/

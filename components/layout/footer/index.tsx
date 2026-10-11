@@ -202,7 +202,7 @@ export function Footer() {
               `e2e/site-reach.e2e.ts` reads.
             */}
             <li>
-              <IndexLink href="/studio">{tNav('studio')}</IndexLink>
+              <IndexLink href="/cara-kerja">{tNav('studio')}</IndexLink>
             </li>
             <li>
               <IndexLink href="/journal">{tJournal('title')}</IndexLink>

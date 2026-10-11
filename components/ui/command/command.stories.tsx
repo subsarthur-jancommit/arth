@@ -79,13 +79,13 @@ const entries: SearchEntry[] = [
     meta: '/work',
   },
   {
-    id: 'page:/studio',
+    id: 'page:/cara-kerja',
     kind: 'page',
     label: 'Studio',
     description:
       'How the studio scopes, decides and delivers, the practices it covers, and the colophon for this site.',
-    href: '/en/studio',
-    meta: '/studio',
+    href: '/en/cara-kerja',
+    meta: '/cara-kerja',
   },
   {
     id: 'page:/practice/consulting',

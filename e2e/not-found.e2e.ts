@@ -113,7 +113,7 @@ test.describe('branded 404', () => {
     const recovery = page.locator('#main-content')
     for (const [name, href] of [
       ['Work', '/en/work'],
-      ['Studio', '/en/studio'],
+      ['How we work', '/en/cara-kerja'],
       ['Journal', '/en/journal'],
     ] as const) {
       await expect(

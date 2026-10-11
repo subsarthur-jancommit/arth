@@ -127,7 +127,7 @@ const STORYBOOK_ENABLED =
  */
 const ROUTE_LINKS = [
   { href: '/work', labelKey: 'work' },
-  { href: '/studio', labelKey: 'studio' },
+  { href: '/cara-kerja', labelKey: 'studio' },
   { href: '/journal', labelKey: 'journal' },
 ] as const
 

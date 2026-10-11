@@ -51,7 +51,7 @@ export async function LocalizedNotFound() {
           <>
             <Link href="/work">{t('work')}</Link>
             {' · '}
-            <Link href="/studio">{t('studio')}</Link>
+            <Link href="/cara-kerja">{t('studio')}</Link>
             {' · '}
             <Link href="/journal">{t('journal')}</Link>
           </>

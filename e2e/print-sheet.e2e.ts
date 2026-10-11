@@ -14,7 +14,7 @@ import { FEATURED_WORK } from './fixtures'
 const A4 = { width: 794, height: 1123 }
 
 const ROUTES = [
-  '/en/studio',
+  '/en/cara-kerja',
   '/id/konstruksi',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,

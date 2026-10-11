@@ -125,7 +125,7 @@ test.describe('the phone menu', () => {
     const context = await browser.newContext({ javaScriptEnabled: false })
     const page = await context.newPage()
     try {
-      await page.goto('/en/studio', { waitUntil: 'load' })
+      await page.goto('/en/cara-kerja', { waitUntil: 'load' })
       await openMenu(page)
 
       const menu = menuOf(page)
@@ -140,7 +140,7 @@ test.describe('the phone menu', () => {
       )
 
       await expect(
-        menu.getByRole('link', { name: 'Studio', exact: true }),
+        menu.getByRole('link', { name: 'How we work', exact: true }),
         'the page the reader is on is not marked'
       ).toHaveAttribute('aria-current', 'page')
 
@@ -381,13 +381,13 @@ test.describe('the phone menu', () => {
      * resolved by id takes the first one in the tree.
      */
     await page.goto('/en', { waitUntil: 'networkidle' })
-    await page.locator('footer a[href="/en/studio"]').first().click()
-    await expect(page).toHaveURL(/\/en\/studio$/)
+    await page.locator('footer a[href="/en/cara-kerja"]').first().click()
+    await expect(page).toHaveURL(/\/en\/cara-kerja$/)
     await page.waitForLoadState('networkidle')
 
     await openMenu(page)
     await expect(
-      menuOf(page).getByRole('link', { name: 'Studio', exact: true })
+      menuOf(page).getByRole('link', { name: 'How we work', exact: true })
     ).toHaveAttribute('aria-current', 'page')
   })
 
@@ -514,7 +514,7 @@ test.describe('the same nav on desktop', () => {
     await expect(menuOf(page)).toBeVisible()
     // Each route once, by name — not a count, which `next dev` breaks with
     // its fourth, Storybook, link (found in review).
-    for (const name of ['Work', 'Studio', 'Journal']) {
+    for (const name of ['Work', 'How we work', 'Journal']) {
       await expect(
         page.getByRole('banner').getByRole('link', { name, exact: true })
       ).toHaveCount(1)

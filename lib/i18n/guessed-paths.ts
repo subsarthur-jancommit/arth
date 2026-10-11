@@ -37,9 +37,9 @@ import { isLocale } from './routing'
  *
  * ## What is deliberately absent
  *
- * `studio` is **not** in this table, and no longer needs to be: Tahap 24 made
- * it a real route, so it resolves rather than being redirected. It moved to
- * `REAL_SEGMENTS` below, which is where a guess must never shadow a page.
+ * `studio` remains a real legacy route that permanently redirects to
+ * `/cara-kerja`; both it and the destination are in `REAL_SEGMENTS` below so
+ * the guess table can never shadow either route.
  *
  * `practice` and `praktik` were here, pointing at a `#practice` anchor. They
  * are gone as of F1-03: the practice routes are retired, so `/en/practice`
@@ -89,7 +89,13 @@ const GUESSED_SEGMENTS = new Map([
  * name the same segment, and so `route-status.test.ts` can assert this list
  * stays a subset of the segments something actually answers.
  */
-export const REAL_SEGMENTS = new Set([...UNITS, 'work', 'studio', 'journal'])
+export const REAL_SEGMENTS = new Set([
+  ...UNITS,
+  'cara-kerja',
+  'studio',
+  'work',
+  'journal',
+])
 
 /** Every key the table answers to. Exported for the unit test. */
 export const GUESSED_KEYS = [...GUESSED_SEGMENTS.keys()]

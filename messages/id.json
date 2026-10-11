@@ -2,7 +2,7 @@
   "nav": {
     "primary": "Utama",
     "work": "Karya",
-    "studio": "Studio",
+    "studio": "Cara kami bekerja",
     "journal": "Jurnal",
     "contact": "Kontak",
     "storybook": "Storybook",
@@ -186,8 +186,8 @@
     "sideNote": "Isi sisi ini belum menjadi pernyataan Arthur. Kata-katanya akan ditulis dari sumber yang disetujui setelah tipe isi sisi tersedia."
   },
   "studio": {
-    "eyebrow": "Studio",
-    "title": "Studio",
+    "eyebrow": "Cara kerja",
+    "title": "Cara kami bekerja",
     "lead": "Arthur adalah payung atas tiga unit: Konstruksi, Teknologi, dan Peekabo, agency di antaranya. Tiap unit dibaca dari dua sisi, karena pekerjaan yang sama terlihat berbeda tergantung dari sisi mana Anda berdiri.",
     "facts": {
       "founded": "Berdiri",
@@ -199,7 +199,8 @@
       "languages": "Bahasa",
       "languagesValue": "Inggris, Bahasa Indonesia"
     },
-    "factsNote": "Nilai untuk didirikan, lokasi, dan tim adalah teks sementara, bukan fakta terverifikasi. Semuanya diganti oleh keterangan studio sendiri begitu tersedia.",
+    "factsNote": "Nilai untuk tahun berdiri, lokasi, dan tim adalah teks sementara, bukan fakta terverifikasi.",
+    "sampleNote": "Isi halaman ini—termasuk fakta, karya, proses, dan angka—adalah contoh, bukan pernyataan Arthur.",
     "statementEyebrow": "Cara kami memikirkannya",
     "statement": "Sebagian besar pekerjaan gagal sebelum ada yang menulis kode. Ia gagal di minggu ketika brief-nya masih lunak, ketika belum ada yang menyebut lantang keputusan mana yang benar-benar terbuka dan mana yang sudah ditutup, dan ketika ongkos salah belum pernah dituliskan. Jadi di situlah kami mulai. Kami membaca sistem yang sudah ada, menamai tukar-tambahnya, dan menaruh angka pada hal yang selama ini ditebak semua orang. Yang dibangun sesudah itu lebih kecil daripada yang diminta, dan ia bertahan lebih lama.",
     "evidenceEyebrow": "Karya yang dihasilkannya",
@@ -224,7 +225,7 @@
     },
     "capabilitiesSeenIn": "Terlihat dalam",
     "colophonEyebrow": "Kolofon",
-    "colophonNote": "Halaman ini satu-satunya bagian situs yang menjelaskan dirinya sendiri. Semua di bawah ini akurat.",
+    "colophonNote": "Rincian di bawah menggambarkan situs contoh ini. Rincian tersebut bukan klaim layanan atau rekam jejak Arthur.",
     "colophon": {
       "built": "Dibangun dengan",
       "builtValue": "Next.js di atas Satūs oleh darkroom.engineering, lisensi MIT",
@@ -235,8 +236,8 @@
       "access": "Aksesibilitas",
       "accessValue": "WCAG 2.2, diuji dengan axe di setiap rute"
     },
-    "closing": "Karyanya adalah argumennya. Mulai dari sana.",
-    "closingAction": "Lihat karyanya"
+    "closing": "Rincian cara kerja Arthur akan ditulis setelah pemilik menyetujui isinya.",
+    "closingAction": "Lihat unit Arthur"
   },
   "journal": {
     "readingTime": "{minutes} menit baca",

@@ -121,7 +121,7 @@ test.describe('a URL guessed from a nav label goes somewhere', () => {
  * in its place in the sweep below. A unit page offers two sibling units and
  * nothing else yet, which is why the floor this file asserts is what it is
  * rather than what that row measured.
- * | `/en/studio`           |         **1** |                     0 |
+ * | `/en/cara-kerja`           |         **1** |                     0 |
  * | `/en/journal`          |             3 |                     0 |
  * | `/en/journal/<slug>`   |         **1** |                     0 |
  * | 404                    |             4 |                     0 |
@@ -137,7 +137,7 @@ const HUMAN_ROUTES = [
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
   `/en/${UNITS[0]}`,
-  '/en/studio',
+  '/en/cara-kerja',
   '/en/journal',
   '/en/journal/scope-is-the-deliverable',
 ] as const
@@ -166,7 +166,7 @@ test.describe('every page offers a way onward', () => {
 
       /*
        * Not a dead end. This used to name the destinations — `/work`,
-       * `/studio`, `/journal` — which fixed the site's information
+       * `/cara-kerja`, `/journal` — which fixed the site's information
        * architecture; the fork removed that list (`docs/FORK.md`, step 5).
        */
       expect(
@@ -276,26 +276,26 @@ test.describe('every page offers a way onward', () => {
    * ## The defect this exists for, measured
    *
    * `site-reach`'s header assertion above matched hrefs by suffix, so
-   * `href="/studio"` satisfied "there is a header link to /studio" while
+   * `href="/cara-kerja"` satisfied "there is a header link to /cara-kerja" while
    * serving something else entirely. On the production build, before this:
    *
    * ```
    * curl -s localhost:3000/en | grep -o 'href="[^"]*studio[^"]*"'
    *   href="#studio"
-   *   href="/studio"          <- the footer's link to the studio page
-   * curl -s -o /dev/null -w '%{http_code}' localhost:3000/studio  ->  200
-   * curl -s localhost:3000/studio | grep -o '<title>[^<]*</title>'
+   *   href="/cara-kerja"          <- the footer's link to the studio page
+   * curl -s -o /dev/null -w '%{http_code}' localhost:3000/cara-kerja  ->  200
+   * curl -s localhost:3000/cara-kerja | grep -o '<title>[^<]*</title>'
    *   <title>Sanity Studio</title>
    * ```
    *
    * A reader who pressed "Studio" in the footer — the site's only route
    * navigation until this stage — landed on the CMS login. It had shipped
    * that way since Tahap 24, and `docs/stages/TAHAP-15.md` §1.3 had already
-   * written down that `/studio` was taken.
+   * written down that `/cara-kerja` was taken.
    *
    * ## Why the locale prefix is the thing asserted
    *
-   * The cause was not a typo. `lib/i18n/paths.ts` listed `/studio` as
+   * The cause was not a typo. `lib/i18n/paths.ts` listed `/cara-kerja` as
    * deliberately locale-free (it was Sanity Studio's base path), so
    * `components/ui/link` correctly declined to prefix it — and a correct
    * refusal to localize is indistinguishable, in the rendered href, from a
@@ -306,7 +306,7 @@ test.describe('every page offers a way onward', () => {
   const CHROME_MACHINE_HREFS =
     /^\/(llms\.txt|sitemap\.xml|robots\.txt|cms|api\/|agent-content)/
 
-  for (const route of ['/en', `/en/work/${FEATURED_WORK}`, '/id/studio']) {
+  for (const route of ['/en', `/en/work/${FEATURED_WORK}`, '/id/cara-kerja']) {
     test(`${route}: the chrome links to localized pages`, async ({ page }) => {
       await page.goto(route)
       await page.waitForLoadState('networkidle')
@@ -335,11 +335,16 @@ test.describe('every page offers a way onward', () => {
   test('Sanity Studio does not sit on a public page path', async ({
     request,
   }) => {
-    // The rename is the fix, so it is the thing asserted: `/studio` must be
-    // the studio page, and the CMS must be somewhere no page wants.
-    const studio = await request.get('/en/studio')
-    expect(studio.status()).toBe(200)
-    expect(await studio.text()).not.toContain('<title>Sanity Studio</title>')
+    // The old public URL permanently redirects to the work-method page.
+    const legacy = await request.get('/en/studio', { maxRedirects: 0 })
+    expect(legacy.status()).toBe(308)
+    expect(legacy.headers().location).toBe('/en/cara-kerja')
+
+    const workMethod = await request.get('/en/cara-kerja')
+    expect(workMethod.status()).toBe(200)
+    expect(await workMethod.text()).not.toContain(
+      '<title>Sanity Studio</title>'
+    )
 
     const cms = await request.get('/cms')
     expect(cms.status()).toBe(200)

@@ -66,6 +66,7 @@ describe('guessed paths', () => {
     expect(guessedDestination('/id/work')).toBeNull()
     // The machine view.
     expect(guessedDestination('/en/studio')).toBeNull()
+    expect(guessedDestination('/en/cara-kerja')).toBeNull()
     // Three segments: a real project page.
     expect(guessedDestination('/en/work/arus-balik')).toBeNull()
   })
@@ -81,6 +82,7 @@ describe('guessed paths', () => {
   it('does not redirect studio, which becomes a real route in Tahap 24', () => {
     // Stated as a test so the omission reads as a decision rather than a gap.
     expect(guessedDestination('/en/studio')).toBeNull()
+    expect(guessedDestination('/id/cara-kerja')).toBeNull()
     expect(guessedDestination('/id/studio')).toBeNull()
   })
 })

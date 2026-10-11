@@ -31,7 +31,7 @@ function alternates(path: string) {
 describe('routeAlternates', () => {
   it('is self-referential — canonical is the path passed in', () => {
     expect(alternates('/en').canonical).toBe('/en')
-    expect(alternates('/id/studio').canonical).toBe('/id/studio')
+    expect(alternates('/id/cara-kerja').canonical).toBe('/id/cara-kerja')
   })
 
   it('matches the URL the sitemap submits, for every advertised route', () => {
@@ -44,17 +44,17 @@ describe('routeAlternates', () => {
   })
 
   it('advertises every locale plus x-default, keyed by BCP 47 tag', () => {
-    const languages = alternates('/en/studio').languages
+    const languages = alternates('/en/cara-kerja').languages
 
     // BCP 47 tags, not the URL segment: hreflang is a language declaration,
     // and `en` and `en-US` are not interchangeable to a search engine.
     for (const locale of routing.locales) {
-      expect(languages?.[LOCALE_TAGS[locale]]).toBe(`/${locale}/studio`)
+      expect(languages?.[LOCALE_TAGS[locale]]).toBe(`/${locale}/cara-kerja`)
     }
 
     // Without x-default, engines guess which version to serve a visitor whose
     // language matches neither.
-    expect(languages?.['x-default']).toBe('/en/studio')
+    expect(languages?.['x-default']).toBe('/en/cara-kerja')
   })
 
   it('points every locale at the same template, not at itself', () => {
@@ -81,7 +81,7 @@ describe('routeAlternates', () => {
         'application/atom+xml'
       ]
     ).toEqual([{ url: '/id/journal/feed.xml', title: FEED_TITLES.id }])
-    expect(alternates('/en/studio').types?.['application/atom+xml']).toBe(
+    expect(alternates('/en/cara-kerja').types?.['application/atom+xml']).toBe(
       undefined
     )
   })

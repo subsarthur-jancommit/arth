@@ -100,34 +100,36 @@ describe('buildRoutesFromDocuments', () => {
     expect(buildRoutesFromDocuments('not an array')).toEqual([])
   })
 
-  it('drops a document slugged `studio` — the studio page owns that path', () => {
+  it('drops a document slugged `cara-kerja` — the work-method page owns that path', () => {
     /*
      * The reason changed in Tahap 38, so the comment does too.
      *
-     * `/studio` used to be Sanity Studio's base path, excluded by
-     * `RESERVED_PATHS` because it sits outside the catch-all and is never
-     * advertised. It is now the **public studio page**, so it is excluded by
+     * `/cara-kerja` is the **public work-method page**, so it is excluded by
      * `staticPaths` instead: `STATIC_ROUTE_TEMPLATES` carries the template,
      * and a CMS document may not shadow a route the site already serves.
-     * Same outcome, different guard — and asserting the outcome without the
-     * reason is how a test survives the removal of the thing it tested.
+     * Asserting the outcome without the reason is how a test survives the
+     * removal of the thing it tested.
      */
     const docs = [
       {
         _type: 'page',
-        title: 'Studio',
-        slug: { current: 'studio' },
+        title: 'Cara kami bekerja',
+        slug: { current: 'cara-kerja' },
         _updatedAt: '2026-01-01T00:00:00.000Z',
       },
     ]
 
     expect(
-      STATIC_ROUTE_TEMPLATES.some((route) => route.path === '/studio')
+      STATIC_ROUTE_TEMPLATES.some((route) => route.path === '/cara-kerja')
     ).toBe(true)
     // Advertised per locale, never as the bare template.
-    expect(STATIC_ROUTES.some((route) => route.path === '/studio')).toBe(false)
+    expect(STATIC_ROUTES.some((route) => route.path === '/cara-kerja')).toBe(
+      false
+    )
     expect(
-      buildRoutesFromDocuments(docs).some((route) => route.path === '/studio')
+      buildRoutesFromDocuments(docs).some(
+        (route) => route.path === '/cara-kerja'
+      )
     ).toBe(false)
   })
 

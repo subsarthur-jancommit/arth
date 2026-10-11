@@ -7,7 +7,7 @@ import { expect, test } from '@playwright/test'
  */
 for (const [path, name] of [
   ['/en/work', 'Work'],
-  ['/en/studio', 'Studio'],
+  ['/en/cara-kerja', 'How we work'],
   ['/id/journal', 'Jurnal'],
   ['/id/konstruksi', 'Konstruksi'],
 ] as const) {

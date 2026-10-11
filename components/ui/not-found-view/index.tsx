@@ -67,8 +67,8 @@ const DEFAULT_RECOVERY_LINKS = (
     </a>
     {' · '}
     {/* oxlint-disable-next-line react/forbid-elements, nextjs/no-html-link-for-pages -- as above */}
-    <a key="studio" href="/studio">
-      Studio
+    <a key="studio" href="/cara-kerja">
+      How we work
     </a>
     {' · '}
     {/* oxlint-disable-next-line react/forbid-elements, nextjs/no-html-link-for-pages -- as above */}

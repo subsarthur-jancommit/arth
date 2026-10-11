@@ -37,7 +37,7 @@ export interface LocalizedStaticRoute extends Omit<
 > {
   label: string
   description: string
-  /** The locale-free path this entry was expanded from (`/`, `/studio`). */
+  /** The locale-free path this entry was expanded from (`/`, `/cara-kerja`). */
   template: string
   locale: Locale
 }
@@ -154,11 +154,11 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
     priority: 0.6,
   },
   {
-    path: '/studio',
-    label: { en: 'Studio', id: 'Studio' },
+    path: '/cara-kerja',
+    label: { en: 'How we work', id: 'Cara kami bekerja' },
     description: {
-      en: 'How the work is scoped, decided and delivered, the units it runs through, and the colophon for this site.',
-      id: 'Bagaimana pekerjaan ditentukan lingkupnya, diputuskan, dan dikirim, unit yang menjalankannya, serta kolofon situs ini.',
+      en: 'Sample information about how Arthur works, pending owner review.',
+      id: 'Informasi contoh tentang cara Arthur bekerja, menunggu tinjauan pemilik.',
     },
     changeFrequency: 'monthly',
     priority: 0.7,
@@ -205,7 +205,7 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
 
 /**
  * Every static route, expanded across every locale — `/en`, `/id`,
- * `/en/studio`, `/id/studio`.
+ * `/en/cara-kerja`, `/id/cara-kerja`.
  *
  * This is what gets *advertised*: the sitemap, `/llms.txt`, and the
  * Markdown-representation lookup in `lib/seo/alternates.ts` all read

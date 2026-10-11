@@ -2,7 +2,7 @@
   "nav": {
     "primary": "Primary",
     "work": "Work",
-    "studio": "Studio",
+    "studio": "How we work",
     "journal": "Journal",
     "contact": "Contact",
     "storybook": "Storybook",
@@ -186,8 +186,8 @@
     "sideNote": "This side does not state Arthur's position yet. Its words will come from an approved source once the side content type exists."
   },
   "studio": {
-    "eyebrow": "Studio",
-    "title": "Studio",
+    "eyebrow": "How we work",
+    "title": "How we work",
     "lead": "Arthur is an umbrella over three units: Konstruksi, Teknologi, and Peekabo, the agency among them. Each unit is read from two sides, because the same work looks different depending on which side of it you stand.",
     "facts": {
       "founded": "Founded",
@@ -199,7 +199,8 @@
       "languages": "Languages",
       "languagesValue": "English, Bahasa Indonesia"
     },
-    "factsNote": "Founded, based and team are scaffolding values, not verified facts. They are replaced by the studio's own once it supplies them.",
+    "factsNote": "The founding year, location and team size are sample values, not verified facts.",
+    "sampleNote": "Everything on this page—including facts, work, process and figures—is sample material, not an Arthur statement.",
     "statementEyebrow": "How we think about it",
     "statement": "Most work fails before anyone writes code. It fails in the week where the brief is still soft, where nobody has said out loud which decisions are actually open and which are already made, and where the cost of being wrong has not been written down. So that is where we start. We read the system that exists, we name the trade-offs, and we put a number on the thing everyone is guessing at. What gets built after that is smaller than what was asked for, and it survives longer.",
     "evidenceEyebrow": "Work it produced",
@@ -224,7 +225,7 @@
     },
     "capabilitiesSeenIn": "Seen in",
     "colophonEyebrow": "Colophon",
-    "colophonNote": "This page is the only part of the site that describes itself. Everything below is accurate.",
+    "colophonNote": "The details below describe this sample site. They are not claims about Arthur's services or track record.",
     "colophon": {
       "built": "Built with",
       "builtValue": "Next.js on Satūs by darkroom.engineering, MIT licensed",
@@ -235,8 +236,8 @@
       "access": "Accessibility",
       "accessValue": "WCAG 2.2, tested with axe on every route"
     },
-    "closing": "The work is the argument. Start there.",
-    "closingAction": "See the work"
+    "closing": "Arthur's working method will be written after the owner approves the content.",
+    "closingAction": "See Arthur's units"
   },
   "journal": {
     "readingTime": "{minutes} min read",

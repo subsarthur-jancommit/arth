@@ -279,11 +279,11 @@ test.describe('interaction grammar', () => {
      * than contradict it: Tahap 52 marked the two moments §9.5 had listed
      * since Tahap 15 and found a third already shipping — `work-transport`,
      * which `ProjectCard` carries wherever it renders, the same accounting
-     * defect Tahap 50 found on `/studio`. The lesson was that an unmarked
+     * defect Tahap 50 found on `/cara-kerja`. The lesson was that an unmarked
      * moment is not an absent one.
      */
     { path: '/en/konstruksi' },
-    { path: '/en/studio' },
+    { path: '/en/cara-kerja' },
     { path: '/en/journal' },
     { path: '/en/journal/scope-is-the-deliverable' },
   ] as const

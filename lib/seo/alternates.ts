@@ -59,7 +59,7 @@ export function routeAlternates(path: string): Metadata['alternates'] {
 
   // hreflang. Derived from the path's own locale prefix rather than passed in,
   // so every caller gets it for free and none can forget — the same reason
-  // canonical lives here. Unlocalized routes (`/studio`, `/llms.txt`) have no
+  // canonical lives here. Unlocalized routes (`/llms.txt`) have no
   // prefix, `templateFromLocalizedPath` returns null, and they correctly
   // advertise no alternates.
   //

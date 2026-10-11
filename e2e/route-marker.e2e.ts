@@ -37,7 +37,7 @@ async function expectUnder(page: Page, name: string) {
 test.describe('the route marker stands under the current route', () => {
   test.use({ viewport: { width: 1440, height: 900 } })
 
-  test('under Work on /work, and under Studio once Studio is pressed', async ({
+  test('under Work on /work, and under How we work once pressed', async ({
     page,
   }) => {
     await page.goto('/en/work')
@@ -45,10 +45,10 @@ test.describe('the route marker stands under the current route', () => {
 
     await page
       .getByRole('navigation', { name: 'Primary' })
-      .getByRole('link', { name: 'Studio', exact: true })
+      .getByRole('link', { name: 'How we work', exact: true })
       .click()
-    await expect(page).toHaveURL(/\/en\/studio$/)
-    await expectUnder(page, 'Studio')
+    await expect(page).toHaveURL(/\/en\/cara-kerja$/)
+    await expectUnder(page, 'How we work')
   })
 
   test('gone where no route is current', async ({ page }) => {

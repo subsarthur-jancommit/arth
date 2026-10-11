@@ -19,16 +19,18 @@ test('the sitemap carries hreflang and honest dates', async ({ request }) => {
 
   expect(xml).toContain('xmlns:xhtml="http://www.w3.org/1999/xhtml"')
 
-  const studio = urlBlock(xml, '/en/studio')
+  const workMethod = urlBlock(xml, '/en/cara-kerja')
   for (const [tag, path] of [
-    ['en-US', '/en/studio'],
-    ['id-ID', '/id/studio'],
-    ['x-default', '/en/studio'],
+    ['en-US', '/en/cara-kerja'],
+    ['id-ID', '/id/cara-kerja'],
+    ['x-default', '/en/cara-kerja'],
   ] as const) {
-    expect(studio).toMatch(new RegExp(`hreflang="${tag}" href="[^"]*${path}"`))
+    expect(workMethod).toMatch(
+      new RegExp(`hreflang="${tag}" href="[^"]*${path}"`)
+    )
   }
   // A page that lists nothing has no date to claim.
-  expect(studio).not.toContain('<lastmod>')
+  expect(workMethod).not.toContain('<lastmod>')
 
   // The journal index is as new as its newest entry, not as new as the build.
   const journal = urlBlock(xml, '/en/journal')

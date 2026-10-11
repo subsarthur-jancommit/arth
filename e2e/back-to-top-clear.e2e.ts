@@ -41,7 +41,7 @@ test.describe('the chip leaves the last line alone', () => {
     hasTouch: true,
   })
 
-  for (const path of ['/en', '/id', '/en/studio']) {
+  for (const path of ['/en', '/id', '/en/cara-kerja']) {
     test(path, async ({ page }) => {
       await page.goto(path)
       await page.evaluate(() => document.fonts.ready)

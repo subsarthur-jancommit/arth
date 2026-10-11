@@ -250,7 +250,12 @@ test.describe('Markdown content negotiation', () => {
   }) => {
     // Aliases follow the localized routes: markdownPathForRoute('/en') is
     // '/en.md'. '/index.md' only ever existed for the unprefixed root.
-    for (const path of ['/en.md', '/en/studio.md', '/id.md', '/id/studio.md']) {
+    for (const path of [
+      '/en.md',
+      '/en/cara-kerja.md',
+      '/id.md',
+      '/id/cara-kerja.md',
+    ]) {
       const response = await request.get(path)
       expect(response.status(), path).toBe(200)
       expect(response.headers()['content-type'], path).toBe(

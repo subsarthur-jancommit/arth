@@ -184,7 +184,7 @@ const ROUTES: { path: string }[] = [
    * which is a scroll scrub and therefore needs ScrollTrigger. No three.js:
    * nothing on this route has asked for a scene.
    */
-  { path: '/en/studio' },
+  { path: '/en/cara-kerja' },
   /*
    * The journal, index and entry. Both opt into `gsap` for one thing only:
    * `TextReveal` on their `h1`, which is the entrance vocabulary every route
