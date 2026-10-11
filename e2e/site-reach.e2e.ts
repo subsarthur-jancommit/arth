@@ -52,7 +52,7 @@ import { FEATURED_WORK } from './fixtures'
  * not the three practices renamed.
  */
 const GUESSED: [typed: string, lands: string][] = [
-  ['/en/contact', '/en#contact'],
+  ['/en/contact', '/id#contact'],
   ['/id/kontak', '/id#contact'],
   ['/id/karya', '/id/work'],
 ]

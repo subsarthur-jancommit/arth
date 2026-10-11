@@ -13,7 +13,7 @@ import { BRAND_NAME } from '../lib/brand'
  */
 async function expectUnder(page: Page, name: string) {
   const link = page
-    .getByRole('navigation', { name: 'Primary' })
+    .getByRole('navigation', { name: 'Utama' })
     .getByRole('link', { name, exact: true })
   // After a client navigation the last page's header is still in the
   // document, hidden; only the shown one counts.
@@ -37,31 +37,31 @@ async function expectUnder(page: Page, name: string) {
 test.describe('the route marker stands under the current route', () => {
   test.use({ viewport: { width: 1440, height: 900 } })
 
-  test('under Work on /work, and under How we work once pressed', async ({
+  test('under Konstruksi on its unit route, then under Cara kami bekerja', async ({
     page,
   }) => {
-    await page.goto('/en/work')
-    await expectUnder(page, 'Work')
+    await page.goto('/id/konstruksi')
+    await expectUnder(page, 'Konstruksi')
 
     await page
-      .getByRole('navigation', { name: 'Primary' })
-      .getByRole('link', { name: 'How we work', exact: true })
+      .getByRole('navigation', { name: 'Utama' })
+      .getByRole('link', { name: 'Cara kami bekerja', exact: true })
       .click()
-    await expect(page).toHaveURL(/\/en\/cara-kerja$/)
-    await expectUnder(page, 'How we work')
+    await expect(page).toHaveURL(/\/id\/cara-kerja$/)
+    await expectUnder(page, 'Cara kami bekerja')
   })
 
   test('gone where no route is current', async ({ page }) => {
     // From a placed rule, so its absence on arrival is not a page that never
     // ran its script.
-    await page.goto('/en/work')
-    await expectUnder(page, 'Work')
+    await page.goto('/id/konstruksi')
+    await expectUnder(page, 'Konstruksi')
 
     await page
       .getByRole('banner')
       .getByRole('link', { name: `${BRAND_NAME} — home` })
       .click()
-    await expect(page).toHaveURL(/\/en\/?$/)
+    await expect(page).toHaveURL(/\/id\/?$/)
     /*
      * The shown header's rule, found through the header itself: a rule that
      * stands under nothing is scaled to nothing, so it has no box, and

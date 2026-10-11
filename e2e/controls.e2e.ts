@@ -43,7 +43,7 @@ const JOURNAL_ENTRY = 'scope-is-the-deliverable'
 
 const ROUTES = [
   '/id',
-  '/id',
+  '/id/cara-kerja',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
   '/en/konstruksi',

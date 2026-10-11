@@ -22,7 +22,7 @@ import { axeTags } from './axe-tags'
  *
  * ## Found the way a reader finds it
  *
- * The menu is located as the **visible navigation named "Primary"**, not by
+ * The menu is located as the **visible navigation named "Utama"**, not by
  * an id. The first version of this file used the id of a second, sheet-only
  * nav, and against the build before the change every test failed with
  * "element not found" — red because the id did not exist yet, which says
@@ -53,7 +53,7 @@ import { axeTags } from './axe-tags'
 const DISPLAY_MIN_PX = 44
 
 /** The open menu: the visible primary navigation. */
-const menuOf = (page: Page) => page.getByRole('navigation', { name: 'Primary' })
+const menuOf = (page: Page) => page.getByRole('navigation', { name: 'Utama' })
 
 async function openMenu(page: Page) {
   await page.getByRole('button', { name: 'Menu' }).click()
@@ -125,7 +125,7 @@ test.describe('the phone menu', () => {
     const context = await browser.newContext({ javaScriptEnabled: false })
     const page = await context.newPage()
     try {
-      await page.goto('/en/cara-kerja', { waitUntil: 'load' })
+      await page.goto('/id/cara-kerja', { waitUntil: 'load' })
       await openMenu(page)
 
       const menu = menuOf(page)
@@ -143,7 +143,7 @@ test.describe('the phone menu', () => {
       )
 
       await expect(
-        menu.getByRole('link', { name: 'How we work', exact: true }),
+        menu.getByRole('link', { name: 'Cara kami bekerja', exact: true }),
         'the page the reader is on is not marked'
       ).toHaveAttribute('aria-current', 'page')
 
@@ -156,7 +156,7 @@ test.describe('the phone menu', () => {
        */
       await settle(page)
       await konstruksi.click()
-      await expect(page).toHaveURL(/\/en\/konstruksi$/)
+      await expect(page).toHaveURL(/\/id\/konstruksi$/)
     } finally {
       await context.close()
     }
@@ -187,7 +187,7 @@ test.describe('the phone menu', () => {
     ).toBeGreaterThanOrEqual(viewport.height - 1)
     expect(sheet.width).toBeGreaterThanOrEqual(viewport.width - 1)
     // MENU is still on screen, and it is now the way out.
-    await expect(page.getByRole('button', { name: 'Close' })).toBeInViewport()
+    await expect(page.getByRole('button', { name: 'Tutup' })).toBeInViewport()
   })
 
   test('Escape from inside the sheet closes it and focus comes back to MENU', async ({
@@ -226,7 +226,7 @@ test.describe('the phone menu', () => {
       return {
         inMenu:
           nav !== null &&
-          nav.getAttribute('aria-label') === 'Primary' &&
+          nav.getAttribute('aria-label') === 'Utama' &&
           nav.getClientRects().length > 0,
         text: active.textContent?.trim() ?? '',
         onScreen:
@@ -384,13 +384,13 @@ test.describe('the phone menu', () => {
      * resolved by id takes the first one in the tree.
      */
     await page.goto('/id', { waitUntil: 'networkidle' })
-    await page.locator('footer a[href="/en/cara-kerja"]').first().click()
-    await expect(page).toHaveURL(/\/en\/cara-kerja$/)
+    await page.locator('footer a[href="/id/cara-kerja"]').first().click()
+    await expect(page).toHaveURL(/\/id\/cara-kerja$/)
     await page.waitForLoadState('networkidle')
 
     await openMenu(page)
     await expect(
-      menuOf(page).getByRole('link', { name: 'How we work', exact: true })
+      menuOf(page).getByRole('link', { name: 'Cara kami bekerja', exact: true })
     ).toHaveAttribute('aria-current', 'page')
   })
 
@@ -404,7 +404,7 @@ test.describe('the phone menu', () => {
     await menuOf(page)
       .getByRole('link', { name: 'Teknologi', exact: true })
       .click()
-    await expect(page).toHaveURL(/\/en\/teknologi$/)
+    await expect(page).toHaveURL(/\/id\/teknologi$/)
     await expect(menuOf(page)).toBeHidden()
 
     /*
@@ -414,7 +414,7 @@ test.describe('the phone menu', () => {
      * of this test checking only the destination, where it could not fail.
      */
     await page.goBack()
-    await expect(page).toHaveURL(/\/en$/)
+    await expect(page).toHaveURL(/\/id$/)
     await expect(menuOf(page)).toBeHidden()
     await expect(page.getByRole('button', { name: 'Menu' })).toBeVisible()
   })
@@ -514,7 +514,7 @@ test.describe('the same nav on desktop', () => {
      * `interaction-grammar`, `journey`, `motion` and `navigation-landing`
      * each walked into one.
      */
-    await page.goto('/en/work', { waitUntil: 'networkidle' })
+    await page.goto('/id/konstruksi', { waitUntil: 'networkidle' })
 
     await expect(menuOf(page)).toBeVisible()
     // Each route once, by name — not a count, which `next dev` breaks with
@@ -523,8 +523,8 @@ test.describe('the same nav on desktop', () => {
       'Konstruksi',
       'Teknologi',
       'Peekabo',
-      'How we work',
-      'Contact',
+      'Cara kami bekerja',
+      'Kontak',
     ]) {
       await expect(
         page.getByRole('banner').getByRole('link', { name, exact: true })

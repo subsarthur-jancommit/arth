@@ -6,7 +6,7 @@ import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
 import { SIDES, type Unit, UNITS } from '../lib/content/units'
-import { routing } from '../lib/i18n/routing'
+import { PUBLISHED_LOCALES, routing } from '../lib/i18n/routing'
 import { axeTags } from './axe-tags'
 
 /**
@@ -141,8 +141,13 @@ function toRoutes(relativePagePath: string): string[] {
     .reduce<Expansion[]>(
       (paths, segment) => {
         if (segment === '[locale]') {
+          // The English root redirects to /id until its copy is approved.
+          // Its redirect is asserted in default-language.e2e.ts; the route
+          // sweep must not count /en as an independently rendered page.
+          const locales =
+            staticSegments.length === 1 ? PUBLISHED_LOCALES : routing.locales
           return paths.flatMap((entry) =>
-            routing.locales.map((locale) => ({
+            locales.map((locale) => ({
               ...entry,
               path: `${entry.path}/${locale}`,
             }))

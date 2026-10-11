@@ -207,7 +207,9 @@ export function Footer() {
         </section>
       </div>
 
-      <p className={cn('caption', s.rights)}>{t('rights', { year: YEAR })}</p>
+      <p className={cn('caption', s.rights)}>
+        {t('rights', { year: YEAR, name: SITE_NAME })}
+      </p>
     </footer>
   )
 }

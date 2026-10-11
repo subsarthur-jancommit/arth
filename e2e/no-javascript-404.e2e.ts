@@ -9,7 +9,7 @@ import { BRAND_NAME } from '../lib/brand'
  * records why), so a reader without JavaScript got the loading bars and
  * nothing else — measured on the live site on 2026-10-05
  * (`docs/HANDOFF.md` §4.8, A3). `components/ui/route-loading` now carries a
- * `<noscript>` with one sentence in each language and both front doors.
+ * `<noscript>` with an Indonesian explanation and one working front door.
  */
 test.describe('a 404 without JavaScript offers the front doors', () => {
   test.use({ javaScriptEnabled: false })
@@ -29,16 +29,12 @@ test.describe('a 404 without JavaScript offers the front doors', () => {
     test(path, async ({ page }) => {
       await page.goto(path)
 
-      const english = page.getByRole('link', {
-        name: `${BRAND_NAME} — English`,
+      const home = page.getByRole('link', {
+        name: `${BRAND_NAME} — Beranda`,
       })
-      const indonesian = page.getByRole('link', {
-        name: `${BRAND_NAME} — Bahasa Indonesia`,
-      })
-      await expect(english).toBeVisible()
-      await expect(indonesian).toBeVisible()
-      await expect(english).toHaveAttribute('href', '/id')
-      await expect(indonesian).toHaveAttribute('href', '/id')
+      await expect(home).toBeVisible()
+      await expect(home).toHaveAttribute('href', '/id')
+      await expect(page.locator('noscript a[href="/en"]')).toHaveCount(0)
     })
   }
 })

@@ -26,7 +26,7 @@ test.describe('response headers', () => {
   test('statically prerendered pages are cacheable', async ({ request }) => {
     const paths = [
       '/id',
-      '/id',
+      `/id/${UNITS[0]}`,
       /*
        * The unit pages. `/en/work` and `/id/work` are **not** here any
        * more, and that is a deliberate move rather than an omission.
@@ -88,7 +88,7 @@ test.describe('response headers', () => {
     // than hardcoded, so the test cannot pass against a slug that no longer
     // exists.
     const sitemap = await (await request.get('/sitemap.xml')).text()
-    const path = sitemap.match(/<loc>[^<]*?(\/en\/work\/[^<]+)<\/loc>/)?.[1]
+    const path = sitemap.match(/<loc>[^<]*?(\/id\/work\/[^<]+)<\/loc>/)?.[1]
     test.skip(!path, 'no published project in the sitemap to check')
 
     const response = await request.get(path ?? '')
@@ -154,7 +154,7 @@ test.describe('response headers', () => {
   }) => {
     const paths = [
       '/id',
-      '/id',
+      '/id/cara-kerja',
       '/en/work',
       '/sitemap.xml',
       '/robots.txt',
@@ -191,7 +191,12 @@ test.describe('response headers', () => {
      * different question from whether the shell does, and this is the only
      * place that can ask it.
      */
-    for (const path of ['/id', '/id', '/en/work', '/id/cara-kerja']) {
+    for (const path of [
+      '/id',
+      '/id/konstruksi',
+      '/en/work',
+      '/id/cara-kerja',
+    ]) {
       const html = await (await request.get(path)).text()
       expect(html, `${path} must carry meta robots`).toMatch(
         /<meta name="robots" content="[^"]*noindex/

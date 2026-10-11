@@ -61,7 +61,7 @@ const GUTTER_ROUTES = [
   '/en/cara-kerja',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
-  '/id',
+  '/id/cara-kerja',
 ]
 
 /*

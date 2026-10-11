@@ -82,16 +82,20 @@ async function renderWithoutJavaScript(browser: Browser, path: string) {
 }
 
 test.describe('readable without JavaScript', () => {
-  for (const locale of routing.locales) {
-    test(`/${locale} renders its content server-side`, async ({ browser }) => {
-      const rendered = await renderWithoutJavaScript(browser, `/${locale}`)
+  // /en itself redirects to /id until English home copy is approved. Keep
+  // English preview coverage on an actual English page, not that redirect.
+  for (const path of ['/id', '/en/cara-kerja']) {
+    test(`${path} renders its content server-side`, async ({ browser }) => {
+      const rendered = await renderWithoutJavaScript(browser, path)
 
       expect(rendered.chars, `only rendered: ${rendered.text}`).toBeGreaterThan(
         MIN_CHARS
       )
       expect(rendered.headings, 'exactly one h1').toBe(1)
     })
+  }
 
+  for (const locale of routing.locales) {
     test(`/${locale}/work lists work server-side`, async ({ browser }) => {
       const rendered = await renderWithoutJavaScript(browser, `/${locale}/work`)
 
@@ -139,7 +143,7 @@ test.describe('readable without JavaScript', () => {
     // Take a real slug from the sitemap rather than hardcoding one, so the
     // test does not silently pass against a dataset that no longer has it.
     const sitemap = await (await request.get('/sitemap.xml')).text()
-    const match = sitemap.match(/<loc>[^<]*?(\/en\/work\/[^<]+)<\/loc>/)
+    const match = sitemap.match(/<loc>[^<]*?(\/id\/work\/[^<]+)<\/loc>/)
     test.skip(!match, 'no published project in the sitemap to check')
 
     const rendered = await renderWithoutJavaScript(browser, match?.[1] ?? '')

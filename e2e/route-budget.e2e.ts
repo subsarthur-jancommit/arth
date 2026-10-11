@@ -92,17 +92,8 @@ import { expect, test } from '@playwright/test'
 
 /** Byte totals are uncompressed response bodies, not transfer size. */
 const ROUTES: { path: string }[] = [
-  // The page with a scene, and the one that animates.
-  { path: '/id' },
-  /*
-   * The Indonesian home page, which was **not measured at all** until Tahap
-   * 22 added it.
-   *
-   * It is the same page and carries the same 1899KB and the same two
-   * libraries, so a regression there would have been invisible: every route
-   * in this list was an `/en` one, and a bilingual site whose gate only reads
-   * one language is checking half of what it ships.
-   */
+  // The Indonesian home page carries the scene and entrance animation.
+  // The English root redirects here; English subroutes remain previewable.
   { path: '/id' },
   /*
    * The catalogue and a project page opt into `gsap` as of Tahap 23.

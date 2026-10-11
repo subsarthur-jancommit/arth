@@ -230,7 +230,9 @@ test.describe('the entrance never becomes the obstacle', () => {
       return !el || el.getBoundingClientRect().bottom <= 0
     })
 
-    const link = page.getByRole('link', { name: /work/i }).first()
+    const link = page
+      .getByRole('link', { name: 'Konstruksi', exact: true })
+      .first()
     await link.click()
 
     const overlapped = await page.evaluate(() => {

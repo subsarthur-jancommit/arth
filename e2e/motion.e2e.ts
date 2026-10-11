@@ -203,11 +203,11 @@ test.describe('motion', () => {
   }
 
   test.describe('under prefers-reduced-motion', () => {
-    for (const locale of routing.locales) {
-      test(`/${locale} shows every line of the headline`, async ({
-        browser,
-      }) => {
-        const { context, page } = await reducedMotionPage(browser, `/${locale}`)
+    // /en redirects to /id; keep the English reduced-motion case on a
+    // rendered preview page, not a second visit to the Indonesian home.
+    for (const path of ['/id', '/en/cara-kerja']) {
+      test(`${path} shows every line of the headline`, async ({ browser }) => {
+        const { context, page } = await reducedMotionPage(browser, path)
 
         try {
           const heading = page.locator('h1')
@@ -219,7 +219,7 @@ test.describe('motion', () => {
           const clipped = await clippedOutOfView(page)
           expect(
             clipped,
-            `/${locale}: text parked outside its own mask: ${clipped.join(', ')}`
+            `${path}: text parked outside its own mask: ${clipped.join(', ')}`
           ).toEqual([])
         } finally {
           await context.close()
@@ -281,7 +281,7 @@ test.describe('motion', () => {
         // And navigation still works without it — the overlay is decoration,
         // never a step in the journey.
         await page
-          .locator(`a[href="/en/work/${FEATURED_WORK}"]`)
+          .locator(`a[href="/id/work/${FEATURED_WORK}"]`)
           .first()
           .click()
         await page.waitForURL(`**/work/${FEATURED_WORK}`)
@@ -448,7 +448,7 @@ test.describe('motion', () => {
      * Same assertion as the catalogue test, from a place where it used to
      * fail.
      */
-    const morph = await captureMorph(page, '/id', `/en/work/${FEATURED_WORK}`)
+    const morph = await captureMorph(page, '/id', `/id/work/${FEATURED_WORK}`)
 
     expect(morph.calls, 'no view transition was started').toBeGreaterThan(0)
 
@@ -690,7 +690,7 @@ test.describe('motion', () => {
     const morph = await captureMorph(
       page,
       '/id',
-      '/en/konstruksi',
+      '/id/konstruksi',
       async (p) => {
         // Open the disclosure, then let its panel finish arriving so the link
         // is not still moving when it is clicked.
@@ -833,7 +833,7 @@ test.describe('motion', () => {
     const overlay = page.locator(OVERLAY)
     await expect(overlay).toHaveAttribute('data-state', 'idle')
 
-    await page.locator(`a[href="/en/work/${FEATURED_WORK}"]`).first().click()
+    await page.locator(`a[href="/id/work/${FEATURED_WORK}"]`).first().click()
     await page.waitForURL(`**/work/${FEATURED_WORK}`)
 
     // The terminal state is the assertion. Whatever happens in between — a
@@ -893,7 +893,7 @@ test.describe('motion', () => {
  */
 const HEADING_ROUTES = [
   '/id',
-  '/id',
+  '/id/cara-kerja',
   '/en/journal',
   '/en/cara-kerja',
   '/en/work',

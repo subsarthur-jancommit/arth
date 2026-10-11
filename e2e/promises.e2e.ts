@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
-import { routing } from '../lib/i18n/routing'
+/** `/en` redirects to `/id`; an English inner page remains a direct preview. */
+const LOCALE_SURFACES = ['/id', '/en/cara-kerja'] as const
 
 /**
  * The site keeps the promises it makes about itself.
@@ -53,9 +54,9 @@ test.describe('URLs the site tells agents to visit', () => {
 })
 
 test.describe('the skip link', () => {
-  for (const locale of routing.locales) {
-    test(`/${locale}: moves focus into main`, async ({ page }) => {
-      await page.goto(`/${locale}`, { waitUntil: 'networkidle' })
+  for (const path of LOCALE_SURFACES) {
+    test(`${path}: moves focus into main`, async ({ page }) => {
+      await page.goto(path, { waitUntil: 'networkidle' })
 
       await page.keyboard.press('Tab')
       const focused = await page.evaluate(
@@ -101,7 +102,11 @@ test.describe('locale parity', () => {
      * regression to one shared string must.
      */
     const read = async (path: string) => {
-      const html = await (await request.get(path)).text()
+      const response = await request.get(path, { maxRedirects: 0 })
+      expect(response.status(), `${path} redirected instead of rendering`).toBe(
+        200
+      )
+      const html = await response.text()
 
       const meta = html.match(/<meta name="description" content="([^"]*)"/)?.[1]
 
@@ -120,8 +125,10 @@ test.describe('locale parity', () => {
       }
     }
 
-    const en = await read('/id')
-    const id = await read('/id')
+    // English has no approved root landing page, but its direct inner route
+    // remains available for preview. Compare the same page in both locales.
+    const en = await read('/en/cara-kerja')
+    const id = await read('/id/cara-kerja')
 
     expect(en.meta, 'no meta description on /en').toBeTruthy()
     expect(en.description, 'no Organization description on /en').toBeTruthy()
@@ -141,7 +148,10 @@ test.describe('locale parity', () => {
       const html = await (await request.get(path)).text()
       return html.match(/"@id":"([^"]*#organization)"/)?.[1]
     }
-    expect(await organizationId('/id')).toBe(await organizationId('/id'))
+    const englishId = await organizationId('/en/cara-kerja')
+    const indonesianId = await organizationId('/id/cara-kerja')
+    expect(englishId).toBeTruthy()
+    expect(englishId).toBe(indonesianId)
   })
 })
 
@@ -176,11 +186,13 @@ test.describe('the site does not assert what it does not know', () => {
     })
   }
 
-  for (const locale of routing.locales) {
-    test(`the ${locale} JSON-LD publishes no reserved-TLD address`, async ({
+  for (const path of LOCALE_SURFACES) {
+    test(`${path} JSON-LD publishes no reserved-TLD address`, async ({
       request,
     }) => {
-      const html = await (await request.get(`/${locale}`)).text()
+      const response = await request.get(path, { maxRedirects: 0 })
+      expect(response.status(), `${path} redirected`).toBe(200)
+      const html = await response.text()
       const blocks = [
         ...html.matchAll(
           /<script type="application\/ld\+json">([\s\S]*?)<\/script>/g
@@ -202,34 +214,33 @@ test.describe('the site does not assert what it does not know', () => {
    * half-filled settings document the flag read false, the note went unshown,
    * and the fallback paragraphs shipped as if the studio had written them.
    */
-  for (const locale of routing.locales) {
-    test(`${locale} labels fallback prose as fallback`, async ({ page }) => {
-      await page.goto(`/${locale}`)
-      await page.waitForLoadState('networkidle')
+  // This statement block belongs to the Indonesian home. The English root
+  // redirects there, and the direct English preview above is a different page.
+  test('/id labels fallback prose as fallback', async ({ page }) => {
+    await page.goto('/id')
+    await page.waitForLoadState('networkidle')
 
-      const shown = await page.evaluate(() => {
-        const note = document.querySelector('[data-placeholder-note]')
-        const statement = document.querySelector('[data-statement]')
-        return {
-          hasNote: note !== null,
-          fromFallback:
-            statement?.getAttribute('data-statement') === 'fallback',
-          foundStatement: statement !== null,
-        }
-      })
-
-      // Anti-vacuum: the statement block must exist for the claim to mean
-      // anything.
-      expect(shown.foundStatement, 'no statement block on the page').toBe(true)
-
-      if (shown.fromFallback) {
-        expect(
-          shown.hasNote,
-          'the page shows fallback prose without saying so'
-        ).toBe(true)
+    const shown = await page.evaluate(() => {
+      const note = document.querySelector('[data-placeholder-note]')
+      const statement = document.querySelector('[data-statement]')
+      return {
+        hasNote: note !== null,
+        fromFallback: statement?.getAttribute('data-statement') === 'fallback',
+        foundStatement: statement !== null,
       }
     })
-  }
+
+    // Anti-vacuum: the statement block must exist for the claim to mean
+    // anything.
+    expect(shown.foundStatement, 'no statement block on the page').toBe(true)
+
+    if (shown.fromFallback) {
+      expect(
+        shown.hasNote,
+        'the page shows fallback prose without saying so'
+      ).toBe(true)
+    }
+  })
 
   /*
    * A 308 still answers 200 once the client follows it, which is why the

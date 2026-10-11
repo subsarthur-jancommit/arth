@@ -248,20 +248,23 @@ test.describe('Markdown content negotiation', () => {
   test('supports explicit Markdown aliases without an Accept header', async ({
     request,
   }) => {
-    // Aliases follow the localized routes: markdownPathForRoute('/id') is
-    // '/en.md'. '/index.md' only ever existed for the unprefixed root.
-    for (const path of [
-      '/en.md',
-      '/en/cara-kerja.md',
-      '/id.md',
-      '/id/cara-kerja.md',
-    ]) {
+    // Only approved Indonesian routes have public Markdown mirrors.
+    // markdownPathForRoute('/id') is '/id.md'; English previews are not
+    // advertised as public documents until their copy is approved.
+    for (const path of ['/id.md', '/id/cara-kerja.md']) {
       const response = await request.get(path)
       expect(response.status(), path).toBe(200)
       expect(response.headers()['content-type'], path).toBe(
         'text/markdown; charset=utf-8'
       )
       expect(await response.text(), path).toContain(`| ${SITE.name}`)
+    }
+
+    for (const path of ['/en.md', '/en/cara-kerja.md']) {
+      const response = await request.get(path, { maxRedirects: 0 })
+      expect(response.status(), `${path} should not publish English copy`).toBe(
+        404
+      )
     }
   })
 

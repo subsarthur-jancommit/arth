@@ -18,12 +18,12 @@ Prompting_. Prosedur per PR mengikat di
 
 ## Keputusan pemilik yang berlaku
 
-| Keputusan          | Isi                                                                                        |
-| ------------------ | ------------------------------------------------------------------------------------------ |
-| K1, K2             | Bahasa bawaan Indonesia, `/` → `/id`, Inggris menyusul, `/en` tanpa terjemahan 307 → `/id` |
-| K3, K4, K6, K7, K8 | Berlaku sementara pada bawaannya; tidak memblokir                                          |
-| **K5**             | **Belum diputuskan.** Paket yang membutuhkannya berhenti dan bertanya. Pertama kali: F2-01 |
-| K9                 | Belum diputuskan; jatuh tempo sebelum noindex dilepas di F5-05                             |
+| Keputusan          | Isi                                                                                                                                                                                      |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| K1, K2             | Bahasa bawaan Indonesia, `/` → `/id`, Inggris menyusul, `/en` tanpa terjemahan 307 → `/id`                                                                                               |
+| K3, K4, K6, K7, K8 | Berlaku sementara pada bawaannya; tidak memblokir                                                                                                                                        |
+| **K5**             | **Belum diputuskan.** Email/alamat contoh hanya dummy; kanal nyata dan waktu balas belum dipilih. F2-01 boleh memakai dummy ber-NOTE; hentikan F3-09/F5-06 bila membutuhkan kanal nyata. |
+| K9                 | Belum diputuskan; jatuh tempo sebelum noindex dilepas di F5-05                                                                                                                           |
 
 Urutan paket pertama diubah pemilik dari dokumen Tahap 2: **F0-01 lebih dulu,
 baru F0-07**, karena `robots.txt` produksi sedang mengizinkan semua perayap AI
@@ -31,24 +31,29 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 
 ## Paket
 
-| Paket                                       | PR  | SHA merge | Status           | Dilewati / ditunda                                                                                              |
-| ------------------------------------------- | --- | --------- | ---------------- | --------------------------------------------------------------------------------------------------------------- |
-| F0-01 Noindex selama dummy                  | #12 | `2491472` | **Selesai**      | Pengecualian domain dibangun tapi daftarnya kosong (lihat U3); lokasinya pindah dari `proxy.ts` (U4)            |
-| F0-07 Dokumen repo diselaraskan             | #13 | `45f220b` | **Selesai**      | FORK.md tidak disunting (U1); `ROADMAP.md` dan `docs/stages/` tidak disentuh (U8)                               |
-| F1-01 Merek Arthur dari satu sumber         | #14 | `a052ace` | **Selesai**      | Prosa `SITE` dan `home-fallback` ikut dibereskan di F1-02 (U11)                                                 |
-| F1-02 Tiga unit menggantikan praktik        | #14 | `a052ace` | **Selesai**      | Medan Sanity masih bernama `practice` (U12); `?practice=` → `?unit=` tanpa pengalih (U13)                       |
-| F1-03 Rute unit                             | #14 | `a052ace` | **Selesai**      | Halaman CMS pindah ke `/halaman/<slug>` (U14); tiga gerbang e2e melemah (U15)                                   |
-| F1-04 Rute sisi                             | #16 | —         | **Dalam PR**     | E2E lokal tidak dijalankan; deploy dan uji produksi ditunda atas instruksi pemilik                              |
-| F1-05 Cara kami bekerja menggantikan studio | —   | —         | **Dalam branch** | CI dan e2e dilewati atas instruksi pemilik; isi halaman tetap ditandai contoh hingga ditinjau pemilik           |
-| F1-06 Navigasi Arthur                       | —   | —         | **Dalam branch** | CI dan e2e dilewati atas instruksi pemilik; `/work` dan `/journal` tetap hidup tetapi tidak dipromosikan        |
-| F1-07 Bahasa bawaan dan segmen URL          | —   | —         | **Dalam branch** | CI dan e2e dilewati; EN tidak diindeks atau ditawarkan; usulan perubahan prosedur §3 langkah 9 menunggu pemilik |
-| F0-02 Uji terbit menampilkan isi baru       | —   | —         | Belum mulai      | Bergantung F0-06                                                                                                |
-| F0-03 Token produksi hanya Viewer           | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                                                 |
-| F0-04 Token dev dicabut                     | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                                                    |
-| F0-05 Ruleset cabang `main`                 | —   | —         | Menunggu pemilik | Tindakan dasbor. Terakhir diukur `gh api …/rules/branches/main` → `[]`, belum aktif                             |
-| F0-06 Dataset `ci` terpisah                 | —   | —         | Menunggu pemilik | Tindakan dasbor; memblokir F0-02 dan F2-09                                                                      |
+| Paket                                       | PR  | SHA merge | Status           | Dilewati / ditunda                                                                                                                                                                                            |
+| ------------------------------------------- | --- | --------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F0-01 Noindex selama dummy                  | #12 | `2491472` | **Selesai**      | Pengecualian domain dibangun tapi daftarnya kosong (U3); lokasinya pindah dari `proxy.ts` (U4)                                                                                                                |
+| F0-07 Dokumen repo diselaraskan             | #13 | `45f220b` | **Selesai**      | FORK.md tidak disunting (U1); `ROADMAP.md` dan `docs/stages/` tidak disentuh (U8)                                                                                                                             |
+| F1-01 Merek Arthur dari satu sumber         | #14 | `a052ace` | **Selesai**      | Prosa `SITE` dan `home-fallback` ikut dibereskan di F1-02 (U11)                                                                                                                                               |
+| F1-02 Tiga unit menggantikan praktik        | #14 | `a052ace` | **Selesai**      | Medan Sanity masih bernama `practice` (U12); `?practice=` → `?unit=` tanpa pengalih (U13)                                                                                                                     |
+| F1-03 Rute unit                             | #14 | `a052ace` | **Selesai**      | Halaman CMS pindah ke `/halaman/<slug>` (U14); tiga gerbang e2e melemah (U15)                                                                                                                                 |
+| F1-04 Rute sisi                             | #16 | —         | **Dalam PR**     | `ci` dan `e2e` yang terpicu sebelumnya hijau pada `513aa6c`; pratinjau head baru menunggu tinjauan pemilik                                                                                                    |
+| F1-05 Cara kami bekerja menggantikan studio | —   | —         | **Dalam branch** | Isi lama tetap berlabel contoh; branch ini diselaraskan dengan F1-04. PR ditunda karena instruksi pemilik menghindari seluruh e2e                                                                             |
+| F1-06 Navigasi Arthur                       | —   | —         | **Dalam branch** | Branch diselaraskan dengan F1-05; footer © memakai nama merek dari satu sumber; `/work` dan `/journal` tidak dipromosikan; spesifikasi e2e diperbarui tetapi tidak dijalankan; PR ditunda selama e2e dilarang |
+| F1-07 Bahasa bawaan dan segmen URL          | —   | —         | **Dalam branch** | Branch diselaraskan dengan F1-06; `/` dan `/en` menuju `/id`, EN tidak dipromosikan atau diindeks; PR ditunda selama e2e dilarang                                                                             |
+| F1-08 Kamus gerak dan nama momen            | —   | —         | **Dalam branch** | Spesifikasi saja; implementasi tujuh momen tetap untuk F3/F4                                                                                                                                                  |
+| F2-01 Pengaturan situs                      | —   | —         | **Dalam branch** | NOTE: `kontak@arth.invalid` dan alamat contoh hanya dummy; ganti sebelum kontak diterbitkan. K5 belum diputuskan; migrasi Sanity menunggu izin §6                                                             |
+| F0-02 Uji terbit menampilkan isi baru       | —   | —         | Belum mulai      | Bergantung F0-06                                                                                                                                                                                              |
+| F0-03 Token produksi hanya Viewer           | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                                                                                                                                               |
+| F0-04 Token dev dicabut                     | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                                                                                                                                                  |
+| F0-05 Ruleset cabang `main`                 | —   | —         | Menunggu pemilik | Tindakan dasbor. Terakhir diukur `gh api …/rules/branches/main` → `[]`, belum aktif                                                                                                                           |
+| F0-06 Dataset `ci` terpisah                 | —   | —         | Menunggu pemilik | Tindakan dasbor; memblokir F0-02 dan F2-09                                                                                                                                                                    |
 
-F1-08 belum mulai; lihat Backlog.
+F1-05, F1-06, dan F1-07 telah dipisah ke branch paket masing-masing;
+F1-08 dan F2-01 masih ada pada branch lanjutan lama dan belum memiliki PR
+per paket. Checks dari PR lain bukan validasi bagi branch baru. Paket
+berikutnya lihat Backlog.
 
 **F1-01, F1-02 dan F1-03 berada di satu PR**, dan itu penyimpangan dari "satu
 PR per paket" yang disebut terang-terangan di sini dan di deskripsi PR-nya.
@@ -105,18 +110,16 @@ produksi sesudah merge" sebetulnya sudah terbukti jalan. **Pemilik melarang
 menyunting FORK.md**, karena F0-07 memakainya sebagai sumber kebenaran. Dicatat
 saja.
 
-**U2 — uji asap `/` → `/id` perlu penyelarasan prosedur.** `docs/DEPLOYMENT.md`
-§3 dan §6 diperbarui dalam F1-07. `PROSEDUR-KERJA.md` §3 langkah 9 tetap
-mengharapkan `/en`; sesuai §7, usulan kepada pemilik adalah mengganti harapan
-itu menjadi `/id` dan menambahkan `/en` → `/id` 307. Dokumen prosedur tidak
-diubah oleh agen. Verifikasi produksi masih menunggu pemilik; tidak dilakukan
-dalam paket ini.
+**U2 — ekspektasi uji asap prosedur diselaraskan dalam PR dokumentasi
+gerbang.** `PROSEDUR-KERJA.md` kini mengharapkan `/` → `/id`, `/en` → `/id`
+(307), dan `/id` 200. `docs/DEPLOYMENT.md` diperbarui dalam F1-07 sesuai
+keputusan pemilik.
 
 F1-07 mengubah bawaan aplikasi ke Indonesia, mematikan deteksi bahasa
 peramban, mengalihkan `/en` ke `/id`, memakai `id` sebagai fallback GROQ,
-menghilangkan switcher bahasa sampai Inggris disetujui, dan mengeluarkan hanya
-halaman Indonesia dari sitemap serta hreflang. Ini baru diverifikasi secara
-lokal; tidak menyatakan hasil produksi.
+menyembunyikan switcher bahasa sampai Inggris disetujui, dan mengeluarkan
+hanya halaman Indonesia dari sitemap serta hreflang. Pemeriksaan lokal lulus;
+verifikasi produksi menunggu F1-07 masuk `main`.
 
 **U3 — daftar `INDEXABLE_HOSTS` kosong.** F0-01 membangun mekanisme
 pengecualian domain, tapi daftarnya kosong karena K4 (domain akhir) belum

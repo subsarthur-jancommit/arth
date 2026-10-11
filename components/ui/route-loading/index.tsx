@@ -28,11 +28,10 @@ import s from './route-loading.module.css'
  * (`e2e/site-reach.e2e.ts` records the two fixes that were tried and failed).
  * Measured on the live site on 2026-10-05, that reader got three grey bars and
  * nothing to press (`docs/HANDOFF.md` §4.8, A3). The `<noscript>` block below
- * is what they get now: one sentence in each language and the two front
- * doors. A browser running scripts never builds it.
- *
- * Both languages, because this fallback is static and knows no locale; the
- * links name their own.
+ * is what they get now: one sentence and the Indonesian front door. A
+ * browser running scripts never builds it. The English root redirects to
+ * `/id` until English copy is approved, so naming it as a second entrance
+ * would promise a language choice the site does not yet offer.
  *
  * Plain anchors, not `components/ui/link`. That component reads the router's
  * pathname, and a fallback that must prerender as part of a dynamic route's
@@ -64,7 +63,7 @@ export function RouteLoading() {
 }
 
 /**
- * The two links a streamed 404 must retain when JavaScript never runs.
+ * The public home link a streamed 404 must retain without JavaScript.
  *
  * F1-04's `[unit]/[side]` route is more specific than the locale catch-all,
  * so an invalid pair reaches that page rather than its `loading.tsx`. Keeping
@@ -76,21 +75,14 @@ export function NoScriptFrontDoors() {
   return (
     <noscript>
       <div className={s.noscript}>
-        <p className={s.note}>This page needs JavaScript to finish loading.</p>
         <p className={s.note} lang="id">
-          Halaman ini butuh JavaScript untuk selesai dimuat.
+          Halaman ini belum selesai dimuat tanpa JavaScript.
         </p>
         <ul className={s.doors}>
-          <li>
-            {/* oxlint-disable-next-line react/forbid-elements, nextjs/no-html-link-for-pages -- no-JS fallback inside a prerendered shell; see the note above */}
-            <a href="/en" className={s.door}>
-              {BRAND_NAME} — English
-            </a>
-          </li>
           <li lang="id">
             {/* oxlint-disable-next-line react/forbid-elements, nextjs/no-html-link-for-pages -- no-JS fallback inside a prerendered shell; see the note above */}
             <a href="/id" className={s.door}>
-              {BRAND_NAME} — Bahasa Indonesia
+              {BRAND_NAME} — Beranda
             </a>
           </li>
         </ul>

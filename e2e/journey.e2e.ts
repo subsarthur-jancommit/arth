@@ -158,7 +158,7 @@ test.describe('a reader moving through the site', () => {
     // the exact navigation Tahap 15b measured landing at 1522.
     await page.locator('#unit summary').first().click()
     await page.waitForTimeout(700)
-    await page.locator(`a[href="/en/${first}"]`).first().click()
+    await page.locator(`a[href="/id/${first}"]`).first().click()
     await page.waitForURL(`**/${first}`)
     const hop1 = await resting(page)
     assertOpenedAtTop(hop1, 'hop 1 home → unit')
@@ -170,7 +170,7 @@ test.describe('a reader moving through the site', () => {
     // Hop 2 — a unit to the next unit, through the sibling links the unit
     // page carries. Same component on both ends, which is where a leaked
     // transition name would do the most damage.
-    await page.locator(`a[href="/en/${second}"]`).first().click()
+    await page.locator(`a[href="/id/${second}"]`).first().click()
     await page.waitForURL(`**/${second}`)
     const hop2 = await resting(page)
     assertOpenedAtTop(hop2, 'hop 2 unit → next unit')
@@ -192,7 +192,7 @@ test.describe('a reader moving through the site', () => {
     // Hop 4 — back again, to the home page, where the reader had scrolled a
     // long way down. Losing that position is the defect this hop watches.
     await page.goBack()
-    await page.waitForURL('**/en')
+    await page.waitForURL('**/id')
     const hop4 = await resting(page)
     assertSettled(hop4, 'hop 4 back to home')
     expect(
@@ -209,7 +209,7 @@ test.describe('a reader moving through the site', () => {
     // Hop 6 — the same navigation as hop 2, six hops later. If any state
     // leaked along the way, this is where it shows: same assertions, and they
     // have to pass identically.
-    await page.locator(`a[href="/en/${second}"]`).first().click()
+    await page.locator(`a[href="/id/${second}"]`).first().click()
     await page.waitForURL(`**/${second}`)
     const hop6 = await resting(page)
     assertOpenedAtTop(hop6, 'hop 6 (repeat of hop 2)')

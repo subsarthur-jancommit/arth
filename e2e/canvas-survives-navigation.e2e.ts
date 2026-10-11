@@ -93,7 +93,7 @@ test.describe('the WebGL canvas survives a round trip', () => {
     'Reads a WebGL2 context directly; the defect is a context-lifetime one and does not vary by engine.'
   )
 
-  test('/en is as dark after leaving and returning as it was fresh', async ({
+  test('/id is as dark after leaving and returning as it was fresh', async ({
     page,
   }) => {
     await page.goto('/id', { waitUntil: 'networkidle' })
@@ -106,12 +106,17 @@ test.describe('the WebGL canvas survives a round trip', () => {
       'a fresh load already had a dead canvas, so this run proves nothing'
     ).toEqual([])
 
-    await page.locator('a[href="/en/work"]').first().click({ force: true })
-    await page.waitForURL('**/en/work')
+    await page
+      .getByRole('navigation', { name: 'Utama' })
+      .getByRole('link', { name: 'Konstruksi', exact: true })
+      .click({ force: true })
+    await page.waitForURL('**/id/konstruksi')
     await page.waitForTimeout(2000)
 
-    await page.locator('a[href="/id"]').first().click({ force: true })
-    await page.waitForURL(/\/en$/)
+    await page.getByRole('banner').locator('a[href="/id"]').click({
+      force: true,
+    })
+    await page.waitForURL(/\/id$/)
     await page.waitForTimeout(2500)
     // The reader's own scroll is restored by the router; measure the same band.
     await page.evaluate(() => window.scrollTo(0, 0))
@@ -135,11 +140,16 @@ test.describe('the WebGL canvas survives a round trip', () => {
     await page.goto('/id', { waitUntil: 'networkidle' })
     await page.waitForTimeout(2500)
 
-    await page.locator('a[href="/en/work"]').first().click({ force: true })
-    await page.waitForURL('**/en/work')
+    await page
+      .getByRole('navigation', { name: 'Utama' })
+      .getByRole('link', { name: 'Konstruksi', exact: true })
+      .click({ force: true })
+    await page.waitForURL('**/id/konstruksi')
     await page.waitForTimeout(2000)
-    await page.locator('a[href="/id"]').first().click({ force: true })
-    await page.waitForURL(/\/en$/)
+    await page.getByRole('banner').locator('a[href="/id"]').click({
+      force: true,
+    })
+    await page.waitForURL(/\/id$/)
     await page.waitForTimeout(2500)
     await page.evaluate(() => window.scrollTo(0, 0))
     await page.waitForTimeout(500)

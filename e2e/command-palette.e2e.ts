@@ -39,11 +39,11 @@ async function openWithShortcut(page: Page) {
 }
 
 test.describe('the search palette', () => {
-  for (const locale of ['en', 'id'] as const) {
-    test(`/${locale}: the button and the shortcut both open it`, async ({
+  for (const path of ['/en/cara-kerja', '/id'] as const) {
+    test(`${path}: the button and the shortcut both open it`, async ({
       page,
     }) => {
-      await page.goto(`/${locale}`)
+      await page.goto(path)
       await page.waitForTimeout(1200)
 
       const trigger = page.locator('[data-search-trigger]')
@@ -175,7 +175,7 @@ test.describe('the search palette', () => {
       'focus did not land in the search field when the palette opened'
     ).toBe('combobox')
 
-    await page.keyboard.type('journal')
+    await page.keyboard.type('konstruksi')
     await page.waitForTimeout(400)
     await page.keyboard.press('ArrowDown')
     await page.waitForTimeout(200)
@@ -220,13 +220,13 @@ test.describe('the search palette', () => {
     expect(
       new URL(page.url()).pathname,
       'Enter on the only result did not navigate to it'
-    ).toBe('/en/work/arus-balik')
+    ).toBe('/id/work/arus-balik')
     await expect(page.locator('[role="dialog"]')).toBeHidden()
   })
 
-  for (const locale of ['en', 'id'] as const) {
-    test(`/${locale}: axe is clean with the palette open`, async ({ page }) => {
-      await page.goto(`/${locale}`)
+  for (const path of ['/en/cara-kerja', '/id'] as const) {
+    test(`${path}: axe is clean with the palette open`, async ({ page }) => {
+      await page.goto(path)
       await page.waitForTimeout(1200)
       await page.locator('[data-search-trigger]').click()
       await page.waitForSelector('[data-search-row]')
