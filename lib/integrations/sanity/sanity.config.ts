@@ -37,9 +37,16 @@ import { schema } from './schemas'
 const PREVIEW_LOCALE = 'id'
 
 // The legacy type stays registered only so existing production content can be
-// recovered during the planned migration; neither singleton is a new-document
-// destination in the Studio navigation.
-const SINGLETON_TYPES = new Set(['siteSettings', 'studioSettings'])
+// recovered during the planned migration. New singleton documents are exposed
+// through fixed entries below, never through a generic create list.
+const SINGLETON_TYPES = new Set(['siteSettings', 'studioSettings', 'howWeWork'])
+const ARTHUR_HIERARCHY_TYPES = new Set(['unit', 'side', 'bab', 'offer'])
+const SUPPORTING_CONTENT_TYPES = new Set(['sequence', 'faq', 'page'])
+const MANAGED_TYPES = new Set([
+  ...SINGLETON_TYPES,
+  ...ARTHUR_HIERARCHY_TYPES,
+  ...SUPPORTING_CONTENT_TYPES,
+])
 
 const structure: StructureResolver = (S) =>
   S.list()
@@ -54,9 +61,57 @@ const structure: StructureResolver = (S) =>
             .documentId('siteSettings')
             .title('Pengaturan Arthur')
         ),
+      S.listItem()
+        .title('Cara kami bekerja')
+        .child(
+          S.document()
+            .schemaType('howWeWork')
+            .documentId('howWeWork')
+            .title('Cara kami bekerja')
+        ),
+      S.divider(),
+      S.listItem()
+        .title('Struktur offer')
+        .child(
+          S.list()
+            .title('Struktur offer')
+            .items([
+              S.listItem().title('1. Unit').child(S.documentTypeList('unit')),
+              S.listItem().title('2. Sisi').child(S.documentTypeList('side')),
+              S.listItem().title('3. Bab').child(S.documentTypeList('bab')),
+              S.listItem().title('4. Offer').child(S.documentTypeList('offer')),
+              S.divider(),
+              S.listItem()
+                .title('Perlu Anda')
+                .child(
+                  S.documentList()
+                    .title('Perlu Anda')
+                    .schemaType('offer')
+                    .filter('_type == $type && statusTinjauan == $status')
+                    .params({ type: 'offer', status: 'perlu-anda' })
+                ),
+            ])
+        ),
+      S.listItem()
+        .title('Isi pendukung')
+        .child(
+          S.list()
+            .title('Isi pendukung')
+            .items([
+              S.listItem()
+                .title('Rangkaian tiga unit')
+                .child(S.documentTypeList('sequence')),
+              S.listItem()
+                .title('Tanya jawab')
+                .child(S.documentTypeList('faq')),
+              S.listItem()
+                .title('Halaman tetap')
+                .child(S.documentTypeList('page')),
+            ])
+        ),
       S.divider(),
       ...S.documentTypeListItems().filter(
-        (item) => !SINGLETON_TYPES.has(item.getId() ?? '')
+        (item) => !MANAGED_TYPES.has(item.getId() ?? '')
       ),
     ])
 
@@ -66,7 +121,7 @@ function resolveHref(documentType?: string, slug?: string): string | undefined {
     // starter page, so a `home` document previews at `/en/home` like any other
     // slug.
     case 'page':
-      return slug ? `/${PREVIEW_LOCALE}/${slug}` : undefined
+      return slug ? `/${PREVIEW_LOCALE}/halaman/${slug}` : undefined
     case 'project':
       return slug ? `/${PREVIEW_LOCALE}/work/${slug}` : undefined
     default:
@@ -112,14 +167,14 @@ export default projectId && dataset
                 filter: `_type == "project" && slug.current == $slug`,
               },
               {
-                route: '/:locale/:slug',
+                route: '/:locale/halaman/:slug',
                 filter: `_type == "page" && slug.current == $slug`,
               },
             ]),
             locations: {
               page: defineLocations({
                 select: {
-                  title: 'title',
+                  title: 'coalesce(judul[_key == "id"][0].value, title)',
                   slug: 'slug.current',
                 },
                 resolve: (doc) => ({

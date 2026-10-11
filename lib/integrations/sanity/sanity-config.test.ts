@@ -34,7 +34,7 @@ describe('sanity.config.ts locale wiring', () => {
 
     // Every page is served under a locale prefix. A route without `:locale`
     // never matches, and Presentation quietly loses its document mapping.
-    for (const route of ['/:locale/:slug', '/:locale/work/:slug']) {
+    for (const route of ['/:locale/halaman/:slug', '/:locale/work/:slug']) {
       expect(source, `missing Presentation route ${route}`).toContain(
         `route: '${route}'`
       )
@@ -88,7 +88,20 @@ describe('sanity.config.ts singleton structure', () => {
     expect(source).toContain("schemaType('siteSettings')")
     expect(source).toContain("documentId('siteSettings')")
     expect(source).toContain('S.documentTypeListItems()')
-    expect(source).toContain('SINGLETON_TYPES.has')
+    expect(source).toContain('MANAGED_TYPES.has')
     expect(source).toContain('structureTool({ structure })')
+  })
+
+  it('orders Arthur content and exposes the owner review list', async () => {
+    const source = await readConfig()
+
+    for (const type of ['unit', 'side', 'bab', 'offer']) {
+      expect(source).toContain(`S.documentTypeList('${type}')`)
+    }
+
+    expect(source).toContain("title('Perlu Anda')")
+    expect(source).toContain("status: 'perlu-anda'")
+    expect(source).toContain("schemaType('howWeWork')")
+    expect(source).toContain("documentId('howWeWork')")
   })
 })
