@@ -41,6 +41,10 @@ interface ContactBlockProps {
   eyebrow: ReactNode
   title: ReactNode
   email: string
+  address: string
+  addressHeading: ReactNode
+  addressNote?: ReactNode | undefined
+  addressIsPlaceholder?: boolean | undefined
   /** Screen-reader label for the mail link — "Email {name}", not "click here". */
   emailLabel: string
   socials: readonly { label: string; url: string }[]
@@ -77,6 +81,10 @@ export function ContactBlock({
   eyebrow,
   title,
   email,
+  address,
+  addressHeading,
+  addressNote,
+  addressIsPlaceholder = false,
   emailLabel,
   socials,
   socialsHeading,
@@ -143,6 +151,18 @@ export function ContactBlock({
               {note}
             </p>
           )}
+
+          <div className={s.address}>
+            <h3 className={cn('caption', s.addressHeading)}>
+              {addressHeading}
+            </h3>
+            <p className={cn('caption', s.addressText)}>{address}</p>
+            {addressIsPlaceholder && addressNote && (
+              <p data-placeholder-note className={cn('caption', s.note)}>
+                {addressNote}
+              </p>
+            )}
+          </div>
 
           {socials.length > 0 && (
             <div className={s.socials}>

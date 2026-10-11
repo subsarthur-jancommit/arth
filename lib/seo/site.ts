@@ -109,11 +109,11 @@ export const BASE_URL = APP_BASE_URL.replace(/\/+$/, '')
 /*
  * ## Placeholders are marked, not hidden
  *
- * The studio has not supplied contact details, a founding year, or profile
- * URLs yet. Rather than invent them, the fields that need a real answer are
- * either omitted or use the `.example` TLD (RFC 2606 — reserved, never
- * resolves, so a placeholder can never accidentally reach a stranger). That
- * matches `lib/content/home-fallback.ts`, which uses the same address.
+ * The studio has not supplied a founding year or profile URLs yet. Rather
+ * than invent them, those fields are omitted. Human-facing contact surfaces
+ * use a reserved `.invalid` address and label it as a placeholder; this file
+ * never publishes that address to machines. Legacy `.example` values are
+ * also rejected by `lib/content/home-fallback.ts`.
  *
  * `docs/PANDUAN-STUDIO.md` §6 lists exactly which of these the studio has to
  * hand over before launch.
@@ -127,7 +127,10 @@ export const SITE: SiteFacts = {
     en: 'Arthur is an umbrella over three units: Konstruksi, Teknologi, and Peekabo, the agency among them. Each unit is read from two sides.',
     id: 'Arthur adalah payung atas tiga unit: Konstruksi, Teknologi, dan Peekabo, agency di antaranya. Tiap unit dibaca dari dua sisi.',
   },
-  areaServed: { en: 'Worldwide', id: 'Seluruh dunia' },
+  areaServed: {
+    en: 'Subang, Purwakarta, and Bandung',
+    id: 'Subang, Purwakarta, dan Bandung',
+  },
   /*
    * One entry per unit, and `lib/content/units.test.ts` enforces the
    * arithmetic: this list must not advertise a different number of things
@@ -175,11 +178,10 @@ export const SITE: SiteFacts = {
   /*
    * No email, on purpose — Tahap 35.
    *
-   * This carried `studio@arth.example` with a TODO beside it. `.example` is
-   * RFC 2606's reserved TLD: it is guaranteed never to resolve, which makes
-   * it a fine placeholder for a person to look at and a fabricated fact for a
-   * machine to record. It reached `schema.org/Organization.email` on every
-   * page, plus `/en/ai` and `/id/ai`.
+   * The old `studio@arth.example` fallback was a fine human placeholder but
+   * a fabricated fact when it reached `schema.org/Organization.email` on
+   * every page. The human surfaces now use `kontak@arth.invalid`, clearly
+   * marked as temporary; the reserved address stays out of machine output.
    *
    * Its consumer guards on its absence (`lib/seo/schemas.ts:139`; the
    * `/ai` machine view did too until Tahap 84 removed it), so leaving it
@@ -191,7 +193,8 @@ export const SITE: SiteFacts = {
    * `docs/stages/TAHAP-35.md` §3.1 is where that split is argued.
    *
    * TODO(studio): the real address goes here, and the gate in
-   * `e2e/promises.e2e.ts` keeps `.example` from coming back with it.
+   * `e2e/promises.e2e.ts` keeps reserved placeholder domains out of machine
+   * output.
    */
   // Deliberately empty. `sameAs` asserts "these profiles are the same entity";
   // a guessed handle asserts it about someone else's account.

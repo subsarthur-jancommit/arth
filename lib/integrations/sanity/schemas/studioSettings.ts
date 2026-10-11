@@ -1,57 +1,45 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
 /**
- * The studio's own copy and contact details — a singleton.
+ * The legacy site singleton, retained read-only until its production document
+ * is copied to `siteSettings` through the documented migration procedure.
  *
- * Everything the site says about itself lives here rather than in
- * `messages/*.json`. The split is deliberate and worth keeping straight:
- *
- * - `messages/` holds **interface** text (nav labels, button copy). It ships
- *   with the code, changes when the code changes, and is typed.
- * - This document holds **editorial** text (the statement, the contact line).
- *   The studio must be able to reword it without a deploy.
- *
- * Putting editorial copy in `messages/` is the mistake that forces a developer
- * into every wording change.
+ * Removing a schema while documents of that type remain makes their content
+ * uneditable and obscures the recovery path. The frontend continues to read
+ * this shape as a fallback, so this definition intentionally remains in the
+ * schema but is not offered as a Studio navigation item or a new document.
  */
 export const studioSettings = defineType({
   name: 'studioSettings',
-  title: 'Studio',
+  title: 'Studio lama (arsip)',
   type: 'document',
+  readOnly: true,
   fields: [
     defineField({
       name: 'name',
-      title: 'Studio name',
+      title: 'Studio name (legacy)',
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
-
     defineField({
       name: 'headline',
-      title: 'Hero headline',
+      title: 'Hero headline (legacy)',
       type: 'internationalizedArrayString',
-      description:
-        'One line. It is the first thing a visitor reads and the page’s only <h1>.',
       validation: (Rule) => Rule.required(),
     }),
-
     defineField({
       name: 'subline',
-      title: 'Hero subline',
+      title: 'Hero subline (legacy)',
       type: 'internationalizedArrayText',
-      description: 'One sentence. A hero is not a paragraph.',
     }),
-
     defineField({
       name: 'statement',
-      title: 'Studio statement',
+      title: 'Studio statement (legacy)',
       type: 'internationalizedArrayRichText',
-      description: 'The About / Philosophy section.',
     }),
-
     defineField({
       name: 'portrait',
-      title: 'Portrait',
+      title: 'Portrait (legacy)',
       type: 'image',
       options: { hotspot: true },
       fields: [
@@ -63,17 +51,15 @@ export const studioSettings = defineType({
         }),
       ],
     }),
-
     defineField({
       name: 'email',
-      title: 'Contact email',
+      title: 'Contact email (legacy)',
       type: 'string',
       validation: (Rule) => Rule.email(),
     }),
-
     defineField({
       name: 'socials',
-      title: 'Social links',
+      title: 'Social links (legacy)',
       type: 'array',
       of: [
         defineArrayMember({
@@ -96,20 +82,19 @@ export const studioSettings = defineType({
         }),
       ],
     }),
-
     defineField({
       name: 'metadata',
-      title: 'Default SEO',
+      title: 'Default SEO (legacy)',
       type: 'metadata',
-      description:
-        'Fallback metadata for pages that declare none of their own.',
     }),
   ],
-
   preview: {
     select: { title: 'name' },
     prepare({ title }) {
-      return { title: title || 'Studio', subtitle: 'Site-wide settings' }
+      return {
+        title: title || 'Studio lama',
+        subtitle: 'Arsip baca-saja; migrasikan ke Pengaturan Arthur',
+      }
     },
   },
 })

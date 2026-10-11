@@ -30,7 +30,7 @@
     }
   },
   {
-    "name": "studioSettings",
+    "name": "siteSettings",
     "type": "document",
     "attributes": {
       "_id": {
@@ -43,7 +43,7 @@
         "type": "objectAttribute",
         "value": {
           "type": "string",
-          "value": "studioSettings"
+          "value": "siteSettings"
         }
       },
       "_createdAt": {
@@ -71,7 +71,7 @@
         },
         "optional": true
       },
-      "headline": {
+      "heroJudul": {
         "type": "objectAttribute",
         "value": {
           "type": "inline",
@@ -79,7 +79,7 @@
         },
         "optional": true
       },
-      "subline": {
+      "heroSubjudul": {
         "type": "objectAttribute",
         "value": {
           "type": "inline",
@@ -87,7 +87,7 @@
         },
         "optional": true
       },
-      "statement": {
+      "pernyataanPemilik": {
         "type": "objectAttribute",
         "value": {
           "type": "inline",
@@ -150,14 +150,168 @@
         },
         "optional": true
       },
-      "email": {
+      "situasi": {
         "type": "objectAttribute",
         "value": {
-          "type": "string"
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "teks": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "internationalizedArrayString"
+                },
+                "optional": true
+              },
+              "unit": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "union",
+                  "of": [
+                    {
+                      "type": "string",
+                      "value": "konstruksi"
+                    },
+                    {
+                      "type": "string",
+                      "value": "teknologi"
+                    },
+                    {
+                      "type": "string",
+                      "value": "peekabo"
+                    }
+                  ]
+                },
+                "optional": true
+              },
+              "sisi": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "bab": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
         },
         "optional": true
       },
-      "socials": {
+      "ajakan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "object",
+          "attributes": {
+            "label": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "internationalizedArrayString"
+              },
+              "optional": true
+            },
+            "sesudahnya": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "internationalizedArrayText"
+              },
+              "optional": true
+            }
+          }
+        },
+        "optional": true
+      },
+      "wilayah": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "nama": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "internationalizedArrayString"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "alamat": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "internationalizedArrayString"
+        },
+        "optional": true
+      },
+      "kanal": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "object",
+          "attributes": {
+            "whatsapp": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "email": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "waktuBalas": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "internationalizedArrayText"
+              },
+              "optional": true
+            }
+          }
+        },
+        "optional": true
+      },
+      "akunSosial": {
         "type": "objectAttribute",
         "value": {
           "type": "array",
@@ -200,6 +354,137 @@
           "type": "inline",
           "name": "metadata"
         },
+        "optional": true
+      }
+    }
+  },
+  {
+    "name": "studioSettings",
+    "type": "document",
+    "attributes": {
+      "_id": {
+        "type": "objectAttribute",
+        "value": { "type": "string" }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": { "type": "string", "value": "studioSettings" }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": { "type": "string" }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": { "type": "string" }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": { "type": "string" }
+      },
+      "name": {
+        "type": "objectAttribute",
+        "value": { "type": "string" },
+        "optional": true
+      },
+      "headline": {
+        "type": "objectAttribute",
+        "value": { "type": "inline", "name": "internationalizedArrayString" },
+        "optional": true
+      },
+      "subline": {
+        "type": "objectAttribute",
+        "value": { "type": "inline", "name": "internationalizedArrayText" },
+        "optional": true
+      },
+      "statement": {
+        "type": "objectAttribute",
+        "value": { "type": "inline", "name": "internationalizedArrayRichText" },
+        "optional": true
+      },
+      "portrait": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "object",
+          "attributes": {
+            "asset": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "sanity.imageAsset.reference"
+              },
+              "optional": true
+            },
+            "media": {
+              "type": "objectAttribute",
+              "value": { "type": "unknown" },
+              "optional": true
+            },
+            "hotspot": {
+              "type": "objectAttribute",
+              "value": { "type": "inline", "name": "sanity.imageHotspot" },
+              "optional": true
+            },
+            "crop": {
+              "type": "objectAttribute",
+              "value": { "type": "inline", "name": "sanity.imageCrop" },
+              "optional": true
+            },
+            "alt": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "internationalizedArrayString"
+              },
+              "optional": true
+            },
+            "_type": {
+              "type": "objectAttribute",
+              "value": { "type": "string", "value": "image" }
+            }
+          }
+        },
+        "optional": true
+      },
+      "email": {
+        "type": "objectAttribute",
+        "value": { "type": "string" },
+        "optional": true
+      },
+      "socials": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "label": {
+                "type": "objectAttribute",
+                "value": { "type": "string" },
+                "optional": true
+              },
+              "url": {
+                "type": "objectAttribute",
+                "value": { "type": "string" },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "metadata": {
+        "type": "objectAttribute",
+        "value": { "type": "inline", "name": "metadata" },
         "optional": true
       }
     }
@@ -301,6 +586,28 @@
             "type": "boolean"
           },
           "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "internationalizedArrayText",
+    "type": "type",
+    "value": {
+      "type": "array",
+      "of": {
+        "type": "object",
+        "attributes": {
+          "_key": {
+            "type": "objectAttribute",
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "rest": {
+          "type": "inline",
+          "name": "internationalizedArrayTextValue"
         }
       }
     }
@@ -433,28 +740,6 @@
         "rest": {
           "type": "inline",
           "name": "internationalizedArrayRichTextValue"
-        }
-      }
-    }
-  },
-  {
-    "name": "internationalizedArrayText",
-    "type": "type",
-    "value": {
-      "type": "array",
-      "of": {
-        "type": "object",
-        "attributes": {
-          "_key": {
-            "type": "objectAttribute",
-            "value": {
-              "type": "string"
-            }
-          }
-        },
-        "rest": {
-          "type": "inline",
-          "name": "internationalizedArrayTextValue"
         }
       }
     }

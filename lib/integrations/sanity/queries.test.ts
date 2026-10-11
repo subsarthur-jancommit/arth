@@ -21,7 +21,7 @@ import {
   featuredProjectsQuery,
   projectQuery,
   projectsQuery,
-  studioSettingsQuery,
+  siteSettingsQuery,
 } from './queries'
 
 /** Every query that projects a localized field. */
@@ -29,7 +29,7 @@ const LOCALIZED_QUERIES = {
   projectsQuery,
   featuredProjectsQuery,
   projectQuery,
-  studioSettingsQuery,
+  siteSettingsQuery,
 } as const
 
 describe('localized queries', () => {
@@ -71,5 +71,28 @@ describe('localized queries', () => {
         `${name} references a parameter no caller passes`
       ).not.toContain('$defaultLocale')
     }
+  })
+})
+
+describe('site settings migration', () => {
+  it('prefers siteSettings while keeping the old singleton readable', () => {
+    expect(siteSettingsQuery).toContain(
+      '_type in ["siteSettings", "studioSettings"]'
+    )
+    expect(siteSettingsQuery).toContain(
+      'order((_type == "siteSettings") desc, _updatedAt desc)'
+    )
+  })
+
+  it('maps the old editorial and contact fields into the new result shape', () => {
+    expect(siteSettingsQuery).toContain('heroJudul')
+    expect(siteSettingsQuery).toContain('headline[_key == $locale]')
+    expect(siteSettingsQuery).toContain('coalesce(kanal.email, email)')
+    expect(siteSettingsQuery).toContain('coalesce(akunSosial, socials)')
+    expect(siteSettingsQuery).toContain(
+      'coalesce(alamat[_key == $locale][0].value'
+    )
+    expect(siteSettingsQuery).toContain('pernyataanPemilik')
+    expect(siteSettingsQuery).toContain('statement[_key == $locale]')
   })
 })

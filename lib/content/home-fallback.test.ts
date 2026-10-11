@@ -27,6 +27,10 @@ describe('resolveHomeContent', () => {
     expect(en.fallbacks.headline).toBe(true)
     expect(en.statement).toBeNull()
     expect(en.statementFallback.length).toBeGreaterThan(0)
+    expect(en.socials).toEqual([])
+    expect(en.address).toBe('0 Example Street, Example City, Indonesia')
+    expect(id.address).toBe('Jl. Contoh No. 00, Kota Contoh, Indonesia')
+    expect(en.fallbacks.address).toBe(true)
   })
 
   it('lets the CMS win field by field', () => {
@@ -51,6 +55,7 @@ describe('resolveHomeContent', () => {
     expect(resolved.fallbacks.headline).toBe(false)
     expect(resolved.fallbacks.subline).toBe(true)
     expect(resolved.fallbacks.email).toBe(true)
+    expect(resolved.fallbacks.address).toBe(true)
     expect(resolved.fallbacks.statement).toBe(true)
   })
 
@@ -65,6 +70,34 @@ describe('resolveHomeContent', () => {
     expect(resolved.headline).toBe(placeholder.headline)
     expect(resolved.subline).toBe(placeholder.subline)
     expect(resolved.email).toBe(placeholder.email)
+  })
+
+  it('keeps reserved-domain contact addresses on the labeled placeholder path', () => {
+    for (const email of ['studio@arth.example', 'kontak@arth.invalid']) {
+      const resolved = resolveHomeContent('id', { email })
+      const fallback = resolveHomeContent('id', null)
+
+      expect(resolved.email).toBe(fallback.email)
+      expect(resolved.fallbacks.email).toBe(true)
+    }
+  })
+
+  it('keeps an example postal address on the labeled placeholder path', () => {
+    const resolved = resolveHomeContent('id', {
+      address: 'Jl. Contoh No. 00, Kota Contoh, Indonesia',
+    })
+
+    expect(resolved.fallbacks.address).toBe(true)
+    expect(resolved.address).toBe('Jl. Contoh No. 00, Kota Contoh, Indonesia')
+  })
+
+  it('uses a real address from the CMS without the placeholder flag', () => {
+    const resolved = resolveHomeContent('id', {
+      address: 'Jl. Merdeka No. 1, Subang',
+    })
+
+    expect(resolved.address).toBe('Jl. Merdeka No. 1, Subang')
+    expect(resolved.fallbacks.address).toBe(false)
   })
 
   it('prefers a CMS statement over the placeholder paragraphs', () => {
