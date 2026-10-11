@@ -20,6 +20,8 @@ import type { SchemaTypeDefinition } from 'sanity'
 
 // Import all schema definitions
 import { bab } from './bab'
+import { faq } from './faq'
+import { howWeWork } from './howWeWork'
 import { journalEntry } from './journalEntry'
 import { link } from './link'
 import { metadata } from './metadata'
@@ -27,6 +29,7 @@ import { offer } from './offer'
 import { page } from './page'
 import { project } from './project'
 import { richText } from './richText'
+import { sequence } from './sequence'
 import { side } from './side'
 import { siteSettings } from './siteSettings'
 import { studioSettings } from './studioSettings'
@@ -35,6 +38,8 @@ import { unit } from './unit'
 // Re-export all schemas for convenience
 export {
   bab,
+  faq,
+  howWeWork,
   journalEntry,
   link,
   metadata,
@@ -42,6 +47,7 @@ export {
   page,
   project,
   richText,
+  sequence,
   side,
   siteSettings,
   studioSettings,
@@ -64,9 +70,12 @@ export const schema = {
     journalEntry,
     page,
     project,
+    faq,
+    sequence,
 
     // Singleton types (one-off content)
     siteSettings,
+    howWeWork,
     // Retained read-only until data migration has completed.
     studioSettings,
 

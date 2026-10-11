@@ -20,19 +20,26 @@ import { routing } from '@/lib/i18n/routing'
 import {
   chapterPageQuery,
   featuredProjectsQuery,
+  faqsForPathQuery,
+  howWeWorkQuery,
   offerPageQuery,
+  pageQuery,
   projectQuery,
   projectsQuery,
+  sequencesQuery,
   siteSettingsQuery,
 } from './queries'
 
 /** Every query that projects a localized field. */
 const LOCALIZED_QUERIES = {
   chapterPageQuery,
+  howWeWorkQuery,
   offerPageQuery,
+  pageQuery,
   projectsQuery,
   featuredProjectsQuery,
   projectQuery,
+  sequencesQuery,
   siteSettingsQuery,
 } as const
 
@@ -75,6 +82,31 @@ describe('localized queries', () => {
         `${name} references a parameter no caller passes`
       ).not.toContain('$defaultLocale')
     }
+  })
+})
+
+describe('fixed-page migration', () => {
+  it('prefers two-language fields while leaving old pages readable', () => {
+    expect(pageQuery).toContain('judul[_key == $locale]')
+    expect(pageQuery).toContain('isi[_key == $locale]')
+    expect(pageQuery).toMatch(/\btitle\b/)
+    expect(pageQuery).toMatch(/\bcontent\b/)
+  })
+
+  it('does not make an editorial link a page requirement', () => {
+    expect(pageQuery).not.toContain('\n    link')
+  })
+})
+
+describe('sequence and FAQ queries', () => {
+  it('lists only reader-facing sequence fields', () => {
+    expect(sequencesQuery).toContain('_type == "sequence"')
+    expect(sequencesQuery).toContain('"keterangan"')
+    expect(sequencesQuery).not.toContain('...')
+  })
+
+  it('limits FAQ lookup to its explicit path', () => {
+    expect(faqsForPathQuery).toContain('$path in halaman')
   })
 })
 

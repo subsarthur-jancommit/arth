@@ -1,22 +1,56 @@
 import { defineField, defineType } from 'sanity'
 
-import { linkFieldWithLabelAndRequired } from './link'
+import { localeValue, requireIndonesian } from '../utils/i18n-array'
 
-const pageFields = [
+const DEFAULT_LOCALE = 'id'
+
+const readerFields = [
+  defineField({
+    name: 'judul',
+    title: 'Judul',
+    type: 'internationalizedArrayString',
+    validation: (Rule) => Rule.required().custom(requireIndonesian),
+  }),
+  defineField({
+    name: 'isi',
+    title: 'Isi',
+    type: 'internationalizedArrayRichText',
+    description:
+      'Isi halaman tetap. Bahasa Indonesia wajib; bahasa Inggris mengikuti K2.',
+  }),
+]
+
+const legacyFields = [
   defineField({
     name: 'title',
-    title: 'Title',
+    title: 'Judul lama',
     type: 'string',
-    description: 'The title of the page',
-    validation: (Rule) => Rule.required(),
+    hidden: true,
+    readOnly: true,
+    deprecated: {
+      reason:
+        'Gunakan Judul dua bahasa. Migrasi data dilakukan lewat prosedur §6.',
+    },
   }),
   defineField({
     name: 'content',
-    title: 'Content',
+    title: 'Isi lama',
     type: 'richText',
-    description: 'The main content of the page',
+    hidden: true,
+    readOnly: true,
+    deprecated: {
+      reason:
+        'Gunakan Isi dua bahasa. Migrasi data dilakukan lewat prosedur §6.',
+    },
   }),
-  linkFieldWithLabelAndRequired,
+  defineField({
+    name: 'link',
+    title: 'Tautan lama',
+    type: 'link',
+    hidden: true,
+    readOnly: true,
+    deprecated: { reason: 'Halaman tetap tidak lagi membutuhkan tautan.' },
+  }),
 ]
 
 export const page = defineType({
@@ -26,11 +60,11 @@ export const page = defineType({
   fields: [
     defineField({
       name: 'slug',
-      title: 'Slug',
+      title: 'Slug halaman',
       type: 'slug',
       description: 'The URL path for this page',
       options: {
-        source: 'title',
+        source: (document) => localeValue(document.judul, DEFAULT_LOCALE) ?? '',
         maxLength: 96,
       },
       validation: (Rule) =>
@@ -63,16 +97,21 @@ export const page = defineType({
       type: 'metadata',
       description: 'SEO settings for this page',
     }),
-    ...pageFields,
+    ...readerFields,
+    ...legacyFields,
   ],
   preview: {
     select: {
-      title: 'title',
+      title: 'judul',
+      legacyTitle: 'title',
       slug: 'slug.current',
     },
-    prepare({ title, slug }) {
+    prepare({ title, legacyTitle, slug }) {
       return {
-        title: title || 'Untitled',
+        title:
+          localeValue(title, DEFAULT_LOCALE) ??
+          legacyTitle ??
+          'Halaman tanpa judul',
         subtitle: slug ? `/halaman/${slug}` : 'No slug',
       }
     },

@@ -116,6 +116,15 @@ export const siteSettings = defineType({
       ],
     }),
     defineField({
+      name: 'rangkaianPilihan',
+      title: 'Rangkaian tiga unit pilihan',
+      description:
+        'Opsional. Tautkan satu rangkaian yang sudah ditinjau; referensi ini bukan hubungan induk-anak.',
+      type: 'reference',
+      to: [{ type: 'sequence' }],
+      weak: true,
+    }),
+    defineField({
       name: 'wilayah',
       title: 'Wilayah layanan',
       type: 'array',

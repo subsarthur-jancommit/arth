@@ -1,34 +1,25 @@
 import { defineQuery } from 'next-sanity'
 
-// Helper for rich text content with link projections
-const richTextWithLinks = `
-  content[]{
-    ...,
-    markDefs[]{
-      ...,
-      _type == "link" => {
-        ...,
-        internalLink->{_type, slug, title}
-      }
-    }
-  }
-`
-
-const linkWithLabel = `
-  link {
-    ...,
-    internalLink->{_type, slug, title}
-  }
-`
-
 // Page queries
 export const pageQuery = defineQuery(`
   *[_type == "page" && slug.current == $slug][0] {
     _id,
-    title,
+    "title": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value, title),
     slug,
-    ${richTextWithLinks},
-    ${linkWithLabel},
+    "content": coalesce(
+      isi[_key == $locale][0].value,
+      isi[_key == "id"][0].value,
+      content
+    )[]{
+      ...,
+      markDefs[]{
+        ...,
+        _type == "link" => {
+          ...,
+          internalLink->{_type, slug, title}
+        }
+      }
+    },
     metadata,
     publishedAt,
     _updatedAt
@@ -422,5 +413,55 @@ export const offerPageQuery = defineQuery(`
       "kalimat": coalesce(jembatan.kalimat[_key == $locale][0].value, jembatan.kalimat[_key == "id"][0].value)
     },
     metadata
+  }
+`)
+
+/** All published three-unit sequences for the dedicated Arthur route. */
+export const sequencesQuery = defineQuery(`
+  *[_type == "sequence"] {
+    _id,
+    "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
+    "langkah": langkah[]{
+      _key,
+      "unit": unit->{ kunci, "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value) },
+      "offer": offer[]{
+        _key,
+        "slug": @->slug.current,
+        "judul": coalesce(@->judul[_key == $locale][0].value, @->judul[_key == "id"][0].value)
+      },
+      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value)
+    },
+    "keterangan": coalesce(keterangan[_key == $locale][0].value, keterangan[_key == "id"][0].value),
+    metadata
+  }
+`)
+
+/** The Arthur singleton behind the future Cara kami bekerja route. */
+export const howWeWorkQuery = defineQuery(`
+  *[_type == "howWeWork"][0] {
+    _id,
+    "janji": janji[]{
+      _key,
+      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value)
+    },
+    "hakMilikKlien": coalesce(hakMilikKlien[_key == $locale][0].value, hakMilikKlien[_key == "id"][0].value),
+    "pengungkapanKomisi": coalesce(pengungkapanKomisi[_key == $locale][0].value, pengungkapanKomisi[_key == "id"][0].value),
+    "yangTidakDijual": coalesce(yangTidakDijual[_key == $locale][0].value, yangTidakDijual[_key == "id"][0].value),
+    "wilayah": wilayah[]{
+      _key,
+      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)
+    },
+    "contohFormat": coalesce(contohFormat[_key == $locale][0].value, contohFormat[_key == "id"][0].value),
+    metadata
+  }
+`)
+
+/** Short FAQ entries mounted on a concrete locale-free path. */
+export const faqsForPathQuery = defineQuery(`
+  *[_type == "faq" && $path in halaman] {
+    _id,
+    "pertanyaan": coalesce(pertanyaan[_key == $locale][0].value, pertanyaan[_key == "id"][0].value),
+    "jawaban": coalesce(jawaban[_key == $locale][0].value, jawaban[_key == "id"][0].value)
   }
 `)

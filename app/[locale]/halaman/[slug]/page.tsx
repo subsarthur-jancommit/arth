@@ -5,12 +5,10 @@ import { notFound } from 'next/navigation'
 import { locale as localeRootParam } from 'next/root-params'
 
 import { Wrapper } from '@/components/layout/wrapper'
-import { Link } from '@/components/ui/link'
 import { isConfigured } from '@/integrations/registry'
 import { RichText } from '@/integrations/sanity/components/rich-text'
 import { sanityFetch } from '@/integrations/sanity/live'
 import { pageQuery } from '@/integrations/sanity/queries'
-import { getLinkAttributes } from '@/integrations/sanity/utils/link'
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, routing } from '@/lib/i18n/routing'
 import { generateSanityMetadata } from '@/utils/metadata'
@@ -89,11 +87,6 @@ export default async function CmsPage({ params }: CmsPageProps) {
 
   if (!data) notFound()
 
-  const requestedLocale = await localeRootParam()
-  const locale = isLocale(requestedLocale)
-    ? requestedLocale
-    : routing.defaultLocale
-  const linkAttrs = data.link ? getLinkAttributes(data.link, locale) : null
   // SAFETY: PageQueryResult's typegen'd `content` array is the same
   // portable-text block/span/markDefs shape as next-sanity's
   // PortableTextBlock, derived independently by typegen so TS can't unify
@@ -111,15 +104,6 @@ export default async function CmsPage({ params }: CmsPageProps) {
           <div data-sanity="content">
             <RichText content={content} />
           </div>
-        )}
-        {linkAttrs && (
-          <Link
-            href={linkAttrs.href}
-            target={linkAttrs.target}
-            rel={linkAttrs.rel}
-          >
-            {data.link?.text}
-          </Link>
         )}
       </div>
     </Wrapper>
