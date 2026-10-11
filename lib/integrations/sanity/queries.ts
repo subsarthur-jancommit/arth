@@ -389,3 +389,38 @@ export const chapterPageQuery = defineQuery(`
     }
   }
 `)
+
+/** Published reader-facing content for one Arthur offer. */
+export const offerPageQuery = defineQuery(`
+  *[_type == "offer" && slug.current == $slug && bab->slug.current == $chapter && bab->sisi->kunci == $side && bab->sisi->unit->kunci == $unit][0] {
+    _id,
+    "slug": slug.current,
+    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+    "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),
+    "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),
+    "jenis": coalesce(jenis[_key == $locale][0].value, jenis[_key == "id"][0].value),
+    pasar,
+    "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
+    "langkah": langkah[]{
+      _key,
+      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
+    },
+    "serahan": serahan[]{
+      _key,
+      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
+    },
+    "batas": coalesce(batas[_key == $locale][0].value, batas[_key == "id"][0].value),
+    "langkahPertama": {
+      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),
+      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)
+    },
+    "jembatan": {
+      "offer": offer->{
+        "slug": slug.current,
+        "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value)
+      },
+      "kalimat": coalesce(jembatan.kalimat[_key == $locale][0].value, jembatan.kalimat[_key == "id"][0].value)
+    },
+    metadata
+  }
+`)

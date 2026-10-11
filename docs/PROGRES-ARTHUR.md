@@ -45,7 +45,8 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 | F1-08 Kamus gerak dan nama momen            | —   | —         | **Dalam branch** | Dokumentasi spesifikasi saja; implementasi tujuh momen tetap untuk F3/F4; PR ditunda selama e2e dilarang                                                          |
 | F2-01 Pengaturan situs                      | —   | —         | **Dalam branch** | `siteSettings` dan fallback tersedia; `studioSettings` tetap baca-saja hingga migrasi yang disetujui; dummy kontak wajib diganti sebelum publikasi                |
 | F2-02 Unit dan sisi                         | —   | —         | **Dalam branch** | Skema dan pembacaan fallback disiapkan; relasi offer menunggu F2-04; delapan `project.practice` belum dipindahkan ke `unit` tanpa rencana tulis §6 yang disetujui |
-| F2-03 Bab                                   | —   | —         | **Dalam branch** | Skema `bab`, query pembaca, dan relasi kuat ke sisi tersedia; jembatan ke offer menunggu tipe target F2-04; tidak ada dokumen Sanity yang ditulis                 |
+| F2-03 Bab                                   | —   | —         | **Dalam branch** | Skema `bab`, query pembaca, relasi kuat ke sisi, dan jembatan weak yang ditambahkan bersama target F2-04 tersedia; tidak ada dokumen Sanity yang ditulis          |
+| F2-04 Offer                                 | —   | —         | **Dalam branch** | Skema delapan blok, grup Internal yang aman dibaca publik, query dengan allowlist medan, serta jembatan weak tersedia; belum ada impor atau penulisan Sanity      |
 | F0-02 Uji terbit menampilkan isi baru       | —   | —         | Belum mulai      | Bergantung F0-06                                                                                                                                                  |
 | F0-03 Token produksi hanya Viewer           | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                                                                                                   |
 | F0-04 Token dev dicabut                     | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                                                                                                      |
@@ -350,17 +351,13 @@ dengan Node; biaya keputusan ini adalah satu pengecualian runtime yang dicatat
 terang, bukan skema yang tampak diterapkan tetapi tidak pernah masuk
 `schema.json`.
 
-**U24 — relasi weak dari unit ke offer menunggu F2-04.** `contohOffer` dan
-`jembatan.offer` tidak didaftarkan sebelum tipe `offer` benar-benar ada.
-Referensi ke tipe yang belum dapat diedit memberi Studio tujuan semu dan
-menghasilkan skema yang tidak utuh. F2-04 menambah keduanya sebagai referensi
-lemah bersamaan dengan tipe targetnya; tidak ada konten atau relasi yang
-hilang karena dokumen unit belum ditulis.
+**U24 — relasi weak dari unit ke offer ditambahkan oleh F2-04.**
+`contohOffer` dan `jembatan.offer` baru didaftarkan sesudah tipe `offer`
+tersedia, sehingga Studio tidak pernah menawarkan target semu. Kedua relasi
+tetap weak karena bukan hubungan induk-anak; biaya pilihan ini adalah query
+halaman hanya boleh merender target yang telah lolos kendali terbit F2-07.
 
-**U25 — jembatan dari bab ke offer juga menunggu F2-04.** Model isi
-mengharuskan `bab.jembatan[]` memuat referensi weak ke offer serta satu
-kalimat. Tipe targetnya belum ada pada F2-03, sehingga medan itu ikut
-ditambahkan bersama `offer` pada F2-04. Menambah referensi sekarang akan
-membuat Studio menawarkan target yang belum dapat dibuat; biayanya adalah
-template Bab belum dapat mengonsumsi jembatan sampai paket berikutnya. Tidak
-ada dokumen bab yang ditulis atau dihilangkan pada tahap ini.
+**U25 — jembatan dari bab ke offer ditambahkan oleh F2-04.** `bab.jembatan[]`
+sekarang memuat referensi weak serta satu kalimat, dengan batas dua jembatan.
+Tidak ada dokumen bab yang ditulis atau diubah; referensi baru hanya menjadi
+dapat diedit setelah target `offer` hadir.

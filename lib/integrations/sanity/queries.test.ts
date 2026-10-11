@@ -20,6 +20,7 @@ import { routing } from '@/lib/i18n/routing'
 import {
   chapterPageQuery,
   featuredProjectsQuery,
+  offerPageQuery,
   projectQuery,
   projectsQuery,
   siteSettingsQuery,
@@ -28,6 +29,7 @@ import {
 /** Every query that projects a localized field. */
 const LOCALIZED_QUERIES = {
   chapterPageQuery,
+  offerPageQuery,
   projectsQuery,
   featuredProjectsQuery,
   projectQuery,
@@ -72,6 +74,27 @@ describe('localized queries', () => {
         query,
         `${name} references a parameter no caller passes`
       ).not.toContain('$defaultLocale')
+    }
+  })
+})
+
+describe('offer query', () => {
+  it('keeps an offer under its addressed chapter, side, and unit', () => {
+    expect(offerPageQuery).toContain('_type == "offer"')
+    expect(offerPageQuery).toContain('bab->slug.current == $chapter')
+    expect(offerPageQuery).toContain('bab->sisi->kunci == $side')
+    expect(offerPageQuery).toContain('bab->sisi->unit->kunci == $unit')
+  })
+
+  it('does not project fields from the Internal Studio group', () => {
+    for (const field of [
+      'idKatalog',
+      'jejakSumber',
+      'statusTinjauan',
+      'ditulisOleh',
+      'tanggalDisetujui',
+    ]) {
+      expect(offerPageQuery).not.toContain(field)
     }
   })
 })

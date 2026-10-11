@@ -23,6 +23,7 @@ import { bab } from './bab'
 import { journalEntry } from './journalEntry'
 import { link } from './link'
 import { metadata } from './metadata'
+import { offer } from './offer'
 import { page } from './page'
 import { project } from './project'
 import { richText } from './richText'
@@ -37,6 +38,7 @@ export {
   journalEntry,
   link,
   metadata,
+  offer,
   page,
   project,
   richText,
@@ -72,5 +74,6 @@ export const schema = {
     unit,
     side,
     bab,
+    offer,
   ],
 } satisfies { types: SchemaTypeDefinition[] }

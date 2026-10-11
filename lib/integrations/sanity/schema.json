@@ -1,7 +1,7 @@
 [
   {
     "type": "type",
-    "name": "side.reference",
+    "name": "offer.reference",
     "value": {
       "type": "object",
       "attributes": {
@@ -26,11 +26,11 @@
           "optional": true
         }
       },
-      "dereferencesTo": "side"
+      "dereferencesTo": "offer"
     }
   },
   {
-    "name": "bab",
+    "name": "unit",
     "type": "document",
     "attributes": {
       "_id": {
@@ -43,7 +43,7 @@
         "type": "objectAttribute",
         "value": {
           "type": "string",
-          "value": "bab"
+          "value": "unit"
         }
       },
       "_createdAt": {
@@ -64,11 +64,24 @@
           "type": "string"
         }
       },
-      "sisi": {
+      "kunci": {
         "type": "objectAttribute",
         "value": {
-          "type": "inline",
-          "name": "side.reference"
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "konstruksi"
+            },
+            {
+              "type": "string",
+              "value": "teknologi"
+            },
+            {
+              "type": "string",
+              "value": "peekabo"
+            }
+          ]
         },
         "optional": true
       },
@@ -80,23 +93,15 @@
         },
         "optional": true
       },
-      "slug": {
+      "judul": {
         "type": "objectAttribute",
         "value": {
           "type": "inline",
-          "name": "slug"
+          "name": "internationalizedArrayString"
         },
         "optional": true
       },
-      "kutipan": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "internationalizedArrayText"
-        },
-        "optional": true
-      },
-      "situasi": {
+      "pembuka": {
         "type": "objectAttribute",
         "value": {
           "type": "inline",
@@ -104,18 +109,126 @@
         },
         "optional": true
       },
-      "urutan": {
+      "masalah": {
         "type": "objectAttribute",
         "value": {
-          "type": "number"
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "teks": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "internationalizedArrayString"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
         },
         "optional": true
       },
-      "batas": {
+      "caraKerja": {
         "type": "objectAttribute",
         "value": {
-          "type": "inline",
-          "name": "internationalizedArrayText"
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "teks": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "internationalizedArrayString"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "contohOffer": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "offer.reference"
+            }
+          }
+        },
+        "optional": true
+      },
+      "jembatan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "offer": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "offer.reference"
+                },
+                "optional": true
+              },
+              "kalimat": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "internationalizedArrayText"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
         },
         "optional": true
       },
@@ -330,6 +443,386 @@
     }
   },
   {
+    "type": "type",
+    "name": "bab.reference",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_ref": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          }
+        },
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "reference"
+          }
+        },
+        "_weak": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        }
+      },
+      "dereferencesTo": "bab"
+    }
+  },
+  {
+    "name": "offer",
+    "type": "document",
+    "attributes": {
+      "_id": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string",
+          "value": "offer"
+        }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "bab": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "bab.reference"
+        },
+        "optional": true
+      },
+      "judul": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "internationalizedArrayString"
+        },
+        "optional": true
+      },
+      "slug": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "slug"
+        },
+        "optional": true
+      },
+      "dampak": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "internationalizedArrayText"
+        },
+        "optional": true
+      },
+      "untukSiapa": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "internationalizedArrayString"
+        },
+        "optional": true
+      },
+      "jenis": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "internationalizedArrayString"
+        },
+        "optional": true
+      },
+      "pasar": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "pemerintah"
+            },
+            {
+              "type": "string",
+              "value": "swasta"
+            },
+            {
+              "type": "string",
+              "value": "keduanya"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "situasi": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "internationalizedArrayText"
+        },
+        "optional": true
+      },
+      "langkah": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "teks": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "internationalizedArrayString"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "serahan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "teks": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "internationalizedArrayString"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "batas": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "internationalizedArrayText"
+        },
+        "optional": true
+      },
+      "langkahPertama": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "object",
+          "attributes": {
+            "label": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "internationalizedArrayString"
+              },
+              "optional": true
+            },
+            "sesudahnya": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "internationalizedArrayText"
+              },
+              "optional": true
+            }
+          }
+        },
+        "optional": true
+      },
+      "jembatan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "object",
+          "attributes": {
+            "offer": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "offer.reference"
+              },
+              "optional": true
+            },
+            "kalimat": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "internationalizedArrayText"
+              },
+              "optional": true
+            }
+          }
+        },
+        "optional": true
+      },
+      "urutan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": true
+      },
+      "pintuMasuk": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
+      },
+      "metadata": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "metadata"
+        },
+        "optional": true
+      },
+      "idKatalog": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "jejakSumber": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "blok": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "sumber": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "rujukan": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "statusTinjauan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "usulan"
+            },
+            {
+              "type": "string",
+              "value": "dipilih"
+            },
+            {
+              "type": "string",
+              "value": "perlu-anda"
+            },
+            {
+              "type": "string",
+              "value": "disetujui"
+            },
+            {
+              "type": "string",
+              "value": "ditahan"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "ditulisOleh": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "tanggalDisetujui": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      }
+    }
+  },
+  {
     "name": "slug",
     "type": "type",
     "value": {
@@ -356,6 +849,200 @@
           },
           "optional": true
         }
+      }
+    }
+  },
+  {
+    "type": "type",
+    "name": "side.reference",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_ref": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          }
+        },
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "reference"
+          }
+        },
+        "_weak": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        }
+      },
+      "dereferencesTo": "side"
+    }
+  },
+  {
+    "name": "bab",
+    "type": "document",
+    "attributes": {
+      "_id": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string",
+          "value": "bab"
+        }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "sisi": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "side.reference"
+        },
+        "optional": true
+      },
+      "nama": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "internationalizedArrayString"
+        },
+        "optional": true
+      },
+      "slug": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "slug"
+        },
+        "optional": true
+      },
+      "kutipan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "internationalizedArrayText"
+        },
+        "optional": true
+      },
+      "situasi": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "internationalizedArrayText"
+        },
+        "optional": true
+      },
+      "urutan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": true
+      },
+      "batas": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "internationalizedArrayText"
+        },
+        "optional": true
+      },
+      "jembatan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "offer": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "offer.reference"
+                },
+                "optional": true
+              },
+              "kalimat": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "internationalizedArrayText"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "ajakan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "object",
+          "attributes": {
+            "label": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "internationalizedArrayString"
+              },
+              "optional": true
+            },
+            "sesudahnya": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "internationalizedArrayText"
+              },
+              "optional": true
+            }
+          }
+        },
+        "optional": true
+      },
+      "metadata": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "metadata"
+        },
+        "optional": true
       }
     }
   },
@@ -603,183 +1290,6 @@
                     "optional": true
                   }
                 }
-              },
-              "optional": true
-            }
-          }
-        },
-        "optional": true
-      },
-      "metadata": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "metadata"
-        },
-        "optional": true
-      }
-    }
-  },
-  {
-    "name": "unit",
-    "type": "document",
-    "attributes": {
-      "_id": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_type": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string",
-          "value": "unit"
-        }
-      },
-      "_createdAt": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_updatedAt": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_rev": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "kunci": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "union",
-          "of": [
-            {
-              "type": "string",
-              "value": "konstruksi"
-            },
-            {
-              "type": "string",
-              "value": "teknologi"
-            },
-            {
-              "type": "string",
-              "value": "peekabo"
-            }
-          ]
-        },
-        "optional": true
-      },
-      "nama": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "internationalizedArrayString"
-        },
-        "optional": true
-      },
-      "judul": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "internationalizedArrayString"
-        },
-        "optional": true
-      },
-      "pembuka": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "internationalizedArrayText"
-        },
-        "optional": true
-      },
-      "masalah": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "array",
-          "of": {
-            "type": "object",
-            "attributes": {
-              "teks": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "inline",
-                  "name": "internationalizedArrayString"
-                },
-                "optional": true
-              }
-            },
-            "rest": {
-              "type": "object",
-              "attributes": {
-                "_key": {
-                  "type": "objectAttribute",
-                  "value": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "optional": true
-      },
-      "caraKerja": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "array",
-          "of": {
-            "type": "object",
-            "attributes": {
-              "teks": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "inline",
-                  "name": "internationalizedArrayString"
-                },
-                "optional": true
-              }
-            },
-            "rest": {
-              "type": "object",
-              "attributes": {
-                "_key": {
-                  "type": "objectAttribute",
-                  "value": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "optional": true
-      },
-      "ajakan": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "object",
-          "attributes": {
-            "label": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "inline",
-                "name": "internationalizedArrayString"
-              },
-              "optional": true
-            },
-            "sesudahnya": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "inline",
-                "name": "internationalizedArrayText"
               },
               "optional": true
             }

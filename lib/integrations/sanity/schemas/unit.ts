@@ -70,6 +70,45 @@ export const unit = defineType({
       validation: (Rule) => Rule.required().min(1),
     }),
     defineField({
+      name: 'contohOffer',
+      title: 'Contoh offer per jenis',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'reference',
+          to: [{ type: 'offer' }],
+          weak: true,
+        }),
+      ],
+    }),
+    defineField({
+      name: 'jembatan',
+      title: 'Jembatan ke offer unit lain',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'offer',
+              title: 'Offer tujuan',
+              type: 'reference',
+              to: [{ type: 'offer' }],
+              weak: true,
+            }),
+            defineField({
+              name: 'kalimat',
+              title: 'Kalimat jembatan',
+              type: 'internationalizedArrayText',
+              validation: (Rule) => Rule.required().custom(requireIndonesian),
+            }),
+          ],
+          preview: { select: { title: 'kalimat.0.value' } },
+        }),
+      ],
+      validation: (Rule) => Rule.max(2),
+    }),
+    defineField({
       name: 'ajakan',
       title: 'Ajakan unit',
       type: 'object',

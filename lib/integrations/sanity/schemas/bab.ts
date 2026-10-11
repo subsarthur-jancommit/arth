@@ -1,4 +1,4 @@
-import { defineField, defineType } from 'sanity'
+import { defineArrayMember, defineField, defineType } from 'sanity'
 
 import { localeValue, requireIndonesian } from '../utils/i18n-array'
 
@@ -69,6 +69,33 @@ export const bab = defineType({
       type: 'internationalizedArrayText',
       description:
         'Diisi bila offer di bab ini memerlukan batas atau syarat; paling banyak tiga kalimat.',
+    }),
+    defineField({
+      name: 'jembatan',
+      title: 'Jembatan ke offer lain',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'offer',
+              title: 'Offer tujuan',
+              type: 'reference',
+              to: [{ type: 'offer' }],
+              weak: true,
+            }),
+            defineField({
+              name: 'kalimat',
+              title: 'Kalimat jembatan',
+              type: 'internationalizedArrayText',
+              validation: (Rule) => Rule.required().custom(requireIndonesian),
+            }),
+          ],
+          preview: { select: { title: 'kalimat.0.value' } },
+        }),
+      ],
+      validation: (Rule) => Rule.max(2),
     }),
     defineField({
       name: 'ajakan',
