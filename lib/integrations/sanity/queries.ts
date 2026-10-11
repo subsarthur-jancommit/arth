@@ -372,3 +372,20 @@ export const sidePageQuery = defineQuery(`
     }
   }
 `)
+
+/** Published chapter content for the future nested Arthur route. */
+export const chapterPageQuery = defineQuery(`
+  *[_type == "bab" && slug.current == $slug && sisi->kunci == $side && sisi->unit->kunci == $unit][0] {
+    _id,
+    "slug": slug.current,
+    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
+    "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),
+    "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
+    urutan,
+    "batas": coalesce(batas[_key == $locale][0].value, batas[_key == "id"][0].value),
+    "ajakan": {
+      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),
+      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)
+    }
+  }
+`)

@@ -18,6 +18,7 @@ import { describe, expect, it } from 'bun:test'
 import { routing } from '@/lib/i18n/routing'
 
 import {
+  chapterPageQuery,
   featuredProjectsQuery,
   projectQuery,
   projectsQuery,
@@ -26,6 +27,7 @@ import {
 
 /** Every query that projects a localized field. */
 const LOCALIZED_QUERIES = {
+  chapterPageQuery,
   projectsQuery,
   featuredProjectsQuery,
   projectQuery,
@@ -71,6 +73,20 @@ describe('localized queries', () => {
         `${name} references a parameter no caller passes`
       ).not.toContain('$defaultLocale')
     }
+  })
+})
+
+describe('chapter query', () => {
+  it('keeps a chapter under its addressed side and unit', () => {
+    expect(chapterPageQuery).toContain('_type == "bab"')
+    expect(chapterPageQuery).toContain('sisi->kunci == $side')
+    expect(chapterPageQuery).toContain('sisi->unit->kunci == $unit')
+  })
+
+  it('selects only fields that are safe to render', () => {
+    // Internal editorial fields arrive in F2-07. Listing the public shape now
+    // keeps that later boundary additive instead of trying to contain `...`.
+    expect(chapterPageQuery).not.toContain('...')
   })
 })
 

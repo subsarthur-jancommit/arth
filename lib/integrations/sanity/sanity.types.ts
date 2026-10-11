@@ -15,47 +15,29 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
-export type UnitReference = {
+export type SideReference = {
   _ref: string;
   _type: "reference";
   _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "unit";
+  [internalGroqTypeReferenceTo]?: "side";
 };
 
-export type Side = {
+export type Bab = {
   _id: string;
-  _type: "side";
+  _type: "bab";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  unit?: UnitReference;
-  kunci?:
-    | "pelaku-proyek"
-    | "pemilik-bangunan"
-    | "siap-pakai"
-    | "paham-teknis"
-    | "pemilik-usaha"
-    | "jaringan";
+  sisi?: SideReference;
   nama?: InternationalizedArrayString;
-  judul?: InternationalizedArrayString;
-  caraMembeli?: Array<{
-    teks?: InternationalizedArrayString;
-    _key: string;
-  }>;
-  langkahPertama?: {
+  slug?: Slug;
+  kutipan?: InternationalizedArrayText;
+  situasi?: InternationalizedArrayText;
+  urutan?: number;
+  batas?: InternationalizedArrayText;
+  ajakan?: {
     label?: InternationalizedArrayString;
     sesudahnya?: InternationalizedArrayText;
-  };
-  urutan?: number;
-  jaringan?: {
-    caraKerja?: InternationalizedArrayText;
-    asalKomisi?: InternationalizedArrayText;
-    yangTidakAda?: InternationalizedArrayText;
-    syarat?: InternationalizedArrayText;
-    ajakanDaftar?: {
-      label?: InternationalizedArrayString;
-      sesudahnya?: InternationalizedArrayText;
-    };
   };
   metadata?: Metadata;
 };
@@ -83,17 +65,58 @@ export type Metadata = {
   noIndex?: boolean;
 };
 
-export type InternationalizedArrayText = Array<
-  {
-    _key: string;
-  } & InternationalizedArrayTextValue
->;
+export type InternationalizedArrayText = Array<{
+  _key: string;
+} & InternationalizedArrayTextValue>;
 
-export type InternationalizedArrayString = Array<
-  {
+export type InternationalizedArrayString = Array<{
+  _key: string;
+} & InternationalizedArrayStringValue>;
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
+export type UnitReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "unit";
+};
+
+export type Side = {
+  _id: string;
+  _type: "side";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  unit?: UnitReference;
+  kunci?: "pelaku-proyek" | "pemilik-bangunan" | "siap-pakai" | "paham-teknis" | "pemilik-usaha" | "jaringan";
+  nama?: InternationalizedArrayString;
+  judul?: InternationalizedArrayString;
+  caraMembeli?: Array<{
+    teks?: InternationalizedArrayString;
     _key: string;
-  } & InternationalizedArrayStringValue
->;
+  }>;
+  langkahPertama?: {
+    label?: InternationalizedArrayString;
+    sesudahnya?: InternationalizedArrayText;
+  };
+  urutan?: number;
+  jaringan?: {
+    caraKerja?: InternationalizedArrayText;
+    asalKomisi?: InternationalizedArrayText;
+    yangTidakAda?: InternationalizedArrayText;
+    syarat?: InternationalizedArrayText;
+    ajakanDaftar?: {
+      label?: InternationalizedArrayString;
+      sesudahnya?: InternationalizedArrayText;
+    };
+  };
+  metadata?: Metadata;
+};
 
 export type Unit = {
   _id: string;
@@ -163,11 +186,9 @@ export type SanityImageHotspot = {
   width?: number;
 };
 
-export type InternationalizedArrayRichText = Array<
-  {
-    _key: string;
-  } & InternationalizedArrayRichTextValue
->;
+export type InternationalizedArrayRichText = Array<{
+  _key: string;
+} & InternationalizedArrayRichTextValue>;
 
 export type SiteSettings = {
   _id: string;
@@ -232,42 +253,31 @@ export type JournalEntry = {
   listed?: boolean;
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
-export type RichText = Array<
-  | {
-      children?: Array<{
-        marks?: Array<string>;
-        text?: string;
-        _type: "span";
-        _key: string;
-      }>;
-      style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
-      listItem?: "bullet" | "number";
-      markDefs?: Array<
-        {
-          _key: string;
-        } & Link
-      >;
-      level?: number;
-      _type: "block";
-      _key: string;
-    }
-  | {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      caption?: string;
-      _type: "image";
-      _key: string;
-    }
->;
+export type RichText = Array<{
+  children?: Array<{
+    marks?: Array<string>;
+    text?: string;
+    _type: "span";
+    _key: string;
+  }>;
+  style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+  listItem?: "bullet" | "number";
+  markDefs?: Array<{
+    _key: string;
+  } & Link>;
+  level?: number;
+  _type: "block";
+  _key: string;
+} | {
+  asset?: SanityImageAssetReference;
+  media?: unknown;
+  hotspot?: SanityImageHotspot;
+  crop?: SanityImageCrop;
+  alt?: string;
+  caption?: string;
+  _type: "image";
+  _key: string;
+}>;
 
 export type PageReference = {
   _ref: string;
@@ -468,38 +478,7 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type AllSanitySchemaTypes =
-  | UnitReference
-  | Side
-  | SanityImageAssetReference
-  | Metadata
-  | InternationalizedArrayText
-  | InternationalizedArrayString
-  | Unit
-  | StudioSettings
-  | SanityImageCrop
-  | SanityImageHotspot
-  | InternationalizedArrayRichText
-  | SiteSettings
-  | JournalEntry
-  | Slug
-  | RichText
-  | PageReference
-  | ProjectReference
-  | Link
-  | Project
-  | Page
-  | InternationalizedArrayRichTextValue
-  | InternationalizedArrayTextValue
-  | InternationalizedArrayStringValue
-  | SanityImagePaletteSwatch
-  | SanityImagePalette
-  | SanityImageDimensions
-  | SanityImageMetadata
-  | SanityFileAsset
-  | SanityAssetSourceData
-  | SanityImageAsset
-  | Geopoint;
+export type AllSanitySchemaTypes = SideReference | Bab | SanityImageAssetReference | Metadata | InternationalizedArrayText | InternationalizedArrayString | Slug | UnitReference | Side | Unit | StudioSettings | SanityImageCrop | SanityImageHotspot | InternationalizedArrayRichText | SiteSettings | JournalEntry | RichText | PageReference | ProjectReference | Link | Project | Page | InternationalizedArrayRichTextValue | InternationalizedArrayTextValue | InternationalizedArrayStringValue | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
 
 // Source: queries.ts
 // Variable: pageQuery
@@ -508,68 +487,58 @@ export type PageQueryResult = {
   _id: string;
   title: string | null;
   slug: Slug | null;
-  content: Array<
-    | {
-        children?: Array<{
-          marks?: Array<string>;
-          text?: string;
-          _type: "span";
-          _key: string;
-        }>;
-        style?:
-          "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
-        listItem?: "bullet" | "number";
-        markDefs: Array<{
-          _key: string;
-          _type: "link";
-          linkType?: "external" | "internal";
-          internalLink:
-            | {
-                _type: "page";
-                slug: Slug | null;
-                title: string | null;
-              }
-            | {
-                _type: "project";
-                slug: Slug | null;
-                title: InternationalizedArrayString | null;
-              }
-            | null;
-          externalUrl?: string;
-          text?: string;
-          openInNewTab?: boolean;
-        }> | null;
-        level?: number;
-        _type: "block";
-        _key: string;
-      }
-    | {
-        asset?: SanityImageAssetReference;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        alt?: string;
-        caption?: string;
-        _type: "image";
-        _key: string;
-        markDefs: null;
-      }
-  > | null;
+  content: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs: Array<{
+      _key: string;
+      _type: "link";
+      linkType?: "external" | "internal";
+      internalLink: {
+        _type: "page";
+        slug: Slug | null;
+        title: string | null;
+      } | {
+        _type: "project";
+        slug: Slug | null;
+        title: InternationalizedArrayString | null;
+      } | null;
+      externalUrl?: string;
+      text?: string;
+      openInNewTab?: boolean;
+    }> | null;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    caption?: string;
+    _type: "image";
+    _key: string;
+    markDefs: null;
+  }> | null;
   link: {
     _type: "link";
     linkType?: "external" | "internal";
-    internalLink:
-      | {
-          _type: "page";
-          slug: Slug | null;
-          title: string | null;
-        }
-      | {
-          _type: "project";
-          slug: Slug | null;
-          title: InternationalizedArrayString | null;
-        }
-      | null;
+    internalLink: {
+      _type: "page";
+      slug: Slug | null;
+      title: string | null;
+    } | {
+      _type: "project";
+      slug: Slug | null;
+      title: InternationalizedArrayString | null;
+    } | null;
     externalUrl?: string;
     text?: string;
     openInNewTab?: boolean;
@@ -687,9 +656,7 @@ export type WorkIndexQueryResult = Array<{
 // Source: queries.ts
 // Variable: practicesQuery
 // Query: *[_type == "project" && listed != false]{ "unit": coalesce(unit, practice) }.unit
-export type PracticesQueryResult = Array<
-  "konstruksi" | "peekabo" | "teknologi" | null
->;
+export type PracticesQueryResult = Array<"konstruksi" | "peekabo" | "teknologi" | null>;
 
 // Source: queries.ts
 // Variable: projectQuery
@@ -718,53 +685,46 @@ export type ProjectQueryResult = {
   publishedAt: string | null;
   metadata: Metadata | null;
   _updatedAt: string;
-  body: Array<
-    | {
-        children?: Array<{
-          marks?: Array<string>;
-          text?: string;
-          _type: "span";
-          _key: string;
-        }>;
-        style?:
-          "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
-        listItem?: "bullet" | "number";
-        markDefs: Array<{
-          _key: string;
-          _type: "link";
-          linkType?: "external" | "internal";
-          internalLink:
-            | {
-                _type: "page";
-                slug: Slug | null;
-                title: string | null;
-              }
-            | {
-                _type: "project";
-                slug: Slug | null;
-                title: InternationalizedArrayString | null;
-              }
-            | null;
-          externalUrl?: string;
-          text?: string;
-          openInNewTab?: boolean;
-        }> | null;
-        level?: number;
-        _type: "block";
-        _key: string;
-      }
-    | {
-        asset?: SanityImageAssetReference;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        alt?: string;
-        caption?: string;
-        _type: "image";
-        _key: string;
-        markDefs: null;
-      }
-  > | null;
+  body: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs: Array<{
+      _key: string;
+      _type: "link";
+      linkType?: "external" | "internal";
+      internalLink: {
+        _type: "page";
+        slug: Slug | null;
+        title: string | null;
+      } | {
+        _type: "project";
+        slug: Slug | null;
+        title: InternationalizedArrayString | null;
+      } | null;
+      externalUrl?: string;
+      text?: string;
+      openInNewTab?: boolean;
+    }> | null;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    caption?: string;
+    _type: "image";
+    _key: string;
+    markDefs: null;
+  }> | null;
   gallery: Array<{
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -797,61 +757,58 @@ export type ProjectSlugsQueryResult = Array<string | null>;
 // Source: queries.ts
 // Variable: siteSettingsQuery
 // Query: *[_type in ["siteSettings", "studioSettings"]]    | order((_type == "siteSettings") desc, _updatedAt desc)[0] {    _id,    name,    "email": coalesce(kanal.email, email),    "socials": coalesce(akunSosial, socials),    portrait,    metadata,    "headline": coalesce(      heroJudul[_key == $locale][0].value,      heroJudul[_key == "id"][0].value,      headline[_key == $locale][0].value,      headline[_key == "id"][0].value    ),    "subline": coalesce(      heroSubjudul[_key == $locale][0].value,      heroSubjudul[_key == "id"][0].value,      subline[_key == $locale][0].value,      subline[_key == "id"][0].value    ),    "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),    "statement": coalesce(      pernyataanPemilik[_key == $locale][0].value,      pernyataanPemilik[_key == "id"][0].value,      statement[_key == $locale][0].value,      statement[_key == "id"][0].value    ),    "address": coalesce(alamat[_key == $locale][0].value, alamat[_key == "id"][0].value),    "wilayah": wilayah[]{      _key,      "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)    }  }
-export type SiteSettingsQueryResult =
-  | {
-      _id: string;
-      name: string | null;
-      email: string | null;
-      socials: Array<{
-        label?: string;
-        url?: string;
-        _key: string;
-      }> | null;
-      portrait: {
-        asset?: SanityImageAssetReference;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        alt?: InternationalizedArrayString;
-        _type: "image";
-      } | null;
-      metadata: Metadata | null;
-      headline: string | null;
-      subline: string | null;
-      portraitAlt: string | null;
-      statement: RichText | null;
-      address: null;
-      wilayah: null;
-    }
-  | {
-      _id: string;
-      name: string | null;
-      email: string | null;
-      socials: Array<{
-        label?: string;
-        url?: string;
-        _key: string;
-      }> | null;
-      portrait: {
-        asset?: SanityImageAssetReference;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        alt?: InternationalizedArrayString;
-        _type: "image";
-      } | null;
-      metadata: Metadata | null;
-      headline: string | null;
-      subline: string | null;
-      portraitAlt: string | null;
-      statement: RichText | null;
-      address: string | null;
-      wilayah: Array<{
-        _key: string;
-        name: string | null;
-      }> | null;
-    }
-  | null;
+export type SiteSettingsQueryResult = {
+  _id: string;
+  name: string | null;
+  email: string | null;
+  socials: Array<{
+    label?: string;
+    url?: string;
+    _key: string;
+  }> | null;
+  portrait: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: InternationalizedArrayString;
+    _type: "image";
+  } | null;
+  metadata: Metadata | null;
+  headline: string | null;
+  subline: string | null;
+  portraitAlt: string | null;
+  statement: RichText | null;
+  address: null;
+  wilayah: null;
+} | {
+  _id: string;
+  name: string | null;
+  email: string | null;
+  socials: Array<{
+    label?: string;
+    url?: string;
+    _key: string;
+  }> | null;
+  portrait: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: InternationalizedArrayString;
+    _type: "image";
+  } | null;
+  metadata: Metadata | null;
+  headline: string | null;
+  subline: string | null;
+  portraitAlt: string | null;
+  statement: RichText | null;
+  address: string | null;
+  wilayah: Array<{
+    _key: string;
+    name: string | null;
+  }> | null;
+} | null;
 
 // Source: queries.ts
 // Variable: unitPageQuery
@@ -879,14 +836,7 @@ export type UnitPageQueryResult = {
 // Variable: sidePageQuery
 // Query: *[_type == "side" && kunci == $side && unit->kunci == $unit][0] {    kunci,    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),    "caraMembeli": caraMembeli[]{      _key,      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)    },    "langkahPertama": {      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)    },    urutan,    "jaringan": {      "caraKerja": coalesce(jaringan.caraKerja[_key == $locale][0].value, jaringan.caraKerja[_key == "id"][0].value),      "asalKomisi": coalesce(jaringan.asalKomisi[_key == $locale][0].value, jaringan.asalKomisi[_key == "id"][0].value),      "yangTidakAda": coalesce(jaringan.yangTidakAda[_key == $locale][0].value, jaringan.yangTidakAda[_key == "id"][0].value),      "syarat": coalesce(jaringan.syarat[_key == $locale][0].value, jaringan.syarat[_key == "id"][0].value),      "ajakanDaftar": {        "label": coalesce(jaringan.ajakanDaftar.label[_key == $locale][0].value, jaringan.ajakanDaftar.label[_key == "id"][0].value),        "sesudahnya": coalesce(jaringan.ajakanDaftar.sesudahnya[_key == $locale][0].value, jaringan.ajakanDaftar.sesudahnya[_key == "id"][0].value)      }    }  }
 export type SidePageQueryResult = {
-  kunci:
-    | "jaringan"
-    | "paham-teknis"
-    | "pelaku-proyek"
-    | "pemilik-bangunan"
-    | "pemilik-usaha"
-    | "siap-pakai"
-    | null;
+  kunci: "jaringan" | "paham-teknis" | "pelaku-proyek" | "pemilik-bangunan" | "pemilik-usaha" | "siap-pakai" | null;
   nama: string | null;
   judul: string | null;
   caraMembeli: Array<{
@@ -910,22 +860,40 @@ export type SidePageQueryResult = {
   };
 } | null;
 
+// Source: queries.ts
+// Variable: chapterPageQuery
+// Query: *[_type == "bab" && slug.current == $slug && sisi->kunci == $side && sisi->unit->kunci == $unit][0] {    _id,    "slug": slug.current,    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),    "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),    "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),    urutan,    "batas": coalesce(batas[_key == $locale][0].value, batas[_key == "id"][0].value),    "ajakan": {      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)    }  }
+export type ChapterPageQueryResult = {
+  _id: string;
+  slug: string | null;
+  nama: string | null;
+  kutipan: string | null;
+  situasi: string | null;
+  urutan: number | null;
+  batas: string | null;
+  ajakan: {
+    label: string | null;
+    sesudahnya: string | null;
+  };
+} | null;
+
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '\n  *[_type == "page" && slug.current == $slug][0] {\n    _id,\n    title,\n    slug,\n    \n  content[]{\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => {\n        ...,\n        internalLink->{_type, slug, title}\n      }\n    }\n  }\n,\n    \n  link {\n    ...,\n    internalLink->{_type, slug, title}\n  }\n,\n    metadata,\n    publishedAt,\n    _updatedAt\n  }\n': PageQueryResult;
-    '\n  *[_type == "journalEntry" && listed != false] | order(date desc) {\n    \n  _id,\n  "slug": slug.current,\n  date,\n  // Keep the compatibility response key used by legacy journal views.\n  "practice": coalesce(unit, practice),\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "summary": coalesce(summary[_key == $locale][0].value, summary[_key == "id"][0].value)\n\n  }\n': JournalEntriesQueryResult;
-    '\n  *[_type == "journalEntry" && listed != false && slug.current == $slug][0] {\n    \n  _id,\n  "slug": slug.current,\n  date,\n  // Keep the compatibility response key used by legacy journal views.\n  "practice": coalesce(unit, practice),\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "summary": coalesce(summary[_key == $locale][0].value, summary[_key == "id"][0].value)\n,\n    "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)\n  }\n': JournalEntryQueryResult;
-    '\n  *[_type == "journalEntry" && listed != false].slug.current\n': JournalSlugsQueryResult;
-    '\n  *[_type == "project" && listed != false] | order(order asc, publishedAt desc) {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  // The response key remains practice while legacy work views are migrated.\n  // Source documents prefer the F2-02 unit field and fall back to practice.\n  "practice": coalesce(unit, practice),\n  cover{ ..., "lqip": asset->metadata.lqip },\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),\n  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)\n\n  }\n': ProjectsQueryResult;
-    '\n  *[_type == "project" && listed != false && featured == true] | order(order asc, publishedAt desc) {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  // The response key remains practice while legacy work views are migrated.\n  // Source documents prefer the F2-02 unit field and fall back to practice.\n  "practice": coalesce(unit, practice),\n  cover{ ..., "lqip": asset->metadata.lqip },\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),\n  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)\n\n  }\n': FeaturedProjectsQueryResult;
-    '\n  *[_type == "project" && listed != false && ($practice == null || coalesce(unit, practice) == $practice)]\n    | order(order asc, publishedAt desc) {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  // The response key remains practice while legacy work views are migrated.\n  // Source documents prefer the F2-02 unit field and fall back to practice.\n  "practice": coalesce(unit, practice),\n  cover{ ..., "lqip": asset->metadata.lqip },\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),\n  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)\n\n  }\n': WorkIndexQueryResult;
-    '\n  *[_type == "project" && listed != false]{ "unit": coalesce(unit, practice) }.unit\n': PracticesQueryResult;
-    '\n  *[_type == "project" && slug.current == $slug][0] {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  // The response key remains practice while legacy work views are migrated.\n  // Source documents prefer the F2-02 unit field and fall back to practice.\n  "practice": coalesce(unit, practice),\n  cover{ ..., "lqip": asset->metadata.lqip },\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),\n  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)\n,\n    scope,\n    publishedAt,\n    metadata,\n    _updatedAt,\n    "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)[]{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n          ...,\n          internalLink->{_type, slug, title}\n        }\n      }\n    },\n    gallery[]{\n      ...,\n      "lqip": asset->metadata.lqip,\n      "alt": coalesce(alt[_key == $locale][0].value, alt[_key == "id"][0].value)\n    },\n    // The arc. Projected inline for the same reason gallery is: the shape is\n    // used by exactly one query, so a shared constant would buy nothing.\n    // The _key taken here is the chapter\'s own -- the _key inside each\n    // coalesce scopes to the localized array being filtered, not to this one\n    // -- and it is what StepSequence takes as its stable key.\n    //\n    // No backticks in this comment, and that is not style. Everything from\n    // the opening backtick of defineQuery to its close is one JS template\n    // literal, so a backtick here ends the string early. Typegen then exits\n    // 0, reports "0 queries and 27 schema types", and every query type in\n    // sanity.types.ts silently disappears. The note above this query warns\n    // about block comments for the same reason; this is the neighbouring\n    // hazard, found by walking into it.\n    chapters[]{\n      _key,\n      "heading": coalesce(heading[_key == $locale][0].value, heading[_key == "id"][0].value),\n      "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)\n    },\n    "outcome": coalesce(outcome[_key == $locale][0].value, outcome[_key == "id"][0].value),\n    // Metadata-only projections. See the note above this query.\n    "excerpt": pt::text(\n      coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)\n    ),\n    "ogImage": cover.asset->{\n      url,\n      "width": metadata.dimensions.width,\n      "height": metadata.dimensions.height\n    }\n  }\n': ProjectQueryResult;
-    '\n  *[_type == "project" && defined(slug.current)].slug.current\n': ProjectSlugsQueryResult;
-    '\n  *[_type in ["siteSettings", "studioSettings"]]\n    | order((_type == "siteSettings") desc, _updatedAt desc)[0] {\n    _id,\n    name,\n    "email": coalesce(kanal.email, email),\n    "socials": coalesce(akunSosial, socials),\n    portrait,\n    metadata,\n    "headline": coalesce(\n      heroJudul[_key == $locale][0].value,\n      heroJudul[_key == "id"][0].value,\n      headline[_key == $locale][0].value,\n      headline[_key == "id"][0].value\n    ),\n    "subline": coalesce(\n      heroSubjudul[_key == $locale][0].value,\n      heroSubjudul[_key == "id"][0].value,\n      subline[_key == $locale][0].value,\n      subline[_key == "id"][0].value\n    ),\n    "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),\n    "statement": coalesce(\n      pernyataanPemilik[_key == $locale][0].value,\n      pernyataanPemilik[_key == "id"][0].value,\n      statement[_key == $locale][0].value,\n      statement[_key == "id"][0].value\n    ),\n    "address": coalesce(alamat[_key == $locale][0].value, alamat[_key == "id"][0].value),\n    "wilayah": wilayah[]{\n      _key,\n      "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)\n    }\n  }\n': SiteSettingsQueryResult;
-    '\n  *[_type == "unit" && kunci == $unit][0] {\n    kunci,\n    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n    "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),\n    "masalah": masalah[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "caraKerja": caraKerja[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "ajakan": {\n      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)\n    }\n  }\n': UnitPageQueryResult;
-    '\n  *[_type == "side" && kunci == $side && unit->kunci == $unit][0] {\n    kunci,\n    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n    "caraMembeli": caraMembeli[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "langkahPertama": {\n      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)\n    },\n    urutan,\n    "jaringan": {\n      "caraKerja": coalesce(jaringan.caraKerja[_key == $locale][0].value, jaringan.caraKerja[_key == "id"][0].value),\n      "asalKomisi": coalesce(jaringan.asalKomisi[_key == $locale][0].value, jaringan.asalKomisi[_key == "id"][0].value),\n      "yangTidakAda": coalesce(jaringan.yangTidakAda[_key == $locale][0].value, jaringan.yangTidakAda[_key == "id"][0].value),\n      "syarat": coalesce(jaringan.syarat[_key == $locale][0].value, jaringan.syarat[_key == "id"][0].value),\n      "ajakanDaftar": {\n        "label": coalesce(jaringan.ajakanDaftar.label[_key == $locale][0].value, jaringan.ajakanDaftar.label[_key == "id"][0].value),\n        "sesudahnya": coalesce(jaringan.ajakanDaftar.sesudahnya[_key == $locale][0].value, jaringan.ajakanDaftar.sesudahnya[_key == "id"][0].value)\n      }\n    }\n  }\n': SidePageQueryResult;
+    "\n  *[_type == \"page\" && slug.current == $slug][0] {\n    _id,\n    title,\n    slug,\n    \n  content[]{\n    ...,\n    markDefs[]{\n      ...,\n      _type == \"link\" => {\n        ...,\n        internalLink->{_type, slug, title}\n      }\n    }\n  }\n,\n    \n  link {\n    ...,\n    internalLink->{_type, slug, title}\n  }\n,\n    metadata,\n    publishedAt,\n    _updatedAt\n  }\n": PageQueryResult;
+    "\n  *[_type == \"journalEntry\" && listed != false] | order(date desc) {\n    \n  _id,\n  \"slug\": slug.current,\n  date,\n  // Keep the compatibility response key used by legacy journal views.\n  \"practice\": coalesce(unit, practice),\n  \"title\": coalesce(title[_key == $locale][0].value, title[_key == \"id\"][0].value),\n  \"summary\": coalesce(summary[_key == $locale][0].value, summary[_key == \"id\"][0].value)\n\n  }\n": JournalEntriesQueryResult;
+    "\n  *[_type == \"journalEntry\" && listed != false && slug.current == $slug][0] {\n    \n  _id,\n  \"slug\": slug.current,\n  date,\n  // Keep the compatibility response key used by legacy journal views.\n  \"practice\": coalesce(unit, practice),\n  \"title\": coalesce(title[_key == $locale][0].value, title[_key == \"id\"][0].value),\n  \"summary\": coalesce(summary[_key == $locale][0].value, summary[_key == \"id\"][0].value)\n,\n    \"body\": coalesce(body[_key == $locale][0].value, body[_key == \"id\"][0].value)\n  }\n": JournalEntryQueryResult;
+    "\n  *[_type == \"journalEntry\" && listed != false].slug.current\n": JournalSlugsQueryResult;
+    "\n  *[_type == \"project\" && listed != false] | order(order asc, publishedAt desc) {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  // The response key remains practice while legacy work views are migrated.\n  // Source documents prefer the F2-02 unit field and fall back to practice.\n  \"practice\": coalesce(unit, practice),\n  cover{ ..., \"lqip\": asset->metadata.lqip },\n  \"title\": coalesce(title[_key == $locale][0].value, title[_key == \"id\"][0].value),\n  \"engagement\": coalesce(engagement[_key == $locale][0].value, engagement[_key == \"id\"][0].value),\n  \"coverAlt\": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == \"id\"][0].value)\n\n  }\n": ProjectsQueryResult;
+    "\n  *[_type == \"project\" && listed != false && featured == true] | order(order asc, publishedAt desc) {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  // The response key remains practice while legacy work views are migrated.\n  // Source documents prefer the F2-02 unit field and fall back to practice.\n  \"practice\": coalesce(unit, practice),\n  cover{ ..., \"lqip\": asset->metadata.lqip },\n  \"title\": coalesce(title[_key == $locale][0].value, title[_key == \"id\"][0].value),\n  \"engagement\": coalesce(engagement[_key == $locale][0].value, engagement[_key == \"id\"][0].value),\n  \"coverAlt\": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == \"id\"][0].value)\n\n  }\n": FeaturedProjectsQueryResult;
+    "\n  *[_type == \"project\" && listed != false && ($practice == null || coalesce(unit, practice) == $practice)]\n    | order(order asc, publishedAt desc) {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  // The response key remains practice while legacy work views are migrated.\n  // Source documents prefer the F2-02 unit field and fall back to practice.\n  \"practice\": coalesce(unit, practice),\n  cover{ ..., \"lqip\": asset->metadata.lqip },\n  \"title\": coalesce(title[_key == $locale][0].value, title[_key == \"id\"][0].value),\n  \"engagement\": coalesce(engagement[_key == $locale][0].value, engagement[_key == \"id\"][0].value),\n  \"coverAlt\": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == \"id\"][0].value)\n\n  }\n": WorkIndexQueryResult;
+    "\n  *[_type == \"project\" && listed != false]{ \"unit\": coalesce(unit, practice) }.unit\n": PracticesQueryResult;
+    "\n  *[_type == \"project\" && slug.current == $slug][0] {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  // The response key remains practice while legacy work views are migrated.\n  // Source documents prefer the F2-02 unit field and fall back to practice.\n  \"practice\": coalesce(unit, practice),\n  cover{ ..., \"lqip\": asset->metadata.lqip },\n  \"title\": coalesce(title[_key == $locale][0].value, title[_key == \"id\"][0].value),\n  \"engagement\": coalesce(engagement[_key == $locale][0].value, engagement[_key == \"id\"][0].value),\n  \"coverAlt\": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == \"id\"][0].value)\n,\n    scope,\n    publishedAt,\n    metadata,\n    _updatedAt,\n    \"body\": coalesce(body[_key == $locale][0].value, body[_key == \"id\"][0].value)[]{\n      ...,\n      markDefs[]{\n        ...,\n        _type == \"link\" => {\n          ...,\n          internalLink->{_type, slug, title}\n        }\n      }\n    },\n    gallery[]{\n      ...,\n      \"lqip\": asset->metadata.lqip,\n      \"alt\": coalesce(alt[_key == $locale][0].value, alt[_key == \"id\"][0].value)\n    },\n    // The arc. Projected inline for the same reason gallery is: the shape is\n    // used by exactly one query, so a shared constant would buy nothing.\n    // The _key taken here is the chapter's own -- the _key inside each\n    // coalesce scopes to the localized array being filtered, not to this one\n    // -- and it is what StepSequence takes as its stable key.\n    //\n    // No backticks in this comment, and that is not style. Everything from\n    // the opening backtick of defineQuery to its close is one JS template\n    // literal, so a backtick here ends the string early. Typegen then exits\n    // 0, reports \"0 queries and 27 schema types\", and every query type in\n    // sanity.types.ts silently disappears. The note above this query warns\n    // about block comments for the same reason; this is the neighbouring\n    // hazard, found by walking into it.\n    chapters[]{\n      _key,\n      \"heading\": coalesce(heading[_key == $locale][0].value, heading[_key == \"id\"][0].value),\n      \"body\": coalesce(body[_key == $locale][0].value, body[_key == \"id\"][0].value)\n    },\n    \"outcome\": coalesce(outcome[_key == $locale][0].value, outcome[_key == \"id\"][0].value),\n    // Metadata-only projections. See the note above this query.\n    \"excerpt\": pt::text(\n      coalesce(body[_key == $locale][0].value, body[_key == \"id\"][0].value)\n    ),\n    \"ogImage\": cover.asset->{\n      url,\n      \"width\": metadata.dimensions.width,\n      \"height\": metadata.dimensions.height\n    }\n  }\n": ProjectQueryResult;
+    "\n  *[_type == \"project\" && defined(slug.current)].slug.current\n": ProjectSlugsQueryResult;
+    "\n  *[_type in [\"siteSettings\", \"studioSettings\"]]\n    | order((_type == \"siteSettings\") desc, _updatedAt desc)[0] {\n    _id,\n    name,\n    \"email\": coalesce(kanal.email, email),\n    \"socials\": coalesce(akunSosial, socials),\n    portrait,\n    metadata,\n    \"headline\": coalesce(\n      heroJudul[_key == $locale][0].value,\n      heroJudul[_key == \"id\"][0].value,\n      headline[_key == $locale][0].value,\n      headline[_key == \"id\"][0].value\n    ),\n    \"subline\": coalesce(\n      heroSubjudul[_key == $locale][0].value,\n      heroSubjudul[_key == \"id\"][0].value,\n      subline[_key == $locale][0].value,\n      subline[_key == \"id\"][0].value\n    ),\n    \"portraitAlt\": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == \"id\"][0].value),\n    \"statement\": coalesce(\n      pernyataanPemilik[_key == $locale][0].value,\n      pernyataanPemilik[_key == \"id\"][0].value,\n      statement[_key == $locale][0].value,\n      statement[_key == \"id\"][0].value\n    ),\n    \"address\": coalesce(alamat[_key == $locale][0].value, alamat[_key == \"id\"][0].value),\n    \"wilayah\": wilayah[]{\n      _key,\n      \"name\": coalesce(nama[_key == $locale][0].value, nama[_key == \"id\"][0].value)\n    }\n  }\n": SiteSettingsQueryResult;
+    "\n  *[_type == \"unit\" && kunci == $unit][0] {\n    kunci,\n    \"nama\": coalesce(nama[_key == $locale][0].value, nama[_key == \"id\"][0].value),\n    \"judul\": coalesce(judul[_key == $locale][0].value, judul[_key == \"id\"][0].value),\n    \"pembuka\": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == \"id\"][0].value),\n    \"masalah\": masalah[]{\n      _key,\n      \"teks\": coalesce(teks[_key == $locale][0].value, teks[_key == \"id\"][0].value)\n    },\n    \"caraKerja\": caraKerja[]{\n      _key,\n      \"teks\": coalesce(teks[_key == $locale][0].value, teks[_key == \"id\"][0].value)\n    },\n    \"ajakan\": {\n      \"label\": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == \"id\"][0].value),\n      \"sesudahnya\": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == \"id\"][0].value)\n    }\n  }\n": UnitPageQueryResult;
+    "\n  *[_type == \"side\" && kunci == $side && unit->kunci == $unit][0] {\n    kunci,\n    \"nama\": coalesce(nama[_key == $locale][0].value, nama[_key == \"id\"][0].value),\n    \"judul\": coalesce(judul[_key == $locale][0].value, judul[_key == \"id\"][0].value),\n    \"caraMembeli\": caraMembeli[]{\n      _key,\n      \"teks\": coalesce(teks[_key == $locale][0].value, teks[_key == \"id\"][0].value)\n    },\n    \"langkahPertama\": {\n      \"label\": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == \"id\"][0].value),\n      \"sesudahnya\": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == \"id\"][0].value)\n    },\n    urutan,\n    \"jaringan\": {\n      \"caraKerja\": coalesce(jaringan.caraKerja[_key == $locale][0].value, jaringan.caraKerja[_key == \"id\"][0].value),\n      \"asalKomisi\": coalesce(jaringan.asalKomisi[_key == $locale][0].value, jaringan.asalKomisi[_key == \"id\"][0].value),\n      \"yangTidakAda\": coalesce(jaringan.yangTidakAda[_key == $locale][0].value, jaringan.yangTidakAda[_key == \"id\"][0].value),\n      \"syarat\": coalesce(jaringan.syarat[_key == $locale][0].value, jaringan.syarat[_key == \"id\"][0].value),\n      \"ajakanDaftar\": {\n        \"label\": coalesce(jaringan.ajakanDaftar.label[_key == $locale][0].value, jaringan.ajakanDaftar.label[_key == \"id\"][0].value),\n        \"sesudahnya\": coalesce(jaringan.ajakanDaftar.sesudahnya[_key == $locale][0].value, jaringan.ajakanDaftar.sesudahnya[_key == \"id\"][0].value)\n      }\n    }\n  }\n": SidePageQueryResult;
+    "\n  *[_type == \"bab\" && slug.current == $slug && sisi->kunci == $side && sisi->unit->kunci == $unit][0] {\n    _id,\n    \"slug\": slug.current,\n    \"nama\": coalesce(nama[_key == $locale][0].value, nama[_key == \"id\"][0].value),\n    \"kutipan\": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == \"id\"][0].value),\n    \"situasi\": coalesce(situasi[_key == $locale][0].value, situasi[_key == \"id\"][0].value),\n    urutan,\n    \"batas\": coalesce(batas[_key == $locale][0].value, batas[_key == \"id\"][0].value),\n    \"ajakan\": {\n      \"label\": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == \"id\"][0].value),\n      \"sesudahnya\": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == \"id\"][0].value)\n    }\n  }\n": ChapterPageQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

@@ -19,6 +19,7 @@
 import type { SchemaTypeDefinition } from 'sanity'
 
 // Import all schema definitions
+import { bab } from './bab'
 import { journalEntry } from './journalEntry'
 import { link } from './link'
 import { metadata } from './metadata'
@@ -32,6 +33,7 @@ import { unit } from './unit'
 
 // Re-export all schemas for convenience
 export {
+  bab,
   journalEntry,
   link,
   metadata,
@@ -69,5 +71,6 @@ export const schema = {
     // Arthur's content hierarchy. Side references its unit strongly.
     unit,
     side,
+    bab,
   ],
 } satisfies { types: SchemaTypeDefinition[] }
