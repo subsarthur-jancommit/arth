@@ -3,6 +3,7 @@ import { locale as localeRootParam } from 'next/root-params'
 import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
 import { Link } from '@/components/ui/link'
+import { canRenderPublicContent } from '@/lib/content/public-content-guard'
 import {
   isSideOf,
   isUnit,
@@ -76,6 +77,42 @@ function DetailNotFound() {
   return <LocalizedNotFound />
 }
 
+function chapterIsSafe(data: {
+  nama: string | null
+  kutipan: string | null
+  situasi: string | null
+  batas: string | null
+  offers: { judul: string | null; dampak: string | null }[] | null
+}): boolean {
+  return canRenderPublicContent('chapter', [
+    data.nama,
+    data.kutipan,
+    data.situasi,
+    data.batas,
+    ...(data.offers?.flatMap((offer) => [offer.judul, offer.dampak]) ?? []),
+  ])
+}
+
+function offerIsSafe(data: {
+  judul: string | null
+  dampak: string | null
+  untukSiapa: string | null
+  situasi: string | null
+  batas: string | null
+  langkah: { teks: string | null }[] | null
+  serahan: { teks: string | null }[] | null
+}): boolean {
+  return canRenderPublicContent('offer', [
+    data.judul,
+    data.dampak,
+    data.untukSiapa,
+    data.situasi,
+    data.batas,
+    ...(data.langkah?.map((item) => item.teks) ?? []),
+    ...(data.serahan?.map((item) => item.teks) ?? []),
+  ])
+}
+
 /** Reader-facing chapter and offer routes below one validated side. */
 export default async function ArthurDetailPage({
   params,
@@ -90,7 +127,7 @@ export default async function ArthurDetailPage({
 
   if (!values.offer) {
     const { data } = await fetchChapter(values, locale)
-    if (!data) return <DetailNotFound />
+    if (!data || !chapterIsSafe(data)) return <DetailNotFound />
 
     return (
       <Wrapper theme="light">
@@ -133,7 +170,7 @@ export default async function ArthurDetailPage({
   }
 
   const { data } = await fetchOffer(values as Required<RouteValues>, locale)
-  if (!data) return <DetailNotFound />
+  if (!data || !offerIsSafe(data)) return <DetailNotFound />
 
   return (
     <Wrapper theme="light">
@@ -198,7 +235,7 @@ export async function generateMetadata({ params }: ArthurDetailPageProps) {
 
   if (!values.offer) {
     const { data } = await fetchChapter(values, locale)
-    if (!data) return { robots: { index: false } }
+    if (!data || !chapterIsSafe(data)) return { robots: { index: false } }
     return generatePageMetadata({
       title: data.nama ?? 'Bab Arthur',
       ...(data.situasi || data.kutipan
@@ -209,7 +246,7 @@ export async function generateMetadata({ params }: ArthurDetailPageProps) {
   }
 
   const { data } = await fetchOffer(values as Required<RouteValues>, locale)
-  if (!data) return { robots: { index: false } }
+  if (!data || !offerIsSafe(data)) return { robots: { index: false } }
   return generatePageMetadata({
     title: data.judul ?? 'Offer Arthur',
     ...(data.dampak ? { description: data.dampak } : {}),
