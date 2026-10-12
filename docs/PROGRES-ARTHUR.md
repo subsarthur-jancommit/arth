@@ -43,11 +43,11 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 | F1-06 Navigasi Arthur                       | —   | —         | **Dalam branch** | CI dan e2e dilewati atas instruksi pemilik; `/work` dan `/journal` tetap hidup tetapi tidak dipromosikan                                                                                                                         |
 | F1-07 Bahasa bawaan dan segmen URL          | —   | —         | **Dalam branch** | CI dan e2e dilewati; ID tidak menawarkan EN yang belum disetujui, sementara halaman EN lama/pratinjau tetap menyediakan jalan kembali ke ID; usulan perubahan prosedur §3 langkah 9 menunggu pemilik                             |
 | F1-08 Kamus gerak dan nama momen            | —   | —         | **Dalam branch** | Dokumentasi spesifikasi saja; implementasi tujuh momen tetap untuk F3/F4; PR ditunda selama e2e dilarang                                                                                                                         |
-| F2-01 Pengaturan situs                      | —   | —         | **Dalam branch** | `siteSettings` dan fallback tersedia; `studioSettings` tetap baca-saja hingga migrasi yang disetujui; dummy kontak wajib diganti sebelum publikasi                                                                               |
-| F2-02 Unit dan sisi                         | —   | —         | **Dalam branch** | Skema, pembacaan fallback, dan relasi weak ke offer tersedia; delapan `project.practice` belum dipindahkan ke `unit` tanpa rencana tulis §6 yang disetujui                                                                       |
+| F2-01 Pengaturan situs                      | —   | —         | **Dalam branch** | Skema production sudah dideploy dan satu `siteSettings` ditulis sebagai draft `perlu-anda`; **NOTE:** `kontak@arth.invalid` dan alamat Contoh tetap dummy, wajib diganti sebelum publikasi kontak (U28)                          |
+| F2-02 Unit dan sisi                         | —   | —         | **Dalam branch** | Tiga unit dan enam sisi ditulis sebagai draft `perlu-anda`; sisi memakai referensi yang menguat saat unit kelak diterbitkan; delapan `project.practice` lama belum dimigrasikan (U28)                                            |
 | F2-03 Bab                                   | —   | —         | **Dalam branch** | Skema `bab`, query pembaca, relasi kuat ke sisi, dan jembatan weak yang ditambahkan bersama target F2-04 tersedia; tidak ada dokumen Sanity yang ditulis                                                                         |
 | F2-04 Offer                                 | —   | —         | **Dalam branch** | Skema delapan blok, grup Internal yang aman dibaca publik, query dengan allowlist medan, serta jembatan weak tersedia; belum ada impor atau penulisan Sanity                                                                     |
-| F2-05 Rangkaian, cara kerja, FAQ, dan page  | —   | —         | **Dalam branch** | Tiga tipe baru dan page dua bahasa tersedia; field page lama tetap tersembunyi-baca saja hingga rencana mutasi §6 disetujui; tidak ada dokumen Sanity yang ditulis                                                               |
+| F2-05 Rangkaian, cara kerja, FAQ, dan page  | —   | —         | **Dalam branch** | Satu `howWeWork` ditulis sebagai draft `perlu-anda`; sequence, FAQ, dan page belum ditulis, dan field page lama tetap tersembunyi-baca saja hingga rencana mutasi §6 disetujui (U28)                                             |
 | F2-06 Struktur Studio                       | —   | —         | **Dalam branch** | Studio mengurutkan Unit → Sisi → Bab → Offer, menyediakan daftar `Perlu Anda`, dan membuka singleton Cara kami bekerja; tidak ada pengaturan atau isi jarak jauh diubah                                                          |
 | F2-07 Kendali terbit dan medan internal     | —   | —         | **Dalam branch** | Query Arthur hanya memilih dokumen `disetujui`; medan internal tidak diproyeksikan; aksi Studio memakai administrator sebagai proxy pemilik (U27); tidak ada isi Sanity ditulis dan e2e dilewati atas instruksi pemilik          |
 | F2-10 Pratinjau di Studio                   | —   | —         | **Dalam branch** | Presentation memetakan Pengaturan situs, Cara kami bekerja, Rangkaian, Unit, Sisi, Bab, dan Offer ke rute nyata; FAQ belum dipetakan karena tidak memiliki halaman mandiri                                                       |
@@ -404,3 +404,23 @@ menulis tidak bisa diamankan oleh tombol Studio saja. Tidak ada dokumen,
 token, atau setelan Sanity yang diubah. Pemeriksaan e2e tidak dijalankan atas
 instruksi pemilik; pengujian yang dijalankan hanya schema/typegen, typecheck,
 dan test unit non-e2e.
+
+**U28 — skema production dan isi awal Arthur sudah ditulis, tetapi belum ada
+yang diterbitkan.** Atas izin tertulis pemilik pada 2026-10-12, skema lokal
+dideploy ke dataset `production` sebagai `_.schemas.default`, lalu sebelas
+dokumen dibuat dengan status `perlu-anda`: satu `siteSettings`, tiga `unit`,
+enam `side`, dan satu `howWeWork`. Snapshot raw 38 dokumen sebelum penulisan
+disimpan di luar repo dengan SHA-256
+`F76F18A72C5C2FA0EB45DEF5903C82A65195E0EBD1CC211D837DA2CC07DE6704`.
+Query perspektif published sesudah penulisan tetap menemukan **nol** dokumen
+untuk empat tipe tersebut. Karena unit juga masih draft, enam sisi memakai
+referensi `_strengthenOnPublish`: relasinya lemah sementara dan baru menguat
+ketika unit kelak diterbitkan. Validator menyatakan lima dokumen sasaran lain
+valid; keenam sisi hanya tertahan oleh target unit yang belum published.
+
+**NOTE kontak:** `kontak@arth.invalid` dan `Jl. Contoh No. 00, Kota Contoh,
+Indonesia` sengaja disimpan hanya sebagai dummy draft sesuai izin pemilik.
+Keduanya bukan kanal atau lokasi nyata, dan wajib diganti sebelum halaman
+kontak diterbitkan. Validasi dataset juga menemukan 150 galat format bahasa
+pada tujuh fixture lama (`project` dan `studioSettings`); data lama itu tidak
+termasuk izin tulis ini dan tidak diubah.
