@@ -41,7 +41,7 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 | F1-04 Rute sisi                             | #16 | —         | **Dalam PR**     | E2E lokal tidak dijalankan; deploy dan uji produksi ditunda atas instruksi pemilik                                                                                                                                               |
 | F1-05 Cara kami bekerja menggantikan studio | —   | —         | **Dalam branch** | CI dan e2e dilewati atas instruksi pemilik; isi halaman tetap ditandai contoh hingga ditinjau pemilik                                                                                                                            |
 | F1-06 Navigasi Arthur                       | —   | —         | **Dalam branch** | CI dan e2e dilewati atas instruksi pemilik; `/work` dan `/journal` tetap hidup tetapi tidak dipromosikan                                                                                                                         |
-| F1-07 Bahasa bawaan dan segmen URL          | —   | —         | **Dalam branch** | CI dan e2e dilewati; EN tidak diindeks atau ditawarkan; usulan perubahan prosedur §3 langkah 9 menunggu pemilik                                                                                                                  |
+| F1-07 Bahasa bawaan dan segmen URL          | —   | —         | **Dalam branch** | CI dan e2e dilewati; ID tidak menawarkan EN yang belum disetujui, sementara halaman EN lama/pratinjau tetap menyediakan jalan kembali ke ID; usulan perubahan prosedur §3 langkah 9 menunggu pemilik                             |
 | F1-08 Kamus gerak dan nama momen            | —   | —         | **Dalam branch** | Dokumentasi spesifikasi saja; implementasi tujuh momen tetap untuk F3/F4; PR ditunda selama e2e dilarang                                                                                                                         |
 | F2-01 Pengaturan situs                      | —   | —         | **Dalam branch** | `siteSettings` dan fallback tersedia; `studioSettings` tetap baca-saja hingga migrasi yang disetujui; dummy kontak wajib diganti sebelum publikasi                                                                               |
 | F2-02 Unit dan sisi                         | —   | —         | **Dalam branch** | Skema, pembacaan fallback, dan relasi weak ke offer tersedia; delapan `project.practice` belum dipindahkan ke `unit` tanpa rencana tulis §6 yang disetujui                                                                       |
@@ -135,9 +135,11 @@ keputusan pemilik.
 
 F1-07 mengubah bawaan aplikasi ke Indonesia, mematikan deteksi bahasa
 peramban, mengalihkan `/en` ke `/id`, memakai `id` sebagai fallback GROQ,
-menyembunyikan switcher bahasa sampai Inggris disetujui, dan mengeluarkan
-hanya halaman Indonesia dari sitemap serta hreflang. Pemeriksaan lokal lulus;
-verifikasi produksi menunggu F1-07 masuk `main`.
+tidak menawarkan Inggris dari halaman Indonesia sampai terjemahannya
+disetujui, dan mengeluarkan hanya halaman Indonesia dari sitemap serta
+hreflang. Halaman Inggris lama atau pratinjau tetap menampilkan jalan kembali
+ke Indonesia agar pembaca tidak terperangkap di locale yang belum diterbitkan.
+Pemeriksaan lokal lulus; verifikasi produksi menunggu F1-07 masuk `main`.
 
 **U3 — daftar `INDEXABLE_HOSTS` kosong.** F0-01 membangun mekanisme
 pengecualian domain, tapi daftarnya kosong karena K4 (domain akhir) belum
