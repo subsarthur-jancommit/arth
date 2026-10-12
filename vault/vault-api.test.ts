@@ -61,6 +61,8 @@ const DELIBERATE = {
   'dot-pattern:cr': 'vendored Magic UI tuning knob, default in use',
   'dot-pattern:cx': 'vendored Magic UI tuning knob, default in use',
   'dot-pattern:cy': 'vendored Magic UI tuning knob, default in use',
+  'dot-pattern:width': 'vendored Magic UI tuning knob, default in use',
+  'dot-pattern:height': 'vendored Magic UI tuning knob, default in use',
   'pixel-image:grid': 'vendored Magic UI tuning knob, default in use',
   'grid-pattern:x': 'vendored Magic UI tuning knob, default in use',
   'grid-pattern:y': 'vendored Magic UI tuning knob, default in use',

@@ -413,6 +413,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     ...(hasGallery ? [{ id: 'images', label: t('images') }] : []),
     { id: 'onward', label: t('onward') },
   ]
+  const sectionCopy = {
+    label: t('sectionCopy'),
+    copied: t('sectionCopied'),
+    failed: t('sectionCopyFailed'),
+  }
 
   return (
     <Wrapper
@@ -514,11 +519,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         <ProjectSpine
           label={t('spineLabel')}
           regions={regions}
-          copy={{
-            label: t('sectionCopy'),
-            copied: t('sectionCopied'),
-            failed: t('sectionCopyFailed'),
-          }}
+          copy={sectionCopy}
           // The case's name and year, kept once the hero has gone — Tata &
           // Gerak, stage 4. The same two facts the hero shows.
           facts={{
@@ -606,6 +607,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               data-region=""
               data-epic="project-chapters"
               label={t('arcLabel')}
+              linkSteps={sectionCopy}
               steps={chapters}
             />
           )}
