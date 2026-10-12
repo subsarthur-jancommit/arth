@@ -20,6 +20,7 @@ const SOURCE_FILE_PATTERN = /\.(?:[cm]?[jt]sx?)$/
  * indexing; allowing any other reader source would hide that release risk.
  */
 const ALLOWED_SOURCES = new Set([
+  'lib/scripts/check-public-copy.ts',
   'lib/content/public-content-guard.ts',
   'lib/content/sample-content.ts',
   'lib/integrations/sanity/schemas/internal.ts',
