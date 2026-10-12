@@ -129,4 +129,14 @@ describe('resolveHomeContent', () => {
     const resolved = resolveHomeContent('en', { socials: [{ label: 'x' }] })
     expect(resolved.socials).toEqual(resolveHomeContent('en', null).socials)
   })
+
+  it('withholds an entire settings document when one public field is a placeholder', () => {
+    const resolved = resolveHomeContent('id', {
+      headline: '[PERLU pemilik menyetujui judul]',
+      subline: 'Subjudul yang tidak boleh lolos sendiri.',
+    })
+
+    expect(resolved.fallbacks.headline).toBe(true)
+    expect(resolved.fallbacks.subline).toBe(true)
+  })
 })

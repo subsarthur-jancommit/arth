@@ -1,4 +1,5 @@
 import { BRAND_NAME } from '@/lib/brand'
+import { canRenderPublicContent } from '@/lib/content/public-content-guard'
 import type { Locale } from '@/lib/i18n/routing'
 
 /**
@@ -180,21 +181,36 @@ export function resolveHomeContent(
 ): HomeContent {
   const copy = FALLBACK_COPY[locale]
 
-  const socials = (settings?.socials ?? [])
+  const safeSettings =
+    settings &&
+    canRenderPublicContent('site settings', [
+      settings.name,
+      settings.headline,
+      settings.subline,
+      settings.email,
+      settings.address,
+      JSON.stringify(settings.statement),
+      ...(settings.socials?.flatMap((social) => [social.label, social.url]) ??
+        []),
+    ])
+      ? settings
+      : null
+
+  const socials = (safeSettings?.socials ?? [])
     .filter(
       (social): social is { label: string; url: string } =>
         usable(social.label) && usable(social.url)
     )
     .map((social) => ({ label: social.label, url: social.url }))
 
-  const name = pick(settings?.name, FALLBACK_CONTACT.name)
-  const headline = pick(settings?.headline, copy.headline)
-  const subline = pick(settings?.subline, copy.subline)
-  const cmsEmail = settings?.email
+  const name = pick(safeSettings?.name, FALLBACK_CONTACT.name)
+  const headline = pick(safeSettings?.headline, copy.headline)
+  const subline = pick(safeSettings?.subline, copy.subline)
+  const cmsEmail = safeSettings?.email
   const email = isPublishableEmail(cmsEmail)
     ? { value: cmsEmail, fromCms: true }
     : { value: FALLBACK_CONTACT.email, fromCms: false }
-  const cmsAddress = settings?.address
+  const cmsAddress = safeSettings?.address
   const isDummyAddress =
     !usable(cmsAddress) ||
     /(?:example|contoh|dummy|placeholder)/i.test(cmsAddress)
@@ -202,8 +218,8 @@ export function resolveHomeContent(
     ? { value: FALLBACK_CONTACT.address[locale], fromCms: false }
     : { value: cmsAddress, fromCms: true }
   const statement =
-    settings?.statement && settings.statement.length > 0
-      ? settings.statement
+    safeSettings?.statement && safeSettings.statement.length > 0
+      ? safeSettings.statement
       : null
 
   return {
