@@ -130,6 +130,46 @@
   }
 }
 
+.situations {
+  gap: var(--section-lead);
+}
+
+.situationList {
+  display: grid;
+  gap: mobile-vw(12px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @media (--desktop) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: desktop-vw(16px);
+  }
+}
+
+.situationList > li {
+  display: flex;
+  min-width: 0;
+  border-top: 1px solid var(--line);
+}
+
+.situationLink {
+  display: block;
+  flex-grow: 1;
+  padding-block: mobile-vw(16px);
+  color: inherit;
+  text-decoration: none;
+
+  @media (--desktop) {
+    padding-block: desktop-vw(20px);
+  }
+}
+
+.situationLink:hover,
+.situationLink:focus-visible {
+  color: var(--color-secondary);
+}
+
 /*
  * The statement's paragraphs, spaced like the prose column around them.
  *

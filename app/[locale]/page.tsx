@@ -3,11 +3,19 @@ import { getTranslations } from 'next-intl/server'
 import { locale as localeRootParam } from 'next/root-params'
 
 import { Wrapper } from '@/components/layout/wrapper'
+import { Link } from '@/components/ui/link'
 import { SanityImage } from '@/components/ui/sanity-image'
 import { SectionHeader } from '@/components/ui/section-header'
 import { resolveHomeContent } from '@/lib/content/home-fallback'
+import { canRenderPublicContent } from '@/lib/content/public-content-guard'
 import { latestWriting } from '@/lib/content/unit-writing'
-import { UNITS } from '@/lib/content/units'
+import {
+  isSideOf,
+  isUnit,
+  sideTemplate,
+  UNITS,
+  unitTemplate,
+} from '@/lib/content/units'
 import { isLocale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
 import { RichText } from '@/lib/integrations/sanity/components/rich-text'
@@ -133,6 +141,34 @@ export default async function Home() {
 
   const content = resolveHomeContent(locale, settings)
   const hasWork = projects.length > 0
+  const situations = (settings?.situasi ?? []).flatMap((situation) => {
+    const unit = situation.unit ?? undefined
+    if (!situation.teks || !isUnit(unit)) return []
+
+    const values = [situation.teks, situation.sisi, situation.bab]
+    if (
+      !canRenderPublicContent(
+        `site settings situation/${situation._key}`,
+        values
+      )
+    ) {
+      return []
+    }
+
+    const side = situation.sisi ?? undefined
+    const sidePath = isSideOf(unit, side) ? sideTemplate(unit, side) : null
+
+    return [
+      {
+        href:
+          situation.bab && sidePath
+            ? `${sidePath}/${situation.bab}`
+            : (sidePath ?? unitTemplate(unit)),
+        key: situation._key,
+        teks: situation.teks,
+      },
+    ]
+  })
 
   /*
    * The passage's reel: the same works the grid below lays out, reduced to
@@ -327,6 +363,24 @@ export default async function Home() {
             intro: tWork(`${unit}Intro`),
           }))}
         />
+
+        {situations.length > 0 && (
+          <section id="situasi" className={cn(s.section, s.situations)}>
+            <SectionHeader title="Pilih situasi" />
+            <ul className={s.situationList}>
+              {situations.map((situation) => (
+                <li key={situation.key}>
+                  <Link
+                    href={situation.href}
+                    className={cn('p-big', s.situationLink)}
+                  >
+                    {situation.teks}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         <StudioNote
           id="studio"
