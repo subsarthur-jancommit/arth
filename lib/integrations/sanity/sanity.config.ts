@@ -135,6 +135,10 @@ function resolveHref(documentType?: string, slug?: string): string | undefined {
   }
 }
 
+function previewPath(path: string): string {
+  return `/${PREVIEW_LOCALE}${path}`
+}
+
 /**
  * `null` when Sanity isn't configured (no projectId) — `defineConfig` throws
  * on an empty projectId, so this must not be called during CI/preview
@@ -190,6 +194,22 @@ export default projectId && dataset
                 route: '/:locale/halaman/:slug',
                 filter: `_type == "page" && slug.current == $slug`,
               },
+              {
+                route: '/:locale/:unit/:side/:chapter/:offer',
+                filter: `_type == "offer" && slug.current == $offer && bab->slug.current == $chapter && bab->sisi->kunci == $side && bab->sisi->unit->kunci == $unit`,
+              },
+              {
+                route: '/:locale/:unit/:side/:chapter',
+                filter: `_type == "bab" && slug.current == $chapter && sisi->kunci == $side && sisi->unit->kunci == $unit`,
+              },
+              {
+                route: '/:locale/:unit/:side',
+                filter: `_type == "side" && kunci == $side && unit->kunci == $unit`,
+              },
+              {
+                route: '/:locale/:unit',
+                filter: `_type == "unit" && kunci == $unit`,
+              },
             ]),
             locations: {
               page: defineLocations({
@@ -218,6 +238,99 @@ export default projectId && dataset
                       href: resolveHref('project', doc?.slug)!,
                     },
                   ],
+                }),
+              }),
+              siteSettings: defineLocations({
+                select: { documentId: '_id' },
+                resolve: () => ({
+                  locations: [
+                    { title: 'Beranda Arthur', href: previewPath('/') },
+                  ],
+                }),
+              }),
+              howWeWork: defineLocations({
+                select: { documentId: '_id' },
+                resolve: () => ({
+                  locations: [
+                    {
+                      title: 'Cara kami bekerja',
+                      href: previewPath('/cara-kerja'),
+                    },
+                  ],
+                }),
+              }),
+              unit: defineLocations({
+                select: { title: 'nama[0].value', unit: 'kunci' },
+                resolve: (doc) => ({
+                  locations: doc?.unit
+                    ? [
+                        {
+                          title: doc.title ?? doc.unit,
+                          href: previewPath(`/${doc.unit}`),
+                        },
+                      ]
+                    : [],
+                }),
+              }),
+              side: defineLocations({
+                select: {
+                  title: 'nama[0].value',
+                  side: 'kunci',
+                  unit: 'unit->kunci',
+                },
+                resolve: (doc) => ({
+                  locations:
+                    doc?.unit && doc.side
+                      ? [
+                          {
+                            title: doc.title ?? doc.side,
+                            href: previewPath(`/${doc.unit}/${doc.side}`),
+                          },
+                        ]
+                      : [],
+                }),
+              }),
+              bab: defineLocations({
+                select: {
+                  title: 'nama[0].value',
+                  chapter: 'slug.current',
+                  side: 'sisi->kunci',
+                  unit: 'sisi->unit->kunci',
+                },
+                resolve: (doc) => ({
+                  locations:
+                    doc?.unit && doc.side && doc.chapter
+                      ? [
+                          {
+                            title: doc.title ?? doc.chapter,
+                            href: previewPath(
+                              `/${doc.unit}/${doc.side}/${doc.chapter}`
+                            ),
+                          },
+                        ]
+                      : [],
+                }),
+              }),
+              offer: defineLocations({
+                select: {
+                  title: 'judul[0].value',
+                  offer: 'slug.current',
+                  chapter: 'bab->slug.current',
+                  side: 'bab->sisi->kunci',
+                  unit: 'bab->sisi->unit->kunci',
+                },
+                resolve: (doc) => ({
+                  locations:
+                    doc?.unit && doc.side && doc.chapter && doc.offer
+                      ? [
+                          {
+                            title: doc.title ?? doc.offer,
+                            href: previewPath(
+                              `/${doc.unit}/${doc.side}/${doc.chapter}/${doc.offer}`
+                            ),
+                          },
+                        ]
+                      : [],
                 }),
               }),
             },

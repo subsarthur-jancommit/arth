@@ -34,7 +34,14 @@ describe('sanity.config.ts locale wiring', () => {
 
     // Every page is served under a locale prefix. A route without `:locale`
     // never matches, and Presentation quietly loses its document mapping.
-    for (const route of ['/:locale/halaman/:slug', '/:locale/work/:slug']) {
+    for (const route of [
+      '/:locale/halaman/:slug',
+      '/:locale/work/:slug',
+      '/:locale/:unit',
+      '/:locale/:unit/:side',
+      '/:locale/:unit/:side/:chapter',
+      '/:locale/:unit/:side/:chapter/:offer',
+    ]) {
       expect(source, `missing Presentation route ${route}`).toContain(
         `route: '${route}'`
       )
@@ -112,5 +119,20 @@ describe('sanity.config.ts singleton structure', () => {
     expect(source).toContain('PublishApprovedArthurDocumentAction')
     expect(source).toContain("action.action !== 'publish'")
     expect(source).toContain('isArthurContentType(schemaType)')
+  })
+
+  it('maps every routable Arthur document to Presentation', async () => {
+    const source = await readConfig()
+
+    for (const type of [
+      'siteSettings',
+      'howWeWork',
+      'unit',
+      'side',
+      'bab',
+      'offer',
+    ]) {
+      expect(source).toContain(`${type}: defineLocations`)
+    }
   })
 })
