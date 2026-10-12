@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+import { canRenderPublicContent } from '@/lib/content/public-content-guard'
 import type { Side, Unit } from '@/lib/content/units'
 import type { Locale } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
@@ -94,7 +95,20 @@ export async function unitContent(
   })
   const parsed = unitContentSchema.safeParse(data)
 
-  return parsed.success && parsed.data.kunci === unit ? parsed.data : null
+  if (!parsed.success || parsed.data.kunci !== unit) return null
+
+  const values = [
+    parsed.data.nama,
+    parsed.data.judul,
+    parsed.data.pembuka,
+    ...(parsed.data.masalah?.map((item) => item.teks) ?? []),
+    ...(parsed.data.caraKerja?.map((item) => item.teks) ?? []),
+    ...(parsed.data.sisi?.flatMap((side) => [side.nama, side.judul]) ?? []),
+    parsed.data.ajakan?.label,
+    parsed.data.ajakan?.sesudahnya,
+  ]
+
+  return canRenderPublicContent(`unit/${unit}`, values) ? parsed.data : null
 }
 
 /**
@@ -121,5 +135,24 @@ export async function sideContent(
   })
   const parsed = sideContentSchema.safeParse(data)
 
-  return parsed.success && parsed.data.kunci === side ? parsed.data : null
+  if (!parsed.success || parsed.data.kunci !== side) return null
+
+  const values = [
+    parsed.data.nama,
+    parsed.data.judul,
+    ...(parsed.data.caraMembeli?.map((item) => item.teks) ?? []),
+    parsed.data.langkahPertama?.label,
+    parsed.data.langkahPertama?.sesudahnya,
+    ...(parsed.data.bab?.flatMap((bab) => [bab.nama, bab.kutipan]) ?? []),
+    parsed.data.jaringan?.caraKerja,
+    parsed.data.jaringan?.asalKomisi,
+    parsed.data.jaringan?.yangTidakAda,
+    parsed.data.jaringan?.syarat,
+    parsed.data.jaringan?.ajakanDaftar?.label,
+    parsed.data.jaringan?.ajakanDaftar?.sesudahnya,
+  ]
+
+  return canRenderPublicContent(`side/${unit}/${side}`, values)
+    ? parsed.data
+    : null
 }

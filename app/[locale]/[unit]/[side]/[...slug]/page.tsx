@@ -19,6 +19,11 @@ import {
 } from '@/lib/integrations/sanity/queries'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 
+// Bab dan offer datang dari dokumen Sanity, jadi nilainya tidak tersedia saat
+// prerender statis. Blocking menjaga parameter catch-all tetap legal di bawah
+// Cache Components dan tidak memaksa shell kosong untuk URL pembaca.
+export const instant = false
+
 interface ArthurDetailPageProps {
   params: Promise<{ unit: string; side: string; slug: string[] }>
 }
