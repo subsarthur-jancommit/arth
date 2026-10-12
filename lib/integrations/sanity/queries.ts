@@ -332,6 +332,16 @@ export const unitPageQuery = defineQuery(`
       _key,
       "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
     },
+    "sisi": *[
+      _type == "side" &&
+      statusTinjauan == "disetujui" &&
+      unit._ref == ^._id
+    ] | order(urutan asc) {
+      _id,
+      kunci,
+      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
+      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value)
+    },
     "ajakan": {
       "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),
       "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)

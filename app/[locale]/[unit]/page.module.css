@@ -31,6 +31,42 @@
   max-width: min(100%, calc(720 / 1440 * 100vw));
 }
 
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: calc(12 / 375 * 100vw);
+}
+
+.block + .block {
+  margin-top: calc(24 / 375 * 100vw);
+  padding-top: calc(24 / 375 * 100vw);
+  border-top: 1px solid var(--line);
+}
+
+.block ul {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 / 375 * 100vw);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (--desktop) {
+  .block {
+    gap: calc(12 / 1440 * 100vw);
+  }
+
+  .block + .block {
+    margin-top: calc(24 / 1440 * 100vw);
+    padding-top: calc(24 / 1440 * 100vw);
+  }
+
+  .block ul {
+    gap: calc(8 / 1440 * 100vw);
+  }
+}
+
 /*
  * The way off the page. A row of chips rather than a list, because there are
  * two of them and they are peers — the same shape the project page uses for

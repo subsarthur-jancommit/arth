@@ -29,6 +29,7 @@ import {
   sequencesQuery,
   sidePageQuery,
   siteSettingsQuery,
+  unitPageQuery,
 } from './queries'
 
 /** Every query that projects a localized field. */
@@ -143,6 +144,12 @@ describe('chapter query', () => {
     expect(sidePageQuery).toContain('_type == "bab"')
     expect(sidePageQuery).toContain('sisi._ref == ^._id')
     expect(sidePageQuery).toContain('statusTinjauan == "disetujui"')
+  })
+
+  it('lists only approved sides belonging to a unit', () => {
+    expect(unitPageQuery).toContain('_type == "side"')
+    expect(unitPageQuery).toContain('unit._ref == ^._id')
+    expect(unitPageQuery).toContain('statusTinjauan == "disetujui"')
   })
 
   it('selects only fields that are safe to render', () => {

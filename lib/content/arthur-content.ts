@@ -25,6 +25,16 @@ const unitContentSchema = z.object({
   pembuka: textSchema.nullable(),
   masalah: z.array(pointSchema).nullable(),
   caraKerja: z.array(pointSchema).nullable(),
+  sisi: z
+    .array(
+      z.object({
+        _id: z.string(),
+        kunci: textSchema,
+        nama: textSchema.nullable(),
+        judul: textSchema.nullable(),
+      })
+    )
+    .nullable(),
   ajakan: callToActionSchema.nullable(),
 })
 

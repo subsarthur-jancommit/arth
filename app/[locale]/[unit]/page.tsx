@@ -103,6 +103,17 @@ export default async function UnitPage({ params }: UnitPageProps) {
     unitContent(locale, unit),
   ])
   const title = content?.judul ?? t(unit)
+  const visibleSides = content?.sisi?.length
+    ? content.sisi.map((side) => ({
+        id: side._id,
+        kunci: side.kunci,
+        label: side.nama ?? side.judul ?? side.kunci,
+      }))
+    : SIDES[unit].map((side) => ({
+        id: side,
+        kunci: side,
+        label: tSide(side),
+      }))
 
   return (
     <Wrapper theme="light">
@@ -129,29 +140,54 @@ export default async function UnitPage({ params }: UnitPageProps) {
         {content?.pembuka ? (
           <p className={cn('p-big', s.introduction)}>{content.pembuka}</p>
         ) : null}
-        <SampleContent
-          label={tSample('label')}
-          note={tSample('unitNote')}
-          className={s.sample}
-        >
-          <p className="p-big">
-            {ownerPlaceholder(t('statementNeed'), t('statementExample'))}
-          </p>
-        </SampleContent>
+        {content ? (
+          <section className={s.sample}>
+            {content.masalah && content.masalah.length > 0 && (
+              <section className={s.block}>
+                <h2 className="caption">Situasi yang kami baca</h2>
+                <ul className="p-big">
+                  {content.masalah.map((item) => (
+                    <li key={item._key}>{item.teks}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
+            {content.caraKerja && content.caraKerja.length > 0 && (
+              <section className={s.block}>
+                <h2 className="caption">Cara kami bekerja</h2>
+                <ul className="p-big">
+                  {content.caraKerja.map((item) => (
+                    <li key={item._key}>{item.teks}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </section>
+        ) : (
+          <SampleContent
+            label={tSample('label')}
+            note={tSample('unitNote')}
+            className={s.sample}
+          >
+            <p className="p-big">
+              {ownerPlaceholder(t('statementNeed'), t('statementExample'))}
+            </p>
+          </SampleContent>
+        )}
 
         <nav
           aria-label={t('sidesLabel', { unit: t(unit) })}
           className={s.others}
         >
-          {SIDES[unit].map((side) => (
+          {visibleSides.map((side) => (
             <Link
-              key={side}
-              href={sideTemplate(unit, side)}
+              key={side.id}
+              href={sideTemplate(unit, side.kunci)}
               className={cn('caption', s.other)}
               data-press="chip"
               data-intent=""
             >
-              {tSide(side)}
+              {side.label}
             </Link>
           ))}
         </nav>
