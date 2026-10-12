@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity'
 
 import { localeValue, requireIndonesian } from '../utils/i18n-array'
+import { forbidPlaceholders, internalFields } from './internal'
 
 const DEFAULT_LOCALE = 'id'
 
@@ -27,6 +28,7 @@ const legacyFields = [
     type: 'string',
     hidden: true,
     readOnly: true,
+    group: 'legacy',
     deprecated: {
       reason:
         'Gunakan Judul dua bahasa. Migrasi data dilakukan lewat prosedur §6.',
@@ -38,6 +40,7 @@ const legacyFields = [
     type: 'richText',
     hidden: true,
     readOnly: true,
+    group: 'legacy',
     deprecated: {
       reason:
         'Gunakan Isi dua bahasa. Migrasi data dilakukan lewat prosedur §6.',
@@ -49,6 +52,7 @@ const legacyFields = [
     type: 'link',
     hidden: true,
     readOnly: true,
+    group: 'legacy',
     deprecated: { reason: 'Halaman tetap tidak lagi membutuhkan tautan.' },
   }),
 ]
@@ -57,6 +61,12 @@ export const page = defineType({
   name: 'page',
   title: 'Page',
   type: 'document',
+  groups: [
+    { name: 'isi', title: 'Isi', default: true },
+    { name: 'internal', title: 'Internal' },
+    { name: 'legacy', title: 'Warisan' },
+  ],
+  validation: (Rule) => Rule.custom(forbidPlaceholders),
   fields: [
     defineField({
       name: 'slug',
@@ -99,6 +109,7 @@ export const page = defineType({
     }),
     ...readerFields,
     ...legacyFields,
+    ...internalFields(),
   ],
   preview: {
     select: {

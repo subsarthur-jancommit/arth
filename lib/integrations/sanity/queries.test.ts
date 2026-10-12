@@ -122,12 +122,12 @@ describe('offer query', () => {
     for (const field of [
       'idKatalog',
       'jejakSumber',
-      'statusTinjauan',
       'ditulisOleh',
       'tanggalDisetujui',
     ]) {
       expect(offerPageQuery).not.toContain(field)
     }
+    expect(offerPageQuery).toContain('statusTinjauan == "disetujui"')
   })
 })
 
@@ -148,8 +148,9 @@ describe('chapter query', () => {
 describe('site settings migration', () => {
   it('prefers siteSettings while keeping the old singleton readable', () => {
     expect(siteSettingsQuery).toContain(
-      '_type in ["siteSettings", "studioSettings"]'
+      '_type == "siteSettings" && statusTinjauan == "disetujui"'
     )
+    expect(siteSettingsQuery).toContain('_type == "studioSettings"')
     expect(siteSettingsQuery).toContain(
       'order((_type == "siteSettings") desc, _updatedAt desc)'
     )

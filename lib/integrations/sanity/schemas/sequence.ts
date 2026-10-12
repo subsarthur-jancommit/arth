@@ -1,6 +1,7 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
 import { localeValue, requireIndonesian } from '../utils/i18n-array'
+import { forbidPlaceholders, internalFields } from './internal'
 
 const DEFAULT_LOCALE = 'id'
 
@@ -9,6 +10,11 @@ export const sequence = defineType({
   name: 'sequence',
   title: 'Rangkaian tiga unit',
   type: 'document',
+  groups: [
+    { name: 'isi', title: 'Isi', default: true },
+    { name: 'internal', title: 'Internal' },
+  ],
+  validation: (Rule) => Rule.custom(forbidPlaceholders),
   fields: [
     defineField({
       name: 'situasi',
@@ -67,6 +73,7 @@ export const sequence = defineType({
       validation: (Rule) => Rule.required().custom(requireIndonesian),
     }),
     defineField({ name: 'metadata', title: 'Metadata', type: 'metadata' }),
+    ...internalFields(),
   ],
   preview: {
     select: { title: 'situasi' },

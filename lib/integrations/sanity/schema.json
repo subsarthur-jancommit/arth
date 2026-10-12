@@ -603,6 +603,93 @@
           "name": "metadata"
         },
         "optional": true
+      },
+      "jejakSumber": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "blok": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "sumber": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "rujukan": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "statusTinjauan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "usulan"
+            },
+            {
+              "type": "string",
+              "value": "dipilih"
+            },
+            {
+              "type": "string",
+              "value": "perlu-anda"
+            },
+            {
+              "type": "string",
+              "value": "disetujui"
+            },
+            {
+              "type": "string",
+              "value": "ditahan"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "ditulisOleh": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "tanggalDisetujui": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
       }
     }
   },
@@ -970,6 +1057,93 @@
           "name": "metadata"
         },
         "optional": true
+      },
+      "jejakSumber": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "blok": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "sumber": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "rujukan": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "statusTinjauan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "usulan"
+            },
+            {
+              "type": "string",
+              "value": "dipilih"
+            },
+            {
+              "type": "string",
+              "value": "perlu-anda"
+            },
+            {
+              "type": "string",
+              "value": "disetujui"
+            },
+            {
+              "type": "string",
+              "value": "ditahan"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "ditulisOleh": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "tanggalDisetujui": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
       }
     }
   },
@@ -1150,6 +1324,93 @@
         "value": {
           "type": "inline",
           "name": "metadata"
+        },
+        "optional": true
+      },
+      "jejakSumber": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "blok": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "sumber": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "rujukan": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "statusTinjauan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "usulan"
+            },
+            {
+              "type": "string",
+              "value": "dipilih"
+            },
+            {
+              "type": "string",
+              "value": "perlu-anda"
+            },
+            {
+              "type": "string",
+              "value": "disetujui"
+            },
+            {
+              "type": "string",
+              "value": "ditahan"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "ditulisOleh": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "tanggalDisetujui": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
         },
         "optional": true
       }
@@ -1388,6 +1649,93 @@
         "value": {
           "type": "inline",
           "name": "metadata"
+        },
+        "optional": true
+      },
+      "jejakSumber": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "blok": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "sumber": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "rujukan": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "statusTinjauan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "usulan"
+            },
+            {
+              "type": "string",
+              "value": "dipilih"
+            },
+            {
+              "type": "string",
+              "value": "perlu-anda"
+            },
+            {
+              "type": "string",
+              "value": "disetujui"
+            },
+            {
+              "type": "string",
+              "value": "ditahan"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "ditulisOleh": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "tanggalDisetujui": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
         },
         "optional": true
       }
@@ -1994,6 +2342,100 @@
           "name": "metadata"
         },
         "optional": true
+      },
+      "idKatalog": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "jejakSumber": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "blok": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "sumber": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "rujukan": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "statusTinjauan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "usulan"
+            },
+            {
+              "type": "string",
+              "value": "dipilih"
+            },
+            {
+              "type": "string",
+              "value": "perlu-anda"
+            },
+            {
+              "type": "string",
+              "value": "disetujui"
+            },
+            {
+              "type": "string",
+              "value": "ditahan"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "ditulisOleh": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "tanggalDisetujui": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
       }
     }
   },
@@ -2225,6 +2667,93 @@
           "name": "metadata"
         },
         "optional": true
+      },
+      "jejakSumber": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "blok": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "sumber": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "rujukan": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "statusTinjauan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "usulan"
+            },
+            {
+              "type": "string",
+              "value": "dipilih"
+            },
+            {
+              "type": "string",
+              "value": "perlu-anda"
+            },
+            {
+              "type": "string",
+              "value": "disetujui"
+            },
+            {
+              "type": "string",
+              "value": "ditahan"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "ditulisOleh": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "tanggalDisetujui": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
       }
     }
   },
@@ -2286,6 +2815,93 @@
           "of": {
             "type": "string"
           }
+        },
+        "optional": true
+      },
+      "jejakSumber": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "blok": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "sumber": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "rujukan": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "statusTinjauan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "usulan"
+            },
+            {
+              "type": "string",
+              "value": "dipilih"
+            },
+            {
+              "type": "string",
+              "value": "perlu-anda"
+            },
+            {
+              "type": "string",
+              "value": "disetujui"
+            },
+            {
+              "type": "string",
+              "value": "ditahan"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "ditulisOleh": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "tanggalDisetujui": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
         },
         "optional": true
       }
@@ -3241,6 +3857,93 @@
         "value": {
           "type": "inline",
           "name": "link"
+        },
+        "optional": true
+      },
+      "jejakSumber": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "blok": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "sumber": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "rujukan": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "statusTinjauan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "usulan"
+            },
+            {
+              "type": "string",
+              "value": "dipilih"
+            },
+            {
+              "type": "string",
+              "value": "perlu-anda"
+            },
+            {
+              "type": "string",
+              "value": "disetujui"
+            },
+            {
+              "type": "string",
+              "value": "ditahan"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "ditulisOleh": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "tanggalDisetujui": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
         },
         "optional": true
       }

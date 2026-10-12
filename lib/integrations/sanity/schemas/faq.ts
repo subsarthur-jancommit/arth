@@ -1,6 +1,7 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
 import { localeValue, requireIndonesian } from '../utils/i18n-array'
+import { forbidPlaceholders, internalFields } from './internal'
 
 const DEFAULT_LOCALE = 'id'
 
@@ -9,6 +10,11 @@ export const faq = defineType({
   name: 'faq',
   title: 'Tanya jawab',
   type: 'document',
+  groups: [
+    { name: 'isi', title: 'Isi', default: true },
+    { name: 'internal', title: 'Internal' },
+  ],
+  validation: (Rule) => Rule.custom(forbidPlaceholders),
   fields: [
     defineField({
       name: 'pertanyaan',
@@ -38,6 +44,7 @@ export const faq = defineType({
       ],
       validation: (Rule) => Rule.required().min(1),
     }),
+    ...internalFields(),
   ],
   preview: {
     select: { title: 'pertanyaan' },

@@ -16,6 +16,11 @@ import {
 import type { StructureResolver } from 'sanity/structure'
 import { structureTool } from 'sanity/structure'
 
+import {
+  ApproveArthurDocumentAction,
+  isArthurContentType,
+  PublishApprovedArthurDocumentAction,
+} from './document-actions'
 import { apiVersion, dataset, previewURL, projectId } from './env'
 import { schema } from './schemas'
 
@@ -150,6 +155,21 @@ export default projectId && dataset
       projectId,
       dataset,
       schema,
+      document: {
+        actions: (previous, { schemaType }) => {
+          if (!isArthurContentType(schemaType)) return previous
+
+          const withoutPublish = previous.filter(
+            (action) => action.action !== 'publish'
+          )
+
+          return [
+            ...withoutPublish,
+            ApproveArthurDocumentAction,
+            PublishApprovedArthurDocumentAction,
+          ]
+        },
+      },
       plugins: [
         // Presentation tool for visual editing
         presentationTool({

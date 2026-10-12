@@ -1,6 +1,7 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
 import { localeValue, requireIndonesian } from '../utils/i18n-array'
+import { forbidPlaceholders, internalFields } from './internal'
 
 const DEFAULT_LOCALE = 'id'
 
@@ -36,6 +37,7 @@ export const offer = defineType({
     { name: 'isi', title: 'Isi', default: true },
     { name: 'internal', title: 'Internal' },
   ],
+  validation: (Rule) => Rule.custom(forbidPlaceholders),
   fields: [
     defineField({
       name: 'bab',
@@ -163,65 +165,7 @@ export const offer = defineType({
       type: 'metadata',
       group: 'isi',
     }),
-    defineField({
-      name: 'idKatalog',
-      title: 'ID katalog',
-      description:
-        'ID sumber seperti RAK-03. Aman dibaca publik, tetapi tidak dirender.',
-      type: 'string',
-      group: 'internal',
-    }),
-    defineField({
-      name: 'jejakSumber',
-      title: 'Jejak sumber',
-      description: 'Dokumen, tab, dan ID atau baris yang dipakai setiap blok.',
-      type: 'array',
-      of: [
-        defineArrayMember({
-          type: 'object',
-          fields: [
-            defineField({ name: 'blok', title: 'Blok', type: 'string' }),
-            defineField({ name: 'sumber', title: 'Sumber', type: 'string' }),
-            defineField({
-              name: 'rujukan',
-              title: 'ID atau baris',
-              type: 'string',
-            }),
-          ],
-          preview: { select: { title: 'blok', subtitle: 'rujukan' } },
-        }),
-      ],
-      group: 'internal',
-    }),
-    defineField({
-      name: 'statusTinjauan',
-      title: 'Status tinjauan',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Usulan', value: 'usulan' },
-          { title: 'Dipilih', value: 'dipilih' },
-          { title: 'Perlu Anda', value: 'perlu-anda' },
-          { title: 'Disetujui', value: 'disetujui' },
-          { title: 'Ditahan', value: 'ditahan' },
-        ],
-        layout: 'radio',
-      },
-      initialValue: 'usulan',
-      group: 'internal',
-    }),
-    defineField({
-      name: 'ditulisOleh',
-      title: 'Ditulis oleh',
-      type: 'string',
-      group: 'internal',
-    }),
-    defineField({
-      name: 'tanggalDisetujui',
-      title: 'Tanggal disetujui',
-      type: 'date',
-      group: 'internal',
-    }),
+    ...internalFields({ catalogId: true }),
   ],
   preview: {
     select: { title: 'judul', subtitle: 'idKatalog' },

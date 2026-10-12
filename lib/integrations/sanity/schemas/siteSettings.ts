@@ -2,11 +2,18 @@ import { defineArrayMember, defineField, defineType } from 'sanity'
 
 import { UNIT_STUDIO_TITLES, UNITS } from '@/lib/content/units'
 
+import { forbidPlaceholders, internalFields } from './internal'
+
 /** Arthur-wide copy and contact facts. The Studio Structure fixes this as one document. */
 export const siteSettings = defineType({
   name: 'siteSettings',
   title: 'Pengaturan Arthur',
   type: 'document',
+  groups: [
+    { name: 'isi', title: 'Isi', default: true },
+    { name: 'internal', title: 'Internal' },
+  ],
+  validation: (Rule) => Rule.custom(forbidPlaceholders),
   fields: [
     defineField({
       name: 'name',
@@ -217,6 +224,7 @@ export const siteSettings = defineType({
       description:
         'Metadata untuk halaman yang belum memiliki metadata sendiri.',
     }),
+    ...internalFields(),
   ],
   preview: {
     select: { title: 'name' },

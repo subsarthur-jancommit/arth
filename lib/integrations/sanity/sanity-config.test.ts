@@ -104,4 +104,13 @@ describe('sanity.config.ts singleton structure', () => {
     expect(source).toContain("schemaType('howWeWork')")
     expect(source).toContain("documentId('howWeWork')")
   })
+
+  it('replaces direct publishing with Arthur review actions', async () => {
+    const source = await readConfig()
+
+    expect(source).toContain('ApproveArthurDocumentAction')
+    expect(source).toContain('PublishApprovedArthurDocumentAction')
+    expect(source).toContain("action.action !== 'publish'")
+    expect(source).toContain('isArthurContentType(schemaType)')
+  })
 })

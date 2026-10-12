@@ -82,7 +82,7 @@ describe('schema coverage', () => {
     const registered = new Set<string>(schema.types.map((type) => type.name))
     // The plugin-generated `internationalizedArray*` types are registered in
     // `sanity.config.ts`, not here, and have no file in this directory.
-    const ignored = new Set(['index', 'schema-coverage.test'])
+    const ignored = new Set(['index', 'internal', 'schema-coverage.test'])
 
     const orphans: string[] = []
     for await (const file of new Glob('*.ts').scan({ cwd: HERE })) {

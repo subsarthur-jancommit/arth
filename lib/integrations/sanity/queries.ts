@@ -2,7 +2,7 @@ import { defineQuery } from 'next-sanity'
 
 // Page queries
 export const pageQuery = defineQuery(`
-  *[_type == "page" && slug.current == $slug][0] {
+  *[_type == "page" && statusTinjauan == "disetujui" && slug.current == $slug][0] {
     _id,
     "title": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value, title),
     slug,
@@ -279,7 +279,10 @@ export const projectSlugsQuery = defineQuery(`
  * one existing production fixture is migrated through procedure §6.
  */
 export const siteSettingsQuery = defineQuery(`
-  *[_type in ["siteSettings", "studioSettings"]]
+  *[
+    (_type == "siteSettings" && statusTinjauan == "disetujui") ||
+    _type == "studioSettings"
+  ]
     | order((_type == "siteSettings") desc, _updatedAt desc)[0] {
     _id,
     name,
@@ -316,7 +319,7 @@ export const siteSettingsQuery = defineQuery(`
 
 /** Published reader-facing content for one Arthur unit. */
 export const unitPageQuery = defineQuery(`
-  *[_type == "unit" && kunci == $unit][0] {
+  *[_type == "unit" && statusTinjauan == "disetujui" && kunci == $unit][0] {
     kunci,
     "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
     "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
@@ -338,7 +341,7 @@ export const unitPageQuery = defineQuery(`
 
 /** Published reader-facing content for one side of an Arthur unit. */
 export const sidePageQuery = defineQuery(`
-  *[_type == "side" && kunci == $side && unit->kunci == $unit][0] {
+  *[_type == "side" && statusTinjauan == "disetujui" && kunci == $side && unit->kunci == $unit][0] {
     kunci,
     "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
     "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
@@ -366,7 +369,7 @@ export const sidePageQuery = defineQuery(`
 
 /** Published chapter content for the future nested Arthur route. */
 export const chapterPageQuery = defineQuery(`
-  *[_type == "bab" && slug.current == $slug && sisi->kunci == $side && sisi->unit->kunci == $unit][0] {
+  *[_type == "bab" && statusTinjauan == "disetujui" && slug.current == $slug && sisi->kunci == $side && sisi->unit->kunci == $unit][0] {
     _id,
     "slug": slug.current,
     "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
@@ -383,7 +386,7 @@ export const chapterPageQuery = defineQuery(`
 
 /** Published reader-facing content for one Arthur offer. */
 export const offerPageQuery = defineQuery(`
-  *[_type == "offer" && slug.current == $slug && bab->slug.current == $chapter && bab->sisi->kunci == $side && bab->sisi->unit->kunci == $unit][0] {
+  *[_type == "offer" && statusTinjauan == "disetujui" && slug.current == $slug && bab->slug.current == $chapter && bab->sisi->kunci == $side && bab->sisi->unit->kunci == $unit][0] {
     _id,
     "slug": slug.current,
     "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
@@ -418,7 +421,7 @@ export const offerPageQuery = defineQuery(`
 
 /** All published three-unit sequences for the dedicated Arthur route. */
 export const sequencesQuery = defineQuery(`
-  *[_type == "sequence"] {
+  *[_type == "sequence" && statusTinjauan == "disetujui"] {
     _id,
     "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
     "langkah": langkah[]{
@@ -438,7 +441,7 @@ export const sequencesQuery = defineQuery(`
 
 /** The Arthur singleton behind the future Cara kami bekerja route. */
 export const howWeWorkQuery = defineQuery(`
-  *[_type == "howWeWork"][0] {
+  *[_type == "howWeWork" && statusTinjauan == "disetujui"][0] {
     _id,
     "janji": janji[]{
       _key,
@@ -459,7 +462,7 @@ export const howWeWorkQuery = defineQuery(`
 
 /** Short FAQ entries mounted on a concrete locale-free path. */
 export const faqsForPathQuery = defineQuery(`
-  *[_type == "faq" && $path in halaman] {
+  *[_type == "faq" && statusTinjauan == "disetujui" && $path in halaman] {
     _id,
     "pertanyaan": coalesce(pertanyaan[_key == $locale][0].value, pertanyaan[_key == "id"][0].value),
     "jawaban": coalesce(jawaban[_key == $locale][0].value, jawaban[_key == "id"][0].value)
