@@ -377,6 +377,18 @@ export const chapterPageQuery = defineQuery(`
     "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
     urutan,
     "batas": coalesce(batas[_key == $locale][0].value, batas[_key == "id"][0].value),
+    "offers": *[
+      _type == "offer" &&
+      statusTinjauan == "disetujui" &&
+      bab._ref == ^._id
+    ] | order(urutan asc) {
+      _id,
+      "slug": slug.current,
+      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+      "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),
+      pasar,
+      urutan
+    },
     "ajakan": {
       "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),
       "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)

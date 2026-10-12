@@ -143,6 +143,13 @@ describe('chapter query', () => {
     // keeps that later boundary additive instead of trying to contain `...`.
     expect(chapterPageQuery).not.toContain('...')
   })
+
+  it('lists only approved offer cards belonging to the chapter', () => {
+    expect(chapterPageQuery).toContain('_type == "offer"')
+    expect(chapterPageQuery).toContain('bab._ref == ^._id')
+    expect(chapterPageQuery).toContain('statusTinjauan == "disetujui"')
+    expect(chapterPageQuery).toContain('order(urutan asc)')
+  })
 })
 
 describe('site settings migration', () => {
