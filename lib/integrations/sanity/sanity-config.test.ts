@@ -127,6 +127,7 @@ describe('sanity.config.ts singleton structure', () => {
     for (const type of [
       'siteSettings',
       'howWeWork',
+      'sequence',
       'unit',
       'side',
       'bab',

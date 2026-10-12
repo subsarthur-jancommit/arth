@@ -195,6 +195,10 @@ export default projectId && dataset
                 filter: `_type == "page" && slug.current == $slug`,
               },
               {
+                route: '/:locale/satu-klien-tiga-unit',
+                filter: `_type == "sequence"`,
+              },
+              {
                 route: '/:locale/:unit/:side/:chapter/:offer',
                 filter: `_type == "offer" && slug.current == $offer && bab->slug.current == $chapter && bab->sisi->kunci == $side && bab->sisi->unit->kunci == $unit`,
               },
@@ -255,6 +259,17 @@ export default projectId && dataset
                     {
                       title: 'Cara kami bekerja',
                       href: previewPath('/cara-kerja'),
+                    },
+                  ],
+                }),
+              }),
+              sequence: defineLocations({
+                select: { documentId: '_id' },
+                resolve: () => ({
+                  locations: [
+                    {
+                      title: 'Satu klien, tiga unit',
+                      href: previewPath('/satu-klien-tiga-unit'),
                     },
                   ],
                 }),
