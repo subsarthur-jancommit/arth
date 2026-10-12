@@ -1,3 +1,4 @@
+import cn from 'clsx'
 import { draftMode } from 'next/headers'
 import { locale as localeRootParam } from 'next/root-params'
 
@@ -6,29 +7,47 @@ import { Wrapper } from '@/components/layout/wrapper'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
-import { howWeWorkQuery } from '@/lib/integrations/sanity/queries'
+import {
+  howWeWorkPreviewQuery,
+  howWeWorkQuery,
+} from '@/lib/integrations/sanity/queries'
 import { generatePageMetadata } from '@/lib/utils/metadata'
+import { PromiseStamp, type WrittenPromise } from '@/vault/blocks/promise-stamp'
+import { Dimension } from '@/vault/motion/dimension'
+import { Plumb } from '@/vault/motion/plumb'
+import { Reveal } from '@/vault/motion/reveal'
 
-const fetchHowWeWork = async (
-  locale: Locale,
-  perspective: 'published' | 'drafts',
-  stega: boolean
-) => {
+import s from './page.module.css'
+
+const fetchPublishedHowWeWork = async (locale: Locale) => {
   'use cache'
 
   return sanityFetch({
     query: howWeWorkQuery,
     params: { locale },
-    perspective,
-    stega,
+    perspective: 'published',
+    stega: false,
+  })
+}
+
+const fetchPreviewHowWeWork = async (locale: Locale) => {
+  'use cache'
+
+  return sanityFetch({
+    query: howWeWorkPreviewQuery,
+    params: { locale },
+    perspective: 'drafts',
+    stega: true,
   })
 }
 
 async function howWeWorkForRequest(locale: Locale) {
-  const { isEnabled } = await draftMode()
-  return isEnabled
-    ? fetchHowWeWork(locale, 'drafts', true)
-    : fetchHowWeWork(locale, 'published', false)
+  const { isEnabled: isDraftMode } = await draftMode()
+  const { data } = isDraftMode
+    ? await fetchPreviewHowWeWork(locale)
+    : await fetchPublishedHowWeWork(locale)
+
+  return { data, isDraftMode }
 }
 
 export default async function HowWeWorkPage() {
@@ -40,58 +59,127 @@ export default async function HowWeWorkPage() {
 
   if (!data) return <LocalizedNotFound />
 
+  const promises: WrittenPromise[] =
+    data.janji?.flatMap((promise) =>
+      promise.judul && promise.kalimat
+        ? [
+            {
+              id: promise._key,
+              title: promise.judul,
+              body: promise.kalimat,
+            },
+          ]
+        : []
+    ) ?? []
+  const terms = [
+    { id: 'hak-milik', title: 'Hak milik klien', body: data.hakMilikKlien },
+    {
+      id: 'pengungkapan-komisi',
+      title: 'Pengungkapan komisi',
+      body: data.pengungkapanKomisi,
+    },
+    {
+      id: 'yang-tidak-dijual',
+      title: 'Yang tidak kami jual',
+      body: data.yangTidakDijual,
+    },
+  ].flatMap((term) => (term.body ? [{ ...term, body: term.body }] : []))
+  const regions =
+    data.wilayah?.flatMap((region) =>
+      region.nama ? [{ id: region._key, name: region.nama }] : []
+    ) ?? []
+  const regionMarks =
+    regions.length > 2
+      ? regions
+          .slice(1, -1)
+          .map((_, index) => (index + 1) / (regions.length - 1))
+      : []
+
   return (
     <Wrapper theme="light">
-      <article className="flex grow flex-col gap-gap dr-px-16 dr-py-32">
-        <header className="gap-4 flex max-w-[60ch] flex-col">
-          <p className="caption">Cara kami bekerja</p>
-          <h1>Janji yang dapat Anda pegang</h1>
+      <article className={s.page}>
+        <header className={s.hero}>
+          <p className={cn('caption', s.eyebrow)}>Arthur</p>
+          <h1 className={cn('h1', s.title)}>Cara kami bekerja</h1>
+          <p className={cn('p-big', s.lead)}>
+            Lingkup, harga, target, dan laporan disepakati tertulis sebelum
+            kerja dimulai.
+          </p>
         </header>
 
-        {data.janji && data.janji.length > 0 && (
-          <ol className="gap-4 grid">
-            {data.janji.map((janji) => (
-              <li key={janji._key} className="pt-4 border-t border-(--line)">
-                <h2 className="h3">{janji.judul}</h2>
-                <p className="p">{janji.kalimat}</p>
-              </li>
-            ))}
-          </ol>
+        {promises.length > 0 && (
+          <PromiseStamp
+            eyebrow="Janji tertulis"
+            title="Janji kerja Arthur"
+            stampLabel="Tertulis"
+            promises={promises}
+          />
         )}
 
-        {data.hakMilikKlien && (
-          <section className="gap-2 flex max-w-[60ch] flex-col">
-            <h2 className="h3">Hak milik klien</h2>
-            <p className="p">{data.hakMilikKlien}</p>
-          </section>
+        {terms.length > 0 && (
+          <Reveal as="section" id="batas-kerja" className={s.terms} perItem>
+            <header data-reveal-item className={s.sectionHeader}>
+              <p className={cn('caption', s.eyebrow)}>Batas kerja</p>
+              <h2 id="batas-kerja-title" className={cn('h2', s.sectionTitle)}>
+                Hak milik, komisi, dan batas
+              </h2>
+            </header>
+            <Plumb className={s.plumb}>
+              <dl aria-labelledby="batas-kerja-title" className={s.termList}>
+                {terms.map((term) => (
+                  <div key={term.id} data-reveal-item className={s.term}>
+                    <dt className={cn('h3', s.termTitle)}>{term.title}</dt>
+                    <dd className={cn('p', s.termBody)}>{term.body}</dd>
+                  </div>
+                ))}
+              </dl>
+            </Plumb>
+          </Reveal>
         )}
-        {data.pengungkapanKomisi && (
-          <section className="gap-2 flex max-w-[60ch] flex-col">
-            <h2 className="h3">Pengungkapan komisi</h2>
-            <p className="p">{data.pengungkapanKomisi}</p>
-          </section>
-        )}
-        {data.yangTidakDijual && (
-          <section className="gap-2 flex max-w-[60ch] flex-col">
-            <h2 className="h3">Yang tidak kami jual</h2>
-            <p className="p">{data.yangTidakDijual}</p>
-          </section>
-        )}
-        {data.wilayah && data.wilayah.length > 0 && (
-          <section className="gap-2 flex flex-col">
-            <h2 className="h3">Wilayah kerja</h2>
-            <ul className="gap-2 flex flex-wrap p">
-              {data.wilayah.map((wilayah) => (
-                <li key={wilayah._key}>{wilayah.nama}</li>
+
+        {regions.length > 0 && (
+          <Reveal as="section" className={s.regions}>
+            <header data-reveal-item className={s.sectionHeader}>
+              <p className={cn('caption', s.eyebrow)}>Jangkauan</p>
+              <h2 id="wilayah-kerja-title" className={cn('h2', s.sectionTitle)}>
+                Wilayah kerja
+              </h2>
+            </header>
+
+            {regions.length > 1 ? (
+              <Dimension
+                from={regions[0]?.name ?? ''}
+                to={regions.at(-1)?.name ?? ''}
+                marks={regionMarks}
+                className={s.regionMeasure}
+              >
+                {regions.length} wilayah
+              </Dimension>
+            ) : (
+              <p data-reveal-item className={cn('caption', s.regionMeasure)}>
+                1 wilayah
+              </p>
+            )}
+
+            <ul aria-labelledby="wilayah-kerja-title" className={s.regionList}>
+              {regions.map((region) => (
+                <li key={region.id} data-reveal-item className="p-big">
+                  {region.name}
+                </li>
               ))}
             </ul>
-          </section>
+          </Reveal>
         )}
+
         {data.contohFormat && (
-          <section className="gap-2 flex max-w-[60ch] flex-col">
-            <h2 className="h3">Format kerja</h2>
-            <p className="p">{data.contohFormat}</p>
-          </section>
+          <Reveal as="section" className={s.format}>
+            <p data-reveal-item className={cn('caption', s.eyebrow)}>
+              Format kerja
+            </p>
+            <p data-reveal-item className={cn('p-big', s.formatCopy)}>
+              {data.contohFormat}
+            </p>
+          </Reveal>
         )}
       </article>
     </Wrapper>
@@ -104,12 +192,18 @@ export async function generateMetadata() {
 
   if (!isConfigured('sanity')) return { robots: { index: false } }
 
-  const { data } = await howWeWorkForRequest(locale)
+  const { data, isDraftMode } = await howWeWorkForRequest(locale)
   if (!data) return { robots: { index: false } }
 
+  const description =
+    data.metadata?.description ?? data.janji?.[0]?.kalimat ?? null
+  const keywords = data.metadata?.keywords
+
   return generatePageMetadata({
-    title: 'Cara kami bekerja',
-    ...(data.contohFormat ? { description: data.contohFormat } : {}),
+    title: data.metadata?.title ?? 'Cara kami bekerja',
+    ...(description && { description }),
+    ...(keywords && { keywords }),
+    noIndex: isDraftMode || data.metadata?.noIndex === true,
     url: `/${locale}/cara-kerja`,
   })
 }

@@ -25,6 +25,28 @@
     var(--duration-fast) both;
 }
 
+/*
+ * A stamp inside a scroll reveal has a different trigger, not a different
+ * motion. With no JavaScript the enclosing element never receives
+ * `data-reveal`, so the mark is present in its final state. Once Reveal owns
+ * the element, it starts the same two keyframes only after that individual
+ * item has entered the viewport. The cost is one extra selector pair; the
+ * gain is that an off-screen stamp does not finish before it can be seen.
+ */
+.onReveal,
+.onReveal .ink {
+  animation: none;
+}
+
+[data-reveal] [data-reveal-item='visible'] .onReveal {
+  animation: stamp-down var(--duration-fast) var(--ease-in-quart) both;
+}
+
+[data-reveal] [data-reveal-item='visible'] .onReveal .ink {
+  animation: stamp-ink var(--duration-micro) var(--ease-out-quart)
+    var(--duration-fast) both;
+}
+
 /* Half a gutter above the sheet, seen from four gutters away, down onto it. */
 @keyframes stamp-down {
   from {

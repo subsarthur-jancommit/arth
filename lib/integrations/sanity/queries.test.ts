@@ -21,6 +21,7 @@ import {
   chapterPageQuery,
   featuredProjectsQuery,
   faqsForPathQuery,
+  howWeWorkPreviewQuery,
   howWeWorkQuery,
   offerPageQuery,
   pageQuery,
@@ -36,6 +37,7 @@ import {
 const LOCALIZED_QUERIES = {
   chapterPageQuery,
   howWeWorkQuery,
+  howWeWorkPreviewQuery,
   offerPageQuery,
   pageQuery,
   projectsQuery,
@@ -109,6 +111,18 @@ describe('sequence and FAQ queries', () => {
 
   it('limits FAQ lookup to its explicit path', () => {
     expect(faqsForPathQuery).toContain('$path in halaman')
+  })
+})
+
+describe('how we work queries', () => {
+  it('keeps editorial review out of public while allowing draft preview', () => {
+    expect(howWeWorkQuery).toContain('statusTinjauan == "disetujui"')
+    expect(howWeWorkPreviewQuery).not.toContain('statusTinjauan')
+
+    for (const query of [howWeWorkQuery, howWeWorkPreviewQuery]) {
+      expect(query).not.toContain('jejakSumber')
+      expect(query).not.toContain('ditulisOleh')
+    }
   })
 })
 

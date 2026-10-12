@@ -505,6 +505,34 @@ export const howWeWorkQuery = defineQuery(`
   }
 `)
 
+/**
+ * Draft-mode counterpart to `howWeWorkQuery`.
+ *
+ * It projects the same reader-safe fields but deliberately does not require
+ * editorial approval. The query is used only with the authenticated drafts
+ * perspective, so an owner can review `perlu-anda` copy without publishing
+ * it or weakening the public query's status gate.
+ */
+export const howWeWorkPreviewQuery = defineQuery(`
+  *[_type == "howWeWork"][0] {
+    _id,
+    "janji": janji[]{
+      _key,
+      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value)
+    },
+    "hakMilikKlien": coalesce(hakMilikKlien[_key == $locale][0].value, hakMilikKlien[_key == "id"][0].value),
+    "pengungkapanKomisi": coalesce(pengungkapanKomisi[_key == $locale][0].value, pengungkapanKomisi[_key == "id"][0].value),
+    "yangTidakDijual": coalesce(yangTidakDijual[_key == $locale][0].value, yangTidakDijual[_key == "id"][0].value),
+    "wilayah": wilayah[]{
+      _key,
+      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)
+    },
+    "contohFormat": coalesce(contohFormat[_key == $locale][0].value, contohFormat[_key == "id"][0].value),
+    metadata
+  }
+`)
+
 /** Short FAQ entries mounted on a concrete locale-free path. */
 export const faqsForPathQuery = defineQuery(`
   *[_type == "faq" && statusTinjauan == "disetujui" && $path in halaman] {

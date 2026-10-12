@@ -1290,6 +1290,27 @@ export type HowWeWorkQueryResult = {
 } | null;
 
 // Source: queries.ts
+// Variable: howWeWorkPreviewQuery
+// Query: *[_type == "howWeWork"][0] {    _id,    "janji": janji[]{      _key,      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value)    },    "hakMilikKlien": coalesce(hakMilikKlien[_key == $locale][0].value, hakMilikKlien[_key == "id"][0].value),    "pengungkapanKomisi": coalesce(pengungkapanKomisi[_key == $locale][0].value, pengungkapanKomisi[_key == "id"][0].value),    "yangTidakDijual": coalesce(yangTidakDijual[_key == $locale][0].value, yangTidakDijual[_key == "id"][0].value),    "wilayah": wilayah[]{      _key,      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)    },    "contohFormat": coalesce(contohFormat[_key == $locale][0].value, contohFormat[_key == "id"][0].value),    metadata  }
+export type HowWeWorkPreviewQueryResult = {
+  _id: string;
+  janji: Array<{
+    _key: string;
+    judul: string | null;
+    kalimat: string | null;
+  }> | null;
+  hakMilikKlien: string | null;
+  pengungkapanKomisi: string | null;
+  yangTidakDijual: string | null;
+  wilayah: Array<{
+    _key: string;
+    nama: string | null;
+  }> | null;
+  contohFormat: string | null;
+  metadata: Metadata | null;
+} | null;
+
+// Source: queries.ts
 // Variable: faqsForPathQuery
 // Query: *[_type == "faq" && statusTinjauan == "disetujui" && $path in halaman] {    _id,    "pertanyaan": coalesce(pertanyaan[_key == $locale][0].value, pertanyaan[_key == "id"][0].value),    "jawaban": coalesce(jawaban[_key == $locale][0].value, jawaban[_key == "id"][0].value)  }
 export type FaqsForPathQueryResult = Array<{
@@ -1318,6 +1339,7 @@ declare global {
     '\n  *[_type == "offer" && statusTinjauan == "disetujui" && slug.current == $slug && bab->slug.current == $chapter && bab->sisi->kunci == $side && bab->sisi->unit->kunci == $unit][0] {\n    _id,\n    "slug": slug.current,\n    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n    "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),\n    "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),\n    "jenis": coalesce(jenis[_key == $locale][0].value, jenis[_key == "id"][0].value),\n    pasar,\n    "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),\n    "langkah": langkah[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "serahan": serahan[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "batas": coalesce(batas[_key == $locale][0].value, batas[_key == "id"][0].value),\n    "langkahPertama": {\n      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)\n    },\n    "jembatan": {\n      "offer": offer->{\n        "slug": slug.current,\n        "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value)\n      },\n      "kalimat": coalesce(jembatan.kalimat[_key == $locale][0].value, jembatan.kalimat[_key == "id"][0].value)\n    },\n    metadata\n  }\n': OfferPageQueryResult;
     '\n  *[_type == "sequence" && statusTinjauan == "disetujui"] {\n    _id,\n    "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),\n    "langkah": langkah[]{\n      _key,\n      "unit": unit->{ kunci, "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value) },\n      "offer": offer[]{\n        _key,\n        "slug": @->slug.current,\n        "judul": coalesce(@->judul[_key == $locale][0].value, @->judul[_key == "id"][0].value)\n      },\n      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value)\n    },\n    "keterangan": coalesce(keterangan[_key == $locale][0].value, keterangan[_key == "id"][0].value),\n    metadata\n  }\n': SequencesQueryResult;
     '\n  *[_type == "howWeWork" && statusTinjauan == "disetujui"][0] {\n    _id,\n    "janji": janji[]{\n      _key,\n      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value)\n    },\n    "hakMilikKlien": coalesce(hakMilikKlien[_key == $locale][0].value, hakMilikKlien[_key == "id"][0].value),\n    "pengungkapanKomisi": coalesce(pengungkapanKomisi[_key == $locale][0].value, pengungkapanKomisi[_key == "id"][0].value),\n    "yangTidakDijual": coalesce(yangTidakDijual[_key == $locale][0].value, yangTidakDijual[_key == "id"][0].value),\n    "wilayah": wilayah[]{\n      _key,\n      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)\n    },\n    "contohFormat": coalesce(contohFormat[_key == $locale][0].value, contohFormat[_key == "id"][0].value),\n    metadata\n  }\n': HowWeWorkQueryResult;
+    '\n  *[_type == "howWeWork"][0] {\n    _id,\n    "janji": janji[]{\n      _key,\n      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value)\n    },\n    "hakMilikKlien": coalesce(hakMilikKlien[_key == $locale][0].value, hakMilikKlien[_key == "id"][0].value),\n    "pengungkapanKomisi": coalesce(pengungkapanKomisi[_key == $locale][0].value, pengungkapanKomisi[_key == "id"][0].value),\n    "yangTidakDijual": coalesce(yangTidakDijual[_key == $locale][0].value, yangTidakDijual[_key == "id"][0].value),\n    "wilayah": wilayah[]{\n      _key,\n      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)\n    },\n    "contohFormat": coalesce(contohFormat[_key == $locale][0].value, contohFormat[_key == "id"][0].value),\n    metadata\n  }\n': HowWeWorkPreviewQueryResult;
     '\n  *[_type == "faq" && statusTinjauan == "disetujui" && $path in halaman] {\n    _id,\n    "pertanyaan": coalesce(pertanyaan[_key == $locale][0].value, pertanyaan[_key == "id"][0].value),\n    "jawaban": coalesce(jawaban[_key == $locale][0].value, jawaban[_key == "id"][0].value)\n  }\n': FaqsForPathQueryResult;
   }
 }

@@ -1,29 +1,9 @@
 .page {
-  /* Containing block for `.wash`. */
-  position: relative;
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
-  /* The one section-lead token every other page uses. */
-  gap: var(--section-lead);
-  /*
-   * Clear the fixed header, then the page's own rhythm.
-   *
-   * Measured before this line existed: the header's bottom edge sits at 98px
-   * and this page put its `h1` at 86 — the heading rendered *underneath* the
-   * chrome, and the first fact ("2021") was half-hidden behind it. Every
-   * other route clears it (146-480), and the catalogue does it with exactly
-   * this expression, so this is the site's pattern rather than a number
-   * chosen here. `--header-height` is what the header actually measures
-   * itself from.
-   */
+  gap: calc(var(--section-lead) * 2);
   padding-block: calc(var(--header-height) + mobile-vw(48px)) mobile-vw(96px);
-  /*
-   * The gutter, present from the first commit of this file rather than added
-   * after a gate caught it. Tahap 18 measured three practice pages rendering
-   * flush against the viewport edge because this block had `padding-block`
-   * and nothing inline; `e2e/visual-substance.e2e.ts` holds every route to
-   * the header's own gutter now, and this route is in that list.
-   */
   padding-inline: var(--safe);
 
   @media (--desktop) {
@@ -32,496 +12,165 @@
   }
 }
 
-.wash {
-  position: absolute;
-  /*
-   * Anchored to the page box, which now starts below the header, so the
-   * gradient dresses the first screen of *content* rather than sliding under
-   * the chrome.
-   */
-  inset-block-start: 0;
-  inset-inline: 0;
-  /* One screen, then gone — it dresses the arrival, not the document. */
-  block-size: 100svh;
-  background-image: linear-gradient(
-    135deg,
-    var(--hero-wash-from),
-    var(--hero-wash-to)
-  );
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* ── Hero ─────────────────────────────────────────────────────────────── */
-
 .hero {
   display: flex;
   flex-direction: column;
-  gap: var(--section-lead);
-  /*
-   * The hero holds the first screen, and that is a motion requirement as much
-   * as a compositional one.
-   *
-   * Measured in Tahap 25 §2.2: the statement below was already a third
-   * revealed at `scrollY 0`, and no `start` value can fix that — a
-   * scroll-linked reveal on an element that is already on screen has already
-   * begun. The parameter was never the problem; the layout was. Holding the
-   * first screen puts the passage below the fold, so the scrub opens when the
-   * reader arrives at it.
-   *
-   * `svh` rather than `vh`, and minus the header it sits under, so a mobile
-   * toolbar appearing mid-scroll does not resize the section being read.
-   */
-  min-block-size: calc(100svh - var(--header-height) - var(--section-lead));
+  justify-content: flex-end;
+  gap: mobile-vw(20px);
+  min-block-size: calc(72svh - var(--header-height));
+  padding-block-end: var(--section-lead);
+  border-bottom: 1px solid var(--line);
 
   @media (--desktop) {
-    /*
-     * Text left, facts right — the project page's split from Tahap 19, at the
-     * same proportion, because a reader arriving from a project page should
-     * find the same shape rather than a second way of saying "here are the
-     * facts".
-     *
-     * The media expression is repeated as a track rather than nested, which
-     * is what keeps the facts column aligned to the same twelve-column grid
-     * the rest of the site uses.
-     */
     display: grid;
     grid-template-columns:
-      calc((100% - var(--gap) * 11) / 12 * 7 + var(--gap) * 6)
+      minmax(0, calc(var(--column-width) * 8 + var(--gap) * 7))
       minmax(0, 1fr);
-    /*
-     * Two rows, and the second one is the whole point — Tahap 69.
-     *
-     * The box holds a screen (see `min-block-size` above), so with one row and
-     * `align-items: start` everything sat at the top and the slack fell out of
-     * the bottom as dead ground: measured 493px, **63% of the box**, at
-     * 1440x900 — and worse as the screen grew, 68% at 1728x1117, because the
-     * height is tied to the viewport and the content was not tied to the
-     * height.
-     *
-     * `minmax(0, 1fr)` gives that slack to a row instead of to nothing, and
-     * `.heroCapabilities` sits at its end. The reserved height does not
-     * change, so `statementSection` does not move and the 80px of margin the
-     * scrub depends on is untouched.
-     *
-     * `minmax(0, 1fr)` and not `1fr` — `CLAUDE.md` #12.
-     */
-    /*
-     * Three rows since the fork: the nameplate across the hero, then lead
-     * and facts, then the slack the capability band sits at the foot of. The
-     * nameplate takes most of what used to be the empty middle.
-     */
-    grid-template-rows: auto auto minmax(0, 1fr);
-    column-gap: var(--gap);
-    align-items: start;
+    align-content: end;
+    gap: desktop-vw(24px) var(--gap);
   }
 }
 
-/*
- * The capability band, at the foot of the hero.
- *
- * `align-self: end` is what puts it on the box's floor rather than directly
- * under the columns — the slack row is tall, and a band floating in the middle
- * of it would read as a third thing adrift rather than as the hero's base.
- *
- * On mobile the hero is a flex column, so there is no slack row to end in:
- * `margin-block-start: auto` does the same job there, pushing the band to the
- * bottom of whatever height is left.
- */
-.heroCapabilities {
-  /*
-   * Arrives in place — cycle 2, round 4. The band now carries the work under
-   * each claim as links, and a lift on arrival carries a link out from under
-   * a pointer (checkpoint 2, `docs/HANDOFF.md` §4.2). It fades; nothing
-   * rises.
-   */
-  --reveal-transform: none;
-
-  display: flex;
-  flex-direction: column;
-  gap: mobile-vw(16px);
-  margin-block-start: auto;
-  /* The columns above stop short of the band, not against it. */
-  padding-block-start: mobile-vw(32px);
-
-  @media (--desktop) {
-    grid-row: 3;
-    grid-column: 1 / -1;
-    align-self: end;
-    /* A hero band is a footing, not a section: the section rhythm would read
-       as a new part of the page starting inside the hero. */
-    gap: desktop-vw(16px);
-    padding-block-start: desktop-vw(40px);
-    margin-block-start: 0;
-  }
-}
-
-/* The nameplate: eyebrow and name, the full width of the hero. */
-.heroTitle {
-  display: flex;
-  flex-direction: column;
-  gap: mobile-vw(12px);
-  min-width: 0;
-
-  @media (--desktop) {
-    grid-column: 1 / -1;
-    grid-row: 1;
-    gap: desktop-vw(16px);
-  }
-}
-
-.heroText {
-  display: flex;
-  flex-direction: column;
-  gap: desktop-vw(24px);
-  min-width: 0;
-}
-
-.title {
+.eyebrow,
+.title,
+.lead,
+.sectionTitle,
+.termTitle,
+.termBody,
+.formatCopy {
   margin: 0;
-}
-
-.lead {
-  /* A reading measure, not the full column — this is prose. */
-  max-width: 46ch;
-  margin: 0;
-  color: var(--text-muted);
-}
-
-.facts {
-  min-width: 0;
-}
-
-/* Lead and facts share the second row, under the nameplate. */
-@media (--desktop) {
-  .heroText {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .facts {
-    grid-column: 2;
-    grid-row: 2;
-  }
-}
-
-/*
- * The scaffolding note under the facts.
- *
- * Muted and set small on purpose: it is a qualification on the list above it,
- * not a section of its own. `--text-muted` is the token the contrast gate
- * already measures at 9.08:1 on dark, so quiet here still means legible.
- */
-.factsNote {
-  margin: mobile-vw(16px) 0 0;
-  color: var(--text-muted);
-  max-width: 46ch;
-
-  @media (--desktop) {
-    margin-block-start: desktop-vw(16px);
-  }
-}
-
-.factList {
-  display: flex;
-  flex-direction: column;
-  gap: mobile-vw(20px);
-  margin: 0;
-  /*
-   * A rule above the list, matching the project page's fact block. It is the
-   * one piece of chrome on a page that is otherwise pure type, and it does
-   * the job a heading would without adding a heading the outline does not
-   * need.
-   */
-  border-top: 1px solid var(--line);
-  padding-block-start: mobile-vw(20px);
-
-  @media (--desktop) {
-    gap: desktop-vw(24px);
-    padding-block-start: desktop-vw(24px);
-  }
-}
-
-.fact {
-  display: flex;
-  flex-direction: column;
-  gap: desktop-vw(4px);
-  min-width: 0;
-}
-
-.factLabel {
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  margin: 0;
-}
-
-.factValue {
-  margin: 0;
-}
-
-/* ── Ground ───────────────────────────────────────────────────────────── */
-
-/*
- * Surface, not content — Tahap 50, halved in Tahap 53.
- *
- * It sits inside `.page`, which is already the containing block for `.wash`,
- * and behind everything: the wash is the first screen's tone, this is the
- * paper the whole page is printed on.
- *
- * `position: fixed` rather than `absolute`, and the difference is the point:
- * the page is 6.34 screens tall, and a ground that scrolls with the document
- * reads as a texture *applied to* the content. One that stays put reads as the
- * surface the content moves across, which is what paper does. It costs nothing
- * extra — it never animates, so it is not a compositing expense that grows
- * with the page.
- *
- * A `.grain` used to sit beside it. Tahap 53 moved the grain under `Theme`,
- * where it is one surface for the whole site instead of a copy per route —
- * this page shipped the first copy and the home hero the second, and a third
- * would have been grain over grain on the two routes that matter most.
- *
- * Half strength, because `--line` already resolves against a measured pair
- * here (unlike the home page's, which sits over a WebGL wash whose luminance
- * is not a token). It only has to stop 6.34 screens of one flat colour
- * reading as an unpainted buffer.
- */
-.ground {
-  position: fixed;
-  inset: 0;
-  /* Behind the wash, which is behind the content. */
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.5;
-}
-
-/* ── Statement ────────────────────────────────────────────────────────── */
-
-.statementSection {
-  display: flex;
-  flex-direction: column;
-  gap: var(--section-lead);
-}
-
-.statement {
-  /*
-   * A reading measure. Wider than the lead because this is the passage the
-   * scrub moves through, and a narrow column would turn ~100 words into a
-   * very tall thin block that scrolls past before the effect resolves.
-   */
-  max-width: 60ch;
 }
 
 .eyebrow {
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  margin: 0;
 }
 
-/* ── Capabilities ─────────────────────────────────────────────────────── */
-
-/*
- * `.capabilities` was here, and it went with the block — Tahap 69.
- *
- * It carried `gap: var(--section-lead)`, the rhythm of a standalone section.
- * The block is a band at the foot of the hero now, so it takes `gap` from
- * `.heroCapabilities` instead: a section's rhythm inside a hero would read as
- * a new part of the page beginning before the hero has ended.
- *
- * The rule is deleted rather than left behind, because a class nothing renders
- * reads as a solved problem — the mistake `vault/blocks/project-gallery`
- * records costing it a stage, where a live-looking `.image` rule had never
- * applied to anything.
- */
-
-.capabilityList {
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: var(--section-lead);
-  margin: 0;
+.title {
+  max-width: 11ch;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 
   @media (--desktop) {
-    /* One column per practice, from the same constant the routes read. */
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--gap);
+    grid-column: 1;
   }
 }
 
-.capability {
+.hero > .eyebrow {
+  @media (--desktop) {
+    grid-column: 1 / -1;
+  }
+}
+
+.lead {
+  max-width: 42ch;
+  color: var(--text-muted);
+
+  @media (--desktop) {
+    grid-column: 2;
+    align-self: end;
+  }
+}
+
+.terms,
+.regions,
+.format {
+  --reveal-transform: none;
+
   display: flex;
   flex-direction: column;
-  gap: desktop-vw(12px);
-  min-width: 0;
+  gap: var(--section-lead);
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: mobile-vw(12px);
+  max-width: 48rem;
+
+  @media (--desktop) {
+    gap: desktop-vw(16px);
+  }
+}
+
+.sectionTitle {
+  text-wrap: balance;
+}
+
+.plumb {
+  max-width: 64rem;
+}
+
+.termList {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.term {
+  display: grid;
+  gap: mobile-vw(12px);
+  padding-block: mobile-vw(24px);
   border-top: 1px solid var(--line);
-  padding-block-start: mobile-vw(20px);
 
   @media (--desktop) {
-    padding-block-start: desktop-vw(24px);
-  }
-}
-
-.capabilityName {
-  margin: 0;
-}
-
-/*
- * `circuit-reveal`, the same INTENT treatment the breadcrumbs carry — in
- * slower than out, so the control reads as having mass. `MOTION-SPEC.md` §9,
- * and `components/ui/breadcrumbs/breadcrumbs.module.css` states the reasoning
- * once rather than in both places.
- */
-.capabilityLink {
-  color: inherit;
-  text-decoration: none;
-  transition:
-    color var(--duration-micro) var(--ease-out-quart),
-    transform var(--duration-micro) var(--ease-out-quart);
-
-  &:hover,
-  &:focus-visible {
-    color: var(--color-secondary);
-    transform: translate3d(0, -1px, 0);
-    transition:
-      color var(--duration-fast) var(--ease-out-quart),
-      transform var(--duration-fast) var(--ease-out-quart);
-  }
-}
-
-.capabilityItems {
-  margin: 0;
-  color: var(--text-muted);
-}
-
-/* ── Colophon ─────────────────────────────────────────────────────────── */
-
-.colophon {
-  display: flex;
-  flex-direction: column;
-  gap: var(--section-lead);
-}
-
-.colophonList {
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: mobile-vw(24px);
-  margin: 0;
-
-  @media (--desktop) {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns:
+      minmax(0, calc(var(--column-width) * 3 + var(--gap) * 2))
+      minmax(0, 1fr);
     gap: var(--gap);
+    padding-block: desktop-vw(32px);
   }
 }
 
-.colophonEntry {
-  display: flex;
-  flex-direction: column;
-  gap: desktop-vw(8px);
-  min-width: 0;
-}
-
-.colophonValue {
-  margin: 0;
+.termBody {
+  max-width: 58ch;
   color: var(--text-muted);
 }
 
-.colophonNote {
+.regionMeasure {
   margin: 0;
-  color: var(--text-muted);
-  max-width: 60ch;
 }
 
-/* ── Closing ──────────────────────────────────────────────────────────── */
-
-.closing {
-  display: flex;
-  flex-direction: column;
-  gap: desktop-vw(24px);
-  border-top: 1px solid var(--line);
-  padding-block-start: var(--section-lead);
-}
-
-.closingLine {
-  margin: 0;
-  max-width: 32ch;
-}
-
-.closingAction {
-  display: inline-block;
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  border: 1px solid var(--line);
-  padding: mobile-vw(16px) mobile-vw(24px);
-  /*
-   * A 44px minimum target, which `e2e/keyboard-focus.e2e.ts` and axe's WCAG
-   * 2.2 target-size rule both read. Stated here rather than left to the
-   * padding happening to add up.
-   */
-  min-height: 44px;
-
-  @media (--desktop) {
-    padding: desktop-vw(16px) desktop-vw(28px);
-  }
-}
-
-@media (--reduced-motion) {
-  .capabilityLink {
-    transition: none;
-
-    &:hover,
-    &:focus-visible {
-      transform: none;
-      transition: none;
-    }
-  }
-}
-
-/*
- * The evidence strip — Tahap 44.
- *
- * The same shape every other section on this page uses: a column, the section
- * eyebrow, then the content, separated by `--section-lead`. That is the point
- * rather than a shortcut — this page's rhythm was set in Tahap 24 and a strip
- * of covers is a section like any other, not a special case that deserves its
- * own spacing.
- */
-.evidence {
-  display: flex;
-  flex-direction: column;
-  gap: var(--section-lead);
-}
-
-/*
- * The strip's own row — three works across the 12-column grid.
- *
- * Written here rather than reached for from `vault/blocks/project-grid`,
- * because taking the grid would also take the FLIP machinery it hosts for the
- * catalogue's filter, and this list never changes. Six lines of CSS against
- * 46KB of JavaScript is not a close call.
- */
-.evidenceList {
+.regionList {
   display: grid;
-  /* minmax(0, 1fr), never bare 1fr — a long title in a bare track refuses to
-     shrink and pushes the page sideways. */
   grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: var(--gap);
-  list-style: none;
   margin: 0;
   padding: 0;
+  list-style: none;
 
   @media (--desktop) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-/*
- * On paper — after the site went live (`lib/styles/css/print.css`). The dot
- * ground is fixed, and a fixed layer is printed on every sheet: paper is its
- * own ground.
- */
+.regionList > li {
+  padding-block-start: mobile-vw(16px);
+  border-top: 1px solid var(--line);
+
+  @media (--desktop) {
+    padding-block-start: desktop-vw(20px);
+  }
+}
+
+.format {
+  max-width: 64rem;
+  padding-block-start: var(--section-lead);
+  border-top: 1px solid var(--line);
+}
+
+.formatCopy {
+  max-width: 58ch;
+}
+
 @media print {
-  .ground {
-    display: none;
+  .page {
+    gap: 2rem;
+    padding: 1.5cm;
+  }
+
+  .hero {
+    min-block-size: auto;
   }
 }
