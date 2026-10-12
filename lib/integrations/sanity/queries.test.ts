@@ -204,5 +204,13 @@ describe('site settings migration', () => {
     )
     expect(siteSettingsQuery).toContain('pernyataanPemilik')
     expect(siteSettingsQuery).toContain('statement[_key == $locale]')
+    expect(siteSettingsQuery).toContain('"situasi": situasi[]')
+    expect(siteSettingsQuery).toContain(
+      '"teks": coalesce(teks[_key == $locale]'
+    )
+    expect(siteSettingsQuery).toContain('"ajakan": {')
+    expect(siteSettingsQuery).toContain(
+      '"rangkaianPilihan": rangkaianPilihan->{ _id }'
+    )
   })
 })

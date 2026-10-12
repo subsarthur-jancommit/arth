@@ -310,6 +310,18 @@ export const siteSettingsQuery = defineQuery(`
       statement[_key == "id"][0].value
     ),
     "address": coalesce(alamat[_key == $locale][0].value, alamat[_key == "id"][0].value),
+    "situasi": situasi[]{
+      _key,
+      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value),
+      unit,
+      sisi,
+      bab
+    },
+    "ajakan": {
+      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),
+      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)
+    },
+    "rangkaianPilihan": rangkaianPilihan->{ _id },
     "wilayah": wilayah[]{
       _key,
       "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)
