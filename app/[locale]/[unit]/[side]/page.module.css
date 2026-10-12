@@ -67,6 +67,59 @@
   }
 }
 
+.network {
+  gap: calc(16 / 375 * 100vw);
+
+  @media (--desktop) {
+    gap: calc(16 / 1440 * 100vw);
+  }
+}
+
+.networkTerms {
+  display: grid;
+  gap: calc(12 / 375 * 100vw);
+  margin: 0;
+
+  @media (--desktop) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(16 / 1440 * 100vw);
+  }
+}
+
+.networkTerms > div {
+  display: flex;
+  flex-direction: column;
+  gap: calc(4 / 375 * 100vw);
+  padding-top: calc(12 / 375 * 100vw);
+  border-top: 1px solid var(--line);
+
+  @media (--desktop) {
+    gap: calc(4 / 1440 * 100vw);
+    padding-top: calc(12 / 1440 * 100vw);
+  }
+}
+
+.networkTerms dt {
+  color: var(--text-muted);
+}
+
+.networkTerms dd {
+  margin: 0;
+}
+
+.networkAction {
+  display: flex;
+  flex-direction: column;
+  gap: calc(4 / 375 * 100vw);
+  padding-top: calc(12 / 375 * 100vw);
+  border-top: 1px solid var(--line);
+
+  @media (--desktop) {
+    gap: calc(4 / 1440 * 100vw);
+    padding-top: calc(12 / 1440 * 100vw);
+  }
+}
+
 .chapters > li {
   display: flex;
   flex-direction: column;

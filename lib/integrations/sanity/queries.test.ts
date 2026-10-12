@@ -166,6 +166,23 @@ describe('chapter query', () => {
   })
 })
 
+describe('network side query', () => {
+  it('selects the public network terms without Internal Studio fields', () => {
+    for (const field of [
+      'jaringan.caraKerja',
+      'jaringan.asalKomisi',
+      'jaringan.yangTidakAda',
+      'jaringan.syarat',
+      'jaringan.ajakanDaftar',
+    ]) {
+      expect(sidePageQuery).toContain(field)
+    }
+
+    expect(sidePageQuery).not.toContain('jejakSumber')
+    expect(sidePageQuery).not.toContain('ditulisOleh')
+  })
+})
+
 describe('site settings migration', () => {
   it('prefers siteSettings while keeping the old singleton readable', () => {
     expect(siteSettingsQuery).toContain(

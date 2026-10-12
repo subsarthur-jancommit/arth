@@ -71,6 +71,19 @@ export default async function SidePage({ params }: SidePageProps) {
   ])
   const [firstSide, secondSide] = SIDES[unit]
   const otherSide = side === firstSide ? secondSide : firstSide
+  const network =
+    unit === 'peekabo' && side === 'jaringan' ? content?.jaringan : null
+  const networkAction = network?.ajakanDaftar ?? null
+  const hasNetworkAction = Boolean(
+    networkAction?.label || networkAction?.sesudahnya
+  )
+  const hasNetworkContent = Boolean(
+    network?.caraKerja ||
+    network?.asalKomisi ||
+    network?.yangTidakAda ||
+    network?.syarat ||
+    hasNetworkAction
+  )
 
   return (
     <Wrapper theme="light">
@@ -98,6 +111,49 @@ export default async function SidePage({ params }: SidePageProps) {
                     <li key={item._key}>{item.teks}</li>
                   ))}
                 </ul>
+              </section>
+            )}
+            {network && hasNetworkContent && (
+              <section className={cn(s.prompt, s.network)}>
+                <h2 className={cn('caption', s.promptTitle)}>
+                  Aturan jaringan
+                </h2>
+                <dl className={s.networkTerms}>
+                  {network.caraKerja && (
+                    <div>
+                      <dt>Cara kerja</dt>
+                      <dd>{network.caraKerja}</dd>
+                    </div>
+                  )}
+                  {network.asalKomisi && (
+                    <div>
+                      <dt>Asal komisi</dt>
+                      <dd>{network.asalKomisi}</dd>
+                    </div>
+                  )}
+                  {network.yangTidakAda && (
+                    <div>
+                      <dt>Yang tidak ada</dt>
+                      <dd>{network.yangTidakAda}</dd>
+                    </div>
+                  )}
+                  {network.syarat && (
+                    <div>
+                      <dt>Syarat</dt>
+                      <dd>{network.syarat}</dd>
+                    </div>
+                  )}
+                </dl>
+                {networkAction && hasNetworkAction && (
+                  <div className={s.networkAction}>
+                    {networkAction.label && (
+                      <h3 className="p-big">{networkAction.label}</h3>
+                    )}
+                    {networkAction.sesudahnya && (
+                      <p className="p">{networkAction.sesudahnya}</p>
+                    )}
+                  </div>
+                )}
               </section>
             )}
             {content.bab && content.bab.length > 0 && (
