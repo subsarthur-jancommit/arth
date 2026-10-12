@@ -42,6 +42,17 @@ const sideContentSchema = z.object({
   judul: textSchema.nullable(),
   caraMembeli: z.array(pointSchema).nullable(),
   langkahPertama: callToActionSchema.nullable(),
+  bab: z
+    .array(
+      z.object({
+        _id: z.string(),
+        slug: textSchema.nullable(),
+        nama: textSchema.nullable(),
+        kutipan: textSchema.nullable(),
+        urutan: z.number().nullable(),
+      })
+    )
+    .nullable(),
   urutan: z.number().nullable(),
   jaringan: networkSchema.nullable(),
 })

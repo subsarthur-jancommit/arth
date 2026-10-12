@@ -353,6 +353,17 @@ export const sidePageQuery = defineQuery(`
       "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),
       "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)
     },
+    "bab": *[
+      _type == "bab" &&
+      statusTinjauan == "disetujui" &&
+      sisi._ref == ^._id
+    ] | order(urutan asc) {
+      _id,
+      "slug": slug.current,
+      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
+      "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),
+      urutan
+    },
     urutan,
     "jaringan": {
       "caraKerja": coalesce(jaringan.caraKerja[_key == $locale][0].value, jaringan.caraKerja[_key == "id"][0].value),

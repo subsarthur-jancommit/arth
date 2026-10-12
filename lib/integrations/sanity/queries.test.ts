@@ -27,6 +27,7 @@ import {
   projectQuery,
   projectsQuery,
   sequencesQuery,
+  sidePageQuery,
   siteSettingsQuery,
 } from './queries'
 
@@ -136,6 +137,12 @@ describe('chapter query', () => {
     expect(chapterPageQuery).toContain('_type == "bab"')
     expect(chapterPageQuery).toContain('sisi->kunci == $side')
     expect(chapterPageQuery).toContain('sisi->unit->kunci == $unit')
+  })
+
+  it('lists only approved chapters belonging to a side', () => {
+    expect(sidePageQuery).toContain('_type == "bab"')
+    expect(sidePageQuery).toContain('sisi._ref == ^._id')
+    expect(sidePageQuery).toContain('statusTinjauan == "disetujui"')
   })
 
   it('selects only fields that are safe to render', () => {

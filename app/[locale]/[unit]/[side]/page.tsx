@@ -88,41 +88,93 @@ export default async function SidePage({ params }: SidePageProps) {
           })}
         </p>
 
-        <SampleContent
-          label={tSample('label')}
-          note={tSample('sideNote')}
-          className={s.sample}
-        >
-          <section className={s.prompt}>
-            <h2 className={cn('caption', s.promptTitle)}>
-              {tSide('problemTitle')}
-            </h2>
-            <p className={cn('p-big', s.placeholder)}>
-              {ownerPlaceholder(tSide('problemNeed'), tSide('problemExample'))}
-            </p>
+        {content ? (
+          <section className={s.sample}>
+            {content.caraMembeli && content.caraMembeli.length > 0 && (
+              <section className={s.prompt}>
+                <h2 className={cn('caption', s.promptTitle)}>Cara membeli</h2>
+                <ul className={cn('p-big', s.list)}>
+                  {content.caraMembeli.map((item) => (
+                    <li key={item._key}>{item.teks}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
+            {content.bab && content.bab.length > 0 && (
+              <section className={s.prompt}>
+                <h2 className={cn('caption', s.promptTitle)}>Pilih situasi</h2>
+                <ul className={s.chapters}>
+                  {content.bab.map((chapter) => (
+                    <li key={chapter._id}>
+                      {chapter.slug ? (
+                        <Link
+                          href={`${sideTemplate(unit, side)}/${chapter.slug}`}
+                          className={cn('p-big', s.chapterLink)}
+                        >
+                          {chapter.nama}
+                        </Link>
+                      ) : (
+                        <span className="p-big">{chapter.nama}</span>
+                      )}
+                      {chapter.kutipan && (
+                        <p className="p">{chapter.kutipan}</p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+            {content.langkahPertama && (
+              <section className={s.prompt}>
+                <h2 className={cn('caption', s.promptTitle)}>
+                  {content.langkahPertama.label}
+                </h2>
+                <p className={cn('p-big', s.placeholder)}>
+                  {content.langkahPertama.sesudahnya}
+                </p>
+              </section>
+            )}
           </section>
+        ) : (
+          <SampleContent
+            label={tSample('label')}
+            note={tSample('sideNote')}
+            className={s.sample}
+          >
+            <section className={s.prompt}>
+              <h2 className={cn('caption', s.promptTitle)}>
+                {tSide('problemTitle')}
+              </h2>
+              <p className={cn('p-big', s.placeholder)}>
+                {ownerPlaceholder(
+                  tSide('problemNeed'),
+                  tSide('problemExample')
+                )}
+              </p>
+            </section>
 
-          <section className={s.prompt}>
-            <h2 className={cn('caption', s.promptTitle)}>
-              {tSide('answerTitle')}
-            </h2>
-            <p className={cn('p-big', s.placeholder)}>
-              {ownerPlaceholder(tSide('answerNeed'), tSide('answerExample'))}
-            </p>
-          </section>
+            <section className={s.prompt}>
+              <h2 className={cn('caption', s.promptTitle)}>
+                {tSide('answerTitle')}
+              </h2>
+              <p className={cn('p-big', s.placeholder)}>
+                {ownerPlaceholder(tSide('answerNeed'), tSide('answerExample'))}
+              </p>
+            </section>
 
-          <section className={s.prompt}>
-            <h2 className={cn('caption', s.promptTitle)}>
-              {tSide('firstStepTitle')}
-            </h2>
-            <p className={cn('p-big', s.placeholder)}>
-              {ownerPlaceholder(
-                tSide('firstStepNeed'),
-                tSide('firstStepExample')
-              )}
-            </p>
-          </section>
-        </SampleContent>
+            <section className={s.prompt}>
+              <h2 className={cn('caption', s.promptTitle)}>
+                {tSide('firstStepTitle')}
+              </h2>
+              <p className={cn('p-big', s.placeholder)}>
+                {ownerPlaceholder(
+                  tSide('firstStepNeed'),
+                  tSide('firstStepExample')
+                )}
+              </p>
+            </section>
+          </SampleContent>
+        )}
 
         <nav
           aria-label={tSide('navigationLabel', { unit: tUnit(unit) })}
