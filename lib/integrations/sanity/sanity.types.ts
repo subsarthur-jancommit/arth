@@ -1034,82 +1034,117 @@ export type ProjectSlugsQueryResult = Array<string | null>;
 
 // Source: queries.ts
 // Variable: siteSettingsQuery
-// Query: *[    (_type == "siteSettings" && statusTinjauan == "disetujui") ||    _type == "studioSettings"  ]    | order((_type == "siteSettings") desc, _updatedAt desc)[0] {    _id,    name,    "email": coalesce(kanal.email, email),    "socials": coalesce(akunSosial, socials),    portrait,    metadata,    "headline": coalesce(      heroJudul[_key == $locale][0].value,      heroJudul[_key == "id"][0].value,      headline[_key == $locale][0].value,      headline[_key == "id"][0].value    ),    "subline": coalesce(      heroSubjudul[_key == $locale][0].value,      heroSubjudul[_key == "id"][0].value,      subline[_key == $locale][0].value,      subline[_key == "id"][0].value    ),    "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),    "statement": coalesce(      pernyataanPemilik[_key == $locale][0].value,      pernyataanPemilik[_key == "id"][0].value,      statement[_key == $locale][0].value,      statement[_key == "id"][0].value    ),    "address": coalesce(alamat[_key == $locale][0].value, alamat[_key == "id"][0].value),    "situasi": situasi[]{      _key,      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value),      unit,      sisi,      bab    },    "ajakan": {      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)    },    "rangkaianPilihan": rangkaianPilihan->{ _id },    "wilayah": wilayah[]{      _key,      "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)    }  }
-export type SiteSettingsQueryResult =
-  | {
-      _id: string;
-      name: string | null;
-      email: string | null;
-      socials: Array<{
-        label?: string;
-        url?: string;
-        _key: string;
-      }> | null;
-      portrait: {
-        asset?: SanityImageAssetReference;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        alt?: InternationalizedArrayString;
-        _type: "image";
-      } | null;
-      metadata: Metadata | null;
-      headline: string | null;
-      subline: string | null;
-      portraitAlt: string | null;
-      statement: RichText | null;
-      address: null;
-      situasi: null;
-      ajakan: {
-        label: null;
-        sesudahnya: null;
-      };
-      rangkaianPilihan: null;
-      wilayah: null;
-    }
-  | {
-      _id: string;
-      name: string | null;
-      email: string | null;
-      socials: Array<{
-        label?: string;
-        url?: string;
-        _key: string;
-      }> | null;
-      portrait: {
-        asset?: SanityImageAssetReference;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        alt?: InternationalizedArrayString;
-        _type: "image";
-      } | null;
-      metadata: Metadata | null;
-      headline: string | null;
-      subline: string | null;
-      portraitAlt: string | null;
-      statement: RichText | null;
-      address: string | null;
-      situasi: Array<{
-        _key: string;
-        teks: string | null;
-        unit: "konstruksi" | "peekabo" | "teknologi" | null;
-        sisi: string | null;
-        bab: string | null;
-      }> | null;
-      ajakan: {
-        label: string | null;
-        sesudahnya: string | null;
-      };
-      rangkaianPilihan: {
-        _id: string;
-      } | null;
-      wilayah: Array<{
-        _key: string;
-        name: string | null;
-      }> | null;
-    }
-  | null;
+// Query: *[_type == "siteSettings" && statusTinjauan == "disetujui"][0] {    _id,    name,    "email": kanal.email,    "socials": akunSosial,    portrait,    metadata,    "headline": coalesce(      heroJudul[_key == $locale][0].value,      heroJudul[_key == "id"][0].value    ),    "subline": coalesce(      heroSubjudul[_key == $locale][0].value,      heroSubjudul[_key == "id"][0].value    ),    "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),    "statement": coalesce(      pernyataanPemilik[_key == $locale][0].value,      pernyataanPemilik[_key == "id"][0].value    ),    "address": coalesce(alamat[_key == $locale][0].value, alamat[_key == "id"][0].value),    "situasi": situasi[]{      _key,      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value),      unit,      sisi,      bab    },    "ajakan": {      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)    },    "rangkaianPilihan": rangkaianPilihan->{ _id },    "wilayah": wilayah[]{      _key,      "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)    }  }
+export type SiteSettingsQueryResult = {
+  _id: string;
+  name: string | null;
+  email: string | null;
+  socials: Array<{
+    label?: string;
+    url?: string;
+    _key: string;
+  }> | null;
+  portrait: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: InternationalizedArrayString;
+    _type: "image";
+  } | null;
+  metadata: Metadata | null;
+  headline: string | null;
+  subline: string | null;
+  portraitAlt: string | null;
+  statement: RichText | null;
+  address: string | null;
+  situasi: Array<{
+    _key: string;
+    teks: string | null;
+    unit: "konstruksi" | "peekabo" | "teknologi" | null;
+    sisi: string | null;
+    bab: string | null;
+  }> | null;
+  ajakan: {
+    label: string | null;
+    sesudahnya: string | null;
+  };
+  rangkaianPilihan: {
+    _id: string;
+  } | null;
+  wilayah: Array<{
+    _key: string;
+    name: string | null;
+  }> | null;
+} | null;
+
+// Source: queries.ts
+// Variable: siteSettingsPreviewQuery
+// Query: *[_type == "siteSettings"][0] {    _id,    name,    "email": kanal.email,    "socials": akunSosial,    portrait,    metadata,    "headline": coalesce(      heroJudul[_key == $locale][0].value,      heroJudul[_key == "id"][0].value    ),    "subline": coalesce(      heroSubjudul[_key == $locale][0].value,      heroSubjudul[_key == "id"][0].value    ),    "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),    "statement": coalesce(      pernyataanPemilik[_key == $locale][0].value,      pernyataanPemilik[_key == "id"][0].value    ),    "address": coalesce(alamat[_key == $locale][0].value, alamat[_key == "id"][0].value),    "situasi": situasi[]{      _key,      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value),      unit,      sisi,      bab    },    "ajakan": {      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)    },    "rangkaianPilihan": rangkaianPilihan->{ _id },    "wilayah": wilayah[]{      _key,      "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)    }  }
+export type SiteSettingsPreviewQueryResult = {
+  _id: string;
+  name: string | null;
+  email: string | null;
+  socials: Array<{
+    label?: string;
+    url?: string;
+    _key: string;
+  }> | null;
+  portrait: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: InternationalizedArrayString;
+    _type: "image";
+  } | null;
+  metadata: Metadata | null;
+  headline: string | null;
+  subline: string | null;
+  portraitAlt: string | null;
+  statement: RichText | null;
+  address: string | null;
+  situasi: Array<{
+    _key: string;
+    teks: string | null;
+    unit: "konstruksi" | "peekabo" | "teknologi" | null;
+    sisi: string | null;
+    bab: string | null;
+  }> | null;
+  ajakan: {
+    label: string | null;
+    sesudahnya: string | null;
+  };
+  rangkaianPilihan: {
+    _id: string;
+  } | null;
+  wilayah: Array<{
+    _key: string;
+    name: string | null;
+  }> | null;
+} | null;
+
+// Source: queries.ts
+// Variable: homeUnitsQuery
+// Query: *[_type == "unit" && statusTinjauan == "disetujui"] {      _id,  kunci,  "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),  "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value)  }
+export type HomeUnitsQueryResult = Array<{
+  _id: string;
+  kunci: "konstruksi" | "peekabo" | "teknologi" | null;
+  nama: string | null;
+  judul: string | null;
+  pembuka: string | null;
+}>;
+
+// Source: queries.ts
+// Variable: homeUnitsPreviewQuery
+// Query: *[_type == "unit"] {      _id,  kunci,  "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),  "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value)  }
+export type HomeUnitsPreviewQueryResult = Array<{
+  _id: string;
+  kunci: "konstruksi" | "peekabo" | "teknologi" | null;
+  nama: string | null;
+  judul: string | null;
+  pembuka: string | null;
+}>;
 
 // Source: queries.ts
 // Variable: unitPageQuery
@@ -1332,7 +1367,10 @@ declare global {
     '\n  *[_type == "project" && listed != false]{ "unit": coalesce(unit, practice) }.unit\n': PracticesQueryResult;
     '\n  *[_type == "project" && slug.current == $slug][0] {\n    \n  _id,\n  slug,\n  year,\n  client,\n  span,\n  featured,\n  // The response key remains practice while legacy work views are migrated.\n  // Source documents prefer the F2-02 unit field and fall back to practice.\n  "practice": coalesce(unit, practice),\n  cover{ ..., "lqip": asset->metadata.lqip },\n  "title": coalesce(title[_key == $locale][0].value, title[_key == "id"][0].value),\n  "engagement": coalesce(engagement[_key == $locale][0].value, engagement[_key == "id"][0].value),\n  "coverAlt": coalesce(cover.alt[_key == $locale][0].value, cover.alt[_key == "id"][0].value)\n,\n    scope,\n    publishedAt,\n    metadata,\n    _updatedAt,\n    "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)[]{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n          ...,\n          internalLink->{_type, slug, title}\n        }\n      }\n    },\n    gallery[]{\n      ...,\n      "lqip": asset->metadata.lqip,\n      "alt": coalesce(alt[_key == $locale][0].value, alt[_key == "id"][0].value)\n    },\n    // The arc. Projected inline for the same reason gallery is: the shape is\n    // used by exactly one query, so a shared constant would buy nothing.\n    // The _key taken here is the chapter\'s own -- the _key inside each\n    // coalesce scopes to the localized array being filtered, not to this one\n    // -- and it is what StepSequence takes as its stable key.\n    //\n    // No backticks in this comment, and that is not style. Everything from\n    // the opening backtick of defineQuery to its close is one JS template\n    // literal, so a backtick here ends the string early. Typegen then exits\n    // 0, reports "0 queries and 27 schema types", and every query type in\n    // sanity.types.ts silently disappears. The note above this query warns\n    // about block comments for the same reason; this is the neighbouring\n    // hazard, found by walking into it.\n    chapters[]{\n      _key,\n      "heading": coalesce(heading[_key == $locale][0].value, heading[_key == "id"][0].value),\n      "body": coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)\n    },\n    "outcome": coalesce(outcome[_key == $locale][0].value, outcome[_key == "id"][0].value),\n    // Metadata-only projections. See the note above this query.\n    "excerpt": pt::text(\n      coalesce(body[_key == $locale][0].value, body[_key == "id"][0].value)\n    ),\n    "ogImage": cover.asset->{\n      url,\n      "width": metadata.dimensions.width,\n      "height": metadata.dimensions.height\n    }\n  }\n': ProjectQueryResult;
     '\n  *[_type == "project" && defined(slug.current)].slug.current\n': ProjectSlugsQueryResult;
-    '\n  *[\n    (_type == "siteSettings" && statusTinjauan == "disetujui") ||\n    _type == "studioSettings"\n  ]\n    | order((_type == "siteSettings") desc, _updatedAt desc)[0] {\n    _id,\n    name,\n    "email": coalesce(kanal.email, email),\n    "socials": coalesce(akunSosial, socials),\n    portrait,\n    metadata,\n    "headline": coalesce(\n      heroJudul[_key == $locale][0].value,\n      heroJudul[_key == "id"][0].value,\n      headline[_key == $locale][0].value,\n      headline[_key == "id"][0].value\n    ),\n    "subline": coalesce(\n      heroSubjudul[_key == $locale][0].value,\n      heroSubjudul[_key == "id"][0].value,\n      subline[_key == $locale][0].value,\n      subline[_key == "id"][0].value\n    ),\n    "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),\n    "statement": coalesce(\n      pernyataanPemilik[_key == $locale][0].value,\n      pernyataanPemilik[_key == "id"][0].value,\n      statement[_key == $locale][0].value,\n      statement[_key == "id"][0].value\n    ),\n    "address": coalesce(alamat[_key == $locale][0].value, alamat[_key == "id"][0].value),\n    "situasi": situasi[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value),\n      unit,\n      sisi,\n      bab\n    },\n    "ajakan": {\n      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)\n    },\n    "rangkaianPilihan": rangkaianPilihan->{ _id },\n    "wilayah": wilayah[]{\n      _key,\n      "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)\n    }\n  }\n': SiteSettingsQueryResult;
+    '\n  *[_type == "siteSettings" && statusTinjauan == "disetujui"][0] {\n    _id,\n    name,\n    "email": kanal.email,\n    "socials": akunSosial,\n    portrait,\n    metadata,\n    "headline": coalesce(\n      heroJudul[_key == $locale][0].value,\n      heroJudul[_key == "id"][0].value\n    ),\n    "subline": coalesce(\n      heroSubjudul[_key == $locale][0].value,\n      heroSubjudul[_key == "id"][0].value\n    ),\n    "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),\n    "statement": coalesce(\n      pernyataanPemilik[_key == $locale][0].value,\n      pernyataanPemilik[_key == "id"][0].value\n    ),\n    "address": coalesce(alamat[_key == $locale][0].value, alamat[_key == "id"][0].value),\n    "situasi": situasi[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value),\n      unit,\n      sisi,\n      bab\n    },\n    "ajakan": {\n      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)\n    },\n    "rangkaianPilihan": rangkaianPilihan->{ _id },\n    "wilayah": wilayah[]{\n      _key,\n      "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)\n    }\n  }\n': SiteSettingsQueryResult;
+    '\n  *[_type == "siteSettings"][0] {\n    _id,\n    name,\n    "email": kanal.email,\n    "socials": akunSosial,\n    portrait,\n    metadata,\n    "headline": coalesce(\n      heroJudul[_key == $locale][0].value,\n      heroJudul[_key == "id"][0].value\n    ),\n    "subline": coalesce(\n      heroSubjudul[_key == $locale][0].value,\n      heroSubjudul[_key == "id"][0].value\n    ),\n    "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),\n    "statement": coalesce(\n      pernyataanPemilik[_key == $locale][0].value,\n      pernyataanPemilik[_key == "id"][0].value\n    ),\n    "address": coalesce(alamat[_key == $locale][0].value, alamat[_key == "id"][0].value),\n    "situasi": situasi[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value),\n      unit,\n      sisi,\n      bab\n    },\n    "ajakan": {\n      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)\n    },\n    "rangkaianPilihan": rangkaianPilihan->{ _id },\n    "wilayah": wilayah[]{\n      _key,\n      "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)\n    }\n  }\n': SiteSettingsPreviewQueryResult;
+    '\n  *[_type == "unit" && statusTinjauan == "disetujui"] {\n    \n  _id,\n  kunci,\n  "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n  "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value)\n\n  }\n': HomeUnitsQueryResult;
+    '\n  *[_type == "unit"] {\n    \n  _id,\n  kunci,\n  "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n  "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value)\n\n  }\n': HomeUnitsPreviewQueryResult;
     '\n  *[_type == "unit" && statusTinjauan == "disetujui" && kunci == $unit][0] {\n    kunci,\n    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n    "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),\n    "masalah": masalah[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "caraKerja": caraKerja[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "sisi": *[\n      _type == "side" &&\n      statusTinjauan == "disetujui" &&\n      unit._ref == ^._id\n    ] | order(urutan asc) {\n      _id,\n      kunci,\n      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value)\n    },\n    "ajakan": {\n      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)\n    }\n  }\n': UnitPageQueryResult;
     '\n  *[_type == "side" && statusTinjauan == "disetujui" && kunci == $side && unit->kunci == $unit][0] {\n    kunci,\n    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n    "caraMembeli": caraMembeli[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "langkahPertama": {\n      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)\n    },\n    "bab": *[\n      _type == "bab" &&\n      statusTinjauan == "disetujui" &&\n      sisi._ref == ^._id\n    ] | order(urutan asc) {\n      _id,\n      "slug": slug.current,\n      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n      "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),\n      urutan\n    },\n    urutan,\n    "jaringan": {\n      "caraKerja": coalesce(jaringan.caraKerja[_key == $locale][0].value, jaringan.caraKerja[_key == "id"][0].value),\n      "asalKomisi": coalesce(jaringan.asalKomisi[_key == $locale][0].value, jaringan.asalKomisi[_key == "id"][0].value),\n      "yangTidakAda": coalesce(jaringan.yangTidakAda[_key == $locale][0].value, jaringan.yangTidakAda[_key == "id"][0].value),\n      "syarat": coalesce(jaringan.syarat[_key == $locale][0].value, jaringan.syarat[_key == "id"][0].value),\n      "ajakanDaftar": {\n        "label": coalesce(jaringan.ajakanDaftar.label[_key == $locale][0].value, jaringan.ajakanDaftar.label[_key == "id"][0].value),\n        "sesudahnya": coalesce(jaringan.ajakanDaftar.sesudahnya[_key == $locale][0].value, jaringan.ajakanDaftar.sesudahnya[_key == "id"][0].value)\n      }\n    }\n  }\n': SidePageQueryResult;
     '\n  *[_type == "bab" && statusTinjauan == "disetujui" && slug.current == $slug && sisi->kunci == $side && sisi->unit->kunci == $unit][0] {\n    _id,\n    "slug": slug.current,\n    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n    "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),\n    "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),\n    urutan,\n    "batas": coalesce(batas[_key == $locale][0].value, batas[_key == "id"][0].value),\n    "offers": *[\n      _type == "offer" &&\n      statusTinjauan == "disetujui" &&\n      bab._ref == ^._id\n    ] | order(urutan asc) {\n      _id,\n      "slug": slug.current,\n      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n      "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),\n      pasar,\n      urutan\n    },\n    "ajakan": {\n      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)\n    }\n  }\n': ChapterPageQueryResult;

@@ -274,40 +274,27 @@ export const projectSlugsQuery = defineQuery(`
   *[_type == "project" && defined(slug.current)].slug.current
 `)
 
-/**
- * Arthur's site singleton. `studioSettings` stays in this read path until its
- * one existing production fixture is migrated through procedure §6.
- */
+/** Arthur's approved site singleton; legacy studio fixtures cannot win here. */
 export const siteSettingsQuery = defineQuery(`
-  *[
-    (_type == "siteSettings" && statusTinjauan == "disetujui") ||
-    _type == "studioSettings"
-  ]
-    | order((_type == "siteSettings") desc, _updatedAt desc)[0] {
+  *[_type == "siteSettings" && statusTinjauan == "disetujui"][0] {
     _id,
     name,
-    "email": coalesce(kanal.email, email),
-    "socials": coalesce(akunSosial, socials),
+    "email": kanal.email,
+    "socials": akunSosial,
     portrait,
     metadata,
     "headline": coalesce(
       heroJudul[_key == $locale][0].value,
-      heroJudul[_key == "id"][0].value,
-      headline[_key == $locale][0].value,
-      headline[_key == "id"][0].value
+      heroJudul[_key == "id"][0].value
     ),
     "subline": coalesce(
       heroSubjudul[_key == $locale][0].value,
-      heroSubjudul[_key == "id"][0].value,
-      subline[_key == $locale][0].value,
-      subline[_key == "id"][0].value
+      heroSubjudul[_key == "id"][0].value
     ),
     "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),
     "statement": coalesce(
       pernyataanPemilik[_key == $locale][0].value,
-      pernyataanPemilik[_key == "id"][0].value,
-      statement[_key == $locale][0].value,
-      statement[_key == "id"][0].value
+      pernyataanPemilik[_key == "id"][0].value
     ),
     "address": coalesce(alamat[_key == $locale][0].value, alamat[_key == "id"][0].value),
     "situasi": situasi[]{
@@ -326,6 +313,75 @@ export const siteSettingsQuery = defineQuery(`
       _key,
       "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)
     }
+  }
+`)
+
+/**
+ * Draft-mode counterpart to siteSettingsQuery.
+ *
+ * The projection is deliberately identical and contains only reader-facing
+ * fields. Editorial status and source notes stay out of the rendered page.
+ */
+export const siteSettingsPreviewQuery = defineQuery(`
+  *[_type == "siteSettings"][0] {
+    _id,
+    name,
+    "email": kanal.email,
+    "socials": akunSosial,
+    portrait,
+    metadata,
+    "headline": coalesce(
+      heroJudul[_key == $locale][0].value,
+      heroJudul[_key == "id"][0].value
+    ),
+    "subline": coalesce(
+      heroSubjudul[_key == $locale][0].value,
+      heroSubjudul[_key == "id"][0].value
+    ),
+    "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),
+    "statement": coalesce(
+      pernyataanPemilik[_key == $locale][0].value,
+      pernyataanPemilik[_key == "id"][0].value
+    ),
+    "address": coalesce(alamat[_key == $locale][0].value, alamat[_key == "id"][0].value),
+    "situasi": situasi[]{
+      _key,
+      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value),
+      unit,
+      sisi,
+      bab
+    },
+    "ajakan": {
+      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),
+      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)
+    },
+    "rangkaianPilihan": rangkaianPilihan->{ _id },
+    "wilayah": wilayah[]{
+      _key,
+      "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)
+    }
+  }
+`)
+
+const homeUnitFields = `
+  _id,
+  kunci,
+  "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
+  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+  "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value)
+`
+
+/** The three approved Arthur unit doors shown on the public home page. */
+export const homeUnitsQuery = defineQuery(`
+  *[_type == "unit" && statusTinjauan == "disetujui"] {
+    ${homeUnitFields}
+  }
+`)
+
+/** The same safe unit projection for authenticated draft-mode review. */
+export const homeUnitsPreviewQuery = defineQuery(`
+  *[_type == "unit"] {
+    ${homeUnitFields}
   }
 `)
 

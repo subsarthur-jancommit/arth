@@ -134,6 +134,18 @@ const DELIBERATE = {
   // against the fold; a page that overrode it would be deciding a
   // loading strategy from the outside.
   'project-grid:preloadCount': 'perf default tuned in the block, not per page',
+
+  // F3-01 replaces the legacy studio home with Arthur's umbrella structure.
+  // These capabilities stay in the vault for the routes named below; keeping
+  // the reasons here makes their temporary lack of a caller explicit.
+  'hero:index': 'F3-01 caps the umbrella hero at four text elements',
+  'latest-writing:practice':
+    'the legacy journal promotion left the home in F3-01',
+  'passage:plates': 'the Arthur home passage is now its three unit doors',
+  'studio-note:portrait':
+    'reserved for F3-09 after the owner provides real identity media',
+  'studio-note:portraitAlt':
+    'paired with the F3-09 portrait; no dummy portrait is rendered',
 } satisfies Record<string, string>
 
 /** Directories whose `index.tsx` declares a component this rule governs. */

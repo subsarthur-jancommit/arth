@@ -52,6 +52,13 @@ import { schema } from './index'
 const HERE = import.meta.dir
 const QUERIES = join(HERE, '..', 'queries.ts')
 
+const ARCHIVE_TYPES = new Set([
+  // One production fixture remains for rollback. It is read-only and hidden
+  // from Studio navigation; Arthur's frontend intentionally stopped reading
+  // it when the new siteSettings draft was created.
+  'studioSettings',
+])
+
 describe('schema coverage', () => {
   it('every document type is read by at least one query', async () => {
     const queries = await Bun.file(QUERIES).text()
@@ -65,6 +72,7 @@ describe('schema coverage', () => {
 
     const unread = documentTypes.filter(
       (name) =>
+        !ARCHIVE_TYPES.has(name) &&
         !queries.includes(`_type == "${name}"`) &&
         !queries.includes(`"${name}"`)
     )

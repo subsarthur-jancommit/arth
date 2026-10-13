@@ -66,6 +66,55 @@
   opacity: 0;
 }
 
+@media not (--desktop), (hover: none) {
+  :global([data-reveal='hidden'] [data-reveal-item='visible']) .intent .drop {
+    transform: scaleY(1);
+  }
+
+  :global([data-reveal='hidden'] [data-reveal-item='visible']) .intent .run {
+    transform: scaleX(1);
+  }
+
+  :global([data-reveal='hidden'] [data-reveal-item='visible']) .intent .dot {
+    opacity: 1;
+  }
+}
+
+/*
+ * An intent leader belongs to a pressable row rather than to a section's
+ * entrance. On a wide screen it draws only while that row is hovered or owns
+ * keyboard focus. On touch and narrow screens, where hover cannot name the
+ * active row, the per-item reveal state draws it as the row enters view.
+ */
+@media (--desktop) and (hover: hover) {
+  .intent .drop {
+    transform: scaleY(0);
+  }
+
+  .intent .run {
+    transform: scaleX(0);
+  }
+
+  .intent .dot {
+    opacity: 0;
+  }
+
+  :global([data-leader-target]:hover) .intent .drop,
+  :global([data-leader-target]:focus-within) .intent .drop {
+    transform: scaleY(1);
+  }
+
+  :global([data-leader-target]:hover) .intent .run,
+  :global([data-leader-target]:focus-within) .intent .run {
+    transform: scaleX(1);
+  }
+
+  :global([data-leader-target]:hover) .intent .dot,
+  :global([data-leader-target]:focus-within) .intent .dot {
+    opacity: 1;
+  }
+}
+
 /*
  * Reduced motion keeps the outcome and drops the beat (MOTION-SPEC §9.4 rule
  * 3): the leader is drawn at once.
@@ -84,5 +133,10 @@
 
   [data-reveal] .dot {
     opacity: 1;
+  }
+
+  /* This moment is optional orientation, so reduced motion drops the line. */
+  .intent {
+    display: none;
   }
 }

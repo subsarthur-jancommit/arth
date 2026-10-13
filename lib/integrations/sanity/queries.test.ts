@@ -197,27 +197,24 @@ describe('network side query', () => {
   })
 })
 
-describe('site settings migration', () => {
-  it('prefers siteSettings while keeping the old singleton readable', () => {
+describe('site settings cutover', () => {
+  it('reads only approved Arthur settings on the public path', () => {
     expect(siteSettingsQuery).toContain(
       '_type == "siteSettings" && statusTinjauan == "disetujui"'
     )
-    expect(siteSettingsQuery).toContain('_type == "studioSettings"')
-    expect(siteSettingsQuery).toContain(
-      'order((_type == "siteSettings") desc, _updatedAt desc)'
-    )
+    expect(siteSettingsQuery).not.toContain('_type == "studioSettings"')
   })
 
-  it('maps the old editorial and contact fields into the new result shape', () => {
+  it('projects the Arthur editorial and contact fields explicitly', () => {
     expect(siteSettingsQuery).toContain('heroJudul')
-    expect(siteSettingsQuery).toContain('headline[_key == $locale]')
-    expect(siteSettingsQuery).toContain('coalesce(kanal.email, email)')
-    expect(siteSettingsQuery).toContain('coalesce(akunSosial, socials)')
+    expect(siteSettingsQuery).not.toContain('headline[_key == $locale]')
+    expect(siteSettingsQuery).toContain('"email": kanal.email')
+    expect(siteSettingsQuery).toContain('"socials": akunSosial')
     expect(siteSettingsQuery).toContain(
       'coalesce(alamat[_key == $locale][0].value'
     )
     expect(siteSettingsQuery).toContain('pernyataanPemilik')
-    expect(siteSettingsQuery).toContain('statement[_key == $locale]')
+    expect(siteSettingsQuery).not.toContain('statement[_key == $locale]')
     expect(siteSettingsQuery).toContain('"situasi": situasi[]')
     expect(siteSettingsQuery).toContain(
       '"teks": coalesce(teks[_key == $locale]'

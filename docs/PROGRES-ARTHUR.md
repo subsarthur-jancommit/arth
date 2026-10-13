@@ -52,7 +52,7 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 | F2-07 Kendali terbit dan medan internal     | —   | —         | **Dalam branch** | Query Arthur hanya memilih dokumen `disetujui`; medan internal tidak diproyeksikan; aksi Studio memakai administrator sebagai proxy pemilik (U27); tidak ada isi Sanity ditulis dan e2e dilewati atas instruksi pemilik                               |
 | F2-10 Pratinjau di Studio                   | —   | —         | **Dalam branch** | Presentation memetakan Pengaturan situs, Cara kami bekerja, Rangkaian, Unit, Sisi, Bab, dan Offer ke rute nyata; FAQ belum dipetakan karena tidak memiliki halaman mandiri                                                                            |
 | F2-11 Panduan Studio                        | —   | —         | **Dalam branch** | Panduan Studio ditulis ulang untuk Unit → Sisi → Bab → Offer, alur status, urutan terbit, daftar pendek, dummy kontak, dan batas pratinjau; tidak ada isi atau setelan Sanity diubah                                                                  |
-| F3-01 Beranda payung                        | —   | —         | **Dalam branch** | Beranda membaca dan menautkan situasi aman ke unit/sisi/bab yang valid; query menyediakan ajakan dan referensi rangkaian dengan allowlist; susunan blok lengkap, copy yang disetujui, serta momen datum/pintu unit belum selesai                      |
+| F3-01 Beranda payung                        | —   | —         | **Dalam branch** | Hero Arthur, tiga pintu unit dari datum, situasi yang menunjuk unit, rangkaian tiga unit, cara kerja, dan ajakan sudah tersusun; jalur publik hanya membaca dokumen disetujui, sedangkan draft `perlu-anda` tampil hanya dalam draft mode (U30)       |
 | F3-02 Template unit                         | —   | —         | **Dalam branch** | Data unit dan sisi yang disetujui sudah dibaca sebagai fallback aman; susunan blok akhir, momen morph, dan copy editorial belum selesai                                                                                                               |
 | F3-03 Template sisi                         | —   | —         | **Dalam branch** | Daftar bab yang disetujui dan langkah pertama sudah dibaca; tabel bab, crosshair, dan momen lembar ditukar belum selesai                                                                                                                              |
 | F3-04 Template bab dan kartu offer          | —   | —         | **Dalam branch** | Rute bab hanya merender data yang lolos penjaga placeholder; filter pasar, kartu akhir, dan momen bekisting belum selesai                                                                                                                             |
@@ -440,3 +440,18 @@ build produksi menyelesaikan 97/97 halaman. Studio lokal menyatakan origin
 pagar, sehingga pemeriksaan visual isi draft harus dilakukan lewat Presentation
 yang sudah terhubung atau setelah pemilik menambahkan origin. Tidak ada e2e,
 publish, push, atau perubahan production lain pada paket ini.
+
+**U30 — beranda Arthur tidak lagi mempromosikan fixture studio lama.** F3-01
+mengganti karya pilihan, jurnal, dan istilah Praktik pada beranda dengan urutan
+yang ditetapkan kerangka: hero payung, tiga pintu unit, pilih situasi, satu
+klien–tiga unit, cara kami bekerja, dan ajakan. Hero memuat tiga elemen teks;
+pintu unit memakai `datum` dan lintasan `arth-passage`; setiap situasi tetap
+menamai unit tujuannya tanpa JavaScript, memakai `leader` pada hover/fokus atau
+saat masuk layar sentuh, dan menghilangkan garis di reduced motion. Query
+publik berhenti membaca `studioSettings`; hanya `siteSettings` dan unit
+berstatus `disetujui` yang boleh menang. Query pratinjau terpisah membaca 11
+draft awal melalui perspektif terautentikasi tanpa memproyeksikan status atau
+medan Internal. Sampai pemilik menerbitkan isi, fallback beranda mengambil
+teks siap tayang yang sama dari Master Brief—bukan proyek, klien, atau hasil
+fiktif. Kanal dan alamat tetap dummy berlabel sesuai NOTE U28. E2e tidak
+dijalankan atas instruksi pemilik.

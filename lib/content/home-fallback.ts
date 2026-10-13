@@ -1,5 +1,6 @@
 import { BRAND_NAME } from '@/lib/brand'
 import { canRenderPublicContent } from '@/lib/content/public-content-guard'
+import type { Unit } from '@/lib/content/units'
 import type { Locale } from '@/lib/i18n/routing'
 
 /**
@@ -53,16 +54,82 @@ const FALLBACK_COPY = {
     portraitCaption: 'The studio',
   },
   id: {
-    headline: 'Karya yang harus bertahan',
+    headline: 'Proyek jalan. Sistem bekerja. Pasar bertambah.',
     subline:
-      'Konsultasi, AI dan data, serta pengerjaan pesanan, dengan lingkup sesuai brief dan dikerjakan sesuai itu.',
+      'Konstruksi sipil, sistem teknologi, dan agency marketshare untuk Subang, Purwakarta, dan Bandung.',
     statement: [
-      'Arth bekerja sesuai brief. Tiap penugasan dimulai dari kendala yang membuat masalahnya sulit (tenggatnya, sistem lamanya, keputusan yang tidak bisa ditarik kembali), bukan dari daftar layanan.',
-      'Pekerjaannya berkisar dari tinjauan arsitektur dua minggu sampai pengerjaan yang berjalan beberapa bulan. Lingkup dan perkiraannya disepakati sebelum apa pun dimulai, bukan sesudah, dan hasilnya diukur terhadap keduanya.',
+      'Usaha jarang berhenti karena satu masalah besar. Usaha tersendat di tiga tempat: proyek yang macet di celah administrasi, tenaga, material, dan modal; pekerjaan berulang yang masih dikerjakan tangan; dan pasar yang belum cukup mengenal, memercayai, dan membeli. Kami bekerja di ketiga tempat itu lewat tiga unit.',
     ],
-    portraitCaption: 'Studio',
+    portraitCaption: 'Arthur',
   },
 } as const satisfies Record<Locale, HomeCopy>
+
+export interface HomeUnitFallback {
+  value: Unit
+  label: string
+  title: string
+  intro: string
+}
+
+/**
+ * Exact, ready-to-publish unit headers from the Arthur master brief.
+ *
+ * These keep an unpublished or disconnected review build truthful. Approved
+ * Sanity documents replace them field-for-field as soon as they are published.
+ */
+export const HOME_UNIT_FALLBACKS: readonly HomeUnitFallback[] = [
+  {
+    value: 'konstruksi',
+    label: 'Konstruksi',
+    title: 'Isi celahnya. Bangun sampai jadi. Rawat sesudahnya.',
+    intro:
+      'Konstruksi sipil dari hulu ke hilir untuk Subang, Purwakarta, dan Bandung. Proyek tersendat di celah dokumen, tenaga, material, modal, dan laporan; kami bekerja di celah-celah itu.',
+  },
+  {
+    value: 'teknologi',
+    label: 'Teknologi',
+    title: 'Buka pasar baru. Otomatiskan sisanya.',
+    intro:
+      'Bot dan workflow yang bekerja dua puluh empat jam untuk bisnis Anda, di sektor apa pun. Kami bekerja pada pasar yang belum terbuka dan pekerjaan berulang yang masih dikerjakan tangan manusia.',
+  },
+  {
+    value: 'peekabo',
+    label: 'Peekabo',
+    title:
+      'Rebut perhatian. Bangun kepercayaan. Biarkan jaringan yang menjual.',
+    intro:
+      'Agency marketshare untuk usaha dan brand, berbasis di Subang, Purwakarta, dan Bandung. Kami bekerja saat terlalu sedikit orang yang tahu, belum cukup orang yang percaya, dan belum ada yang ikut menjualkan.',
+  },
+] as const
+
+export interface HomeSituationFallback {
+  key: string
+  text: string
+  unit: Unit
+  side: string
+}
+
+/** The three approved buyer-language entries written to siteSettings. */
+export const HOME_SITUATION_FALLBACKS: readonly HomeSituationFallback[] = [
+  {
+    key: 'situasi-konstruksi',
+    text: 'Proyek macet di celah administrasi, tenaga, material, atau modal.',
+    unit: 'konstruksi',
+    side: 'pelaku-proyek',
+  },
+  {
+    key: 'situasi-teknologi',
+    text: 'Pekerjaan berulang masih dikerjakan tangan.',
+    unit: 'teknologi',
+    side: 'siap-pakai',
+  },
+  {
+    key: 'situasi-peekabo',
+    text: 'Pasar belum cukup mengenal, memercayai, dan membeli.',
+    unit: 'peekabo',
+    side: 'pemilik-usaha',
+  },
+] as const
 
 /**
  * The one placeholder contact, shared.
