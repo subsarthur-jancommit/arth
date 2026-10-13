@@ -53,7 +53,7 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 | F2-10 Pratinjau di Studio                   | —   | —         | **Dalam branch** | Presentation memetakan Pengaturan situs, Cara kami bekerja, Rangkaian, Unit, Sisi, Bab, dan Offer ke rute nyata; FAQ belum dipetakan karena tidak memiliki halaman mandiri                                                                            |
 | F2-11 Panduan Studio                        | —   | —         | **Dalam branch** | Panduan Studio ditulis ulang untuk Unit → Sisi → Bab → Offer, alur status, urutan terbit, daftar pendek, dummy kontak, dan batas pratinjau; tidak ada isi atau setelan Sanity diubah                                                                  |
 | F3-01 Beranda payung                        | —   | —         | **Dalam branch** | Hero Arthur, tiga pintu unit dari datum, situasi yang menunjuk unit, rangkaian tiga unit, cara kerja, dan ajakan sudah tersusun; jalur publik hanya membaca dokumen disetujui, sedangkan draft `perlu-anda` tampil hanya dalam draft mode (U30)       |
-| F3-02 Template unit                         | —   | —         | **Dalam branch** | Data unit dan sisi yang disetujui sudah dibaca sebagai fallback aman; susunan blok akhir, momen morph, dan copy editorial belum selesai                                                                                                               |
+| F3-02 Template unit                         | —   | —         | **Dalam branch** | Susunan hero, dua pintu sisi, masalah pembeli, offer kondisional, cara kerja, jembatan kondisional, CTA, dan unit berikutnya sudah selesai; copy fallback identik dengan draft awal yang disetujui, dengan Sanity tetap menjadi sumber utama (U31)    |
 | F3-03 Template sisi                         | —   | —         | **Dalam branch** | Daftar bab yang disetujui dan langkah pertama sudah dibaca; tabel bab, crosshair, dan momen lembar ditukar belum selesai                                                                                                                              |
 | F3-04 Template bab dan kartu offer          | —   | —         | **Dalam branch** | Rute bab hanya merender data yang lolos penjaga placeholder; filter pasar, kartu akhir, dan momen bekisting belum selesai                                                                                                                             |
 | F3-05 Template offer                        | —   | —         | **Dalam branch** | Rute offer memakai allowlist query dan penjaga placeholder; delapan blok, lembar cetak, dan momen batas dipaku belum selesai                                                                                                                          |
@@ -455,3 +455,17 @@ medan Internal. Sampai pemilik menerbitkan isi, fallback beranda mengambil
 teks siap tayang yang sama dari Master Brief—bukan proyek, klien, atau hasil
 fiktif. Kanal dan alamat tetap dummy berlabel sesuai NOTE U28. E2e tidak
 dijalankan atas instruksi pemilik.
+
+**U31 — template unit sekarang memulai dari masalah pembeli, bukan daftar
+layanan.** F3-02 mengganti scaffold contoh dengan hero unit, dua pintu sisi,
+masalah yang dibaca, cara kerja unit, CTA, dan sirkuit ke unit berikutnya.
+Copy fallback identik dengan draft awal yang telah disetujui pemilik;
+published Sanity tetap menang pada jalur publik dan draft hanya dapat dibaca
+dalam draft mode. Offer contoh dan jembatan tidak dikarang: bloknya baru
+muncul jika referensinya lengkap dan dapat membentuk rute yang sah. Urutan
+sisi Teknologi pada draft berlawanan dengan keputusan peta situs, sehingga
+renderer mengunci urutan kanonis `siap-pakai` lalu `paham-teknis` dari
+`SIDES`; data production tidak dimutasi. CTA tetap memakai
+`kontak@arth.invalid` dengan NOTE bahwa alamat itu dummy dan harus diganti
+sebelum publikasi. Spesifikasi e2e diselaraskan, tetapi Playwright tidak
+dijalankan sesuai instruksi pemilik.

@@ -5,7 +5,11 @@ import type { Side, Unit } from '@/lib/content/units'
 import type { Locale } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
-import { sidePageQuery, unitPageQuery } from '@/lib/integrations/sanity/queries'
+import {
+  sidePageQuery,
+  unitPagePreviewQuery,
+  unitPageQuery,
+} from '@/lib/integrations/sanity/queries'
 
 const textSchema = z.string().trim().min(1)
 
@@ -17,6 +21,26 @@ const pointSchema = z.object({
 const callToActionSchema = z.object({
   label: textSchema.nullable(),
   sesudahnya: textSchema.nullable(),
+})
+
+const offerCardSchema = z.object({
+  _id: z.string(),
+  slug: textSchema.nullable(),
+  judul: textSchema.nullable(),
+  dampak: textSchema.nullable(),
+  untukSiapa: textSchema.nullable(),
+  jenis: textSchema.nullable(),
+  bab: z
+    .object({
+      slug: textSchema.nullable(),
+      side: z
+        .object({
+          kunci: textSchema,
+          unit: textSchema.nullable(),
+        })
+        .nullable(),
+    })
+    .nullable(),
 })
 
 const unitContentSchema = z.object({
@@ -33,6 +57,16 @@ const unitContentSchema = z.object({
         kunci: textSchema,
         nama: textSchema.nullable(),
         judul: textSchema.nullable(),
+      })
+    )
+    .nullable(),
+  contohOffer: z.array(offerCardSchema).nullable(),
+  jembatan: z
+    .array(
+      z.object({
+        _key: z.string(),
+        kalimat: textSchema.nullable(),
+        offer: offerCardSchema.nullable(),
       })
     )
     .nullable(),
@@ -81,17 +115,18 @@ export type SideContent = z.infer<typeof sideContentSchema>
  */
 export async function unitContent(
   locale: Locale,
-  unit: Unit
+  unit: Unit,
+  preview = false
 ): Promise<UnitContent | null> {
   'use cache'
 
   if (!isConfigured('sanity')) return null
 
   const { data } = await sanityFetch({
-    query: unitPageQuery,
+    query: preview ? unitPagePreviewQuery : unitPageQuery,
     params: { locale, unit },
-    perspective: 'published',
-    stega: false,
+    perspective: preview ? 'drafts' : 'published',
+    stega: preview,
   })
   const parsed = unitContentSchema.safeParse(data)
 
@@ -104,6 +139,18 @@ export async function unitContent(
     ...(parsed.data.masalah?.map((item) => item.teks) ?? []),
     ...(parsed.data.caraKerja?.map((item) => item.teks) ?? []),
     ...(parsed.data.sisi?.flatMap((side) => [side.nama, side.judul]) ?? []),
+    ...(parsed.data.contohOffer?.flatMap((offer) => [
+      offer.judul,
+      offer.dampak,
+      offer.untukSiapa,
+      offer.jenis,
+    ]) ?? []),
+    ...(parsed.data.jembatan?.flatMap((bridge) => [
+      bridge.kalimat,
+      bridge.offer?.judul,
+      bridge.offer?.dampak,
+      bridge.offer?.untukSiapa,
+    ]) ?? []),
     parsed.data.ajakan?.label,
     parsed.data.ajakan?.sesudahnya,
   ]

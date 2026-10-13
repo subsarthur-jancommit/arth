@@ -1,10 +1,10 @@
 import { expect, test } from '@playwright/test'
 
-import { UNITS } from '../lib/content/units'
+import { SIDES, UNITS } from '../lib/content/units'
 import { routing } from '../lib/i18n/routing'
 
 /**
- * Each unit has a page, exactly one URL, and says that its text is sample.
+ * Each unit has a page, exactly one URL, and exposes its two reader sides.
  *
  * ## What this file replaces
  *
@@ -20,14 +20,6 @@ import { routing } from '../lib/i18n/routing'
  * redirect assertion is replaced by the status gate below — the old URL does
  * not redirect any more, it is `410 Gone`, and `e2e/route-status.e2e.ts`
  * proves that.
- *
- * ## Why the sample label is asserted here and not left to a reviewer
- *
- * The content rules this project works to permit dummy text on the site while
- * it is built, on the condition that it shows on screen that it is sample
- * content. A condition nobody checks is a condition that holds until the
- * first hurried commit. The label is the whole protection, so it is measured
- * on the served page rather than trusted to the component that renders it.
  *
  * ## Why canonicality is asserted, not assumed
  *
@@ -52,12 +44,17 @@ test.describe('unit pages', () => {
           'the h1 is empty'
         ).toBeGreaterThan(0)
 
-        // And it says, on screen, that what follows is not Arthur's own words
-        // yet.
+        // The approved statement and both routes into the unit stay present.
         await expect(
-          page.locator('[data-sample-content]'),
-          'the page carries unlabelled sample text'
-        ).not.toHaveCount(0)
+          page.locator('[data-unit-statement]'),
+          'the unit statement is missing'
+        ).toHaveCount(1)
+        for (const side of SIDES[unit]) {
+          await expect(
+            page.locator(`main a[href="/${locale}/${unit}/${side}"]`),
+            `the page does not link to its ${side} side`
+          ).not.toHaveCount(0)
+        }
       })
     }
   }
@@ -94,17 +91,17 @@ test.describe('unit pages', () => {
    * depends on it: its second hop is unit → unit, and without these links
    * there is no same-component navigation on the site to measure.
    */
-  test('a unit page links to the other two units', async ({ page }) => {
+  test('a unit page links onward through the three-unit circuit', async ({
+    page,
+  }) => {
     const [first] = UNITS
     await page.goto(`/en/${first}`)
 
-    const others = UNITS.filter((unit) => unit !== first)
-    for (const other of others) {
-      await expect(
-        page.locator(`main a[href="/en/${other}"]`),
-        `/en/${first} does not link to /en/${other}`
-      ).not.toHaveCount(0)
-    }
+    const next = UNITS[1]
+    await expect(
+      page.locator(`main a[href="/en/${next}"]`),
+      `/en/${first} does not link onward to /en/${next}`
+    ).not.toHaveCount(0)
 
     await expect(
       page.locator(`main a[href="/en/${first}"]`),

@@ -385,6 +385,22 @@ export const homeUnitsPreviewQuery = defineQuery(`
   }
 `)
 
+const unitOfferCardFields = `
+  _id,
+  "slug": slug.current,
+  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+  "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),
+  "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),
+  "jenis": coalesce(jenis[_key == $locale][0].value, jenis[_key == "id"][0].value),
+  "bab": bab->{
+    "slug": slug.current,
+    "side": sisi->{
+      kunci,
+      "unit": unit->kunci
+    }
+  }
+`
+
 /** Published reader-facing content for one Arthur unit. */
 export const unitPageQuery = defineQuery(`
   *[_type == "unit" && statusTinjauan == "disetujui" && kunci == $unit][0] {
@@ -409,6 +425,71 @@ export const unitPageQuery = defineQuery(`
       kunci,
       "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
       "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value)
+    },
+    "contohOffer": *[
+      _type == "offer" &&
+      statusTinjauan == "disetujui" &&
+      _id in ^.contohOffer[]._ref
+    ] | order(urutan asc) {
+      ${unitOfferCardFields}
+    },
+    "jembatan": jembatan[]{
+      _key,
+      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value),
+      "offer": select(
+        offer->statusTinjauan == "disetujui" => offer->{
+          ${unitOfferCardFields}
+        }
+      )
+    },
+    "ajakan": {
+      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),
+      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)
+    }
+  }
+`)
+
+/**
+ * Authenticated draft-mode counterpart to `unitPageQuery`.
+ *
+ * The projection remains reader-safe but drops approval filters so the owner
+ * can review a unit, its sides, example offers, and bridges before publishing.
+ */
+export const unitPagePreviewQuery = defineQuery(`
+  *[_type == "unit" && kunci == $unit][0] {
+    kunci,
+    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
+    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+    "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),
+    "masalah": masalah[]{
+      _key,
+      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
+    },
+    "caraKerja": caraKerja[]{
+      _key,
+      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
+    },
+    "sisi": *[
+      _type == "side" &&
+      unit._ref == ^._id
+    ] | order(urutan asc) {
+      _id,
+      kunci,
+      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
+      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value)
+    },
+    "contohOffer": *[
+      _type == "offer" &&
+      _id in ^.contohOffer[]._ref
+    ] | order(urutan asc) {
+      ${unitOfferCardFields}
+    },
+    "jembatan": jembatan[]{
+      _key,
+      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value),
+      "offer": offer->{
+        ${unitOfferCardFields}
+      }
     },
     "ajakan": {
       "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),
