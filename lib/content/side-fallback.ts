@@ -17,6 +17,27 @@ export interface SideFallback {
 }
 
 /**
+ * Reader copy from the owner-approved initial Sanity draft for Peekabo's
+ * seller-network side. It remains a fallback until that draft is approved
+ * and published; no registration mechanism is inferred from it.
+ */
+export const NETWORK_SIDE_FALLBACK = {
+  caraKerja:
+    'Rujukan dicatat atas nama anggota melalui kode atau tautan pribadi. Bagian dibayar setelah penjualan terjadi dan mitra membayar komisinya.',
+  asalKomisi:
+    'Penghasilan datang dari penjualan yang benar-benar terjadi dan sudah dibayar mitra, bukan dari merekrut orang lain.',
+  yangTidakAda:
+    'Tidak ada biaya masuk, target rekrutmen, bonus rekrutmen, atau janji penghasilan.',
+  syarat:
+    'Pembayaran dilakukan setelah mitra membayar komisi dan dipotong pajak sesuai aturan.',
+  ajakanDaftar: {
+    label: 'Daftar gratis dan pilih jalur',
+    sesudahnya:
+      'Pilih rujuk transaksi, jadi anggota, atau jadi kreator dan host.',
+  },
+} as const
+
+/**
  * Review-safe copy copied verbatim from the six owner-approved Sanity drafts.
  * Published content wins field-for-field; this keeps the side templates useful
  * while those records deliberately remain unpublished.

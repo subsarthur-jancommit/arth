@@ -9,7 +9,14 @@ import { Link } from '@/components/ui/link'
 import { NoScriptFrontDoors } from '@/components/ui/route-loading'
 import { SectionHeader } from '@/components/ui/section-header'
 import { sideContent } from '@/lib/content/arthur-content'
-import { SIDE_FALLBACKS } from '@/lib/content/side-fallback'
+import {
+  NETWORK_MONEY_STEP_KEYS,
+  NETWORK_PATH_KEYS,
+} from '@/lib/content/network'
+import {
+  NETWORK_SIDE_FALLBACK,
+  SIDE_FALLBACKS,
+} from '@/lib/content/side-fallback'
 import {
   isSideOf,
   isUnit,
@@ -21,6 +28,7 @@ import {
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { generatePageMetadata } from '@/lib/utils/metadata'
+import { NetworkSide } from '@/vault/blocks/network-side'
 import { SideChapterTable } from '@/vault/blocks/side-chapter-table'
 import { StepSequence } from '@/vault/blocks/step-sequence'
 import { RouteMarker } from '@/vault/motion/route-marker'
@@ -50,9 +58,10 @@ export default async function SidePage({ params }: SidePageProps) {
   const requested = await localeRootParam()
   const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
   const { isEnabled } = await draftMode()
-  const [tUnit, tSide, content] = await Promise.all([
+  const [tUnit, tSide, tNetwork, content] = await Promise.all([
     getTranslations('unit'),
     getTranslations('side'),
+    getTranslations('network'),
     sideContent(locale, unit, side, isEnabled),
   ])
   const fallback = SIDE_FALLBACKS[side]
@@ -99,6 +108,38 @@ export default async function SidePage({ params }: SidePageProps) {
     ]
   })
   const sideName = content?.nama ?? fallback.nama
+  const isNetworkSide = unit === 'peekabo' && side === 'jaringan'
+  const networkContent = {
+    caraKerja: content?.jaringan?.caraKerja ?? NETWORK_SIDE_FALLBACK.caraKerja,
+    asalKomisi:
+      content?.jaringan?.asalKomisi ?? NETWORK_SIDE_FALLBACK.asalKomisi,
+    yangTidakAda:
+      content?.jaringan?.yangTidakAda ?? NETWORK_SIDE_FALLBACK.yangTidakAda,
+    syarat: content?.jaringan?.syarat ?? NETWORK_SIDE_FALLBACK.syarat,
+    ajakanDaftar: {
+      label:
+        content?.jaringan?.ajakanDaftar?.label ??
+        NETWORK_SIDE_FALLBACK.ajakanDaftar.label,
+      sesudahnya:
+        content?.jaringan?.ajakanDaftar?.sesudahnya ??
+        NETWORK_SIDE_FALLBACK.ajakanDaftar.sesudahnya,
+    },
+  }
+  const networkPaths = NETWORK_PATH_KEYS.map((path, index) => {
+    const chapter = chapters[index]
+
+    return {
+      id: path,
+      title: tNetwork(`paths.${path}.title`),
+      description: chapter?.situation ?? tNetwork(`paths.${path}.description`),
+      href: chapter?.href ?? null,
+      chapterName: chapter?.name ?? null,
+    }
+  })
+  const networkMoneySteps = NETWORK_MONEY_STEP_KEYS.map((step) => ({
+    id: step,
+    title: tNetwork(`money.steps.${step}`),
+  }))
 
   return (
     <Wrapper theme="light">
@@ -137,33 +178,75 @@ export default async function SidePage({ params }: SidePageProps) {
           />
         </header>
 
-        <StepSequence
-          label={tSide('buyingEyebrow')}
-          steps={buyingSteps}
-          data-epic="side-buying-path"
-          className={s.steps}
-        />
+        {isNetworkSide ? (
+          <NetworkSide
+            paths={networkPaths}
+            steps={buyingSteps.map((step) => ({
+              id: step.key,
+              text: step.title,
+            }))}
+            moneySteps={networkMoneySteps}
+            summary={networkContent.caraKerja}
+            terms={{
+              source: networkContent.asalKomisi,
+              absent: networkContent.yangTidakAda,
+              condition: networkContent.syarat,
+            }}
+            registrationTitle={networkContent.ajakanDaftar.label}
+            registrationBody={networkContent.ajakanDaftar.sesudahnya}
+            labels={{
+              pathsEyebrow: tNetwork('paths.eyebrow'),
+              pathsTitle: tNetwork('paths.title'),
+              pathsNote: tNetwork('paths.note'),
+              chapterLabel: tNetwork('paths.chapterLabel'),
+              openPath: tNetwork('paths.open'),
+              workEyebrow: tNetwork('work.eyebrow'),
+              workTitle: tNetwork('work.title'),
+              moneyEyebrow: tNetwork('money.eyebrow'),
+              moneyTitle: tNetwork('money.title'),
+              moneyIntro: tNetwork('money.intro'),
+              stamp: tNetwork('money.stamp'),
+              termsEyebrow: tNetwork('terms.eyebrow'),
+              termsTitle: tNetwork('terms.title'),
+              sourceTitle: tNetwork('terms.source'),
+              absentTitle: tNetwork('terms.absent'),
+              conditionTitle: tNetwork('terms.condition'),
+              registrationEyebrow: tNetwork('registration.eyebrow'),
+              registrationStatus: tNetwork('registration.status'),
+              registrationNote: tNetwork('registration.note'),
+            }}
+          />
+        ) : (
+          <>
+            <StepSequence
+              label={tSide('buyingEyebrow')}
+              steps={buyingSteps}
+              data-epic="side-buying-path"
+              className={s.steps}
+            />
 
-        <SideChapterTable
-          label={tSide('chaptersEyebrow')}
-          title={tSide('chaptersTitle')}
-          chapters={chapters}
-          chapterLabel={tSide('chapterLabel')}
-          typeLabel={tSide('typeLabel')}
-          entryLabel={tSide('entryLabel')}
-          offerCountLabel={tSide('offerCount')}
-          empty={tSide('chaptersEmpty')}
-          className={s.chapters}
-        />
+            <SideChapterTable
+              label={tSide('chaptersEyebrow')}
+              title={tSide('chaptersTitle')}
+              chapters={chapters}
+              chapterLabel={tSide('chapterLabel')}
+              typeLabel={tSide('typeLabel')}
+              entryLabel={tSide('entryLabel')}
+              offerCountLabel={tSide('offerCount')}
+              empty={tSide('chaptersEmpty')}
+              className={s.chapters}
+            />
 
-        <section className={s.action}>
-          <p className="caption">{tSide('firstStepEyebrow')}</p>
-          <h2 className="h2">{action.label}</h2>
-          <p className="p-big">{action.sesudahnya}</p>
-          <Link href="/#contact" className={cn('caption', s.actionLink)}>
-            {tSide('firstStepLink')}
-          </Link>
-        </section>
+            <section className={s.action}>
+              <p className="caption">{tSide('firstStepEyebrow')}</p>
+              <h2 className="h2">{action.label}</h2>
+              <p className="p-big">{action.sesudahnya}</p>
+              <Link href="/#contact" className={cn('caption', s.actionLink)}>
+                {tSide('firstStepLink')}
+              </Link>
+            </section>
+          </>
+        )}
 
         <nav
           aria-label={tSide('navigationLabel', { unit: tUnit(unit) })}

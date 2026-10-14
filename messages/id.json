@@ -266,6 +266,55 @@
     "backToSide": "Kembali ke sisi",
     "print": "Cetak offer"
   },
+  "network": {
+    "paths": {
+      "eyebrow": "Pilih jalur",
+      "title": "Tiga cara masuk ke jaringan.",
+      "note": "Rincian tiap jalur terbuka sebagai bab setelah offer dan kartu komisinya disetujui.",
+      "chapterLabel": "Bab",
+      "open": "Buka jalur",
+      "referrer": {
+        "title": "Rujuk transaksi",
+        "description": "Untuk Anda yang membawa calon pembeli ke produk atau layanan yang tepat."
+      },
+      "member": {
+        "title": "Jadi anggota",
+        "description": "Untuk Anda yang memilih manfaat komunitas saat offer anggotanya tersedia."
+      },
+      "creator": {
+        "title": "Jadi kreator atau host",
+        "description": "Untuk Anda yang mengikuti kampanye, membuat konten, atau membawakan siaran."
+      }
+    },
+    "work": {
+      "eyebrow": "Cara kerja",
+      "title": "Setiap rujukan harus dapat ditelusuri."
+    },
+    "money": {
+      "eyebrow": "Jalur perujuk",
+      "title": "Empat langkah sebelum bagian Anda dibayar.",
+      "intro": "Urutannya tetap. Tidak ada angka, tarif, atau simulasi penghasilan di halaman ini.",
+      "stamp": "Tahap",
+      "steps": {
+        "refer": "Anda merujuk pembeli.",
+        "buy": "Pembeli membeli dari mitra.",
+        "partnerPays": "Mitra membayar komisi kepada Arthur.",
+        "arthurPays": "Arthur membayar bagian Anda."
+      }
+    },
+    "terms": {
+      "eyebrow": "Aturan jaringan",
+      "title": "Komisi datang dari transaksi, bukan perekrutan.",
+      "source": "Dari mana komisi berasal",
+      "absent": "Yang tidak ada",
+      "condition": "Syarat pembayaran"
+    },
+    "registration": {
+      "eyebrow": "Pendaftaran",
+      "status": "Belum dibuka",
+      "note": "Pendaftaran dibuka setelah kartu komisi pertama siap. Sampai saat itu, halaman ini hanya menjelaskan alurnya."
+    }
+  },
   "sample": {
     "label": "Isi contoh",
     "unitNote": "Pernyataan unit ditulis setelah ada tipe isi yang menyimpannya. Tidak ada klaim di sini.",

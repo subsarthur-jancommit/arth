@@ -266,6 +266,55 @@
     "backToSide": "Back to side",
     "print": "Print this offer"
   },
+  "network": {
+    "paths": {
+      "eyebrow": "Choose a path",
+      "title": "Three ways into the network.",
+      "note": "Each path opens as a chapter after its offers and commission card are approved.",
+      "chapterLabel": "Chapter",
+      "open": "Open path",
+      "referrer": {
+        "title": "Refer a transaction",
+        "description": "For people who bring a prospective buyer to the right product or service."
+      },
+      "member": {
+        "title": "Become a member",
+        "description": "For people choosing community benefits once the member offers are available."
+      },
+      "creator": {
+        "title": "Become a creator or host",
+        "description": "For people joining campaigns, making content, or hosting a live broadcast."
+      }
+    },
+    "work": {
+      "eyebrow": "How it works",
+      "title": "Every referral must be traceable."
+    },
+    "money": {
+      "eyebrow": "Referrer path",
+      "title": "Four steps before your share is paid.",
+      "intro": "The order stays fixed. This page contains no figures, rates, or income simulation.",
+      "stamp": "Step",
+      "steps": {
+        "refer": "You refer a buyer.",
+        "buy": "The buyer purchases from a partner.",
+        "partnerPays": "The partner pays commission to Arthur.",
+        "arthurPays": "Arthur pays your share."
+      }
+    },
+    "terms": {
+      "eyebrow": "Network rules",
+      "title": "Commission comes from transactions, not recruitment.",
+      "source": "Where commission comes from",
+      "absent": "What is not part of it",
+      "condition": "Payment condition"
+    },
+    "registration": {
+      "eyebrow": "Registration",
+      "status": "Not open yet",
+      "note": "Registration opens after the first commission card is ready. Until then, this page only explains the flow."
+    }
+  },
   "sample": {
     "label": "Sample content",
     "unitNote": "The unit statement is written once the content type exists to hold it. Nothing here is a claim.",

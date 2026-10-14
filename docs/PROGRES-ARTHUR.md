@@ -57,7 +57,7 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 | F3-03 Template sisi                         | —   | —         | **Dalam branch** | Jalur pembelian, tabel bab semantik, crosshair/cover-preview, dan pertukaran lembar antarsisi sudah selesai; tabel jujur menampilkan keadaan kosong sampai bab punya tiga sampai tujuh offer yang disetujui (U32)                                     |
 | F3-04 Template bab dan kartu offer          | —   | —         | **Dalam branch** | Kutipan bab, tiga–tujuh kartu offer tanpa foto, batas, jembatan, ajakan, penyaring pasar Konstruksi, serta momen bekisting/FLIP sudah selesai; belum ada dokumen bab/offer untuk menampilkan rute nyata (U33)                                         |
 | F3-05 Template offer                        | —   | —         | **Dalam branch** | Delapan blok offer, langkah tanpa pin, garis lingkup, batas dipaku, langkah pertama, jembatan aman, dan lembar cetak sudah selesai; belum ada dokumen offer untuk menampilkan rute nyata (U34)                                                        |
-| F3-06 Halaman jaringan                      | —   | —         | **Dalam branch** | Blok Jaringan membaca cara kerja, asal komisi, yang tidak ada, syarat, dan ajakan dari Peekabo › Jaringan; tiga jalur, alur uang empat langkah, gerak, dan keputusan tombol daftar belum diimplementasikan                                            |
+| F3-06 Halaman jaringan                      | —   | —         | **Dalam branch** | Tiga jalur, cara kerja, alur uang empat langkah, asal komisi, larangan, syarat, dan gerbang pendaftaran sudah selesai; tautan bab baru muncul setelah 3–7 offer jalurnya disetujui, dan pendaftaran ditahan sampai kartu komisi siap (U35)            |
 | F3-07 Satu klien, tiga unit                 | —   | —         | **Dalam branch** | Rute membaca rangkaian yang disetujui; momen sambungan dan copy editorialnya belum selesai                                                                                                                                                            |
 | F3-08 Cara kami bekerja                     | —   | —         | **Dalam branch** | Template membaca hanya `howWeWork` yang disetujui untuk publik dan membuka draft `perlu-anda` hanya di draft mode; janji dicap satu kali saat dibaca, hak milik/komisi/batas memakai garis tegak, wilayah diukur, tanpa testimoni; e2e dilewati (U29) |
 | F3-09 Tentang dan kontak                    | —   | —         | Menunggu K5      | Kanal nyata, waktu balas, dan alamat belum diputuskan; dummy tidak boleh dipromosikan sebagai kontak                                                                                                                                                  |
@@ -512,3 +512,21 @@ pembaca. Saat paket ini dibuat production masih tidak memiliki dokumen
 `offer`, sehingga bentuk nyata belum dapat ditinjau tanpa fixture atau draf
 bersumber. Query production diuji baca-saja; tidak ada isi ditulis atau
 diterbitkan. Playwright tidak dijalankan sesuai instruksi pemilik.
+
+**U35 — halaman jaringan menjelaskan uang sebelum membuka pendaftaran.**
+F3-06 memberi Peekabo › Jaringan susunan khusus: tiga jalur masuk, cara kerja,
+alur uang perujuk, asal komisi, hal yang tidak ada, syarat pembayaran, lalu
+gerbang pendaftaran. Jalur bab hanya menjadi tautan bila query sisi menemukan
+bab dengan tiga sampai tujuh offer yang dapat dirender; production belum
+memiliki dokumen `bab` atau `offer`, jadi tidak ada tautan kosong atau katalog
+karangan. Alur perujuk memakai empat langkah yang ditetapkan spesifikasi,
+`plumb` berbasis CSS view timeline, dan `stamp` per langkah; tidak ada pin,
+loop JavaScript, angka, tarif, atau simulasi penghasilan. Copy bisnis berasal
+dari draft awal sisi Jaringan yang sudah disetujui untuk ditulis, dengan
+fallback lokal identik; medan Internal tetap tidak diproyeksikan. Mengikuti
+usul keputusan 6 di Kerangka Pemandu, tombol pendaftaran sengaja tidak dibuat
+sampai kartu komisi pertama siap. Biayanya adalah tidak mengumpulkan calon
+pendaftar sekarang; manfaatnya, Arthur tidak meminta orang bergabung sebelum
+sumber, pemicu, jumlah, dan waktu pembayaran komisi dapat ditunjukkan
+tertulis. Tidak ada isi Sanity ditulis atau diterbitkan. Playwright/e2e tidak
+dijalankan sesuai instruksi pemilik.
