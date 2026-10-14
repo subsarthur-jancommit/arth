@@ -5,13 +5,11 @@ import { localizedPath } from '../lib/i18n/paths'
 import { routing } from '../lib/i18n/routing'
 
 /**
- * The six side scaffolds exist, name themselves and mark every unfinished
- * content beat as sample. The generic route sweep supplies console and axe
- * coverage; this spec protects the relationship between unit and side.
+ * The six side pages orient the reader with a buying path, a chapter table,
+ * and an ordinary link to the other side. The generic route sweep supplies
+ * console and axe coverage; this spec protects that unit-side relationship.
  *
- * This file is intentionally not run on contributor machines. Repository
- * policy keeps Playwright in GitHub Actions, where the exact PR head is the
- * merge gate.
+ * Playwright is not run while the owner has suspended end-to-end checks.
  */
 test.describe('side pages', () => {
   for (const locale of routing.locales) {
@@ -19,9 +17,7 @@ test.describe('side pages', () => {
       for (const side of SIDES[unit]) {
         const path = localizedPath(locale, sideTemplate(unit, side))
 
-        test(`${path} is the labelled scaffold for its side`, async ({
-          page,
-        }) => {
+        test(`${path} presents its reader path`, async ({ page }) => {
           const response = await page.goto(path)
           expect(response?.status(), 'the side page must exist').toBe(200)
 
@@ -33,8 +29,12 @@ test.describe('side pages', () => {
           ).toBeGreaterThan(0)
 
           await expect(
-            page.locator('[data-sample-content]'),
-            'the page carries unlabelled sample text'
+            page.locator('[data-epic="side-buying-path"]'),
+            'the buying path is missing'
+          ).toHaveCount(1)
+          await expect(
+            page.locator('[data-epic="side-chapter-table"]'),
+            'the chapter map is missing'
           ).toHaveCount(1)
 
           const canonical = await page

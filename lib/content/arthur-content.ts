@@ -6,6 +6,7 @@ import type { Locale } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
 import {
+  sidePagePreviewQuery,
   sidePageQuery,
   unitPagePreviewQuery,
   unitPageQuery,
@@ -94,7 +95,18 @@ const sideContentSchema = z.object({
         slug: textSchema.nullable(),
         nama: textSchema.nullable(),
         kutipan: textSchema.nullable(),
+        situasi: textSchema.nullable(),
         urutan: z.number().nullable(),
+        jumlahOffer: z.number().int().nonnegative(),
+        jenis: z.array(textSchema).nullable(),
+        pintuMasuk: z
+          .object({
+            _id: z.string(),
+            slug: textSchema.nullable(),
+            judul: textSchema.nullable(),
+            dampak: textSchema.nullable(),
+          })
+          .nullable(),
       })
     )
     .nullable(),
@@ -168,17 +180,18 @@ export async function unitContent(
 export async function sideContent(
   locale: Locale,
   unit: Unit,
-  side: Side
+  side: Side,
+  preview = false
 ): Promise<SideContent | null> {
   'use cache'
 
   if (!isConfigured('sanity')) return null
 
   const { data } = await sanityFetch({
-    query: sidePageQuery,
+    query: preview ? sidePagePreviewQuery : sidePageQuery,
     params: { locale, side, unit },
-    perspective: 'published',
-    stega: false,
+    perspective: preview ? 'drafts' : 'published',
+    stega: preview,
   })
   const parsed = sideContentSchema.safeParse(data)
 
@@ -190,7 +203,14 @@ export async function sideContent(
     ...(parsed.data.caraMembeli?.map((item) => item.teks) ?? []),
     parsed.data.langkahPertama?.label,
     parsed.data.langkahPertama?.sesudahnya,
-    ...(parsed.data.bab?.flatMap((bab) => [bab.nama, bab.kutipan]) ?? []),
+    ...(parsed.data.bab?.flatMap((bab) => [
+      bab.nama,
+      bab.kutipan,
+      bab.situasi,
+      ...(bab.jenis ?? []),
+      bab.pintuMasuk?.judul,
+      bab.pintuMasuk?.dampak,
+    ]) ?? []),
     parsed.data.jaringan?.caraKerja,
     parsed.data.jaringan?.asalKomisi,
     parsed.data.jaringan?.yangTidakAda,

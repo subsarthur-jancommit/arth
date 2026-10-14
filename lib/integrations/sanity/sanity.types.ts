@@ -1148,7 +1148,7 @@ export type HomeUnitsPreviewQueryResult = Array<{
 
 // Source: queries.ts
 // Variable: unitPageQuery
-// Query: *[_type == "unit" && statusTinjauan == "disetujui" && kunci == $unit][0] {    kunci,    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),    "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),    "masalah": masalah[]{      _key,      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)    },    "caraKerja": caraKerja[]{      _key,      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)    },    "sisi": *[      _type == "side" &&      statusTinjauan == "disetujui" &&      unit._ref == ^._id    ] | order(urutan asc) {      _id,      kunci,      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value)    },    "ajakan": {      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)    }  }
+// Query: *[_type == "unit" && statusTinjauan == "disetujui" && kunci == $unit][0] {    kunci,    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),    "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),    "masalah": masalah[]{      _key,      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)    },    "caraKerja": caraKerja[]{      _key,      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)    },    "sisi": *[      _type == "side" &&      statusTinjauan == "disetujui" &&      unit._ref == ^._id    ] | order(urutan asc) {      _id,      kunci,      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value)    },    "contohOffer": *[      _type == "offer" &&      statusTinjauan == "disetujui" &&      _id in ^.contohOffer[]._ref    ] | order(urutan asc) {        _id,  "slug": slug.current,  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),  "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),  "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),  "jenis": coalesce(jenis[_key == $locale][0].value, jenis[_key == "id"][0].value),  "bab": bab->{    "slug": slug.current,    "side": sisi->{      kunci,      "unit": unit->kunci    }  }    },    "jembatan": jembatan[]{      _key,      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value),      "offer": select(        offer->statusTinjauan == "disetujui" => offer->{            _id,  "slug": slug.current,  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),  "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),  "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),  "jenis": coalesce(jenis[_key == $locale][0].value, jenis[_key == "id"][0].value),  "bab": bab->{    "slug": slug.current,    "side": sisi->{      kunci,      "unit": unit->kunci    }  }        }      )    },    "ajakan": {      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)    }  }
 export type UnitPageQueryResult = {
   kunci: "konstruksi" | "peekabo" | "teknologi" | null;
   nama: string | null;
@@ -1175,6 +1175,137 @@ export type UnitPageQueryResult = {
     nama: string | null;
     judul: string | null;
   }>;
+  contohOffer: Array<{
+    _id: string;
+    slug: string | null;
+    judul: string | null;
+    dampak: string | null;
+    untukSiapa: string | null;
+    jenis: string | null;
+    bab: {
+      slug: string | null;
+      side: {
+        kunci:
+          | "jaringan"
+          | "paham-teknis"
+          | "pelaku-proyek"
+          | "pemilik-bangunan"
+          | "pemilik-usaha"
+          | "siap-pakai"
+          | null;
+        unit: "konstruksi" | "peekabo" | "teknologi" | null;
+      } | null;
+    } | null;
+  }>;
+  jembatan: Array<{
+    _key: string;
+    kalimat: string | null;
+    offer: {
+      _id: string;
+      slug: string | null;
+      judul: string | null;
+      dampak: string | null;
+      untukSiapa: string | null;
+      jenis: string | null;
+      bab: {
+        slug: string | null;
+        side: {
+          kunci:
+            | "jaringan"
+            | "paham-teknis"
+            | "pelaku-proyek"
+            | "pemilik-bangunan"
+            | "pemilik-usaha"
+            | "siap-pakai"
+            | null;
+          unit: "konstruksi" | "peekabo" | "teknologi" | null;
+        } | null;
+      } | null;
+    } | null;
+  }> | null;
+  ajakan: {
+    label: string | null;
+    sesudahnya: string | null;
+  };
+} | null;
+
+// Source: queries.ts
+// Variable: unitPagePreviewQuery
+// Query: *[_type == "unit" && kunci == $unit][0] {    kunci,    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),    "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),    "masalah": masalah[]{      _key,      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)    },    "caraKerja": caraKerja[]{      _key,      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)    },    "sisi": *[      _type == "side" &&      unit._ref == ^._id    ] | order(urutan asc) {      _id,      kunci,      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value)    },    "contohOffer": *[      _type == "offer" &&      _id in ^.contohOffer[]._ref    ] | order(urutan asc) {        _id,  "slug": slug.current,  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),  "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),  "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),  "jenis": coalesce(jenis[_key == $locale][0].value, jenis[_key == "id"][0].value),  "bab": bab->{    "slug": slug.current,    "side": sisi->{      kunci,      "unit": unit->kunci    }  }    },    "jembatan": jembatan[]{      _key,      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value),      "offer": offer->{          _id,  "slug": slug.current,  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),  "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),  "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),  "jenis": coalesce(jenis[_key == $locale][0].value, jenis[_key == "id"][0].value),  "bab": bab->{    "slug": slug.current,    "side": sisi->{      kunci,      "unit": unit->kunci    }  }      }    },    "ajakan": {      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)    }  }
+export type UnitPagePreviewQueryResult = {
+  kunci: "konstruksi" | "peekabo" | "teknologi" | null;
+  nama: string | null;
+  judul: string | null;
+  pembuka: string | null;
+  masalah: Array<{
+    _key: string;
+    teks: string | null;
+  }> | null;
+  caraKerja: Array<{
+    _key: string;
+    teks: string | null;
+  }> | null;
+  sisi: Array<{
+    _id: string;
+    kunci:
+      | "jaringan"
+      | "paham-teknis"
+      | "pelaku-proyek"
+      | "pemilik-bangunan"
+      | "pemilik-usaha"
+      | "siap-pakai"
+      | null;
+    nama: string | null;
+    judul: string | null;
+  }>;
+  contohOffer: Array<{
+    _id: string;
+    slug: string | null;
+    judul: string | null;
+    dampak: string | null;
+    untukSiapa: string | null;
+    jenis: string | null;
+    bab: {
+      slug: string | null;
+      side: {
+        kunci:
+          | "jaringan"
+          | "paham-teknis"
+          | "pelaku-proyek"
+          | "pemilik-bangunan"
+          | "pemilik-usaha"
+          | "siap-pakai"
+          | null;
+        unit: "konstruksi" | "peekabo" | "teknologi" | null;
+      } | null;
+    } | null;
+  }>;
+  jembatan: Array<{
+    _key: string;
+    kalimat: string | null;
+    offer: {
+      _id: string;
+      slug: string | null;
+      judul: string | null;
+      dampak: string | null;
+      untukSiapa: string | null;
+      jenis: string | null;
+      bab: {
+        slug: string | null;
+        side: {
+          kunci:
+            | "jaringan"
+            | "paham-teknis"
+            | "pelaku-proyek"
+            | "pemilik-bangunan"
+            | "pemilik-usaha"
+            | "siap-pakai"
+            | null;
+          unit: "konstruksi" | "peekabo" | "teknologi" | null;
+        } | null;
+      } | null;
+    } | null;
+  }> | null;
   ajakan: {
     label: string | null;
     sesudahnya: string | null;
@@ -1183,7 +1314,7 @@ export type UnitPageQueryResult = {
 
 // Source: queries.ts
 // Variable: sidePageQuery
-// Query: *[_type == "side" && statusTinjauan == "disetujui" && kunci == $side && unit->kunci == $unit][0] {    kunci,    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),    "caraMembeli": caraMembeli[]{      _key,      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)    },    "langkahPertama": {      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)    },    "bab": *[      _type == "bab" &&      statusTinjauan == "disetujui" &&      sisi._ref == ^._id    ] | order(urutan asc) {      _id,      "slug": slug.current,      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),      "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),      urutan    },    urutan,    "jaringan": {      "caraKerja": coalesce(jaringan.caraKerja[_key == $locale][0].value, jaringan.caraKerja[_key == "id"][0].value),      "asalKomisi": coalesce(jaringan.asalKomisi[_key == $locale][0].value, jaringan.asalKomisi[_key == "id"][0].value),      "yangTidakAda": coalesce(jaringan.yangTidakAda[_key == $locale][0].value, jaringan.yangTidakAda[_key == "id"][0].value),      "syarat": coalesce(jaringan.syarat[_key == $locale][0].value, jaringan.syarat[_key == "id"][0].value),      "ajakanDaftar": {        "label": coalesce(jaringan.ajakanDaftar.label[_key == $locale][0].value, jaringan.ajakanDaftar.label[_key == "id"][0].value),        "sesudahnya": coalesce(jaringan.ajakanDaftar.sesudahnya[_key == $locale][0].value, jaringan.ajakanDaftar.sesudahnya[_key == "id"][0].value)      }    }  }
+// Query: *[    _type == "side" &&    statusTinjauan == "disetujui" &&    kunci == $side &&    unit._ref in *[_type == "unit" && kunci == $unit]._id  ][0] {        kunci,    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),    "caraMembeli": caraMembeli[]{      _key,      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)    },    "langkahPertama": {      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)    },    urutan,    "jaringan": {      "caraKerja": coalesce(jaringan.caraKerja[_key == $locale][0].value, jaringan.caraKerja[_key == "id"][0].value),      "asalKomisi": coalesce(jaringan.asalKomisi[_key == $locale][0].value, jaringan.asalKomisi[_key == "id"][0].value),      "yangTidakAda": coalesce(jaringan.yangTidakAda[_key == $locale][0].value, jaringan.yangTidakAda[_key == "id"][0].value),      "syarat": coalesce(jaringan.syarat[_key == $locale][0].value, jaringan.syarat[_key == "id"][0].value),      "ajakanDaftar": {        "label": coalesce(jaringan.ajakanDaftar.label[_key == $locale][0].value, jaringan.ajakanDaftar.label[_key == "id"][0].value),        "sesudahnya": coalesce(jaringan.ajakanDaftar.sesudahnya[_key == $locale][0].value, jaringan.ajakanDaftar.sesudahnya[_key == "id"][0].value)      }    },    "bab": *[      _type == "bab" &&      statusTinjauan == "disetujui" &&      sisi._ref == ^._id &&      count(*[        _type == "offer" &&        statusTinjauan == "disetujui" &&        bab._ref == ^._id      ]) >= 3    ] | order(urutan asc) {        _id,  "slug": slug.current,  "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),  "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),  "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),  urutan,  "jumlahOffer": count(*[    _type == "offer" &&    statusTinjauan == "disetujui" &&    bab._ref == ^._id  ]),  "jenis": array::compact(array::unique(*[    _type == "offer" &&    statusTinjauan == "disetujui" &&    bab._ref == ^._id  ].jenis[_key == $locale][0].value)),  "pintuMasuk": *[    _type == "offer" &&    statusTinjauan == "disetujui" &&    bab._ref == ^._id &&    pintuMasuk == true  ] | order(urutan asc)[0] {    _id,    "slug": slug.current,    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),    "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value)  }    }  }
 export type SidePageQueryResult = {
   kunci:
     | "jaringan"
@@ -1203,13 +1334,6 @@ export type SidePageQueryResult = {
     label: string | null;
     sesudahnya: string | null;
   };
-  bab: Array<{
-    _id: string;
-    slug: string | null;
-    nama: string | null;
-    kutipan: string | null;
-    urutan: number | null;
-  }>;
   urutan: number | null;
   jaringan: {
     caraKerja: string | null;
@@ -1221,6 +1345,73 @@ export type SidePageQueryResult = {
       sesudahnya: string | null;
     };
   };
+  bab: Array<{
+    _id: string;
+    slug: string | null;
+    nama: string | null;
+    kutipan: string | null;
+    situasi: string | null;
+    urutan: number | null;
+    jumlahOffer: number;
+    jenis: Array<string>;
+    pintuMasuk: {
+      _id: string;
+      slug: string | null;
+      judul: string | null;
+      dampak: string | null;
+    } | null;
+  }>;
+} | null;
+
+// Source: queries.ts
+// Variable: sidePagePreviewQuery
+// Query: *[    _type == "side" &&    kunci == $side &&    unit._ref in *[_type == "unit" && kunci == $unit]._id  ][0] {        kunci,    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),    "caraMembeli": caraMembeli[]{      _key,      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)    },    "langkahPertama": {      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)    },    urutan,    "jaringan": {      "caraKerja": coalesce(jaringan.caraKerja[_key == $locale][0].value, jaringan.caraKerja[_key == "id"][0].value),      "asalKomisi": coalesce(jaringan.asalKomisi[_key == $locale][0].value, jaringan.asalKomisi[_key == "id"][0].value),      "yangTidakAda": coalesce(jaringan.yangTidakAda[_key == $locale][0].value, jaringan.yangTidakAda[_key == "id"][0].value),      "syarat": coalesce(jaringan.syarat[_key == $locale][0].value, jaringan.syarat[_key == "id"][0].value),      "ajakanDaftar": {        "label": coalesce(jaringan.ajakanDaftar.label[_key == $locale][0].value, jaringan.ajakanDaftar.label[_key == "id"][0].value),        "sesudahnya": coalesce(jaringan.ajakanDaftar.sesudahnya[_key == $locale][0].value, jaringan.ajakanDaftar.sesudahnya[_key == "id"][0].value)      }    },    "bab": *[      _type == "bab" &&      sisi._ref == ^._id &&      count(*[_type == "offer" && bab._ref == ^._id]) >= 3    ] | order(urutan asc) {        _id,  "slug": slug.current,  "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),  "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),  "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),  urutan,  "jumlahOffer": count(*[_type == "offer" && bab._ref == ^._id]),  "jenis": array::compact(array::unique(*[    _type == "offer" &&    bab._ref == ^._id  ].jenis[_key == $locale][0].value)),  "pintuMasuk": *[    _type == "offer" &&    bab._ref == ^._id &&    pintuMasuk == true  ] | order(urutan asc)[0] {    _id,    "slug": slug.current,    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),    "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value)  }    }  }
+export type SidePagePreviewQueryResult = {
+  kunci:
+    | "jaringan"
+    | "paham-teknis"
+    | "pelaku-proyek"
+    | "pemilik-bangunan"
+    | "pemilik-usaha"
+    | "siap-pakai"
+    | null;
+  nama: string | null;
+  judul: string | null;
+  caraMembeli: Array<{
+    _key: string;
+    teks: string | null;
+  }> | null;
+  langkahPertama: {
+    label: string | null;
+    sesudahnya: string | null;
+  };
+  urutan: number | null;
+  jaringan: {
+    caraKerja: string | null;
+    asalKomisi: string | null;
+    yangTidakAda: string | null;
+    syarat: string | null;
+    ajakanDaftar: {
+      label: string | null;
+      sesudahnya: string | null;
+    };
+  };
+  bab: Array<{
+    _id: string;
+    slug: string | null;
+    nama: string | null;
+    kutipan: string | null;
+    situasi: string | null;
+    urutan: number | null;
+    jumlahOffer: number;
+    jenis: Array<string>;
+    pintuMasuk: {
+      _id: string;
+      slug: string | null;
+      judul: string | null;
+      dampak: string | null;
+    } | null;
+  }>;
 } | null;
 
 // Source: queries.ts
@@ -1371,8 +1562,10 @@ declare global {
     '\n  *[_type == "siteSettings"][0] {\n    _id,\n    name,\n    "email": kanal.email,\n    "socials": akunSosial,\n    portrait,\n    metadata,\n    "headline": coalesce(\n      heroJudul[_key == $locale][0].value,\n      heroJudul[_key == "id"][0].value\n    ),\n    "subline": coalesce(\n      heroSubjudul[_key == $locale][0].value,\n      heroSubjudul[_key == "id"][0].value\n    ),\n    "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),\n    "statement": coalesce(\n      pernyataanPemilik[_key == $locale][0].value,\n      pernyataanPemilik[_key == "id"][0].value\n    ),\n    "address": coalesce(alamat[_key == $locale][0].value, alamat[_key == "id"][0].value),\n    "situasi": situasi[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value),\n      unit,\n      sisi,\n      bab\n    },\n    "ajakan": {\n      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)\n    },\n    "rangkaianPilihan": rangkaianPilihan->{ _id },\n    "wilayah": wilayah[]{\n      _key,\n      "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)\n    }\n  }\n': SiteSettingsPreviewQueryResult;
     '\n  *[_type == "unit" && statusTinjauan == "disetujui"] {\n    \n  _id,\n  kunci,\n  "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n  "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value)\n\n  }\n': HomeUnitsQueryResult;
     '\n  *[_type == "unit"] {\n    \n  _id,\n  kunci,\n  "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n  "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value)\n\n  }\n': HomeUnitsPreviewQueryResult;
-    '\n  *[_type == "unit" && statusTinjauan == "disetujui" && kunci == $unit][0] {\n    kunci,\n    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n    "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),\n    "masalah": masalah[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "caraKerja": caraKerja[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "sisi": *[\n      _type == "side" &&\n      statusTinjauan == "disetujui" &&\n      unit._ref == ^._id\n    ] | order(urutan asc) {\n      _id,\n      kunci,\n      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value)\n    },\n    "ajakan": {\n      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)\n    }\n  }\n': UnitPageQueryResult;
-    '\n  *[_type == "side" && statusTinjauan == "disetujui" && kunci == $side && unit->kunci == $unit][0] {\n    kunci,\n    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n    "caraMembeli": caraMembeli[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "langkahPertama": {\n      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)\n    },\n    "bab": *[\n      _type == "bab" &&\n      statusTinjauan == "disetujui" &&\n      sisi._ref == ^._id\n    ] | order(urutan asc) {\n      _id,\n      "slug": slug.current,\n      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n      "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),\n      urutan\n    },\n    urutan,\n    "jaringan": {\n      "caraKerja": coalesce(jaringan.caraKerja[_key == $locale][0].value, jaringan.caraKerja[_key == "id"][0].value),\n      "asalKomisi": coalesce(jaringan.asalKomisi[_key == $locale][0].value, jaringan.asalKomisi[_key == "id"][0].value),\n      "yangTidakAda": coalesce(jaringan.yangTidakAda[_key == $locale][0].value, jaringan.yangTidakAda[_key == "id"][0].value),\n      "syarat": coalesce(jaringan.syarat[_key == $locale][0].value, jaringan.syarat[_key == "id"][0].value),\n      "ajakanDaftar": {\n        "label": coalesce(jaringan.ajakanDaftar.label[_key == $locale][0].value, jaringan.ajakanDaftar.label[_key == "id"][0].value),\n        "sesudahnya": coalesce(jaringan.ajakanDaftar.sesudahnya[_key == $locale][0].value, jaringan.ajakanDaftar.sesudahnya[_key == "id"][0].value)\n      }\n    }\n  }\n': SidePageQueryResult;
+    '\n  *[_type == "unit" && statusTinjauan == "disetujui" && kunci == $unit][0] {\n    kunci,\n    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n    "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),\n    "masalah": masalah[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "caraKerja": caraKerja[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "sisi": *[\n      _type == "side" &&\n      statusTinjauan == "disetujui" &&\n      unit._ref == ^._id\n    ] | order(urutan asc) {\n      _id,\n      kunci,\n      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value)\n    },\n    "contohOffer": *[\n      _type == "offer" &&\n      statusTinjauan == "disetujui" &&\n      _id in ^.contohOffer[]._ref\n    ] | order(urutan asc) {\n      \n  _id,\n  "slug": slug.current,\n  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n  "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),\n  "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),\n  "jenis": coalesce(jenis[_key == $locale][0].value, jenis[_key == "id"][0].value),\n  "bab": bab->{\n    "slug": slug.current,\n    "side": sisi->{\n      kunci,\n      "unit": unit->kunci\n    }\n  }\n\n    },\n    "jembatan": jembatan[]{\n      _key,\n      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value),\n      "offer": select(\n        offer->statusTinjauan == "disetujui" => offer->{\n          \n  _id,\n  "slug": slug.current,\n  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n  "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),\n  "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),\n  "jenis": coalesce(jenis[_key == $locale][0].value, jenis[_key == "id"][0].value),\n  "bab": bab->{\n    "slug": slug.current,\n    "side": sisi->{\n      kunci,\n      "unit": unit->kunci\n    }\n  }\n\n        }\n      )\n    },\n    "ajakan": {\n      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)\n    }\n  }\n': UnitPageQueryResult;
+    '\n  *[_type == "unit" && kunci == $unit][0] {\n    kunci,\n    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n    "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),\n    "masalah": masalah[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "caraKerja": caraKerja[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "sisi": *[\n      _type == "side" &&\n      unit._ref == ^._id\n    ] | order(urutan asc) {\n      _id,\n      kunci,\n      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value)\n    },\n    "contohOffer": *[\n      _type == "offer" &&\n      _id in ^.contohOffer[]._ref\n    ] | order(urutan asc) {\n      \n  _id,\n  "slug": slug.current,\n  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n  "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),\n  "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),\n  "jenis": coalesce(jenis[_key == $locale][0].value, jenis[_key == "id"][0].value),\n  "bab": bab->{\n    "slug": slug.current,\n    "side": sisi->{\n      kunci,\n      "unit": unit->kunci\n    }\n  }\n\n    },\n    "jembatan": jembatan[]{\n      _key,\n      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value),\n      "offer": offer->{\n        \n  _id,\n  "slug": slug.current,\n  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n  "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),\n  "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),\n  "jenis": coalesce(jenis[_key == $locale][0].value, jenis[_key == "id"][0].value),\n  "bab": bab->{\n    "slug": slug.current,\n    "side": sisi->{\n      kunci,\n      "unit": unit->kunci\n    }\n  }\n\n      }\n    },\n    "ajakan": {\n      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)\n    }\n  }\n': UnitPagePreviewQueryResult;
+    '\n  *[\n    _type == "side" &&\n    statusTinjauan == "disetujui" &&\n    kunci == $side &&\n    unit._ref in *[_type == "unit" && kunci == $unit]._id\n  ][0] {\n    \n    kunci,\n    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n    "caraMembeli": caraMembeli[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "langkahPertama": {\n      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)\n    },\n    urutan,\n    "jaringan": {\n      "caraKerja": coalesce(jaringan.caraKerja[_key == $locale][0].value, jaringan.caraKerja[_key == "id"][0].value),\n      "asalKomisi": coalesce(jaringan.asalKomisi[_key == $locale][0].value, jaringan.asalKomisi[_key == "id"][0].value),\n      "yangTidakAda": coalesce(jaringan.yangTidakAda[_key == $locale][0].value, jaringan.yangTidakAda[_key == "id"][0].value),\n      "syarat": coalesce(jaringan.syarat[_key == $locale][0].value, jaringan.syarat[_key == "id"][0].value),\n      "ajakanDaftar": {\n        "label": coalesce(jaringan.ajakanDaftar.label[_key == $locale][0].value, jaringan.ajakanDaftar.label[_key == "id"][0].value),\n        "sesudahnya": coalesce(jaringan.ajakanDaftar.sesudahnya[_key == $locale][0].value, jaringan.ajakanDaftar.sesudahnya[_key == "id"][0].value)\n      }\n    }\n,\n    "bab": *[\n      _type == "bab" &&\n      statusTinjauan == "disetujui" &&\n      sisi._ref == ^._id &&\n      count(*[\n        _type == "offer" &&\n        statusTinjauan == "disetujui" &&\n        bab._ref == ^._id\n      ]) >= 3\n    ] | order(urutan asc) {\n      \n  _id,\n  "slug": slug.current,\n  "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n  "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),\n  "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),\n  urutan,\n  "jumlahOffer": count(*[\n    _type == "offer" &&\n    statusTinjauan == "disetujui" &&\n    bab._ref == ^._id\n  ]),\n  "jenis": array::compact(array::unique(*[\n    _type == "offer" &&\n    statusTinjauan == "disetujui" &&\n    bab._ref == ^._id\n  ].jenis[_key == $locale][0].value)),\n  "pintuMasuk": *[\n    _type == "offer" &&\n    statusTinjauan == "disetujui" &&\n    bab._ref == ^._id &&\n    pintuMasuk == true\n  ] | order(urutan asc)[0] {\n    _id,\n    "slug": slug.current,\n    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n    "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value)\n  }\n\n    }\n  }\n': SidePageQueryResult;
+    '\n  *[\n    _type == "side" &&\n    kunci == $side &&\n    unit._ref in *[_type == "unit" && kunci == $unit]._id\n  ][0] {\n    \n    kunci,\n    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n    "caraMembeli": caraMembeli[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "langkahPertama": {\n      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)\n    },\n    urutan,\n    "jaringan": {\n      "caraKerja": coalesce(jaringan.caraKerja[_key == $locale][0].value, jaringan.caraKerja[_key == "id"][0].value),\n      "asalKomisi": coalesce(jaringan.asalKomisi[_key == $locale][0].value, jaringan.asalKomisi[_key == "id"][0].value),\n      "yangTidakAda": coalesce(jaringan.yangTidakAda[_key == $locale][0].value, jaringan.yangTidakAda[_key == "id"][0].value),\n      "syarat": coalesce(jaringan.syarat[_key == $locale][0].value, jaringan.syarat[_key == "id"][0].value),\n      "ajakanDaftar": {\n        "label": coalesce(jaringan.ajakanDaftar.label[_key == $locale][0].value, jaringan.ajakanDaftar.label[_key == "id"][0].value),\n        "sesudahnya": coalesce(jaringan.ajakanDaftar.sesudahnya[_key == $locale][0].value, jaringan.ajakanDaftar.sesudahnya[_key == "id"][0].value)\n      }\n    }\n,\n    "bab": *[\n      _type == "bab" &&\n      sisi._ref == ^._id &&\n      count(*[_type == "offer" && bab._ref == ^._id]) >= 3\n    ] | order(urutan asc) {\n      \n  _id,\n  "slug": slug.current,\n  "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n  "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),\n  "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),\n  urutan,\n  "jumlahOffer": count(*[_type == "offer" && bab._ref == ^._id]),\n  "jenis": array::compact(array::unique(*[\n    _type == "offer" &&\n    bab._ref == ^._id\n  ].jenis[_key == $locale][0].value)),\n  "pintuMasuk": *[\n    _type == "offer" &&\n    bab._ref == ^._id &&\n    pintuMasuk == true\n  ] | order(urutan asc)[0] {\n    _id,\n    "slug": slug.current,\n    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n    "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value)\n  }\n\n    }\n  }\n': SidePagePreviewQueryResult;
     '\n  *[_type == "bab" && statusTinjauan == "disetujui" && slug.current == $slug && sisi->kunci == $side && sisi->unit->kunci == $unit][0] {\n    _id,\n    "slug": slug.current,\n    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),\n    "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),\n    "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),\n    urutan,\n    "batas": coalesce(batas[_key == $locale][0].value, batas[_key == "id"][0].value),\n    "offers": *[\n      _type == "offer" &&\n      statusTinjauan == "disetujui" &&\n      bab._ref == ^._id\n    ] | order(urutan asc) {\n      _id,\n      "slug": slug.current,\n      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n      "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),\n      pasar,\n      urutan\n    },\n    "ajakan": {\n      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)\n    }\n  }\n': ChapterPageQueryResult;
     '\n  *[_type == "offer" && statusTinjauan == "disetujui" && slug.current == $slug && bab->slug.current == $chapter && bab->sisi->kunci == $side && bab->sisi->unit->kunci == $unit][0] {\n    _id,\n    "slug": slug.current,\n    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),\n    "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),\n    "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),\n    "jenis": coalesce(jenis[_key == $locale][0].value, jenis[_key == "id"][0].value),\n    pasar,\n    "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),\n    "langkah": langkah[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "serahan": serahan[]{\n      _key,\n      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)\n    },\n    "batas": coalesce(batas[_key == $locale][0].value, batas[_key == "id"][0].value),\n    "langkahPertama": {\n      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),\n      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)\n    },\n    "jembatan": {\n      "offer": offer->{\n        "slug": slug.current,\n        "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value)\n      },\n      "kalimat": coalesce(jembatan.kalimat[_key == $locale][0].value, jembatan.kalimat[_key == "id"][0].value)\n    },\n    metadata\n  }\n': OfferPageQueryResult;
     '\n  *[_type == "sequence" && statusTinjauan == "disetujui"] {\n    _id,\n    "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),\n    "langkah": langkah[]{\n      _key,\n      "unit": unit->{ kunci, "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value) },\n      "offer": offer[]{\n        _key,\n        "slug": @->slug.current,\n        "judul": coalesce(@->judul[_key == $locale][0].value, @->judul[_key == "id"][0].value)\n      },\n      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value)\n    },\n    "keterangan": coalesce(keterangan[_key == $locale][0].value, keterangan[_key == "id"][0].value),\n    metadata\n  }\n': SequencesQueryResult;

@@ -218,7 +218,19 @@
     "navigationLabel": "Jelajahi unit {unit}",
     "otherLabel": "Sisi lain di {unit}",
     "backToUnit": "Kembali ke {unit}",
-    "metaDescription": "{side} adalah satu dari dua sisi unit {unit} milik Arthur."
+    "metaDescription": "{side} adalah satu dari dua sisi unit {unit} milik Arthur.",
+    "switcherEyebrow": "Dua sisi unit",
+    "switcherLabel": "Pilih sisi lain di unit {unit}",
+    "buyingEyebrow": "Cara membeli atau alur kerja",
+    "chaptersEyebrow": "Temukan situasinya",
+    "chaptersTitle": "Bab yang tersedia untuk dibaca.",
+    "chapterLabel": "Bab",
+    "typeLabel": "Jenis pekerjaan",
+    "entryLabel": "Pintu masuk",
+    "offerCount": "{count} offer",
+    "chaptersEmpty": "Bab akan muncul setelah setidaknya tiga offer di sisi ini disetujui untuk tayang.",
+    "firstStepEyebrow": "Langkah pertama",
+    "firstStepLink": "Mulai percakapan"
   },
   "sample": {
     "label": "Isi contoh",

@@ -498,9 +498,7 @@ export const unitPagePreviewQuery = defineQuery(`
   }
 `)
 
-/** Published reader-facing content for one side of an Arthur unit. */
-export const sidePageQuery = defineQuery(`
-  *[_type == "side" && statusTinjauan == "disetujui" && kunci == $side && unit->kunci == $unit][0] {
+const sideReaderFields = `
     kunci,
     "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
     "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
@@ -512,17 +510,6 @@ export const sidePageQuery = defineQuery(`
       "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),
       "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)
     },
-    "bab": *[
-      _type == "bab" &&
-      statusTinjauan == "disetujui" &&
-      sisi._ref == ^._id
-    ] | order(urutan asc) {
-      _id,
-      "slug": slug.current,
-      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
-      "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),
-      urutan
-    },
     urutan,
     "jaringan": {
       "caraKerja": coalesce(jaringan.caraKerja[_key == $locale][0].value, jaringan.caraKerja[_key == "id"][0].value),
@@ -533,6 +520,101 @@ export const sidePageQuery = defineQuery(`
         "label": coalesce(jaringan.ajakanDaftar.label[_key == $locale][0].value, jaringan.ajakanDaftar.label[_key == "id"][0].value),
         "sesudahnya": coalesce(jaringan.ajakanDaftar.sesudahnya[_key == $locale][0].value, jaringan.ajakanDaftar.sesudahnya[_key == "id"][0].value)
       }
+    }
+`
+
+const sideChapterFields = `
+  _id,
+  "slug": slug.current,
+  "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
+  "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),
+  "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
+  urutan,
+  "jumlahOffer": count(*[
+    _type == "offer" &&
+    statusTinjauan == "disetujui" &&
+    bab._ref == ^._id
+  ]),
+  "jenis": array::compact(array::unique(*[
+    _type == "offer" &&
+    statusTinjauan == "disetujui" &&
+    bab._ref == ^._id
+  ].jenis[_key == $locale][0].value)),
+  "pintuMasuk": *[
+    _type == "offer" &&
+    statusTinjauan == "disetujui" &&
+    bab._ref == ^._id &&
+    pintuMasuk == true
+  ] | order(urutan asc)[0] {
+    _id,
+    "slug": slug.current,
+    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+    "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value)
+  }
+`
+
+const sideChapterPreviewFields = `
+  _id,
+  "slug": slug.current,
+  "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
+  "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),
+  "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
+  urutan,
+  "jumlahOffer": count(*[_type == "offer" && bab._ref == ^._id]),
+  "jenis": array::compact(array::unique(*[
+    _type == "offer" &&
+    bab._ref == ^._id
+  ].jenis[_key == $locale][0].value)),
+  "pintuMasuk": *[
+    _type == "offer" &&
+    bab._ref == ^._id &&
+    pintuMasuk == true
+  ] | order(urutan asc)[0] {
+    _id,
+    "slug": slug.current,
+    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+    "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value)
+  }
+`
+
+/** Published reader-facing content for one side of an Arthur unit. */
+export const sidePageQuery = defineQuery(`
+  *[
+    _type == "side" &&
+    statusTinjauan == "disetujui" &&
+    kunci == $side &&
+    unit._ref in *[_type == "unit" && kunci == $unit]._id
+  ][0] {
+    ${sideReaderFields},
+    "bab": *[
+      _type == "bab" &&
+      statusTinjauan == "disetujui" &&
+      sisi._ref == ^._id &&
+      count(*[
+        _type == "offer" &&
+        statusTinjauan == "disetujui" &&
+        bab._ref == ^._id
+      ]) >= 3
+    ] | order(urutan asc) {
+      ${sideChapterFields}
+    }
+  }
+`)
+
+/** Reader-safe draft-mode counterpart used only inside Presentation. */
+export const sidePagePreviewQuery = defineQuery(`
+  *[
+    _type == "side" &&
+    kunci == $side &&
+    unit._ref in *[_type == "unit" && kunci == $unit]._id
+  ][0] {
+    ${sideReaderFields},
+    "bab": *[
+      _type == "bab" &&
+      sisi._ref == ^._id &&
+      count(*[_type == "offer" && bab._ref == ^._id]) >= 3
+    ] | order(urutan asc) {
+      ${sideChapterPreviewFields}
     }
   }
 `)

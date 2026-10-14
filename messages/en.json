@@ -218,7 +218,19 @@
     "navigationLabel": "Explore the {unit} unit",
     "otherLabel": "The other side of {unit}",
     "backToUnit": "Back to {unit}",
-    "metaDescription": "{side} is one of the two sides of Arthur's {unit} unit."
+    "metaDescription": "{side} is one of the two sides of Arthur's {unit} unit.",
+    "switcherEyebrow": "The unit's two sides",
+    "switcherLabel": "Choose the other side of {unit}",
+    "buyingEyebrow": "How to buy or work together",
+    "chaptersEyebrow": "Find the situation",
+    "chaptersTitle": "Chapters available to read.",
+    "chapterLabel": "Chapter",
+    "typeLabel": "Work type",
+    "entryLabel": "Entry offer",
+    "offerCount": "{count} offers",
+    "chaptersEmpty": "Chapters appear once at least three offers on this side are approved for publication.",
+    "firstStepEyebrow": "First step",
+    "firstStepLink": "Start a conversation"
   },
   "sample": {
     "label": "Sample content",
