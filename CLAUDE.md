@@ -1,4 +1,6 @@
-# AI Agent Guide
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Read first
 
@@ -143,13 +145,67 @@ bun run build          # production build
 bun run typecheck      # tsc --noEmit
 bun run lint           # oxlint — warnings report, they do not fail
 bun test               # unit tests
-bun run test:e2e       # Playwright + axe-core
+bun run test:e2e       # Playwright + axe-core (CI only — see "Melihat hasil")
 bun run storybook      # component catalogue
-bun run check          # everything CI runs
+bun run format         # oxfmt in place; also sorts imports and Tailwind classes
+bun run lint:types     # type-aware oxlint (no-floating/misused-promises); not in the hook
+bun run check          # lint + format check + lint:types + tsc + bun test + asset check
 ```
 
-`lefthook` runs oxfmt, oxlint and typecheck on every commit. An **error** stops
-the commit; a **warning** is reported and does not.
+A single unit test: `bun test lib/content/units.test.ts`, or filter by name
+with `bun test -t "<pattern>"`. Unit tests are `*.test.ts` beside the code
+(preloaded by `lib/scripts/test-setup.ts`, happy-dom); e2e specs are
+`e2e/*.e2e.ts` and only Playwright collects them. A single e2e spec, where
+browsers exist: `bunx playwright test e2e/not-found.e2e.ts`. The anti-slop lint
+plugin's own tests are `*.ruletest.ts`, run by `bun run test:oxlint-plugin`.
+
+`bun run check` does **not** build; CI runs `bun run build` separately, and
+`next build` does not typecheck (`ignoreBuildErrors` is on), so `tsc` in
+`check` is the only type gate.
+
+`lefthook` runs oxfmt, oxlint and typecheck on every commit, and `bun test` on
+pre-push. An **error** stops the commit; a **warning** is reported and does
+not. A branch switch clears `.next/types`; it regenerates on the next build.
+
+`next dev` appends a `nextjs-agent-rules` block to `AGENTS.md`. `AGENTS.md`
+itself says to revert it and never commit it.
+
+### Architecture in one pass
+
+- **Routing.** Every public page lives under `app/[locale]/` (`en`, `id`;
+  `localePrefix: 'always'`, so the root only redirects). Locales are defined
+  once in `lib/i18n/routing.ts`; UI strings are in `messages/{en,id}.json`
+  (next-intl). `app/(chrome)/` holds what sits outside the locale tree — the
+  embedded Sanity Studio at `/cms`. `app/sitemap.ts`, `robots.ts` and
+  `llms.txt` are generated from the same sources.
+- **`proxy.ts`** (Next 16's replacement for middleware) runs next-intl's
+  locale redirect and the Markdown rewrite that serves agent-readable mirrors
+  of pages. `lib/seo/alternates.ts` is the one source of canonical and
+  hreflang URLs; the sitemap, the head and `/llms.txt` all derive from it.
+- **Content.** Sanity is the CMS (`lib/integrations/sanity/`: schemas,
+  GROQ `queries.ts`, generated `sanity.types.ts`). Every integration
+  self-disables when its env vars are absent, so `lib/content/*-fallback.ts`
+  supplies what renders without the CMS. Read env only through `@/lib/env`.
+  `app/api/revalidate` and `app/api/draft-mode` are the webhook and preview
+  entry points.
+- **Motion.** Lenis, GSAP and Tempus share a single RAF (rule #6); route
+  transitions and scroll velocity live in `lib/motion/`; reusable effects in
+  `components/effects/`.
+- **WebGL.** One root R3F canvas, mounted either in the shared layout
+  (`<OptionalFeatures webgl />`, persists across navigation) or per page
+  (`<Wrapper webgl>`) — never both; the store enforces a single root. Scenes
+  reach it through `<WebGLTunnel>` rather than mounting their own canvas. See
+  `lib/webgl/README.md`.
+- **Components.** `components/ui/` (primitives — always import `Image` and
+  `Link` from here, never `next/image`/`next/link` or raw `<img>`/`<a>`),
+  `components/layout/` (header, footer, page wrapper), `components/effects/`.
+  Imports use `@/` aliases; `../../` is a lint error.
+- **Server Components by default**, React Compiler on (no `useMemo` /
+  `useCallback` / `memo`), Cache Components on. Next 16 differs from training
+  data — read `node_modules/next/dist/docs/` before relying on an API.
+
+Deeper detail: `ARCHITECTURE.md`, and the `README.md` inside `app/`, `lib/`,
+`lib/webgl/`, `lib/seo/` and `lib/integrations/`.
 
 ### `vault/` — what it is
 
