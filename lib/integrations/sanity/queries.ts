@@ -594,7 +594,12 @@ export const sidePageQuery = defineQuery(`
         _type == "offer" &&
         statusTinjauan == "disetujui" &&
         bab._ref == ^._id
-      ]) >= 3
+      ]) >= 3 &&
+      count(*[
+        _type == "offer" &&
+        statusTinjauan == "disetujui" &&
+        bab._ref == ^._id
+      ]) <= 7
     ] | order(urutan asc) {
       ${sideChapterFields}
     }
@@ -612,16 +617,60 @@ export const sidePagePreviewQuery = defineQuery(`
     "bab": *[
       _type == "bab" &&
       sisi._ref == ^._id &&
-      count(*[_type == "offer" && bab._ref == ^._id]) >= 3
+      count(*[_type == "offer" && bab._ref == ^._id]) >= 3 &&
+      count(*[_type == "offer" && bab._ref == ^._id]) <= 7
     ] | order(urutan asc) {
       ${sideChapterPreviewFields}
     }
   }
 `)
 
-/** Published chapter content for the future nested Arthur route. */
-export const chapterPageQuery = defineQuery(`
-  *[_type == "bab" && statusTinjauan == "disetujui" && slug.current == $slug && sisi->kunci == $side && sisi->unit->kunci == $unit][0] {
+const chapterOfferCardFields = `
+  _id,
+  "slug": slug.current,
+  "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+  "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),
+  "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),
+  "jenis": coalesce(jenis[_key == $locale][0].value, jenis[_key == "id"][0].value),
+  pasar,
+  urutan
+`
+
+const chapterBridgeFields = `
+  _key,
+  "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value),
+  "offer": select(
+    offer->statusTinjauan == "disetujui" => offer->{
+      "slug": slug.current,
+      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+      "bab": bab->{
+        "slug": slug.current,
+        "side": sisi->{
+          kunci,
+          "unit": unit->kunci
+        }
+      }
+    }
+  )
+`
+
+const chapterBridgePreviewFields = `
+  _key,
+  "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value),
+  "offer": offer->{
+    "slug": slug.current,
+    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+    "bab": bab->{
+      "slug": slug.current,
+      "side": sisi->{
+        kunci,
+        "unit": unit->kunci
+      }
+    }
+  }
+`
+
+const chapterReaderFields = `
     _id,
     "slug": slug.current,
     "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
@@ -634,16 +683,43 @@ export const chapterPageQuery = defineQuery(`
       statusTinjauan == "disetujui" &&
       bab._ref == ^._id
     ] | order(urutan asc) {
-      _id,
-      "slug": slug.current,
-      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
-      "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),
-      pasar,
-      urutan
+      ${chapterOfferCardFields}
+    },
+    "jembatan": jembatan[]{
+      ${chapterBridgeFields}
     },
     "ajakan": {
-      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),
-      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value)
+      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value, sisi->langkahPertama.label[_key == $locale][0].value, sisi->langkahPertama.label[_key == "id"][0].value),
+      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value, sisi->langkahPertama.sesudahnya[_key == $locale][0].value, sisi->langkahPertama.sesudahnya[_key == "id"][0].value)
+    }
+`
+
+/** Published reader-facing content for one Arthur chapter. */
+export const chapterPageQuery = defineQuery(`
+  *[_type == "bab" && statusTinjauan == "disetujui" && slug.current == $slug && sisi->kunci == $side && sisi->unit->kunci == $unit][0] {
+    ${chapterReaderFields}
+  }
+`)
+
+/** Draft-mode counterpart used only by the protected Presentation preview. */
+export const chapterPagePreviewQuery = defineQuery(`
+  *[_type == "bab" && slug.current == $slug && sisi->kunci == $side && sisi->unit->kunci == $unit][0] {
+    _id,
+    "slug": slug.current,
+    "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
+    "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),
+    "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
+    urutan,
+    "batas": coalesce(batas[_key == $locale][0].value, batas[_key == "id"][0].value),
+    "offers": *[_type == "offer" && bab._ref == ^._id] | order(urutan asc) {
+      ${chapterOfferCardFields}
+    },
+    "jembatan": jembatan[]{
+      ${chapterBridgePreviewFields}
+    },
+    "ajakan": {
+      "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value, sisi->langkahPertama.label[_key == $locale][0].value, sisi->langkahPertama.label[_key == "id"][0].value),
+      "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value, sisi->langkahPertama.sesudahnya[_key == $locale][0].value, sisi->langkahPertama.sesudahnya[_key == "id"][0].value)
     }
   }
 `)

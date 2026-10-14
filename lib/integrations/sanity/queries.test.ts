@@ -19,6 +19,7 @@ import { routing } from '@/lib/i18n/routing'
 
 import {
   chapterPageQuery,
+  chapterPagePreviewQuery,
   featuredProjectsQuery,
   faqsForPathQuery,
   howWeWorkPreviewQuery,
@@ -177,6 +178,28 @@ describe('chapter query', () => {
     expect(chapterPageQuery).toContain('bab._ref == ^._id')
     expect(chapterPageQuery).toContain('statusTinjauan == "disetujui"')
     expect(chapterPageQuery).toContain('order(urutan asc)')
+  })
+
+  it('projects card fields without exposing internal editorial fields', () => {
+    for (const field of ['untukSiapa', 'jenis', 'pasar', 'dampak']) {
+      expect(chapterPageQuery).toContain(field)
+    }
+
+    for (const field of [
+      'idKatalog',
+      'jejakSumber',
+      'ditulisOleh',
+      'tanggalDisetujui',
+    ]) {
+      expect(chapterPageQuery).not.toContain(field)
+    }
+  })
+
+  it('only resolves published bridge targets on the public route', () => {
+    expect(chapterPageQuery).toContain('offer->statusTinjauan == "disetujui"')
+    expect(chapterPagePreviewQuery).not.toContain(
+      'offer->statusTinjauan == "disetujui"'
+    )
   })
 })
 

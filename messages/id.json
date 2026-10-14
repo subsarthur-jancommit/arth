@@ -232,6 +232,22 @@
     "firstStepEyebrow": "Langkah pertama",
     "firstStepLink": "Mulai percakapan"
   },
+  "chapter": {
+    "offersEyebrow": "Offer untuk situasi ini",
+    "marketLabel": "Saring offer menurut pasar proyek",
+    "marketAll": "Semua proyek",
+    "marketGovernment": "Proyek pemerintah",
+    "marketPrivate": "Proyek swasta",
+    "audienceLabel": "Untuk",
+    "typeLabel": "Jenis",
+    "boundariesEyebrow": "Batas dan syarat",
+    "bridgesEyebrow": "Situasi berikutnya",
+    "firstStepEyebrow": "Langkah pertama",
+    "firstStepLink": "Mulai percakapan",
+    "navigationLabel": "Lanjutkan penjelajahan",
+    "backToSide": "Kembali ke sisi",
+    "backToUnit": "Kembali ke unit"
+  },
   "sample": {
     "label": "Isi contoh",
     "unitNote": "Pernyataan unit ditulis setelah ada tipe isi yang menyimpannya. Tidak ada klaim di sini.",

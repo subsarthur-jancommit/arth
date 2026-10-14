@@ -232,6 +232,22 @@
     "firstStepEyebrow": "First step",
     "firstStepLink": "Start a conversation"
   },
+  "chapter": {
+    "offersEyebrow": "Offers for this situation",
+    "marketLabel": "Filter offers by project market",
+    "marketAll": "All projects",
+    "marketGovernment": "Government projects",
+    "marketPrivate": "Private projects",
+    "audienceLabel": "For",
+    "typeLabel": "Type",
+    "boundariesEyebrow": "Boundaries and terms",
+    "bridgesEyebrow": "The next situation",
+    "firstStepEyebrow": "First step",
+    "firstStepLink": "Start a conversation",
+    "navigationLabel": "Continue exploring",
+    "backToSide": "Back to side",
+    "backToUnit": "Back to unit"
+  },
   "sample": {
     "label": "Sample content",
     "unitNote": "The unit statement is written once the content type exists to hold it. Nothing here is a claim.",
