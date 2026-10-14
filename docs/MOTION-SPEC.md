@@ -928,7 +928,21 @@ is available. `CLAUDE.md`'s hard reader protections continue to apply.
 | Content boundary     | No numbers, rates, or income simulation.                                                                                            |
 | Verification planned | No-JavaScript and reduced-motion states; `continuous-motion` confirms step prose does not move.                                     |
 
-### 13.5 Janji dicap — promises stamped (F3-08)
+### 13.5 Tiga batang disambung — three units joined (F3-07)
+
+| Field                | Specification                                                                                                                                         |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data-epic`          | `three-unit-splice`                                                                                                                                   |
+| Trigger              | Each of the three unit steps enters the reading line.                                                                                                 |
+| Sequence and timing  | Each step settles through the reveal contract; `splice` then joins it to the following unit. `level` settles after all three steps are in place.      |
+| Pinning              | None; the three steps remain an ordinary ordered list.                                                                                                |
+| Touch                | Same scroll order, with vertical joints between cards.                                                                                                |
+| Without JavaScript   | All three steps, both joints, and the level line are present in their final state.                                                                    |
+| Reduced motion       | Same final state as without JavaScript.                                                                                                               |
+| Content boundary     | The page labels the sequence as possible, never as a completed client project; every unit and offer must remain renderable through its approval gate. |
+| Verification planned | Desktop and 390 px visual state, placeholder guard, and the interaction-grammar report when e2e is next explicitly authorised.                        |
+
+### 13.6 Janji dicap — promises stamped (F3-08)
 
 | Field                | Specification                                                                                    |
 | -------------------- | ------------------------------------------------------------------------------------------------ |
@@ -941,7 +955,7 @@ is available. `CLAUDE.md`'s hard reader protections continue to apply.
 | Reduced motion       | The stamp is already visible.                                                                    |
 | Verification planned | Reduced-motion state on the How we work page.                                                    |
 
-### 13.6 Situasi menunjuk unit — situation points to a unit (F3-01)
+### 13.7 Situasi menunjuk unit — situation points to a unit (F3-01)
 
 | Field                | Specification                                                                                                                               |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -953,7 +967,7 @@ is available. `CLAUDE.md`'s hard reader protections continue to apply.
 | Reduced motion       | Do not draw the line; keep the destination unit named in text.                                                                              |
 | Verification planned | `keyboard-focus`; the interaction-grammar report checks keyboard INTENT.                                                                    |
 
-### 13.7 Masuk lebih dalam ke set — enter deeper into the set (F4-03)
+### 13.8 Masuk lebih dalam ke set — enter deeper into the set (F4-03)
 
 | Field                | Specification                                                                                                                                                                      |
 | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -966,7 +980,7 @@ is available. `CLAUDE.md`'s hard reader protections continue to apply.
 | Reduced motion       | The page changes without a transition.                                                                                                                                             |
 | Verification planned | Keep `instant-navigation` and `navigation-landing` green; add coverage for Back and double activation when this is implemented.                                                    |
 
-### 13.8 Navigation precedence
+### 13.9 Navigation precedence
 
 One activation starts exactly one transition. When more than one could apply,
 use this precedence. Card 7 replaces the legacy per-route `work-transport`

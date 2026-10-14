@@ -24,6 +24,11 @@
   transform: rotate(atan2(var(--gap), 100cqi));
 }
 
+/* Match Reveal's per-item state; otherwise a settled row stays tilted. */
+[data-reveal] [data-reveal-item='visible'] .beam {
+  transform: none;
+}
+
 /*
  * Reduced motion keeps the outcome and drops the beat (MOTION-SPEC §9.4 rule
  * 3): the beam is level at once.

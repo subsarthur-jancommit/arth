@@ -58,7 +58,7 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 | F3-04 Template bab dan kartu offer          | —   | —         | **Dalam branch** | Kutipan bab, tiga–tujuh kartu offer tanpa foto, batas, jembatan, ajakan, penyaring pasar Konstruksi, serta momen bekisting/FLIP sudah selesai; belum ada dokumen bab/offer untuk menampilkan rute nyata (U33)                                         |
 | F3-05 Template offer                        | —   | —         | **Dalam branch** | Delapan blok offer, langkah tanpa pin, garis lingkup, batas dipaku, langkah pertama, jembatan aman, dan lembar cetak sudah selesai; belum ada dokumen offer untuk menampilkan rute nyata (U34)                                                        |
 | F3-06 Halaman jaringan                      | —   | —         | **Dalam branch** | Tiga jalur, cara kerja, alur uang empat langkah, asal komisi, larangan, syarat, dan gerbang pendaftaran sudah selesai; tautan bab baru muncul setelah 3–7 offer jalurnya disetujui, dan pendaftaran ditahan sampai kartu komisi siap (U35)            |
-| F3-07 Satu klien, tiga unit                 | —   | —         | **Dalam branch** | Rute membaca rangkaian yang disetujui; momen sambungan dan copy editorialnya belum selesai                                                                                                                                                            |
+| F3-07 Satu klien, tiga unit                 | —   | —         | **Dalam branch** | Situasi, tiga langkah unit, offer per langkah, keterangan kemungkinan, CTA, serta momen `splice` lalu `level` sudah selesai; production belum memiliki dokumen `sequence`, jadi rute publik tetap pada tampilan tidak ditemukan dan noindex (U36)     |
 | F3-08 Cara kami bekerja                     | —   | —         | **Dalam branch** | Template membaca hanya `howWeWork` yang disetujui untuk publik dan membuka draft `perlu-anda` hanya di draft mode; janji dicap satu kali saat dibaca, hak milik/komisi/batas memakai garis tegak, wilayah diukur, tanpa testimoni; e2e dilewati (U29) |
 | F3-09 Tentang dan kontak                    | —   | —         | Menunggu K5      | Kanal nyata, waktu balas, dan alamat belum diputuskan; dummy tidak boleh dipromosikan sebagai kontak                                                                                                                                                  |
 | F3-10 Kebijakan                             | —   | —         | Belum mulai      | Draf membutuhkan tinjauan ahli hukum sebelum noindex dapat dilepas                                                                                                                                                                                    |
@@ -530,3 +530,22 @@ pendaftar sekarang; manfaatnya, Arthur tidak meminta orang bergabung sebelum
 sumber, pemicu, jumlah, dan waktu pembayaran komisi dapat ditunjukkan
 tertulis. Tidak ada isi Sanity ditulis atau diterbitkan. Playwright/e2e tidak
 dijalankan sesuai instruksi pemilik.
+
+**U36 — rangkaian tiga unit hanya tampil bila seluruh urutannya dapat
+dipertanggungjawabkan.** F3-07 mengganti daftar mentah dengan situasi, tepat
+tiga langkah unit, satu atau dua offer per langkah, keterangan bahwa rangkaian
+itu mungkin, dan ajakan “Ceritakan masalahnya”. Dua `splice` menyambung langkah
+secara berurutan dan `level` menutup rangkaian; tanpa JavaScript maupun pada
+reduced motion semua sambungan sudah terpasang. Query publik menuntut dokumen
+sequence dan ketiga unit berstatus `disetujui`, lalu hanya membaca offer yang
+seluruh rantai offer → bab → sisi → unit juga disetujui. Jumlah referensi asli
+dibandingkan dengan hasil proyeksi supaya offer yang tertahan tidak diam-diam
+menghasilkan rangkaian yang lebih pendek. Query draft dipisahkan, medan
+Internal tidak diproyeksikan, dan gerbang Zod menolak langkah yang tidak utuh
+serta placeholder editorial. Saat implementasi ini dibuat, dataset production
+memiliki nol dokumen `sequence`; rute publik karena itu tetap menampilkan
+keadaan tidak ditemukan dengan `noindex`, bukan contoh karangan. Pada Cache
+Components dokumen ini berstatus HTTP 200 setelah shell statis terkirim—trade
+yang sudah dicatat untuk 404 dalam-chrome—sehingga catatan ini tidak mengklaim
+status HTTP 404. Tidak ada isi Sanity ditulis atau diterbitkan. Playwright/e2e
+tidak dijalankan sesuai instruksi pemilik.

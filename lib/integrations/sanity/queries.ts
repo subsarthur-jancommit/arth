@@ -864,14 +864,73 @@ export const offerPagePreviewQuery = defineQuery(`
   }
 `)
 
-/** All published three-unit sequences for the dedicated Arthur route. */
+const sequenceMetadataFields = `
+  "title": metadata.title,
+  "description": metadata.description,
+  "keywords": metadata.keywords,
+  "noIndex": metadata.noIndex
+`
+
+/**
+ * Approved three-unit sequences for the public Arthur route.
+ *
+ * A sequence is only useful when all three unit references and every named
+ * offer are publishable. The projection therefore returns `null` for an
+ * unapproved unit and drops an unapproved offer (including one whose parent
+ * chain is not approved). `offerCount` lets the parsed application boundary
+ * detect that drop instead of quietly presenting a shortened sequence.
+ */
 export const sequencesQuery = defineQuery(`
-  *[_type == "sequence" && statusTinjauan == "disetujui"] {
+  *[_type == "sequence" && statusTinjauan == "disetujui"] | order(_createdAt asc) {
     _id,
     "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
     "langkah": langkah[]{
       _key,
-      "unit": unit->{ kunci, "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value) },
+      "unit": select(
+        unit->statusTinjauan == "disetujui" => unit->{
+          kunci,
+          "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)
+        }
+      ),
+      "offerCount": count(offer),
+      "offer": offer[
+        @->statusTinjauan == "disetujui" &&
+        @->bab->statusTinjauan == "disetujui" &&
+        @->bab->sisi->statusTinjauan == "disetujui" &&
+        @->bab->sisi->unit->statusTinjauan == "disetujui"
+      ]{
+        _key,
+        "slug": @->slug.current,
+        "judul": coalesce(@->judul[_key == $locale][0].value, @->judul[_key == "id"][0].value)
+      },
+      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value)
+    },
+    "keterangan": coalesce(keterangan[_key == $locale][0].value, keterangan[_key == "id"][0].value),
+    "metadata": {
+      ${sequenceMetadataFields}
+    }
+  }
+`)
+
+/**
+ * Draft-mode counterpart to `sequencesQuery`.
+ *
+ * It keeps the identical reader projection but deliberately does not apply
+ * editorial status gates. The authenticated drafts perspective is the only
+ * caller, so an owner can review a complete proposed sequence before any of
+ * its documents are published.
+ */
+export const sequencesPreviewQuery = defineQuery(`
+  *[_type == "sequence"] | order(_createdAt asc) {
+    _id,
+    "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
+    "langkah": langkah[]{
+      _key,
+      "unit": unit->{
+        kunci,
+        "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)
+      },
+      "offerCount": count(offer),
       "offer": offer[]{
         _key,
         "slug": @->slug.current,
@@ -880,7 +939,9 @@ export const sequencesQuery = defineQuery(`
       "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value)
     },
     "keterangan": coalesce(keterangan[_key == $locale][0].value, keterangan[_key == "id"][0].value),
-    metadata
+    "metadata": {
+      ${sequenceMetadataFields}
+    }
   }
 `)
 

@@ -29,6 +29,7 @@ import {
   pageQuery,
   projectQuery,
   projectsQuery,
+  sequencesPreviewQuery,
   sequencesQuery,
   sidePageQuery,
   siteSettingsQuery,
@@ -46,6 +47,7 @@ const LOCALIZED_QUERIES = {
   projectsQuery,
   featuredProjectsQuery,
   projectQuery,
+  sequencesPreviewQuery,
   sequencesQuery,
   siteSettingsQuery,
 } as const
@@ -106,10 +108,22 @@ describe('fixed-page migration', () => {
 })
 
 describe('sequence and FAQ queries', () => {
-  it('lists only reader-facing sequence fields', () => {
-    expect(sequencesQuery).toContain('_type == "sequence"')
-    expect(sequencesQuery).toContain('"keterangan"')
-    expect(sequencesQuery).not.toContain('...')
+  it('keeps editorial review out of public while allowing draft preview', () => {
+    expect(sequencesQuery).toContain('statusTinjauan == "disetujui"')
+    expect(sequencesQuery).toContain('unit->statusTinjauan == "disetujui"')
+    expect(sequencesQuery).toContain(
+      '@->bab->sisi->unit->statusTinjauan == "disetujui"'
+    )
+    expect(sequencesPreviewQuery).not.toContain('statusTinjauan')
+
+    for (const query of [sequencesQuery, sequencesPreviewQuery]) {
+      expect(query).toContain('_type == "sequence"')
+      expect(query).toContain('"keterangan"')
+      expect(query).toContain('"offerCount": count(offer)')
+      expect(query).not.toContain('...')
+      expect(query).not.toContain('jejakSumber')
+      expect(query).not.toContain('ditulisOleh')
+    }
   })
 
   it('limits FAQ lookup to its explicit path', () => {
