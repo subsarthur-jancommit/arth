@@ -61,7 +61,7 @@ Pekerjaan mekanis, tidak menunggu P1 sampai P3. Satu PR.
 | Soft-404 di `/cara-kerja` dan `/satu-klien-tiga-unit` (E3.1, E3.2) | Halaman tanpa isi terbit menjawab status 404 yang asli, dan tautannya keluar dari navigasi, beranda, dan footer sampai isinya terbit                                                                          |
 | `/en/*` campur bahasa (C2)                                         | Selama K2 masih "Indonesia dulu", seluruh `/en/*` dialihkan 307 ke padanan `/id/*`, bukan hanya `/en`                                                                                                         |
 | Catatan editor yang tayang (E7.1, E6.5)                            | Tidak ada "NOTE:", "Ganti sebelum…", "setelah disusun di Sanity", atau status internal lain di HTML publik; alamat dummy tidak tampil. Ditambah satu uji yang menggagalkan build bila teks semacam itu muncul |
-| WebGL dan flowmap tanpa pemakai di beranda (B5)                    | Dicabut sampai P2 memutuskan pelat dan materialnya                                                                                                                                                            |
+| Simulasi flowmap tanpa pemakai di beranda (B5)                     | `simTypes` dicabut dari beranda; scene WebGL hero tetap. Flowmap kembali bila R4 memasang pelat sebagai material                                                                                              |
 | Menu ponsel 28,4 px (E8.1)                                         | Ukuran tautan tidak lagi ditentukan oleh label terpanjang; diukur ulang pada 390 × 844                                                                                                                        |
 
 ### R1 Glosarium dan dokumen copy
