@@ -98,6 +98,7 @@ export const LIVE_SEGMENTS: readonly string[] = [
   'journal',
   'search.json',
   'cara-kerja',
+  'kebijakan',
   'kontak',
   'satu-klien-tiga-unit',
   'studio',

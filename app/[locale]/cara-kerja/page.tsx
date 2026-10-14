@@ -4,13 +4,8 @@ import { locale as localeRootParam } from 'next/root-params'
 
 import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
+import { howWeWorkContent } from '@/lib/content/how-we-work-content'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
-import { isConfigured } from '@/lib/integrations/registry'
-import { sanityFetch } from '@/lib/integrations/sanity/live'
-import {
-  howWeWorkPreviewQuery,
-  howWeWorkQuery,
-} from '@/lib/integrations/sanity/queries'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 import { PromiseStamp, type WrittenPromise } from '@/vault/blocks/promise-stamp'
 import { Dimension } from '@/vault/motion/dimension'
@@ -19,40 +14,14 @@ import { Reveal } from '@/vault/motion/reveal'
 
 import s from './page.module.css'
 
-const fetchPublishedHowWeWork = async (locale: Locale) => {
-  'use cache'
-
-  return sanityFetch({
-    query: howWeWorkQuery,
-    params: { locale },
-    perspective: 'published',
-    stega: false,
-  })
-}
-
-const fetchPreviewHowWeWork = async (locale: Locale) => {
-  'use cache'
-
-  return sanityFetch({
-    query: howWeWorkPreviewQuery,
-    params: { locale },
-    perspective: 'drafts',
-    stega: true,
-  })
-}
-
-async function howWeWorkForRequest(locale: Locale) {
+async function howWeWorkForRequest(locale: Locale, stega = true) {
   const { isEnabled: isDraftMode } = await draftMode()
-  const { data } = isDraftMode
-    ? await fetchPreviewHowWeWork(locale)
-    : await fetchPublishedHowWeWork(locale)
+  const data = await howWeWorkContent(locale, isDraftMode, isDraftMode && stega)
 
   return { data, isDraftMode }
 }
 
 export default async function HowWeWorkPage() {
-  if (!isConfigured('sanity')) return <LocalizedNotFound />
-
   const requested = await localeRootParam()
   const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
   const { data } = await howWeWorkForRequest(locale)
@@ -190,9 +159,7 @@ export async function generateMetadata() {
   const requested = await localeRootParam()
   const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
 
-  if (!isConfigured('sanity')) return { robots: { index: false } }
-
-  const { data, isDraftMode } = await howWeWorkForRequest(locale)
+  const { data, isDraftMode } = await howWeWorkForRequest(locale, false)
   if (!data) return { robots: { index: false } }
 
   const description =

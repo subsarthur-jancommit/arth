@@ -1,8 +1,7 @@
 import { defineQuery } from 'next-sanity'
 
 // Page queries
-export const pageQuery = defineQuery(`
-  *[_type == "page" && statusTinjauan == "disetujui" && slug.current == $slug][0] {
+const pageReaderFields = `
     _id,
     "title": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value, title),
     slug,
@@ -20,9 +19,38 @@ export const pageQuery = defineQuery(`
         }
       }
     },
-    metadata,
+    "excerpt": pt::text(coalesce(
+      isi[_key == $locale][0].value,
+      isi[_key == "id"][0].value,
+      content
+    )),
+    "metadata": {
+      "title": metadata.title,
+      "description": metadata.description,
+      "keywords": metadata.keywords,
+      "noIndex": metadata.noIndex
+    },
     publishedAt,
     _updatedAt
+`
+
+/** Public fixed pages: published perspective plus explicit editorial approval. */
+export const pageQuery = defineQuery(`
+  *[_type == "page" && statusTinjauan == "disetujui" && slug.current == $slug][0] {
+    ${pageReaderFields}
+  }
+`)
+
+/**
+ * Draft-mode counterpart to pageQuery.
+ *
+ * It has the identical reader allowlist but deliberately omits the editorial
+ * gate. The only caller uses the authenticated drafts perspective, so an
+ * owner can review a proposed fixed page without exposing it publicly.
+ */
+export const pagePreviewQuery = defineQuery(`
+  *[_type == "page" && slug.current == $slug][0] {
+    ${pageReaderFields}
   }
 `)
 
@@ -1005,7 +1033,12 @@ export const howWeWorkQuery = defineQuery(`
       "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)
     },
     "contohFormat": coalesce(contohFormat[_key == $locale][0].value, contohFormat[_key == "id"][0].value),
-    metadata
+    "metadata": {
+      "title": metadata.title,
+      "description": metadata.description,
+      "keywords": metadata.keywords,
+      "noIndex": metadata.noIndex
+    }
   }
 `)
 
@@ -1033,7 +1066,12 @@ export const howWeWorkPreviewQuery = defineQuery(`
       "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)
     },
     "contohFormat": coalesce(contohFormat[_key == $locale][0].value, contohFormat[_key == "id"][0].value),
-    metadata
+    "metadata": {
+      "title": metadata.title,
+      "description": metadata.description,
+      "keywords": metadata.keywords,
+      "noIndex": metadata.noIndex
+    }
   }
 `)
 

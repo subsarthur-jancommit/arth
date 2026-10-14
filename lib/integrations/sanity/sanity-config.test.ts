@@ -36,6 +36,7 @@ describe('sanity.config.ts locale wiring', () => {
     // never matches, and Presentation quietly loses its document mapping.
     for (const route of [
       '/:locale/halaman/:slug',
+      '/:locale/kebijakan',
       '/:locale/work/:slug',
       '/:locale/kontak',
       '/:locale/satu-klien-tiga-unit',
@@ -139,5 +140,6 @@ describe('sanity.config.ts singleton structure', () => {
     }
 
     expect(source).toContain("href: previewPath('/kontak')")
+    expect(source).toContain("previewPath('/kebijakan')")
   })
 })

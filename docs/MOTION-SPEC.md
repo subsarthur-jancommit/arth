@@ -981,7 +981,16 @@ is available. `CLAUDE.md`'s hard reader protections continue to apply.
 | Reduced motion       | Do not draw the line; keep the destination unit named in text.                                                                              |
 | Verification planned | `keyboard-focus`; the interaction-grammar report checks keyboard INTENT.                                                                    |
 
-### 13.9 Masuk lebih dalam ke set — enter deeper into the set (F4-03)
+### 13.9 Kebijakan dibaca tenang (F3-10)
+
+Halaman Kebijakan tidak memiliki momen gerak khusus. Dokumen hukum
+dibaca sebagai lembar tenang: tidak ada pin, scrub, WebGL, entrance bertingkat,
+atau transisi isi. Navigasi biasa tetap boleh memakai aturan set-depth global
+ketika F4-03 diterapkan. Biayanya adalah halaman ini tidak menunjukkan dialek
+gerak unit; manfaatnya, status peninjauan dan isi kebijakan tidak diperlakukan
+seperti materi promosi.
+
+### 13.10 Masuk lebih dalam ke set — enter deeper into the set (F4-03)
 
 | Field                | Specification                                                                                                                                                                      |
 | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -994,7 +1003,7 @@ is available. `CLAUDE.md`'s hard reader protections continue to apply.
 | Reduced motion       | The page changes without a transition.                                                                                                                                             |
 | Verification planned | Keep `instant-navigation` and `navigation-landing` green; add coverage for Back and double activation when this is implemented.                                                    |
 
-### 13.10 Navigation precedence
+### 13.11 Navigation precedence
 
 One activation starts exactly one transition. When more than one could apply,
 use this precedence. Card 7 replaces the legacy per-route `work-transport`

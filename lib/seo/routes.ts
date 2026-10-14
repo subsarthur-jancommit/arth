@@ -65,7 +65,12 @@ const staticPaths = new Set(STATIC_ROUTE_TEMPLATES.map((route) => route.path))
  * and real: the catalogue route added in Tahap 8 would otherwise be shadowed
  * by a project whose slug happened to be `work`.
  */
-const RESERVED_PATHS = new Set(['/cms', '/work', MARKDOWN_HANDLER_PATH])
+const RESERVED_PATHS = new Set([
+  '/cms',
+  '/work',
+  '/kebijakan',
+  MARKDOWN_HANDLER_PATH,
+])
 
 /**
  * Every document type with a `slug` — kept permissive (`nullable()` fields)
@@ -110,16 +115,23 @@ const routableDocumentSchema = z.object({
  * `docs/PANDUAN-STUDIO.md` §7 told the studio that unfeaturing hid a work
  * while all three surfaces kept advertising it.
  */
-const routableContentQuery = defineQuery(`
+export const routableContentQuery = defineQuery(`
   *[_type in ["page", "project"]
     && defined(slug.current)
-    && (_type != "project" || listed != false)] {
+    && (_type != "project" || listed != false)
+    && (_type != "page" || (
+      statusTinjauan == "disetujui" &&
+      metadata.noIndex != true
+    ))] {
     _type,
     slug,
     _updatedAt,
     "title": select(
       _type == "project" => title[_key == "en"][0].value,
-      title
+      _type == "page" => coalesce(
+        judul[_key == "id"][0].value,
+        title
+      )
     )
   }
 `)

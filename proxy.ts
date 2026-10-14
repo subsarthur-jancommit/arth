@@ -18,7 +18,7 @@ import { NextResponse } from 'next/server'
 
 import { guessedDestination } from '@/lib/i18n/guessed-paths'
 import { publicLocaleRedirect } from '@/lib/i18n/public-locale-redirect'
-import { routing } from '@/lib/i18n/routing'
+import { isLocale, routing } from '@/lib/i18n/routing'
 import {
   type DocumentMediaType,
   HTML_FORMAT_OVERRIDE_PARAM,
@@ -100,6 +100,26 @@ export function isLocalizable(pathname: string): boolean {
 export const MACHINE_PATHS = new Set([MARKDOWN_HANDLER_PATH])
 
 export const FILE_EXTENSION = /\/[^/]+\.[^/]+$/
+
+/**
+ * Canonical destination for fixed pages that used to share the generic CMS
+ * route. Keeping this at the request boundary makes the legacy URL a genuine
+ * HTTP 308 instead of a streamed client redirect from a Cache Component.
+ *
+ * Cost accepted: every fixed-page promotion needs one explicit entry here;
+ * the focused unit tests below make that small duplication visible.
+ */
+export function fixedPageDestination(pathname: string): string | null {
+  const segments = pathname.split('/').filter(Boolean)
+  if (segments.length !== 3) return null
+
+  const [locale, route, slug] = segments
+  if (!isLocale(locale) || route !== 'halaman' || slug !== 'kebijakan') {
+    return null
+  }
+
+  return `/${locale}/kebijakan`
+}
 // Proxy response headers are applied to the rendered response. Include the
 // router cache keys that Next emits so adding Accept cannot replace them.
 const NEXT_DOCUMENT_VARY =
@@ -211,6 +231,13 @@ export function proxy(request: NextRequest) {
     const destination = request.nextUrl.clone()
     destination.pathname = indonesianPath
     return NextResponse.redirect(destination, 307)
+  }
+
+  const fixedPage = fixedPageDestination(request.nextUrl.pathname)
+  if (fixedPage) {
+    const destination = request.nextUrl.clone()
+    destination.pathname = fixedPage
+    return NextResponse.redirect(destination, 308)
   }
 
   /*

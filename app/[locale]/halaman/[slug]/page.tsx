@@ -5,41 +5,24 @@ import { notFound } from 'next/navigation'
 import { locale as localeRootParam } from 'next/root-params'
 
 import { Wrapper } from '@/components/layout/wrapper'
-import { isConfigured } from '@/integrations/registry'
 import { RichText } from '@/integrations/sanity/components/rich-text'
-import { sanityFetch } from '@/integrations/sanity/live'
-import { pageQuery } from '@/integrations/sanity/queries'
+import { fixedPageContent } from '@/lib/content/fixed-page-content'
 import { localizedPath } from '@/lib/i18n/paths'
-import { isLocale, routing } from '@/lib/i18n/routing'
+import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { generateSanityMetadata } from '@/utils/metadata'
 
-/**
- * `sanityFetch` calls `cacheTag()` internally, which under Cache Components
- * (`cacheComponents: true`) is only legal inside a `'use cache'` function —
- * including in draft mode. The official next-sanity pattern: always fetch
- * inside 'use cache', but pass `perspective`/`stega`/`slug` as arguments so
- * they are part of the cache key, and branch on `draftMode()` at the
- * request level. Live edits then land via SanityLive tag revalidation.
- */
-const fetchPage = async (
-  slug: string,
-  perspective: 'published' | 'drafts',
-  stega: boolean
-) => {
-  'use cache'
-  return sanityFetch({
-    query: pageQuery,
-    params: { slug },
-    perspective,
-    stega,
-  })
+async function requestLocale(): Promise<Locale> {
+  const requested = await localeRootParam()
+  return isLocale(requested) ? requested : routing.defaultLocale
 }
 
-const fetchPageForRequest = async (slug: string) => {
+const fetchPageForRequest = async (
+  locale: Locale,
+  slug: string,
+  stega = true
+) => {
   const { isEnabled: isDraftMode } = await draftMode()
-  return isDraftMode
-    ? fetchPage(slug, 'drafts', true)
-    : fetchPage(slug, 'published', false)
+  return fixedPageContent(locale, slug, isDraftMode, isDraftMode && stega)
 }
 
 interface CmsPageProps {
@@ -79,11 +62,10 @@ interface CmsPageProps {
  * transformed down to a stub.
  */
 export default async function CmsPage({ params }: CmsPageProps) {
-  const { slug } = await params
+  const [{ slug }, locale] = await Promise.all([params, requestLocale()])
 
-  if (!slug || !isConfigured('sanity')) notFound()
-
-  const { data } = await fetchPageForRequest(slug)
+  if (!slug) notFound()
+  const data = await fetchPageForRequest(locale, slug)
 
   if (!data) notFound()
 
@@ -131,16 +113,17 @@ async function notFoundMetadata() {
 }
 
 export async function generateMetadata({ params }: CmsPageProps) {
-  const { slug } = await params
+  const [{ slug }, locale] = await Promise.all([params, requestLocale()])
 
-  if (!slug || !isConfigured('sanity')) return
+  if (!slug) return
+  if (slug === 'kebijakan') return { robots: { index: false, follow: false } }
 
-  const { data } = await fetchPageForRequest(slug)
+  // Metadata uses the same draft/published perspective as the page but never
+  // Stega. Invisible source-map characters in head fields corrupt titles,
+  // descriptions, and canonical URLs.
+  const data = await fetchPageForRequest(locale, slug, false)
 
   if (!data) return notFoundMetadata()
-
-  const requested = await localeRootParam()
-  const locale = isLocale(requested) ? requested : routing.defaultLocale
 
   // Localized, not the bare template: canonical, og:url and og:locale all
   // come from this one string. See `lib/utils/metadata.ts`.

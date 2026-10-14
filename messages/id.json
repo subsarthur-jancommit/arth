@@ -5,6 +5,7 @@
     "studio": "Cara kami bekerja",
     "journal": "Jurnal",
     "contact": "Kontak",
+    "policy": "Kebijakan",
     "storybook": "Storybook",
     "openMenu": "Menu",
     "closeMenu": "Tutup",
@@ -88,6 +89,21 @@
     "draftPreview": "Pratinjau draft Sanity — isi ini belum diterbitkan.",
     "metaTitle": "Tentang dan kontak Arthur",
     "metaDescription": "Struktur Arthur, wilayah kerja, dan status kanal kontaknya."
+  },
+  "policyPage": {
+    "eyebrow": "Dokumen tetap",
+    "title": "Kebijakan Arthur",
+    "lead": "Dokumen ini menjelaskan aturan yang berlaku pada penggunaan situs dan hubungan dengan Arthur setelah isinya selesai ditinjau.",
+    "draftPreview": "Pratinjau draf Sanity — isi ini belum diterbitkan.",
+    "reviewEyebrow": "Status dokumen",
+    "reviewTitle": "Masih menunggu tinjauan ahli hukum.",
+    "reviewBody": "Isi pada halaman ini belum boleh dianggap sebagai nasihat hukum atau kebijakan final. Halaman tetap tidak diindeks sampai peninjauan selesai dan pemilik melepaskan gerbangnya secara khusus.",
+    "documentLabel": "Draf isi kebijakan",
+    "emptyEyebrow": "Belum tersedia",
+    "emptyTitle": "Draf kebijakan belum dimasukkan.",
+    "emptyBody": "Arthur tidak menampilkan contoh kebijakan sebagai pengganti dokumen yang belum ditinjau. Isi akan muncul di sini setelah disusun di Sanity.",
+    "metaTitle": "Kebijakan Arthur — dalam peninjauan",
+    "metaDescription": "Status penyiapan dokumen kebijakan Arthur."
   },
   "work": {
     "viewProject": "Lihat"

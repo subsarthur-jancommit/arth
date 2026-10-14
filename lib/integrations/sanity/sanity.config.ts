@@ -126,6 +126,7 @@ function resolveHref(documentType?: string, slug?: string): string | undefined {
     // starter page, so a `home` document previews at `/en/home` like any other
     // slug.
     case 'page':
+      if (slug === 'kebijakan') return previewPath('/kebijakan')
       return slug ? `/${PREVIEW_LOCALE}/halaman/${slug}` : undefined
     case 'project':
       return slug ? `/${PREVIEW_LOCALE}/work/${slug}` : undefined
@@ -189,6 +190,10 @@ export default projectId && dataset
               {
                 route: '/:locale/work/:slug',
                 filter: `_type == "project" && slug.current == $slug`,
+              },
+              {
+                route: '/:locale/kebijakan',
+                filter: `_type == "page" && slug.current == "kebijakan"`,
               },
               {
                 route: '/:locale/halaman/:slug',

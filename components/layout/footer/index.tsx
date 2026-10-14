@@ -180,14 +180,17 @@ export function Footer() {
           </p>
         </section>
 
-        {/* The footer index keeps the three units and work-method page
-            reachable everywhere. Catalogue and journal indexes remain
+        {/* The footer index keeps the three units, work method, and policy
+            status reachable everywhere. Catalogue and journal indexes remain
             addressable but are intentionally not promoted in navigation. */}
         <section className={s.column}>
           <h2 className={cn('caption', s.heading)}>{t('index')}</h2>
           <ul className={s.list}>
             <li>
               <IndexLink href="/cara-kerja">{tNav('studio')}</IndexLink>
+            </li>
+            <li>
+              <IndexLink href="/kebijakan">{tNav('policy')}</IndexLink>
             </li>
             {UNITS.map((value) => (
               <li key={value}>

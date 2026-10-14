@@ -28,6 +28,7 @@ import {
   howWeWorkQuery,
   offerPagePreviewQuery,
   offerPageQuery,
+  pagePreviewQuery,
   pageQuery,
   projectQuery,
   projectsQuery,
@@ -48,6 +49,7 @@ const LOCALIZED_QUERIES = {
   offerPageQuery,
   offerPagePreviewQuery,
   pageQuery,
+  pagePreviewQuery,
   projectsQuery,
   featuredProjectsQuery,
   projectQuery,
@@ -100,14 +102,28 @@ describe('localized queries', () => {
 
 describe('fixed-page migration', () => {
   it('prefers two-language fields while leaving old pages readable', () => {
-    expect(pageQuery).toContain('judul[_key == $locale]')
-    expect(pageQuery).toContain('isi[_key == $locale]')
-    expect(pageQuery).toMatch(/\btitle\b/)
-    expect(pageQuery).toMatch(/\bcontent\b/)
+    for (const query of [pageQuery, pagePreviewQuery]) {
+      expect(query).toContain('judul[_key == $locale]')
+      expect(query).toContain('isi[_key == $locale]')
+      expect(query).toMatch(/\btitle\b/)
+      expect(query).toMatch(/\bcontent\b/)
+      expect(query).toContain('pt::text')
+    }
   })
 
   it('does not make an editorial link a page requirement', () => {
     expect(pageQuery).not.toContain('\n    link')
+  })
+
+  it('keeps editorial review out of public while allowing draft preview', () => {
+    expect(pageQuery).toContain('statusTinjauan == "disetujui"')
+    expect(pagePreviewQuery).not.toContain('statusTinjauan')
+
+    for (const query of [pageQuery, pagePreviewQuery]) {
+      expect(query).not.toContain('jejakSumber')
+      expect(query).not.toContain('ditulisOleh')
+      expect(query).not.toContain('tanggalDisetujui')
+    }
   })
 })
 

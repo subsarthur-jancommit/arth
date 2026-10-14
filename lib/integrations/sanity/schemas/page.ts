@@ -118,12 +118,17 @@ export const page = defineType({
       slug: 'slug.current',
     },
     prepare({ title, legacyTitle, slug }) {
+      let subtitle = 'No slug'
+      if (slug) {
+        subtitle = slug === 'kebijakan' ? '/kebijakan' : `/halaman/${slug}`
+      }
+
       return {
         title:
           localeValue(title, DEFAULT_LOCALE) ??
           legacyTitle ??
           'Halaman tanpa judul',
-        subtitle: slug ? `/halaman/${slug}` : 'No slug',
+        subtitle,
       }
     },
   },

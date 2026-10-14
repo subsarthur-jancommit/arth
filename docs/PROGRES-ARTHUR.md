@@ -61,9 +61,9 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 | F3-07 Satu klien, tiga unit                 | —   | —         | **Dalam branch** | Situasi, tiga langkah unit, offer per langkah, keterangan kemungkinan, CTA, serta momen `splice` lalu `level` sudah selesai; production belum memiliki dokumen `sequence`, jadi rute publik tetap pada tampilan tidak ditemukan dan noindex (U36)     |
 | F3-08 Cara kami bekerja                     | —   | —         | **Dalam branch** | Template membaca hanya `howWeWork` yang disetujui untuk publik dan membuka draft `perlu-anda` hanya di draft mode; janji dicap satu kali saat dibaca, hak milik/komisi/batas memakai garis tegak, wilayah diukur, tanpa testimoni; e2e dilewati (U29) |
 | F3-09 Tentang dan kontak                    | —   | —         | **Dalam branch** | Rute tetap, pernyataan pemilik bersyarat, tiga wilayah, ledger kontak, navigasi, pencarian, dan Presentation sudah selesai; dummy tetap teks ber-NOTE tanpa aksi dan halaman noindex sampai K5 serta fakta nyata tersedia (U37)                       |
-| F3-10 Kebijakan                             | —   | —         | Belum mulai      | Draf membutuhkan tinjauan ahli hukum sebelum noindex dapat dilepas                                                                                                                                                                                    |
-| F3-11 Penjaga saat render                   | —   | —         | **Dalam branch** | Penjaga menahan siteSettings, unit, sisi, bab, dan offer dengan placeholder dari HTML serta metadata; build/check menolak literal placeholder di luar fallback dan validator yang ditinjau                                                            |
-| F3-12 Uji rute dinamis dan ponsel           | —   | —         | Ditunda          | Bergantung F2-09 dan dilarang selama semua e2e—lokal maupun GitHub Actions—dihindari atas instruksi pemilik                                                                                                                                           |
+| F3-10 Kebijakan                             | —   | —         | **Dalam branch** | Rute tetap, jalur draft Presentation, keadaan kosong tanpa contoh hukum, footer, dan metadata `noindex` sudah selesai; production masih nol dokumen `page`, dan gerbang hanya boleh dilepas sesudah tinjauan ahli hukum (U38)                         |
+| F3-11 Penjaga saat render                   | —   | —         | **Dalam branch** | Allowlist query, Zod, placeholder guard, serta metadata tanpa Stega kini mencakup siteSettings, unit, sisi, bab, offer, sequence, howWeWork, kontak, dan Portable Text page; dokumen rusak ditahan seluruhnya (U39)                                   |
+| F3-12 Uji rute dinamis dan ponsel           | —   | —         | **Tertahan**     | Definisi rute dan batas data siap, tetapi bukti runtime bab/offer bergantung F2-09; Playwright lokal dan GitHub Actions tidak boleh dijalankan sampai pemilik mengizinkan kembali (U40)                                                               |
 | F0-02 Uji terbit menampilkan isi baru       | —   | —         | Belum mulai      | Bergantung F0-06                                                                                                                                                                                                                                      |
 | F0-03 Token produksi hanya Viewer           | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                                                                                                                                                                                       |
 | F0-04 Token dev dicabut                     | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                                                                                                                                                                                          |
@@ -568,3 +568,38 @@ kontak telah dibuka. Halaman tetap `noindex`; formulir tidak dibuat, sehingga
 tidak ada route handler, env, atau permukaan penyimpanan data baru yang
 memerlukan tinjauan keamanan F5-06. Tidak ada isi Sanity ditulis atau
 diterbitkan. Playwright/e2e tidak dijalankan sesuai instruksi pemilik.
+
+**U38 — halaman Kebijakan ada tanpa mengarang kebijakan.** F3-10 menambahkan
+rute tetap `/id/kebijakan`, tautan footer, pemetaan Presentation, dan
+pengalihan permanen dari bentuk generik `/id/halaman/kebijakan`. Query publik
+hanya menerima `page` berstatus `disetujui`; draft mode memakai query terpisah
+dengan proyeksi pembaca yang sama. Pengukuran production 15 Oktober 2026
+menemukan nol dokumen `page` pada perspektif published dan drafts, jadi halaman
+menampilkan status “draf belum dimasukkan” serta penjelasan bahwa tinjauan ahli
+hukum masih diperlukan—bukan contoh klausul. Metadata selalu `noindex`, dan
+route dikeluarkan dari sitemap, `llms.txt`, serta daftar mesin sampai gerbang
+legal dilepas secara eksplisit. Tidak ada isi Sanity ditulis atau diterbitkan.
+
+**U39 — penjaga render Phase 03 sekarang mencakup dua lubang yang tersisa.**
+F3-11 menambahkan batas Zod dan pemindaian placeholder rekursif pada Portable
+Text `page`, lalu memindahkan `howWeWork` ke resolver yang menolak singleton
+tidak lengkap. Query page yang sebelumnya membaca `$locale` tanpa pernah
+mengirim parameternya sekarang menerima locale secara eksplisit. Query draft
+dan publik memakai allowlist identik, medan Internal tidak diproyeksikan, dan
+fetch metadata mematikan Stega walaupun isi halaman sedang dipratinjau. Tautan
+internal page juga diselaraskan dengan keputusan U14: halaman biasa menuju
+`/halaman/<slug>`, sementara `kebijakan` menuju rute tetapnya. Uji terarah
+lulus 98/98 dan TypeScript strict lulus. Pemeriksaan penuh final lulus 660 uji,
+2.393 assertion, dan 0 gagal; build produksi menghasilkan 103/103 halaman.
+Pemeriksaan desktop serta viewport ponsel 390 × 844 tidak menemukan overflow
+yang terlihat. Rute kanonis merespons 200 dan alias generik merespons HTTP 308.
+Rincian batas buktinya dicatat pada laporan Phase 03.
+
+**U40 — F3-12 tidak dipalsukan menjadi hijau.** Dataset `ci` dan fixture F2-09
+belum tersedia, production juga belum mempunyai bab atau offer, dan pemilik
+melarang seluruh e2e lokal maupun GitHub Actions. Karena itu tidak dibuat test
+yang di-skip, tidak ditanam data dummy ke production, dan tidak diklaim bahwa
+rute bab/offer telah diuji pada ponsel. Struktur rute, resolver, status, dan
+data guard tersedia; bukti runtime tetap tertahan sampai prasyarat F2-09 ada
+dan pemilik secara eksplisit mengizinkan Playwright kembali. Laporan lengkap
+fitur aktif dan yang ditahan ada di `docs/PHASE-03-REPORT.md`.
