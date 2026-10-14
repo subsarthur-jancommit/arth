@@ -199,6 +199,10 @@ export default projectId && dataset
                 filter: `_type == "sequence"`,
               },
               {
+                route: '/:locale/kontak',
+                filter: `_type == "siteSettings"`,
+              },
+              {
                 route: '/:locale/:unit/:side/:chapter/:offer',
                 filter: `_type == "offer" && slug.current == $offer && bab->slug.current == $chapter && bab->sisi->kunci == $side && bab->sisi->unit->kunci == $unit`,
               },
@@ -249,6 +253,10 @@ export default projectId && dataset
                 resolve: () => ({
                   locations: [
                     { title: 'Beranda Arthur', href: previewPath('/') },
+                    {
+                      title: 'Tentang dan kontak',
+                      href: previewPath('/kontak'),
+                    },
                   ],
                 }),
               }),

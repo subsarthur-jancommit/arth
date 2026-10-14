@@ -18,12 +18,12 @@ Prompting_. Prosedur per PR mengikat di
 
 ## Keputusan pemilik yang berlaku
 
-| Keputusan          | Isi                                                                                                                                                                                                  |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| K1, K2             | Bahasa bawaan Indonesia, `/` → `/id`, Inggris menyusul, `/en` tanpa terjemahan 307 → `/id`                                                                                                           |
-| K3, K4, K6, K7, K8 | Berlaku sementara pada bawaannya; tidak memblokir                                                                                                                                                    |
-| **K5**             | **Belum diputuskan.** Email/alamat contoh hanya dummy; kanal nyata dan waktu balas belum dipilih. F2-01 hanya menyiapkan skema/fallback ber-NOTE; hentikan F3-09/F5-06 bila membutuhkan kanal nyata. |
-| K9                 | Belum diputuskan; jatuh tempo sebelum noindex dilepas di F5-05                                                                                                                                       |
+| Keputusan          | Isi                                                                                                                                                                                                                         |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| K1, K2             | Bahasa bawaan Indonesia, `/` → `/id`, Inggris menyusul, `/en` tanpa terjemahan 307 → `/id`                                                                                                                                  |
+| K3, K4, K6, K7, K8 | Berlaku sementara pada bawaannya; tidak memblokir                                                                                                                                                                           |
+| **K5**             | **Belum diputuskan.** Email/alamat contoh hanya dummy; kanal nyata dan waktu balas belum dipilih. Struktur F3-09 boleh ditinjau dengan dummy ber-NOTE, tetapi aktivasi kanal dan F5-06 tetap berhenti sampai K5 diputuskan. |
+| K9                 | Belum diputuskan; jatuh tempo sebelum noindex dilepas di F5-05                                                                                                                                                              |
 
 Urutan paket pertama diubah pemilik dari dokumen Tahap 2: **F0-01 lebih dulu,
 baru F0-07**, karena `robots.txt` produksi sedang mengizinkan semua perayap AI
@@ -60,7 +60,7 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 | F3-06 Halaman jaringan                      | —   | —         | **Dalam branch** | Tiga jalur, cara kerja, alur uang empat langkah, asal komisi, larangan, syarat, dan gerbang pendaftaran sudah selesai; tautan bab baru muncul setelah 3–7 offer jalurnya disetujui, dan pendaftaran ditahan sampai kartu komisi siap (U35)            |
 | F3-07 Satu klien, tiga unit                 | —   | —         | **Dalam branch** | Situasi, tiga langkah unit, offer per langkah, keterangan kemungkinan, CTA, serta momen `splice` lalu `level` sudah selesai; production belum memiliki dokumen `sequence`, jadi rute publik tetap pada tampilan tidak ditemukan dan noindex (U36)     |
 | F3-08 Cara kami bekerja                     | —   | —         | **Dalam branch** | Template membaca hanya `howWeWork` yang disetujui untuk publik dan membuka draft `perlu-anda` hanya di draft mode; janji dicap satu kali saat dibaca, hak milik/komisi/batas memakai garis tegak, wilayah diukur, tanpa testimoni; e2e dilewati (U29) |
-| F3-09 Tentang dan kontak                    | —   | —         | Menunggu K5      | Kanal nyata, waktu balas, dan alamat belum diputuskan; dummy tidak boleh dipromosikan sebagai kontak                                                                                                                                                  |
+| F3-09 Tentang dan kontak                    | —   | —         | **Dalam branch** | Rute tetap, pernyataan pemilik bersyarat, tiga wilayah, ledger kontak, navigasi, pencarian, dan Presentation sudah selesai; dummy tetap teks ber-NOTE tanpa aksi dan halaman noindex sampai K5 serta fakta nyata tersedia (U37)                       |
 | F3-10 Kebijakan                             | —   | —         | Belum mulai      | Draf membutuhkan tinjauan ahli hukum sebelum noindex dapat dilepas                                                                                                                                                                                    |
 | F3-11 Penjaga saat render                   | —   | —         | **Dalam branch** | Penjaga menahan siteSettings, unit, sisi, bab, dan offer dengan placeholder dari HTML serta metadata; build/check menolak literal placeholder di luar fallback dan validator yang ditinjau                                                            |
 | F3-12 Uji rute dinamis dan ponsel           | —   | —         | Ditunda          | Bergantung F2-09 dan dilarang selama semua e2e—lokal maupun GitHub Actions—dihindari atas instruksi pemilik                                                                                                                                           |
@@ -549,3 +549,22 @@ Components dokumen ini berstatus HTTP 200 setelah shell statis terkirim—trade
 yang sudah dicatat untuk 404 dalam-chrome—sehingga catatan ini tidak mengklaim
 status HTTP 404. Tidak ada isi Sanity ditulis atau diterbitkan. Playwright/e2e
 tidak dijalankan sesuai instruksi pemilik.
+
+**U37 — halaman Tentang dan kontak selesai secara struktur tanpa memutuskan
+K5 secara diam-diam.** F3-09 menambahkan rute tetap `/id/kontak`, memindahkan
+tautan header dari jangkar beranda ke rute itu, lalu menyelaraskan daftar rute,
+pencarian, penjaga 404, tebakan `/contact`, dan Presentation Studio. Query
+publik hanya membaca `siteSettings` berstatus `disetujui`; draft mode memakai
+query terpisah, dan keduanya memproyeksikan hanya pernyataan, wilayah, kanal,
+alamat, akun resmi, dan metadata yang dibutuhkan pembaca. Batas Zod serta
+penjaga placeholder menahan dokumen rusak, tautan sosial berskema tidak aman,
+nomor WhatsApp tidak sah, dan penanda editorial. Pengukuran dataset production
+pada 14 Oktober 2026 menemukan satu draft `siteSettings`: nama Arthur serta
+Subang, Purwakarta, dan Bandung sudah ada; pernyataan pemilik, WhatsApp, waktu
+balas, akun resmi, dan metadata masih kosong; email dan alamat masih dummy yang
+diizinkan. Karena itu email dummy dan alamat contoh tampil sebagai teks
+ber-NOTE, tidak menjadi `mailto:`, tombol salin, lokasi nyata, atau janji bahwa
+kontak telah dibuka. Halaman tetap `noindex`; formulir tidak dibuat, sehingga
+tidak ada route handler, env, atau permukaan penyimpanan data baru yang
+memerlukan tinjauan keamanan F5-06. Tidak ada isi Sanity ditulis atau
+diterbitkan. Playwright/e2e tidak dijalankan sesuai instruksi pemilik.

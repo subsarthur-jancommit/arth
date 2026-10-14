@@ -58,7 +58,7 @@ describe('page entries', () => {
   test('the Arthur destinations are present without promoting hidden indexes', () => {
     const paths = pageEntries('id').map((entry) => entry.href)
     expect(paths).toContain('/id/cara-kerja')
-    expect(paths).toContain('/id/#contact')
+    expect(paths).toContain('/id/kontak')
     for (const unit of UNITS) expect(paths).toContain(`/id/${unit}`)
     expect(paths).not.toContain('/id/work')
     expect(paths).not.toContain('/id/journal')
@@ -68,8 +68,7 @@ describe('page entries', () => {
     for (const locale of ['en', 'id'] as const) {
       for (const entry of pageEntries(locale)) {
         expect(entry.label.trim()).not.toBe('')
-        if (entry.id !== 'page:contact')
-          expect(entry.description.trim()).not.toBe('')
+        expect(entry.description.trim()).not.toBe('')
         expect(entry.href).toStartWith(`/${locale}`)
       }
     }

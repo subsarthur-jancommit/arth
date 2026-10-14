@@ -955,7 +955,21 @@ is available. `CLAUDE.md`'s hard reader protections continue to apply.
 | Reduced motion       | The stamp is already visible.                                                                    |
 | Verification planned | Reduced-motion state on the How we work page.                                                    |
 
-### 13.7 Situasi menunjuk unit — situation points to a unit (F3-01)
+### 13.7 Alamat nyata disalin — real address copied (F3-09)
+
+| Field                | Specification                                                                                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data-epic`          | `address-copy`, inherited from the shared copy control.                                                                                                             |
+| Trigger              | The reader copies a real, active email address.                                                                                                                     |
+| Sequence and timing  | The copy result receives the existing 350 ms `stamp`; the surrounding About and Contact page uses only the ordinary reveal contract.                                |
+| Pinning              | None.                                                                                                                                                               |
+| Touch                | Same button and status result.                                                                                                                                      |
+| Without JavaScript   | The real address remains a selectable link; the copy control is absent.                                                                                             |
+| Reduced motion       | The copied state appears immediately.                                                                                                                               |
+| Content boundary     | A reserved-domain email or example street address is plain review text with a NOTE, never a link or copy action. No contact form exists before the security review. |
+| Verification planned | Desktop and 390 px visual state; keyboard and copy behavior when a real channel is supplied and e2e is next explicitly authorised.                                  |
+
+### 13.8 Situasi menunjuk unit — situation points to a unit (F3-01)
 
 | Field                | Specification                                                                                                                               |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -967,7 +981,7 @@ is available. `CLAUDE.md`'s hard reader protections continue to apply.
 | Reduced motion       | Do not draw the line; keep the destination unit named in text.                                                                              |
 | Verification planned | `keyboard-focus`; the interaction-grammar report checks keyboard INTENT.                                                                    |
 
-### 13.8 Masuk lebih dalam ke set — enter deeper into the set (F4-03)
+### 13.9 Masuk lebih dalam ke set — enter deeper into the set (F4-03)
 
 | Field                | Specification                                                                                                                                                                      |
 | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -980,7 +994,7 @@ is available. `CLAUDE.md`'s hard reader protections continue to apply.
 | Reduced motion       | The page changes without a transition.                                                                                                                                             |
 | Verification planned | Keep `instant-navigation` and `navigation-landing` green; add coverage for Back and double activation when this is implemented.                                                    |
 
-### 13.9 Navigation precedence
+### 13.10 Navigation precedence
 
 One activation starts exactly one transition. When more than one could apply,
 use this precedence. Card 7 replaces the legacy per-route `work-transport`

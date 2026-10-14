@@ -34,6 +34,8 @@ interface EngagementEnquiryProps {
   label: string
   /** Shown when the destination address is still a reserved dummy value. */
   note?: string | undefined
+  /** Keep a reserved dummy destination visible for review but never actionable. */
+  isPlaceholder?: boolean | undefined
   className?: string | undefined
 }
 
@@ -41,19 +43,26 @@ export function EngagementEnquiry({
   href,
   label,
   note,
+  isPlaceholder = false,
   className,
 }: EngagementEnquiryProps) {
   return (
     <div className={cn(s.enquiry, className)}>
       <p>
-        <Link
-          href={href}
-          className={cn('p-big', s.link)}
-          data-press="email"
-          data-intent=""
-        >
-          {label}
-        </Link>
+        {isPlaceholder ? (
+          <span className={cn('p-big', s.link)} data-placeholder-note>
+            {label}
+          </span>
+        ) : (
+          <Link
+            href={href}
+            className={cn('p-big', s.link)}
+            data-press="email"
+            data-intent=""
+          >
+            {label}
+          </Link>
+        )}
       </p>
       {note && (
         <p data-placeholder-note className="caption">

@@ -30,16 +30,14 @@ describe('guessed paths', () => {
 
   it('sends every locale to its own copy of the destination', () => {
     for (const locale of routing.locales) {
-      expect(guessedDestination(`/${locale}/contact`)).toBe(
-        `/${locale}#contact`
-      )
+      expect(guessedDestination(`/${locale}/contact`)).toBe(`/${locale}/kontak`)
       expect(guessedDestination(`/${locale}/karya`)).toBe(`/${locale}/work`)
     }
   })
 
-  it('answers to both spellings of a label', () => {
-    expect(guessedDestination('/id/kontak')).toBe('/id#contact')
-    expect(guessedDestination('/en/contact')).toBe('/en#contact')
+  it('redirects the English label and leaves the real route alone', () => {
+    expect(guessedDestination('/id/kontak')).toBeNull()
+    expect(guessedDestination('/en/contact')).toBe('/en/kontak')
   })
 
   /*
@@ -64,6 +62,7 @@ describe('guessed paths', () => {
     // The catalogue, which a redirect would send to itself.
     expect(guessedDestination('/en/work')).toBeNull()
     expect(guessedDestination('/id/work')).toBeNull()
+    expect(guessedDestination('/id/kontak')).toBeNull()
     // The machine view.
     expect(guessedDestination('/en/studio')).toBeNull()
     expect(guessedDestination('/en/cara-kerja')).toBeNull()

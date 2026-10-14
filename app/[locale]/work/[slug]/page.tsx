@@ -702,6 +702,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             <EngagementEnquiry
               href={enquiry}
               label={t('enquiryLabel')}
+              isPlaceholder={contact.emailIsPlaceholder}
               {...(contact.emailIsPlaceholder && {
                 note: t('contactPlaceholderNote'),
               })}

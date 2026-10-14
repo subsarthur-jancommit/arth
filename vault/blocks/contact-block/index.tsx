@@ -41,6 +41,7 @@ interface ContactBlockProps {
   eyebrow: ReactNode
   title: ReactNode
   email: string
+  emailIsPlaceholder?: boolean | undefined
   address: string
   addressHeading: ReactNode
   addressNote?: ReactNode | undefined
@@ -81,6 +82,7 @@ export function ContactBlock({
   eyebrow,
   title,
   email,
+  emailIsPlaceholder = false,
   address,
   addressHeading,
   addressNote,
@@ -131,20 +133,32 @@ export function ContactBlock({
             without claiming either. It moves the wrapper, not the noun, so
             the 150ms COMMIT band is untouched.
           */}
-          <Magnetic>
-            <Link
-              href={`mailto:${email}`}
-              aria-label={emailLabel}
+          {emailIsPlaceholder ? (
+            <span
               className={cn('h2', s.email)}
               style={emailStyle}
-              // `MOTION-SPEC.md` §9.
-              data-press="email"
-              data-intent=""
+              data-placeholder-note
             >
               {email}
-            </Link>
-          </Magnetic>
-          {copy && <CopyAddress address={email} {...copy} />}
+            </span>
+          ) : (
+            <Magnetic>
+              <Link
+                href={`mailto:${email}`}
+                aria-label={emailLabel}
+                className={cn('h2', s.email)}
+                style={emailStyle}
+                // `MOTION-SPEC.md` §9.
+                data-press="email"
+                data-intent=""
+              >
+                {email}
+              </Link>
+            </Magnetic>
+          )}
+          {!emailIsPlaceholder && copy && (
+            <CopyAddress address={email} {...copy} />
+          )}
 
           {note && (
             <p data-placeholder-note className={cn('caption', s.note)}>

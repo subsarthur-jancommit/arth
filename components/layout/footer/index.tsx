@@ -161,13 +161,13 @@ export function Footer() {
       <div className={s.columns}>
         <section className={s.column}>
           <h2 className={cn('caption', s.heading)}>{t('contact')}</h2>
-          <Link
-            href={`mailto:${EMAIL}`}
+          <span
             className={cn('p-big', s.email)}
             style={EMAIL_STYLE}
+            data-placeholder-note
           >
             {EMAIL}
-          </Link>
+          </span>
           <p data-placeholder-note className={cn('caption', s.note)}>
             {t('contactPlaceholderNote')}
           </p>

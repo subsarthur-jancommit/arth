@@ -18,6 +18,8 @@ import { describe, expect, it } from 'bun:test'
 import { routing } from '@/lib/i18n/routing'
 
 import {
+  contactPagePreviewQuery,
+  contactPageQuery,
   chapterPageQuery,
   chapterPagePreviewQuery,
   featuredProjectsQuery,
@@ -38,6 +40,8 @@ import {
 
 /** Every query that projects a localized field. */
 const LOCALIZED_QUERIES = {
+  contactPagePreviewQuery,
+  contactPageQuery,
   chapterPageQuery,
   howWeWorkQuery,
   howWeWorkPreviewQuery,
@@ -284,5 +288,21 @@ describe('site settings cutover', () => {
     expect(siteSettingsQuery).toContain(
       '"rangkaianPilihan": rangkaianPilihan->{ _id }'
     )
+  })
+
+  it('keeps the contact page public and draft paths separate', () => {
+    expect(contactPageQuery).toContain(
+      '_type == "siteSettings" && statusTinjauan == "disetujui"'
+    )
+    expect(contactPagePreviewQuery).not.toContain('statusTinjauan')
+
+    for (const query of [contactPageQuery, contactPagePreviewQuery]) {
+      expect(query).toContain('pernyataanPemilik')
+      expect(query).toContain('kanal.whatsapp')
+      expect(query).toContain('kanal.waktuBalas')
+      expect(query).toContain('"regions": wilayah[]')
+      expect(query).not.toContain('jejakSumber')
+      expect(query).not.toContain('ditulisOleh')
+    }
   })
 })

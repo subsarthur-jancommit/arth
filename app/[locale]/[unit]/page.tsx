@@ -8,7 +8,6 @@ import { Wrapper } from '@/components/layout/wrapper'
 import { Link } from '@/components/ui/link'
 import { SectionHeader } from '@/components/ui/section-header'
 import { unitContent, type UnitContent } from '@/lib/content/arthur-content'
-import { FALLBACK_CONTACT } from '@/lib/content/home-fallback'
 import { UNIT_FALLBACKS } from '@/lib/content/unit-fallback'
 import {
   isSideOf,
@@ -219,13 +218,13 @@ export default async function UnitPage({ params }: UnitPageProps) {
           <p data-reveal-item className="p-big">
             {action.sesudahnya}
           </p>
-          <Link
+          <p
             data-reveal-item
-            href={`mailto:${FALLBACK_CONTACT.email}`}
+            data-placeholder-note
             className={cn('caption', s.actionLink)}
           >
             {t('ctaLink')}
-          </Link>
+          </p>
           <p data-reveal-item className={cn('caption', s.note)}>
             {t('dummyContactNote')}
           </p>

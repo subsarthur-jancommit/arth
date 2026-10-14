@@ -277,6 +277,7 @@ export default async function Home() {
           eyebrow={t('actionEyebrow')}
           title={`${actionLabel} ${actionAfter}`}
           email={content.email}
+          emailIsPlaceholder={content.fallbacks.email}
           address={content.address}
           addressHeading={t('addressHeading')}
           addressIsPlaceholder={content.fallbacks.address}

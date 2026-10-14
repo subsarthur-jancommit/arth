@@ -117,17 +117,7 @@ export function pageEntries(locale: Locale): SearchEntry[] {
     }
   })
 
-  return [
-    ...pages,
-    {
-      id: 'page:contact',
-      kind: 'page',
-      label: locale === 'id' ? 'Kontak' : 'Contact',
-      description: '',
-      href: localizedPath(locale, '/#contact'),
-      meta: null,
-    },
-  ]
+  return pages
 }
 
 export function projectEntries(

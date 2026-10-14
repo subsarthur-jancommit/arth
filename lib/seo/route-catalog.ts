@@ -153,6 +153,16 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
     changeFrequency: 'monthly',
     priority: 0.7,
   },
+  {
+    path: '/kontak',
+    label: { en: 'About and contact', id: 'Tentang dan kontak' },
+    description: {
+      en: "Arthur's structure, confirmed service area, and current contact status.",
+      id: 'Struktur Arthur, wilayah kerja yang sudah dikonfirmasi, dan status kontaknya saat ini.',
+    },
+    changeFrequency: 'monthly',
+    priority: 0.6,
+  },
   /*
    * One entry per unit, followed by its two side routes. A sitemap only
    * advertises the sides now that F1-04 gives each one a page that answers.

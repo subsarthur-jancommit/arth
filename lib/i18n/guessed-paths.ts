@@ -20,7 +20,7 @@ import { isLocale } from './routing'
  * | ------------------ | ------------- |
  * | `/en/contact`      | 404           |
  * | `/en/practice`     | 404           |
- * | `/id/kontak`       | 404           |
+ * | `/id/kontak`       | 404 (sebelum F3-09) |
  * | `/id/praktik`      | 404           |
  * | `/id/karya`        | 404           |
  *
@@ -41,6 +41,9 @@ import { isLocale } from './routing'
  * `/cara-kerja`; both it and the destination are in `REAL_SEGMENTS` below so
  * the guess table can never shadow either route.
  *
+ * `kontak` is now a real fixed page. The English label remains a guess that
+ * redirects to that page instead of the old home-page anchor.
+ *
  * `practice` and `praktik` were here, pointing at a `#practice` anchor. They
  * are gone as of F1-03: the practice routes are retired, so `/en/practice`
  * now answers `410 Gone` from `lib/seo/route-status.ts` — a real status with
@@ -60,9 +63,8 @@ import { isLocale } from './routing'
  * here first.
  */
 const GUESSED_SEGMENTS = new Map([
-  // Home-page anchors, in both spellings of each label.
-  ['contact', '#contact'],
-  ['kontak', '#contact'],
+  // English label for the Indonesian canonical route segment.
+  ['contact', '/kontak'],
   /*
    * The catalogue, which is `/work` in both locales. `karya` is the label an
    * Indonesian reader sees, so it is the one they type; the English spelling
@@ -92,6 +94,7 @@ const GUESSED_SEGMENTS = new Map([
 export const REAL_SEGMENTS = new Set([
   ...UNITS,
   'cara-kerja',
+  'kontak',
   'studio',
   'work',
   'journal',

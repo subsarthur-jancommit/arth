@@ -37,6 +37,8 @@ describe('sanity.config.ts locale wiring', () => {
     for (const route of [
       '/:locale/halaman/:slug',
       '/:locale/work/:slug',
+      '/:locale/kontak',
+      '/:locale/satu-klien-tiga-unit',
       '/:locale/:unit',
       '/:locale/:unit/:side',
       '/:locale/:unit/:side/:chapter',
@@ -135,5 +137,7 @@ describe('sanity.config.ts singleton structure', () => {
     ]) {
       expect(source).toContain(`${type}: defineLocations`)
     }
+
+    expect(source).toContain("href: previewPath('/kontak')")
   })
 })

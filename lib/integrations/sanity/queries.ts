@@ -363,6 +363,49 @@ export const siteSettingsPreviewQuery = defineQuery(`
   }
 `)
 
+const contactPageFields = `
+  _id,
+  name,
+  "statement": coalesce(
+    pernyataanPemilik[_key == $locale][0].value,
+    pernyataanPemilik[_key == "id"][0].value
+  ),
+  "regions": wilayah[]{
+    _key,
+    "name": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value)
+  },
+  "address": coalesce(alamat[_key == $locale][0].value, alamat[_key == "id"][0].value),
+  "channel": {
+    "email": kanal.email,
+    "whatsapp": kanal.whatsapp,
+    "responseTime": coalesce(
+      kanal.waktuBalas[_key == $locale][0].value,
+      kanal.waktuBalas[_key == "id"][0].value
+    )
+  },
+  "socials": akunSosial[]{ _key, label, url },
+  "metadata": {
+    "title": metadata.title,
+    "description": metadata.description,
+    "keywords": metadata.keywords,
+    "noIndex": metadata.noIndex
+  }
+`
+
+/** Approved Arthur facts for the fixed About and Contact route. */
+export const contactPageQuery = defineQuery(`
+  *[_type == "siteSettings" && statusTinjauan == "disetujui"][0] {
+    ${contactPageFields}
+  }
+`)
+
+/** Authenticated draft-mode counterpart to `contactPageQuery`. */
+export const contactPagePreviewQuery = defineQuery(`
+  *[_type == "siteSettings"][0] {
+    ${contactPageFields}
+  }
+`)
+
 const homeUnitFields = `
   _id,
   kunci,

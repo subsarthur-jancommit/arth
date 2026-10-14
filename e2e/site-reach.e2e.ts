@@ -47,13 +47,12 @@ import { FEATURED_WORK } from './fixtures'
 /*
  * `/en/practice` and `/id/praktik` were rows here, landing on a `#practice`
  * anchor. They are gone with the practice routes: both now answer `410 Gone`,
- * which `e2e/route-status.e2e.ts` asserts. A 308 to the home page would have
- * claimed the subject moved there, and it did not — Arthur's three units are
- * not the three practices renamed.
+ * which `e2e/route-status.e2e.ts` asserts. `/id/kontak` also left this table in
+ * F3-09 because it is now a first-class page; only the English label remains
+ * a guess and it stays inside the requested locale.
  */
 const GUESSED: [typed: string, lands: string][] = [
-  ['/en/contact', '/id#contact'],
-  ['/id/kontak', '/id#contact'],
+  ['/en/contact', '/en/kontak'],
   ['/id/karya', '/id/work'],
 ]
 

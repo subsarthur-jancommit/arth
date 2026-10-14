@@ -128,7 +128,7 @@ const UNIT_LINKS = UNITS.map((unit) => ({
 const ROUTE_LINKS = [
   ...UNIT_LINKS.map((link) => ({ ...link, kind: 'unit' as const })),
   { href: '/cara-kerja', labelKey: 'studio', kind: 'nav' as const },
-  { href: '/#contact', labelKey: 'contact', kind: 'nav' as const },
+  { href: '/kontak', labelKey: 'contact', kind: 'nav' as const },
 ] as const
 
 /**
