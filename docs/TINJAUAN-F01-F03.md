@@ -46,7 +46,7 @@ yang menentukan langkah berikut, bukan laporan lokal.
 | B8  | Teks terbesar sesudah judul hero adalah alamat dummy `kontak@arth.invalid` dalam ukuran display                                                                                                                                                                                                          | Tangkapan layar beranda                                          |
 
 **Ditindak di commit ini:** B4. Indeks hero kembali, diisi label tiga pintu
-unit. B1–B3 dan B5–B8 butuh arah dari pemilik (lihat bagian E).
+unit. B1–B3 dan B5–B8 butuh arah dari pemilik (lihat bagian F).
 
 ## C. Bahasa ID/EN
 
@@ -67,12 +67,71 @@ unit. B1–B3 dan B5–B8 butuh arah dari pemilik (lihat bagian E).
 | D5  | Kartu offer berganti latar saat disorot tanpa transisi, sedangkan pintu unit punya transisi. Satu situs, dua perilaku kartu                                                                                                 | CSS kedua blok                           |
 | D6  | Ukuran ditulis `calc(n / 375 * 100vw)` mentah di blok baru, sedangkan blok lain memakai `mobile-vw()` / `desktop-vw()`. Bukan pelanggaran sejak fork, tetapi menyulitkan penyelarasan                                       | CSS blok baru                            |
 
-## E. Yang perlu diputuskan pemilik
+## E. Inventaris fitur yang hilang, per halaman
+
+Diukur 15 Oktober 2026 dengan satu Chromium headless pada 1440 × 900:
+produksi (`main`, `098893b`) dibanding build lokal branch (`5f7ab7e`). Angka
+"momen" adalah jumlah `data-epic` unik di DOM setelah halaman digulir sampai
+akhir. Penggolongan:
+
+- **Hilang**: ada di `main`, tidak ada di branch, tidak ada penggantinya.
+- **Diganti**: ada padanan Arthur yang benar-benar tampil.
+- **Sengaja**: dicabut sesuai rencana atau keputusan K yang tercatat.
+- **Bug**: perilaku yang tidak diminta rencana mana pun.
+
+### E1. Beranda `/id`
+
+| No.  | Fitur di `main`                                                                  | Keadaan di branch                                                                                                                       | Golongan                 |
+| ---- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| E1.1 | Indeks unit di kolom kanan hero                                                  | Dicabut; dikembalikan di `98c90fe`                                                                                                      | Hilang, sudah dipulihkan |
+| E1.2 | Lintasan `arth-passage` yang di-pin: grid menajam, pelat bernomor 01/04 berjalan | Tidak ada. Nama `arth-passage` dipakai untuk deret pintu unit yang hanya bergeser ke samping, tanpa pelat                               | Hilang                   |
+| E1.3 | Grid karya dengan material WebGL dan flowmap (`card-crop`, `work-transport`)     | Dicabut. Rencana memang melarang foto fixture di halaman Arthur, tetapi tidak ada pelat pengganti, dan WebGL serta flowmap tetap dimuat | Sengaja, tanpa pengganti |
+| E1.4 | Daftar praktik yang berubah bentuk ke halamannya                                 | Pintu unit dengan morph nama unit ke halaman unit (`practice-morph` tampil di `/id/konstruksi`)                                         | Diganti                  |
+| E1.5 | `LatestWriting` dengan paku sudut (`latest-writing`)                             | Dicabut; jurnal tidak dipromosikan (F1-06)                                                                                              | Sengaja                  |
+| E1.6 | Potret studio di blok pernyataan                                                 | `StudioNote` tinggal teks                                                                                                               | Hilang                   |
+| E1.7 | Salin alamat surel (`address-copy`)                                              | Dicabut karena surel masih dummy (K5)                                                                                                   | Sengaja                  |
+| E1.8 | Pilih situasi                                                                    | Baru (`situation-leader`), tetapi isinya tiga kalimat yang mengulang pernyataan payung (B7)                                             | Baru, isi lemah          |
+| E1.9 | Jumlah keseluruhan                                                               | Tinggi 11.744 → 5.354 px; gambar di `main` 9 → 0; momen 11 → 6                                                                          | —                        |
+
+### E2. Bingkai situs (header, footer, bahasa)
+
+| No.  | Fitur di `main`                                         | Keadaan di branch                                                                                                            | Golongan                                 |
+| ---- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| E2.1 | Pengalih EN/ID di header semua halaman (`locale-sheet`) | Tidak tampil di halaman `/id` mana pun                                                                                       | Sengaja (K2), menunggu keputusan pemilik |
+| E2.2 | `/en` dan seluruh `/en/*` berbahasa Inggris             | `/en` dialihkan ke `/id`; `/en/*` lainnya tampil dengan antarmuka Inggris dan isi Indonesia (C2)                             | Bug                                      |
+| E2.3 | Navigasi Karya, Studio, Jurnal                          | Konstruksi, Teknologi, Peekabo, Cara kami bekerja, Kontak (F1-06). Tautan "Cara kami bekerja" mendarat di halaman 404 (E3.1) | Diganti, satu tautan rusak               |
+| E2.4 | Footer: surel bertaut, Instagram, Are.na                | Surel tanpa tautan (dummy), akun sosial dicabut karena fiktif                                                                | Sengaja                                  |
+| E2.5 | Cap build di footer (`build-stamp`)                     | Tidak tampil di build lokal karena SHA Vercel tidak ada. Tidak bisa dipastikan dari sesi ini                                 | Belum terverifikasi                      |
+
+### E3. Studio menjadi Cara kami bekerja, dan halaman tetap lain
+
+| No.  | Fitur di `main`                                                                                                                                                                                           | Keadaan di branch                                                                                                                                                                                                                         | Golongan                          |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| E3.1 | `/id/studio`: 6.136 px, 3 gambar, 11 momen (`studio-statement`, `capability-evidence`, `work-measure`, `studio-process`, `engagement-shapes`, `section-link`, `card-crop`, `work-transport`, dan lainnya) | `/id/studio` 308 ke `/id/cara-kerja`, yang **menampilkan halaman 404 dengan HTTP 200** (soft-404) karena dokumen `howWeWork` baru draft. Blok baru (janji dicap, dimensi, unting-unting) ada di kode tetapi tidak pernah tampil ke publik | Bug                               |
+| E3.2 | Tidak ada                                                                                                                                                                                                 | `/id/satu-klien-tiga-unit` juga soft-404 dengan HTTP 200 karena belum ada `sequence` terbit                                                                                                                                               | Bug                               |
+| E3.3 | Blok `capability-evidence`, `engagement-shapes`, `work-measure`, `project-card`, `passage`, `practice-list`, `latest-writing`                                                                             | Ketujuh blok vault itu tidak lagi dipakai halaman mana pun                                                                                                                                                                                | Hilang dari situs, kode masih ada |
+
+### E4. Unit dan sisi
+
+| No.  | Fitur                                                                       | Keadaan di branch                                                                                                                                                                                                                                          | Golongan     |
+| ---- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| E4.1 | Halaman unit di `main` hanya kerangka contoh F1-03 (1.130 px, 0 momen)      | Lebih lengkap: hero unit, dua pintu sisi, masalah, cara kerja, unit berikutnya (3 momen). Tetapi ada pita kosong sekitar 450 px dan tanpa visual (D4)                                                                                                      | Bertambah    |
+| E4.2 | Halaman sisi (baru di F1-04)                                                | Pita kosong sekitar 800 px di atas judul; empat cara membeli dicetak sebagai judul raksasa di kolom sempit, tiap butir tujuh sampai sembilan baris, dengan tanda pisah panjang yang dilarang Suara dan gaya aturan 9; tabel bab menampilkan keadaan kosong | Layout rusak |
+| E4.3 | Dialek gerak per unit (Konstruksi berat, Teknologi beruntun, Peekabo hidup) | Belum ada; memang dijadwalkan F4-02                                                                                                                                                                                                                        | Sengaja      |
+
+### E5. Yang tidak berubah
+
+`/id/work` dan `/id/journal` tetap utuh (tinggi, gambar, dan momennya sama
+dengan `main`), hanya tanpa pengalih bahasa, sesuai F1-06 yang
+menyimpannya di luar navigasi.
+
+## F. Yang perlu diputuskan pemilik
 
 1. **Bahasa.** Kembalikan ID/EN sekarang (perlu teks Inggris untuk beranda,
    unit, dan sisi, dan aturan suara Inggris di K2), atau tetap Indonesia saja
    dan alihkan seluruh `/en/*` ke `/id/*` sesuai K2. Keadaan sekarang (C2)
-   bukan salah satunya.
+   bukan salah satunya. Pemilik meminta ini ditahan sampai inventaris E
+   didefinisikan.
 2. **Visual beranda.** Usulan: pelat gambar kerja SVG per unit (F4-05) ditarik
    ke F3, lalu lintasan yang di-pin dikembalikan dengan pelat itu sebagai ganti
    foto dummy. Material WebGL bisa memakai pelat yang sama (rencana menyebut
@@ -81,7 +140,7 @@ unit. B1–B3 dan B5–B8 butuh arah dari pemilik (lihat bagian E).
    satu keluarga: tinggi mengikuti isi, satu tanda gambar kerja per kartu, grid
    yang tidak meninggalkan yatim untuk 3–7 kartu.
 
-## F. Yang sudah benar
+## G. Yang sudah benar
 
 Model isi Sanity, penjaga Zod dan placeholder, gerbang `disetujui` di jalur
 publik, pemisahan draft dan published, medan internal yang tidak
