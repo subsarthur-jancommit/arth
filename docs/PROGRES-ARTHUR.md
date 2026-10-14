@@ -56,7 +56,7 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 | F3-02 Template unit                         | —   | —         | **Dalam branch** | Susunan hero, dua pintu sisi, masalah pembeli, offer kondisional, cara kerja, jembatan kondisional, CTA, dan unit berikutnya sudah selesai; copy fallback identik dengan draft awal yang disetujui, dengan Sanity tetap menjadi sumber utama (U31)    |
 | F3-03 Template sisi                         | —   | —         | **Dalam branch** | Jalur pembelian, tabel bab semantik, crosshair/cover-preview, dan pertukaran lembar antarsisi sudah selesai; tabel jujur menampilkan keadaan kosong sampai bab punya tiga sampai tujuh offer yang disetujui (U32)                                     |
 | F3-04 Template bab dan kartu offer          | —   | —         | **Dalam branch** | Kutipan bab, tiga–tujuh kartu offer tanpa foto, batas, jembatan, ajakan, penyaring pasar Konstruksi, serta momen bekisting/FLIP sudah selesai; belum ada dokumen bab/offer untuk menampilkan rute nyata (U33)                                         |
-| F3-05 Template offer                        | —   | —         | **Dalam branch** | Rute offer memakai allowlist query dan penjaga placeholder; delapan blok, lembar cetak, dan momen batas dipaku belum selesai                                                                                                                          |
+| F3-05 Template offer                        | —   | —         | **Dalam branch** | Delapan blok offer, langkah tanpa pin, garis lingkup, batas dipaku, langkah pertama, jembatan aman, dan lembar cetak sudah selesai; belum ada dokumen offer untuk menampilkan rute nyata (U34)                                                        |
 | F3-06 Halaman jaringan                      | —   | —         | **Dalam branch** | Blok Jaringan membaca cara kerja, asal komisi, yang tidak ada, syarat, dan ajakan dari Peekabo › Jaringan; tiga jalur, alur uang empat langkah, gerak, dan keputusan tombol daftar belum diimplementasikan                                            |
 | F3-07 Satu klien, tiga unit                 | —   | —         | **Dalam branch** | Rute membaca rangkaian yang disetujui; momen sambungan dan copy editorialnya belum selesai                                                                                                                                                            |
 | F3-08 Cara kami bekerja                     | —   | —         | **Dalam branch** | Template membaca hanya `howWeWork` yang disetujui untuk publik dan membuka draft `perlu-anda` hanya di draft mode; janji dicap satu kali saat dibaca, hak milik/komisi/batas memakai garis tegak, wilayah diukur, tanpa testimoni; e2e dilewati (U29) |
@@ -496,4 +496,19 @@ reduced motion menyisakan hasil akhirnya. Saat implementasi ini dibuat,
 production tidak memiliki dokumen `bab` atau `offer`, sehingga rute nyata
 belum dapat ditinjau secara visual tanpa fixture atau draf bersumber. Query
 Sanity diuji baca-saja dan tidak ada isi ditulis atau
+diterbitkan. Playwright tidak dijalankan sesuai instruksi pemilik.
+
+**U34 — halaman offer adalah lembar kerja, bukan brosur.** F3-05 merender
+delapan blok tetap: judul dan dampak, pembaca, situasi, pekerjaan, serahan,
+batas, langkah pertama, lalu jembatan opsional. Judul dibatasi delapan kata
+pada gerbang render; langkah dan serahan harus lengkap dan tidak memakai pin.
+Garis dimensi menjelaskan rentang masalah sampai serahan, sedangkan empat
+tanda `offer-fixings` mengunci batas dalam urutan searah jarum jam. Tombol
+cetak memakai lembar browser dengan navigasi dan chrome situs disembunyikan.
+Query publik kini menuntut offer beserta bab, sisi, dan unit induknya berstatus
+`disetujui`; target jembatan juga harus mempunyai rantai induk yang disetujui.
+Query pratinjau draft dipisahkan dan kedua jalur hanya memproyeksikan medan
+pembaca. Saat paket ini dibuat production masih tidak memiliki dokumen
+`offer`, sehingga bentuk nyata belum dapat ditinjau tanpa fixture atau draf
+bersumber. Query production diuji baca-saja; tidak ada isi ditulis atau
 diterbitkan. Playwright tidak dijalankan sesuai instruksi pemilik.

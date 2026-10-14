@@ -724,9 +724,42 @@ export const chapterPagePreviewQuery = defineQuery(`
   }
 `)
 
-/** Published reader-facing content for one Arthur offer. */
-export const offerPageQuery = defineQuery(`
-  *[_type == "offer" && statusTinjauan == "disetujui" && slug.current == $slug && bab->slug.current == $chapter && bab->sisi->kunci == $side && bab->sisi->unit->kunci == $unit][0] {
+const offerBridgeFields = `
+  "offer": select(
+    jembatan.offer->statusTinjauan == "disetujui" &&
+    jembatan.offer->bab->statusTinjauan == "disetujui" &&
+    jembatan.offer->bab->sisi->statusTinjauan == "disetujui" &&
+    jembatan.offer->bab->sisi->unit->statusTinjauan == "disetujui" => jembatan.offer->{
+      "slug": slug.current,
+      "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+      "bab": bab->{
+        "slug": slug.current,
+        "side": sisi->{
+          kunci,
+          "unit": unit->kunci
+        }
+      }
+    }
+  ),
+  "kalimat": coalesce(jembatan.kalimat[_key == $locale][0].value, jembatan.kalimat[_key == "id"][0].value)
+`
+
+const offerBridgePreviewFields = `
+  "offer": jembatan.offer->{
+    "slug": slug.current,
+    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+    "bab": bab->{
+      "slug": slug.current,
+      "side": sisi->{
+        kunci,
+        "unit": unit->kunci
+      }
+    }
+  },
+  "kalimat": coalesce(jembatan.kalimat[_key == $locale][0].value, jembatan.kalimat[_key == "id"][0].value)
+`
+
+const offerReaderFields = `
     _id,
     "slug": slug.current,
     "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
@@ -745,17 +778,89 @@ export const offerPageQuery = defineQuery(`
     },
     "batas": coalesce(batas[_key == $locale][0].value, batas[_key == "id"][0].value),
     "langkahPertama": {
-      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value),
-      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value)
+      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value, bab->sisi->langkahPertama.label[_key == $locale][0].value, bab->sisi->langkahPertama.label[_key == "id"][0].value),
+      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value, bab->sisi->langkahPertama.sesudahnya[_key == $locale][0].value, bab->sisi->langkahPertama.sesudahnya[_key == "id"][0].value)
     },
     "jembatan": {
-      "offer": offer->{
-        "slug": slug.current,
-        "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value)
-      },
-      "kalimat": coalesce(jembatan.kalimat[_key == $locale][0].value, jembatan.kalimat[_key == "id"][0].value)
+      ${offerBridgeFields}
     },
-    metadata
+    "metadata": {
+      "title": metadata.title,
+      "description": metadata.description,
+      "noIndex": metadata.noIndex
+    }
+`
+
+/** Published reader-facing content for one Arthur offer. */
+export const offerPageQuery = defineQuery(`
+  *[
+    _type == "offer" &&
+    statusTinjauan == "disetujui" &&
+    slug.current == $slug &&
+    bab._ref in *[
+      _type == "bab" &&
+      statusTinjauan == "disetujui" &&
+      slug.current == $chapter &&
+      sisi._ref in *[
+        _type == "side" &&
+        statusTinjauan == "disetujui" &&
+        kunci == $side &&
+        unit._ref in *[
+          _type == "unit" &&
+          statusTinjauan == "disetujui" &&
+          kunci == $unit
+        ]._id
+      ]._id
+    ]._id
+  ][0] {
+    ${offerReaderFields}
+  }
+`)
+
+/** Draft-mode counterpart used only by the protected Presentation preview. */
+export const offerPagePreviewQuery = defineQuery(`
+  *[
+    _type == "offer" &&
+    slug.current == $slug &&
+    bab._ref in *[
+      _type == "bab" &&
+      slug.current == $chapter &&
+      sisi._ref in *[
+        _type == "side" &&
+        kunci == $side &&
+        unit._ref in *[_type == "unit" && kunci == $unit]._id
+      ]._id
+    ]._id
+  ][0] {
+    _id,
+    "slug": slug.current,
+    "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+    "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),
+    "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),
+    "jenis": coalesce(jenis[_key == $locale][0].value, jenis[_key == "id"][0].value),
+    pasar,
+    "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
+    "langkah": langkah[]{
+      _key,
+      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
+    },
+    "serahan": serahan[]{
+      _key,
+      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
+    },
+    "batas": coalesce(batas[_key == $locale][0].value, batas[_key == "id"][0].value),
+    "langkahPertama": {
+      "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value, bab->sisi->langkahPertama.label[_key == $locale][0].value, bab->sisi->langkahPertama.label[_key == "id"][0].value),
+      "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value, bab->sisi->langkahPertama.sesudahnya[_key == $locale][0].value, bab->sisi->langkahPertama.sesudahnya[_key == "id"][0].value)
+    },
+    "jembatan": {
+      ${offerBridgePreviewFields}
+    },
+    "metadata": {
+      "title": metadata.title,
+      "description": metadata.description,
+      "noIndex": metadata.noIndex
+    }
   }
 `)
 

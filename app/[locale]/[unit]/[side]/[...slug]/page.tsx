@@ -22,10 +22,16 @@ import { sanityFetch } from '@/lib/integrations/sanity/live'
 import {
   chapterPageQuery,
   chapterPagePreviewQuery,
+  offerPagePreviewQuery,
   offerPageQuery,
 } from '@/lib/integrations/sanity/queries'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 import { ChapterOfferGrid } from '@/vault/blocks/chapter-offer-grid'
+import { OfferAudience } from '@/vault/blocks/offer-audience'
+import { OfferBoundaries } from '@/vault/blocks/offer-boundaries'
+import { OfferPrintControl } from '@/vault/blocks/offer-print-control'
+import { OfferScope } from '@/vault/blocks/offer-scope'
+import { TextReveal } from '@/vault/motion/text-reveal'
 
 import s from './page.module.css'
 // Bab dan offer datang dari dokumen Sanity, jadi nilainya tidak tersedia saat
@@ -74,14 +80,18 @@ const fetchChapter = async (
   })
 }
 
-const fetchOffer = async (values: Required<RouteValues>, locale: Locale) => {
+const fetchOffer = async (
+  values: Required<RouteValues>,
+  locale: Locale,
+  preview = false
+) => {
   'use cache'
 
   return sanityFetch({
-    query: offerPageQuery,
+    query: preview ? offerPagePreviewQuery : offerPageQuery,
     params: { locale, ...values },
-    perspective: 'published',
-    stega: false,
+    perspective: preview ? 'drafts' : 'published',
+    stega: preview,
   })
 }
 
@@ -226,24 +236,137 @@ function chapterBridges(data: ChapterReaderData) {
   })
 }
 
-function offerIsSafe(data: {
-  judul: string | null
-  dampak: string | null
-  untukSiapa: string | null
-  situasi: string | null
-  batas: string | null
-  langkah: { teks: string | null }[] | null
-  serahan: { teks: string | null }[] | null
-}): boolean {
+const offerReaderSchema = z.object({
+  _id: z.string(),
+  slug: z.string().nullable(),
+  judul: z.string().nullable(),
+  dampak: z.string().nullable(),
+  untukSiapa: z.string().nullable(),
+  jenis: z.string().nullable(),
+  pasar: z.enum(['keduanya', 'pemerintah', 'swasta']).nullable(),
+  situasi: z.string().nullable(),
+  langkah: z
+    .array(z.object({ _key: z.string(), teks: z.string().nullable() }))
+    .nullable(),
+  serahan: z
+    .array(z.object({ _key: z.string(), teks: z.string().nullable() }))
+    .nullable(),
+  batas: z.string().nullable(),
+  langkahPertama: z
+    .object({ label: z.string().nullable(), sesudahnya: z.string().nullable() })
+    .nullable(),
+  jembatan: z
+    .object({
+      kalimat: z.string().nullable(),
+      offer: z
+        .object({
+          slug: z.string().nullable(),
+          judul: z.string().nullable(),
+          bab: z
+            .object({
+              slug: z.string().nullable(),
+              side: z
+                .object({
+                  kunci: z.string().nullable(),
+                  unit: z.string().nullable(),
+                })
+                .nullable(),
+            })
+            .nullable(),
+        })
+        .nullable(),
+    })
+    .nullable(),
+  metadata: z
+    .object({
+      title: z.string().nullable(),
+      description: z.string().nullable(),
+      noIndex: z.boolean().nullable(),
+    })
+    .nullable(),
+})
+
+type OfferReaderData = z.infer<typeof offerReaderSchema>
+
+function wordCount(value: string): number {
+  return value.trim().split(/\s+/u).filter(Boolean).length
+}
+
+function offerIsSafe(data: OfferReaderData): boolean {
+  const steps = data.langkah ?? []
+  const deliverables = data.serahan ?? []
+  const required = [
+    data.judul,
+    data.dampak,
+    data.untukSiapa,
+    data.jenis,
+    data.situasi,
+    data.batas,
+    data.langkahPertama?.label,
+    data.langkahPertama?.sesudahnya,
+  ]
+  const completeLists =
+    steps.length > 0 &&
+    deliverables.length > 0 &&
+    steps.every((item) => Boolean(item.teks?.trim())) &&
+    deliverables.every((item) => Boolean(item.teks?.trim()))
+
+  if (
+    !completeLists ||
+    required.some((value) => !value?.trim()) ||
+    !data.judul ||
+    wordCount(data.judul) > 8 ||
+    !data.slug
+  ) {
+    return false
+  }
+
   return canRenderPublicContent('offer', [
     data.judul,
     data.dampak,
     data.untukSiapa,
+    data.jenis,
     data.situasi,
     data.batas,
-    ...(data.langkah?.map((item) => item.teks) ?? []),
-    ...(data.serahan?.map((item) => item.teks) ?? []),
+    ...steps.map((item) => item.teks),
+    ...deliverables.map((item) => item.teks),
+    data.langkahPertama?.label,
+    data.langkahPertama?.sesudahnya,
+    data.jembatan?.kalimat,
+    data.metadata?.title,
+    data.metadata?.description,
   ])
+}
+
+function offerItems(items: { _key: string; teks: string | null }[] | null) {
+  return (items ?? []).flatMap((item) =>
+    item.teks ? [{ id: item._key, text: item.teks }] : []
+  )
+}
+
+function offerBridge(data: OfferReaderData) {
+  const target = data.jembatan?.offer
+  const chapter = target?.bab
+  const targetSide = chapter?.side
+  const targetUnit = targetSide?.unit ?? undefined
+  const targetSideKey = targetSide?.kunci ?? undefined
+
+  if (
+    !data.jembatan?.kalimat ||
+    !target?.slug ||
+    !target.judul ||
+    !chapter?.slug ||
+    !isUnit(targetUnit) ||
+    !isSideOf(targetUnit, targetSideKey)
+  ) {
+    return null
+  }
+
+  return {
+    text: data.jembatan.kalimat,
+    title: target.judul,
+    href: `/${targetUnit}/${targetSideKey}/${chapter.slug}/${target.slug}`,
+  }
 }
 
 /** Reader-facing chapter and offer routes below one validated side. */
@@ -332,7 +455,7 @@ export default async function ArthurDetailPage({
               <p className="caption">{t('firstStepEyebrow')}</p>
               <h2 className="h2">{chapterData.ajakan.label}</h2>
               <p className="p-big">{chapterData.ajakan.sesudahnya}</p>
-              <Link href="#contact" className={cn('caption', s.actionLink)}>
+              <Link href="/#contact" className={cn('caption', s.actionLink)}>
                 {t('firstStepLink')}
               </Link>
             </section>
@@ -362,55 +485,107 @@ export default async function ArthurDetailPage({
     )
   }
 
-  const { data } = await fetchOffer(values as Required<RouteValues>, locale)
-  if (!data || !offerIsSafe(data)) return <DetailNotFound />
+  const { isEnabled } = await draftMode()
+  const [t, { data }] = await Promise.all([
+    getTranslations('offer'),
+    fetchOffer(values as Required<RouteValues>, locale, isEnabled),
+  ])
+  const parsed = offerReaderSchema.safeParse(data)
+  if (!parsed.success || !offerIsSafe(parsed.data)) {
+    return <DetailNotFound />
+  }
+
+  const offerData = parsed.data
+  const steps = offerItems(offerData.langkah)
+  const deliverables = offerItems(offerData.serahan)
+  const bridge = offerBridge(offerData)
+  const chapterHref = `/${values.unit}/${values.side}/${values.chapter}`
 
   return (
     <Wrapper theme="light">
-      <article className="flex grow flex-col gap-gap dr-px-16 dr-py-32">
-        <header className="gap-2 flex flex-col">
-          <p className="caption">{data.jenis}</p>
-          <h1>{data.judul}</h1>
-          {data.dampak && <p className="p-big">{data.dampak}</p>}
+      <article className={cn(s.page, s.offerPage)} data-offer-sheet="">
+        <header className={cn(s.hero, s.offerHero)} data-epic="offer-arrival">
+          <p className="caption">
+            {t('eyebrow')} · {offerData.jenis}
+          </p>
+          <TextReveal
+            as="h1"
+            split="lines"
+            pace="epic"
+            className={s.offerTitle}
+          >
+            {offerData.judul ?? ''}
+          </TextReveal>
+          <p className={cn('p-big', s.impact)}>{offerData.dampak}</p>
         </header>
-        {data.untukSiapa && (
-          <section>
-            <h2 className="h3">Untuk siapa</h2>
-            <p className="p">{data.untukSiapa}</p>
+
+        <OfferAudience label={t('audienceEyebrow')} className={s.audience}>
+          {offerData.untukSiapa ?? ''}
+        </OfferAudience>
+
+        <section className={s.situation}>
+          <h2 className="caption">{t('situationEyebrow')}</h2>
+          <p className="p-big">{offerData.situasi}</p>
+        </section>
+
+        <OfferScope
+          workLabel={t('workEyebrow')}
+          measureLabel={t('workMeasure')}
+          measureFrom={t('workFrom')}
+          measureTo={t('workTo')}
+          steps={steps}
+          deliverablesLabel={t('deliverablesEyebrow')}
+          deliverables={deliverables}
+          className={s.offerScope}
+        />
+
+        <OfferBoundaries
+          label={t('boundariesEyebrow')}
+          className={s.offerBoundaries}
+        >
+          {offerData.batas ?? ''}
+        </OfferBoundaries>
+
+        <section className={s.action}>
+          <p className="caption">{t('firstStepEyebrow')}</p>
+          <h2 className="h2">{offerData.langkahPertama?.label}</h2>
+          <p className="p-big">{offerData.langkahPertama?.sesudahnya}</p>
+          <Link href="/#contact" className={cn('caption', s.actionLink)}>
+            {t('firstStepLink')}
+          </Link>
+        </section>
+
+        {bridge ? (
+          <section className={s.offerBridge}>
+            <h2 className="caption">{t('bridgeEyebrow')}</h2>
+            <p className="p-big">{bridge.text}</p>
+            <Link href={bridge.href} className={cn('h3', s.bridgeLink)}>
+              {bridge.title}
+            </Link>
           </section>
-        )}
-        {data.situasi && (
-          <section>
-            <h2 className="h3">Situasi</h2>
-            <p className="p">{data.situasi}</p>
-          </section>
-        )}
-        {data.langkah && (
-          <section>
-            <h2 className="h3">Yang kami kerjakan</h2>
-            <ol className="list-decimal pl-[1.5em] p">
-              {data.langkah.map((item) => (
-                <li key={item._key}>{item.teks}</li>
-              ))}
-            </ol>
-          </section>
-        )}
-        {data.serahan && (
-          <section>
-            <h2 className="h3">Yang Anda terima</h2>
-            <ul className="list-disc pl-[1.5em] p">
-              {data.serahan.map((item) => (
-                <li key={item._key}>{item.teks}</li>
-              ))}
-            </ul>
-          </section>
-        )}
-        {data.batas && (
-          <section>
-            <h2 className="h3">Batas dan syarat</h2>
-            <p className="p">{data.batas}</p>
-          </section>
-        )}
+        ) : null}
+
+        <div className={s.offerUtilities}>
+          <nav aria-label={t('navigationLabel')} className={s.navigation}>
+            <Link
+              href={chapterHref}
+              className={cn('caption', s.route)}
+              data-press="chip"
+              data-intent=""
+            >
+              {t('backToChapter')}
+            </Link>
+            <Link
+              href={sideTemplate(values.unit, values.side)}
+              className={cn('caption', s.route)}
+              data-press="chip"
+              data-intent=""
+            >
+              {t('backToSide')}
+            </Link>
+          </nav>
+          <OfferPrintControl label={t('print')} />
+        </div>
       </article>
     </Wrapper>
   )
@@ -443,10 +618,15 @@ export async function generateMetadata({ params }: ArthurDetailPageProps) {
   }
 
   const { data } = await fetchOffer(values as Required<RouteValues>, locale)
-  if (!data || !offerIsSafe(data)) return { robots: { index: false } }
+  const parsed = offerReaderSchema.safeParse(data)
+  if (!parsed.success || !offerIsSafe(parsed.data)) {
+    return { robots: { index: false } }
+  }
+  const offerData = parsed.data
   return generatePageMetadata({
-    title: data.judul ?? 'Offer Arthur',
-    ...(data.dampak ? { description: data.dampak } : {}),
+    title: offerData.metadata?.title ?? offerData.judul ?? 'Offer Arthur',
+    description: offerData.metadata?.description ?? offerData.dampak ?? '',
     url: `/${locale}${path}`,
+    noIndex: offerData.metadata?.noIndex ?? false,
   })
 }

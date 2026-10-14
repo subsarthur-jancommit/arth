@@ -160,7 +160,7 @@ export default async function SidePage({ params }: SidePageProps) {
           <p className="caption">{tSide('firstStepEyebrow')}</p>
           <h2 className="h2">{action.label}</h2>
           <p className="p-big">{action.sesudahnya}</p>
-          <Link href="#contact" className={cn('caption', s.actionLink)}>
+          <Link href="/#contact" className={cn('caption', s.actionLink)}>
             {tSide('firstStepLink')}
           </Link>
         </section>

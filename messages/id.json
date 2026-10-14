@@ -248,6 +248,24 @@
     "backToSide": "Kembali ke sisi",
     "backToUnit": "Kembali ke unit"
   },
+  "offer": {
+    "eyebrow": "Offer",
+    "audienceEyebrow": "Untuk siapa",
+    "situationEyebrow": "Situasinya",
+    "workEyebrow": "Yang kami kerjakan",
+    "workMeasure": "Lingkup kerja yang disepakati",
+    "workFrom": "Masalah",
+    "workTo": "Serahan",
+    "deliverablesEyebrow": "Yang Anda terima",
+    "boundariesEyebrow": "Batas dan syarat",
+    "firstStepEyebrow": "Langkah pertama",
+    "firstStepLink": "Mulai percakapan",
+    "bridgeEyebrow": "Bila pekerjaan berlanjut",
+    "navigationLabel": "Kembali ke katalog",
+    "backToChapter": "Kembali ke bab",
+    "backToSide": "Kembali ke sisi",
+    "print": "Cetak offer"
+  },
   "sample": {
     "label": "Isi contoh",
     "unitNote": "Pernyataan unit ditulis setelah ada tipe isi yang menyimpannya. Tidak ada klaim di sini.",

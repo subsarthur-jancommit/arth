@@ -248,6 +248,24 @@
     "backToSide": "Back to side",
     "backToUnit": "Back to unit"
   },
+  "offer": {
+    "eyebrow": "Offer",
+    "audienceEyebrow": "Who this is for",
+    "situationEyebrow": "The situation",
+    "workEyebrow": "What we do",
+    "workMeasure": "The agreed scope of work",
+    "workFrom": "Problem",
+    "workTo": "Handover",
+    "deliverablesEyebrow": "What you receive",
+    "boundariesEyebrow": "Boundaries and terms",
+    "firstStepEyebrow": "First step",
+    "firstStepLink": "Start a conversation",
+    "bridgeEyebrow": "When the work continues",
+    "navigationLabel": "Back to the catalogue",
+    "backToChapter": "Back to chapter",
+    "backToSide": "Back to side",
+    "print": "Print this offer"
+  },
   "sample": {
     "label": "Sample content",
     "unitNote": "The unit statement is written once the content type exists to hold it. Nothing here is a claim.",

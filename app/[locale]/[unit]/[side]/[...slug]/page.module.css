@@ -83,6 +83,63 @@
   text-decoration: none;
 }
 
+.offerPage {
+  max-width: 96rem;
+  margin-inline: auto;
+}
+
+.offerHero {
+  max-width: 76rem;
+}
+
+.offerTitle,
+.impact,
+.situation h2,
+.situation p,
+.offerBridge h2,
+.offerBridge p,
+.offerBridge h3 {
+  margin: 0;
+}
+
+.impact {
+  max-width: 54rem;
+}
+
+.audience,
+.situation,
+.offerScope,
+.offerBoundaries,
+.offerBridge {
+  max-width: 72rem;
+}
+
+.situation,
+.offerBridge {
+  display: grid;
+  gap: calc(18 / 375 * 100vw);
+}
+
+.situation > h2:first-child,
+.offerBridge > h2:first-child {
+  color: var(--text-muted);
+}
+
+.bridgeLink {
+  width: fit-content;
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.offerUtilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(12 / 375 * 100vw);
+  align-items: center;
+  justify-content: space-between;
+}
+
 @media (--desktop) {
   .page {
     gap: calc(152 / 1440 * 100vw);
@@ -112,5 +169,59 @@
 
   .bridges ul {
     gap: calc(16 / 1440 * 100vw);
+  }
+
+  .situation,
+  .offerBridge {
+    grid-template-columns: 2fr 10fr;
+    gap: calc(16 / 1440 * 100vw);
+  }
+
+  .situation > p:last-child,
+  .offerBridge > :not(:first-child) {
+    grid-column: 2;
+  }
+
+  .offerBridge > h2:first-child {
+    grid-row: 1 / span 2;
+  }
+
+  .offerUtilities {
+    gap: calc(16 / 1440 * 100vw);
+  }
+}
+
+@media print {
+  .page {
+    display: block;
+    max-width: none;
+    padding: 0;
+  }
+
+  .page > * {
+    margin-block-end: 24pt;
+  }
+
+  .hero {
+    min-height: 0;
+    max-width: none;
+  }
+
+  .offerTitle {
+    font-size: 28pt;
+  }
+
+  .audience,
+  .situation,
+  .offerScope,
+  .offerBoundaries,
+  .action,
+  .offerBridge {
+    max-width: none;
+  }
+
+  .navigation,
+  .offerUtilities {
+    display: none;
   }
 }

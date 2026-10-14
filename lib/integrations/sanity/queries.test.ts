@@ -24,6 +24,7 @@ import {
   faqsForPathQuery,
   howWeWorkPreviewQuery,
   howWeWorkQuery,
+  offerPagePreviewQuery,
   offerPageQuery,
   pageQuery,
   projectQuery,
@@ -40,6 +41,7 @@ const LOCALIZED_QUERIES = {
   howWeWorkQuery,
   howWeWorkPreviewQuery,
   offerPageQuery,
+  offerPagePreviewQuery,
   pageQuery,
   projectsQuery,
   featuredProjectsQuery,
@@ -130,9 +132,12 @@ describe('how we work queries', () => {
 describe('offer query', () => {
   it('keeps an offer under its addressed chapter, side, and unit', () => {
     expect(offerPageQuery).toContain('_type == "offer"')
-    expect(offerPageQuery).toContain('bab->slug.current == $chapter')
-    expect(offerPageQuery).toContain('bab->sisi->kunci == $side')
-    expect(offerPageQuery).toContain('bab->sisi->unit->kunci == $unit')
+    expect(offerPageQuery).toContain('slug.current == $chapter')
+    expect(offerPageQuery).toContain('kunci == $side')
+    expect(offerPageQuery).toContain('kunci == $unit')
+    expect(offerPageQuery).toContain('bab._ref in')
+    expect(offerPageQuery).toContain('sisi._ref in')
+    expect(offerPageQuery).toContain('unit._ref in')
   })
 
   it('does not project fields from the Internal Studio group', () => {
@@ -143,8 +148,27 @@ describe('offer query', () => {
       'tanggalDisetujui',
     ]) {
       expect(offerPageQuery).not.toContain(field)
+      expect(offerPagePreviewQuery).not.toContain(field)
     }
     expect(offerPageQuery).toContain('statusTinjauan == "disetujui"')
+    expect(offerPagePreviewQuery).not.toContain('statusTinjauan')
+  })
+
+  it('uses the side first step as the offer fallback', () => {
+    for (const query of [offerPageQuery, offerPagePreviewQuery]) {
+      expect(query).toContain('bab->sisi->langkahPertama.label')
+      expect(query).toContain('bab->sisi->langkahPertama.sesudahnya')
+    }
+  })
+
+  it('only resolves a fully approved bridge target on the public route', () => {
+    expect(offerPageQuery).toContain(
+      'jembatan.offer->statusTinjauan == "disetujui"'
+    )
+    expect(offerPageQuery).toContain(
+      'jembatan.offer->bab->statusTinjauan == "disetujui"'
+    )
+    expect(offerPagePreviewQuery).not.toContain('statusTinjauan')
   })
 })
 
