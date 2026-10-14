@@ -143,8 +143,11 @@ Yang **tidak** diklaim:
 
 1. Pemilik meninjau tampilan branch/Preview PR #18.
 2. Pemilik menyediakan dataset `ci` sebelum F2-09 dan F3-12 runtime.
-3. Izin e2e harus diberikan kembali secara eksplisit sebelum Playwright lokal
-   atau GitHub Actions dijalankan.
+3. ~~Izin e2e harus diberikan kembali secara eksplisit sebelum Playwright lokal
+   atau GitHub Actions dijalankan.~~ **Diberikan pemilik 15 Oktober 2026.**
+   Protokol awal berlaku lagi: tidak ada `[skip ci]`, `ci` dan `e2e` di GitHub
+   Actions harus hijau pada head PR, e2e lokal tetap tidak dijalankan
+   (PROSEDUR-KERJA). Temuan tinjauan ada di `docs/TINJAUAN-F01-F03.md`.
 4. Setiap tulisan baru ke Sanity tetap membutuhkan `ok tulis` yang menyebut
    lingkupnya. Izin lama tidak diperluas ke halaman kebijakan, bab, atau offer.
 5. K5 tetap diperlukan untuk kanal kontak nyata; K9 tetap diperlukan sebelum

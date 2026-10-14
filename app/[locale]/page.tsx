@@ -211,6 +211,16 @@ export default async function Home() {
       <Hero
         headline={content.headline}
         subline={content.subline}
+        /*
+         * The hero's counterweight (Tahap 67): the index in the top right,
+         * headline and action bottom left. Dropping it in F3-01 left the top
+         * half of the first screen empty again. The labels are the unit
+         * doors' own, so the hero names exactly what the page opens next.
+         */
+        index={{
+          label: t('heroIndexLabel'),
+          items: unitDoors.map((door) => door.label),
+        }}
         action={
           /* oxlint-disable-next-line react/forbid-elements -- a same-page jump must keep working when JavaScript is disabled */
           <a
