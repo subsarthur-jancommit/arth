@@ -192,9 +192,19 @@ dan `drafts.arthur-offer-kul-01` sampai `-kul-11`. Diverifikasi dengan query:
 sendiri KUL-01 dan KUL-02. Tidak ada yang diterbitkan.
 
 Supaya halaman tampil di situs, pemilik menyetujui dan menerbitkan berurutan:
-unit Teknologi, sisi siap pakai, bab Kuliner, lalu offer-nya. Draf sisi dan
-unit yang dibuat sebelumnya masih punya dua catatan yang belum disentuh: referensi
-unit di draf sisi kosong, dan urutan sisi siap pakai bernilai 1. Jembatan ke
+unit Teknologi, sisi siap pakai, bab Kuliner, lalu offer-nya. Koreksi 16 Oktober 2026: referensi unit di keenam draf sisi ternyata benar
+(referensi lemah ke ID terbit unit yang tepat, dengan `_strengthenOnPublish`);
+ia terbaca kosong hanya karena unitnya belum terbit, jadi tidak diubah. Atas
+“ok tulis” pemilik, urutan sisi siap pakai diubah menjadi 0; sisi paham teknis
+juga bernilai 0, sehingga keduanya seri sampai paham teknis diubah menjadi 1.
+Draf unit dan sisi ditulis partner dan belum melewati R1; pembuka unit
+Teknologi menyunting kalimat header siap tayang.
+
+Menerbitkan dokumen Arthur tidak mengubah produksi: `main` (`098893b`) tidak
+membaca tipe unit, sisi, bab, atau offer. Yang berubah hanya preview cabang R0
+sampai R3, dan hanya untuk dokumen berstatus `disetujui`. Studio tertanam di
+`/cms`; CORS proyek baru memuat `http://localhost:3333`, jadi Studio di preview
+belum bisa dipakai sampai pemilik menambahkan origin-nya. Jembatan ke
 FNB-01 ditulis saat offer itu ada. Skema `offer` butuh medan
 `paket` di R2. Belum ada yang ditulis ke Sanity.
 
