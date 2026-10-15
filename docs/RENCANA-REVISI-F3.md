@@ -125,7 +125,13 @@ Langkah 3 untuk model Teknologi (model 1 sampai 4) dikerjakan di lokal. Jawaban
 agen per baris tersimpan di `lib/content/catalog-overrides.ts` dan dibaca skrip
 impor; tinjauannya di [`R1-TULIS-TANGAN-TEKNOLOGI.md`](./R1-TULIS-TANGAN-TEKNOLOGI.md).
 Dari 316 offer Teknologi, 309 siap; 7 ditahan karena posisi bot trading.
-Menunggu persetujuan pemilik. Konstruksi dan Peekabo menyusul. Skema `offer` butuh medan
+Disetujui pemilik 15 Oktober 2026.
+
+Langkah 3 untuk Konstruksi (model 5 sampai 9 dan perawatan di model 10)
+dikerjakan dengan cara yang sama; tinjauannya di
+[`R1-TULIS-TANGAN-KONSTRUKSI.md`](./R1-TULIS-TANGAN-KONSTRUKSI.md). Dari 216 offer
+Konstruksi, 214 siap; 2 membership perawatan ditahan menunggu keputusan ekonomi
+Membership Care. Menunggu persetujuan pemilik. Peekabo menyusul. Skema `offer` butuh medan
 `paket` di R2. Belum ada yang ditulis ke Sanity.
 
 Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk

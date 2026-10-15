@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test'
 
-import { draftOffer, parseCatalog } from './import-catalog'
+import { draftOffer, parseCatalog, reviewMarkdown } from './import-catalog'
 
 /*
  * A two-row slice in the master brief's own shape: a section heading, an
@@ -144,5 +144,23 @@ describe('handwritten overrides', () => {
       new Map([['KUL-01', { keputusan: 'ditahan', alasan: 'uji' }]])
     )
     expect(draft.lane).toBe('tulis-tangan')
+  })
+})
+
+describe('reviewMarkdown', () => {
+  it('lists only reviewed rows of the unit asked for, with the code last', () => {
+    const reviewed = draftOffer(
+      rows[0]!,
+      new Map([['KUL-01', { keputusan: 'tetap' as const }]])
+    )
+    const other = {
+      ...reviewed,
+      unit: 'konstruksi' as const,
+      idKatalog: 'RAK-03',
+    }
+    const markdown = reviewMarkdown([reviewed, other], 'teknologi')
+    expect(markdown).toContain('## Sistem yang dipasang')
+    expect(markdown).toContain('| siap | KUL-01 |')
+    expect(markdown).not.toContain('RAK-03')
   })
 })

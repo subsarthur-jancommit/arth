@@ -42,8 +42,7 @@ const PUBLIC_DATA = 'Hanya dari data publik atau API resmi yang mengizinkannya.'
 const OFFICIAL_ROUTE = 'Hanya lewat kerja sama atau jalur resmi instansinya.'
 
 /**
- * Teknologi, models 1 to 4. The Kuliner entries carry wording the owner
- * approved on 15 October 2026; the rest waits for approval.
+ * Teknologi, models 1 to 4. Approved by the owner on 15 October 2026.
  */
 export const TEKNOLOGI_OVERRIDES = new Map<string, CatalogOverride>([
   // Kuliner, owner-approved wording from docs/R1-SERAH-BAB-KULINER.md.
@@ -823,4 +822,329 @@ export const TEKNOLOGI_OVERRIDES = new Map<string, CatalogOverride>([
       alasan: '“Realtime” bukan kata sehari-hari pembaca Sisi B',
     },
   ],
+])
+
+const NO_LOAN =
+  'Kami tidak memberi pinjaman; pembiayaan dan syaratnya dari mitra berizin.'
+const JOINT_OPERATION =
+  'Kerja sama operasi memakai perjanjian tertulis, dan di proyek pemerintah tunduk pada aturan pengadaan.'
+const BUILDING_APPROVAL =
+  'Kami menyusun berkasnya; persetujuan tetap keputusan instansi yang berwenang.'
+const ELECTRICIAN = 'Instalasi listrik dikerjakan mitra instalatir berwenang.'
+const INSURANCE_AGENT = 'Polis dijual agen asuransi berlisensi.'
+const FAIR_MARGIN =
+  'Keuntungan dalam HPS dijaga wajar dan dapat diperiksa auditor.'
+
+/**
+ * Konstruksi, models 5 to 9 and the Rawat rows of model 10. Rules cited are
+ * Konstruksi's Peta & aturan main, rules 1 to 13. Waits for approval.
+ */
+export const KONSTRUKSI_OVERRIDES = new Map<string, CatalogOverride>([
+  // Paket dan paket rakitan.
+  [
+    'HHK-13',
+    { keputusan: 'rumusan-aman', syarat: JOINT_OPERATION, alasan: 'Aturan 8' },
+  ],
+  [
+    'RAK-03',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Opname dan berkas termin disiapkan sebelum termin diajukan.',
+      alasan: 'Pencairan dipegang pemberi kerja; rumusan Peta website',
+    },
+  ],
+  [
+    'RAK-14',
+    {
+      keputusan: 'tetap',
+      judul: 'Paket Sumber Barang dan Margin',
+      syarat: FAIR_MARGIN,
+      alasan:
+        '“Terbaik” adalah pujian diri; aturan 4 melekat lewat analisis margin di dalamnya',
+    },
+  ],
+  [
+    'RAK-16',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Setiap unit diperiksa dan dirapikan, dan keluhan pembeli diperbaiki sebelum serah terima.',
+      alasan:
+        'Komplain dipegang pembeli; isi paket: pemeriksaan, finishing, perbaikan keluhan',
+    },
+  ],
+  [
+    'DEV-03',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Rumah contoh dibangun dan ditata untuk dikunjungi calon pembeli.',
+      alasan: '“Alat penjualan” tertangkap kata',
+    },
+  ],
+
+  // Berkas dan administrasi.
+  [
+    'ADM-08',
+    {
+      keputusan: 'rumusan-aman',
+      syarat:
+        'Sertifikat atas nama badan usaha dan tenaga kerja Anda sendiri; nama dan sertifikat tidak dipinjamkan.',
+      alasan: 'Aturan 1',
+    },
+  ],
+  [
+    'ADM-12',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Berkas penagihan termin disusun dan dijaga lengkap sampai diproses pemberi kerja.',
+      alasan: 'Pencairan dipegang pemberi kerja',
+    },
+  ],
+  [
+    'PRJ-03',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Laporan disusun dalam format pemberi kerja, sesuai jadwal pelaporannya.',
+      alasan: '“Tepat waktu” tertangkap kata',
+    },
+  ],
+  [
+    'PNY-05',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Barang dikirim ke lokasi instansi sesuai jadwal yang disepakati.',
+      alasan: '“Tepat waktu” bergantung pada jalan dan penerima',
+    },
+  ],
+  [
+    'PNY-12',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Margin dihitung dari harga sumber, ongkos, dan risiko sebelum menawar.',
+      syarat: FAIR_MARGIN,
+      alasan: 'Aturan 4',
+    },
+  ],
+  [
+    'PNY-13',
+    {
+      keputusan: 'rumusan-aman',
+      syarat:
+        'Kami tidak memegang peran penyedia dan konsultan di paket yang sama.',
+      alasan: 'Aturan 3',
+    },
+  ],
+
+  // Lapangan.
+  [
+    'TNK-06',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Pekerjaan dijalankan sesuai gambar dan spesifikasi oleh tenaga yang bekerja di lokasi.',
+      syarat:
+        'Tenaga ahli bekerja di lapangan proyek Anda; nama dan sertifikatnya tidak dipinjamkan.',
+      alasan: 'Aturan 1; “benar-benar” dibuang',
+    },
+  ],
+  [
+    'TNK-07',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Keselamatan kerja dikelola di lokasi oleh petugas K3.',
+      alasan: 'Kecelakaan dan temuan tidak bisa dijanjikan berkurang',
+    },
+  ],
+  [
+    'ALT-03',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Alat diantar ke lokasi dan dijemput kembali sesuai jadwal yang disepakati.',
+      alasan: '“Tepat waktu” tertangkap kata',
+    },
+  ],
+  [
+    'DEV-08',
+    {
+      keputusan: 'rumusan-aman',
+      syarat: BUILDING_APPROVAL,
+      alasan: 'Aturan 10',
+    },
+  ],
+  [
+    'RMH-11',
+    {
+      keputusan: 'rumusan-aman',
+      syarat: BUILDING_APPROVAL,
+      alasan: 'Aturan 10',
+    },
+  ],
+
+  // Barang.
+  [
+    'GOV-01',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Meja, kursi, dan lemari diadakan sesuai spesifikasi dan jadwal pengadaan.',
+      alasan: '“Tepat waktu” tertangkap kata',
+    },
+  ],
+
+  // Rumah, interior, F&B, studio, hospitality.
+  [
+    'RMH-03',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Lantai baru dibangun setelah kekuatan struktur lama diperiksa tenaga ahli berwenang.',
+      syarat:
+        'Pekerjaan dimulai setelah perhitungan struktur dan persetujuan bangunan gedung selesai.',
+      alasan: 'Aturan 10; contoh di Aturan isi',
+    },
+  ],
+  [
+    'ITR-08',
+    { keputusan: 'rumusan-aman', syarat: ELECTRICIAN, alasan: 'Aturan 11' },
+  ],
+  [
+    'STD-02',
+    { keputusan: 'rumusan-aman', syarat: ELECTRICIAN, alasan: 'Aturan 11' },
+  ],
+  [
+    'HOS-01',
+    {
+      keputusan: 'ditulis-ulang',
+      judul: 'Makeover villa yang siap difoto dan ditawarkan',
+      dampak:
+        'Villa dibenahi sampai layak tampil di foto dan siap ditawarkan ulang.',
+      alasan: 'Tarif dipegang pasar; rumusan Peta website',
+    },
+  ],
+  [
+    'HOS-02',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Kontrakan kusam dibenahi sampai layak disewakan kembali.',
+      alasan: 'Rumusan Peta website',
+    },
+  ],
+  [
+    'HOS-04',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Lobi dan area bersama dibenahi untuk menyambut tamu.',
+      alasan: 'Kesan tamu dipegang tamu',
+    },
+  ],
+  [
+    'HOS-09',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Unit dibenahi segera setelah penyewa pergi, sebelum penyewa berikutnya masuk.',
+      alasan: '“Kembali layak” tertangkap kata',
+    },
+  ],
+
+  // Perawatan berkala.
+  [
+    'FNB-10',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Kerusakan kecil di outlet ditangani berkala, sebelum menjadi besar.',
+      alasan: 'Penjualan bergantung pada pembeli',
+    },
+  ],
+  [
+    'RWT-08',
+    { keputusan: 'rumusan-aman', syarat: ELECTRICIAN, alasan: 'Aturan 11' },
+  ],
+
+  // Lewat mitra berizin; bab modal kerja ditulis sebagai penjembatanan.
+  [
+    'MOD-02',
+    {
+      keputusan: 'rumusan-aman',
+      syarat: 'Jaminan diterbitkan dan diputuskan mitra penjamin berizin.',
+      alasan: 'Aturan 7',
+    },
+  ],
+  [
+    'MOD-03',
+    { keputusan: 'rumusan-aman', syarat: NO_LOAN, alasan: 'Aturan 7' },
+  ],
+  [
+    'MOD-04',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Tagihan termin yang belum cair diajukan ke mitra pembiayaan untuk dibiayai lebih dulu.',
+      syarat: NO_LOAN,
+      alasan: 'Aturan 7; kecepatan dana dipegang mitra',
+    },
+  ],
+  [
+    'MOD-05',
+    { keputusan: 'rumusan-aman', syarat: JOINT_OPERATION, alasan: 'Aturan 8' },
+  ],
+  [
+    'MOD-07',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Risiko kerusakan dan kecelakaan proyek dialihkan ke asuransi lewat mitra.',
+      syarat: INSURANCE_AGENT,
+      alasan: 'Aturan 7',
+    },
+  ],
+  [
+    'MOD-08',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Alat dan kendaraan kerja dibiayai lewat mitra, sehingga kas proyek tidak tertahan.',
+      syarat: NO_LOAN,
+      alasan: 'Aturan 7',
+    },
+  ],
+  [
+    'KOM-01',
+    { keputusan: 'rumusan-aman', syarat: NO_LOAN, alasan: 'Aturan 7' },
+  ],
+  [
+    'KOM-02',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Bangunan dan isinya diasuransikan untuk risiko yang tertulis di polis.',
+      syarat: INSURANCE_AGENT,
+      alasan: 'Aturan 7; perlindungan dibatasi polis',
+    },
+  ],
+  [
+    'KOM-03',
+    {
+      keputusan: 'rumusan-aman',
+      syarat: 'Penjualan dan sewa dijalankan perantara properti berizin.',
+      alasan: 'Aturan main gabungan 5',
+    },
+  ],
+  [
+    'KOM-06',
+    { keputusan: 'rumusan-aman', syarat: NO_LOAN, alasan: 'Aturan 7' },
+  ],
+])
+
+/** Every handwritten answer the import reads. */
+export const CATALOG_OVERRIDES = new Map<string, CatalogOverride>([
+  ...TEKNOLOGI_OVERRIDES,
+  ...KONSTRUKSI_OVERRIDES,
 ])

@@ -21,6 +21,7 @@
  * ```bash
  * bun lib/scripts/import-catalog.ts "D:/ARTH/FULL KONTEKS/Master Brief Katalog"
  * bun lib/scripts/import-catalog.ts <dir> --out /path/outside/repo/offers.json
+ * bun lib/scripts/import-catalog.ts <dir> --review docs/R1-TULIS-TANGAN-KONSTRUKSI.md --unit konstruksi
  * ```
  */
 
@@ -28,8 +29,8 @@ import { readdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 import {
+  CATALOG_OVERRIDES,
   type CatalogOverride,
-  TEKNOLOGI_OVERRIDES,
 } from '@/lib/content/catalog-overrides'
 import {
   type CatalogUnit,
@@ -194,7 +195,7 @@ function settles(override: CatalogOverride | undefined, reason: string) {
 /** Assign the model and the lane. Pure, so a test can pin every rule. */
 export function draftOffer(
   row: CatalogRow,
-  overrides: ReadonlyMap<string, CatalogOverride> = TEKNOLOGI_OVERRIDES
+  overrides: ReadonlyMap<string, CatalogOverride> = CATALOG_OVERRIDES
 ): OfferDraft {
   const model = offerModel({
     unit: row.unit,
@@ -248,14 +249,19 @@ async function sideFiles(dir: string): Promise<string[]> {
  * The rows an agent answered, per model, for the owner to read in one pass.
  * The reader's words come first; the catalogue code sits in the last column.
  */
-export function reviewMarkdown(drafts: OfferDraft[]): string {
+export function reviewMarkdown(
+  drafts: OfferDraft[],
+  unit?: CatalogUnit
+): string {
   const lines = [
     '# Tinjauan tulis tangan',
     '',
     'Dihasilkan `lib/scripts/import-catalog.ts --review` dari',
     '`lib/content/catalog-overrides.ts`. Jangan disunting di sini.',
   ]
-  const reviewed = drafts.filter((draft) => draft.ditinjau)
+  const reviewed = drafts.filter(
+    (draft) => draft.ditinjau && (unit === undefined || draft.unit === unit)
+  )
   for (const [model, rows] of Map.groupBy(reviewed, (draft) => draft.model)) {
     lines.push(
       '',
@@ -309,7 +315,17 @@ async function main() {
   const reviewIndex = process.argv.indexOf('--review')
   const review = reviewIndex === -1 ? undefined : process.argv[reviewIndex + 1]
   if (review) {
-    await writeFile(review, reviewMarkdown(drafts))
+    const unitIndex = process.argv.indexOf('--unit')
+    const unit = unitIndex === -1 ? undefined : process.argv[unitIndex + 1]
+    await writeFile(
+      review,
+      reviewMarkdown(
+        drafts,
+        unit === 'konstruksi' || unit === 'teknologi' || unit === 'peekabo'
+          ? unit
+          : undefined
+      )
+    )
     console.log(`Tinjauan ditulis ke ${review}.`)
   }
 
