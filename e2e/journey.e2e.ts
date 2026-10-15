@@ -2,6 +2,7 @@ import type { ConsoleMessage, Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
 import { UNITS } from '../lib/content/units'
+import { REMOVED_IN_F3 } from './removed-in-f3'
 
 declare global {
   /** Overlay states sampled inside the page by the probes below. */
@@ -145,6 +146,7 @@ function collectErrors(page: Page) {
 
 test.describe('a reader moving through the site', () => {
   test('seven hops leave nothing behind', async ({ page }) => {
+    test.fixme(true, REMOVED_IN_F3.practiceList)
     const errors = collectErrors(page)
     const [first, second] = UNITS
 
@@ -405,7 +407,9 @@ test.describe('a reader moving through the site', () => {
      * actually reach at whichever width the test is running.
      */
     await page
-      .locator('a[href="#work"]:visible, a[href="#contact"]:visible')
+      .locator(
+        'a[href="#situasi"]:visible, a[href="#work"]:visible, a[href="#contact"]:visible'
+      )
       .first()
       .click()
     await page.waitForTimeout(2200)
@@ -512,6 +516,7 @@ test.describe('the pinned passage never takes the page away', () => {
   })
 
   test('reduced motion adds no empty scroll', async ({ browser }) => {
+    test.fixme(true, REMOVED_IN_F3.passage)
     /*
      * The failure this shape exists to avoid, and the one that would be
      * invisible in review: a pin spacer is created by ScrollTrigger, not by

@@ -52,6 +52,15 @@ Satu galat yang terbaca adalah pelanggaran aturan #11: teks pembuka di halaman
 unit diukur **4,04:1** di atas latarnya, di bawah ambang 4,5:1
 (`contrast-situ`, `/en/konstruksi`, 1280 px).
 
+**Keputusan pemilik 15 Oktober 2026:** tes untuk fitur yang dicabut di F3
+ditandai `test.fixme` dengan alasan dan rujukan paket yang mengembalikannya
+(`e2e/removed-in-f3.ts`), supaya sisa suite bisa dinilai. Hanya tes yang
+diperiksa memang bergantung pada fitur yang dicabut yang ditandai: 21
+penanda di 9 berkas. Dua tes yang ternyata gagal karena selektor atau tujuan
+yang keliru diperbaiki, bukan ditandai: `journey` (jangkar hero kini
+`#situasi`) dan `webgl-lifecycle` (tautan ke `/en/cara-kerja` yang tidak pernah
+ada di `/id`).
+
 ## B. Beranda dibanding `main`
 
 | No. | Temuan                                                                                                                                                                                                                                                                                                            | Bukti                                                            |

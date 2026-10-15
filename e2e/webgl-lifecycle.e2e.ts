@@ -60,7 +60,10 @@ const CYCLES = 4
 
 /** A route with a canvas, and one without, to navigate between. */
 const HOME = '/id'
-const AWAY = '/en/journal'
+// A page `/id` links to (header and first-step action) that mounts no
+// canvas. `/en/cara-kerja` before R0 was never linked from `/id`, so
+// `cycle()` could not find its link and the test timed out.
+const AWAY = '/id/kontak'
 
 interface Counts {
   /** Canvas elements that have ever been in the document. */
