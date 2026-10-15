@@ -159,7 +159,28 @@ pesan-antar WhatsApp serta Pesan dan bayar dari meja.
 
 Kelima langkah rekomendasi pendekatan pola sudah dikerjakan di lokal. Halaman
 Dokumentasi tetap menunggu foto nyata, izin pemiliknya, dan keputusan Bukti
-pertama. Skema `offer` butuh medan
+pertama.
+
+### R3, bagian pertama: daftar pekerjaan dan halaman sendiri
+
+PR bertumpuk di atas #21. Kode mengikuti struktur informasi yang disetujui di
+pendekatan pola, bagian 3:
+
+- Halaman situasi menampilkan semua offer terbit (batas tujuh dicabut): pintu
+  masuk di atas dengan tanda “Mulai dari sini”, sisanya berkelompok di bawah
+  label jenisnya, tinggi kartu mengikuti isi (temuan D), dan baris syarat
+  untuk offer †.
+- Setiap kartu punya tombol “Tanyakan pekerjaan ini” ke `/kontak?dari=…&pekerjaan=…`.
+  Keduanya slug halaman, bukan data pengunjung.
+- Halaman offer hanya ada untuk offer `halamanSendiri` atau pintu masuk. Kartu,
+  jembatan, dan contoh di halaman unit menautkan halaman situasi bila offer
+  tidak punya halaman sendiri.
+- Halaman offer menampilkan dua paket (`tingkat`) bila diisi, dan syarat di
+  bawah dampaknya. Skema `offer` mendapat medan `syarat`.
+
+Belum: blok Cara kami bekerja Teknologi di halaman offer, halaman Cara kami
+dibayar, dan pembacaan `dari`/`pekerjaan` di halaman kontak (menunggu K5 dan
+F5-06). Semua ini baru terlihat setelah isi ditulis ke Sanity dengan “ok tulis”. Skema `offer` butuh medan
 `paket` di R2. Belum ada yang ditulis ke Sanity.
 
 Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk

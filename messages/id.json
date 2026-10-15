@@ -272,15 +272,17 @@
     "marketAll": "Semua proyek",
     "marketGovernment": "Proyek pemerintah",
     "marketPrivate": "Proyek swasta",
-    "audienceLabel": "Untuk",
-    "typeLabel": "Jenis",
     "boundariesEyebrow": "Batas dan syarat",
     "bridgesEyebrow": "Situasi berikutnya",
     "firstStepEyebrow": "Langkah pertama",
     "firstStepLink": "Mulai percakapan",
     "navigationLabel": "Lanjutkan penjelajahan",
     "backToSide": "Kembali ke sisi",
-    "backToUnit": "Kembali ke unit"
+    "backToUnit": "Kembali ke unit",
+    "entryLabel": "Mulai dari sini",
+    "askLink": "Tanyakan pekerjaan ini",
+    "readLink": "Baca halamannya",
+    "conditionLabel": "Syarat"
   },
   "offer": {
     "eyebrow": "Offer",
@@ -298,7 +300,9 @@
     "navigationLabel": "Kembali ke katalog",
     "backToChapter": "Kembali ke bab",
     "backToSide": "Kembali ke sisi",
-    "print": "Cetak offer"
+    "print": "Cetak offer",
+    "conditionLabel": "Syarat",
+    "packagesEyebrow": "Dua paket"
   },
   "network": {
     "paths": {

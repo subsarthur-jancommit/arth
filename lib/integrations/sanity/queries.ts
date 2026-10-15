@@ -459,6 +459,7 @@ export const homeUnitsPreviewQuery = defineQuery(`
 const unitOfferCardFields = `
   _id,
   "slug": slug.current,
+  "punyaHalaman": coalesce(halamanSendiri, false) || coalesce(pintuMasuk, false),
   "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
   "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),
   "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),
@@ -665,12 +666,7 @@ export const sidePageQuery = defineQuery(`
         _type == "offer" &&
         statusTinjauan == "disetujui" &&
         bab._ref == ^._id
-      ]) >= 3 &&
-      count(*[
-        _type == "offer" &&
-        statusTinjauan == "disetujui" &&
-        bab._ref == ^._id
-      ]) <= 7
+      ]) >= 3
     ] | order(urutan asc) {
       ${sideChapterFields}
     }
@@ -688,8 +684,7 @@ export const sidePagePreviewQuery = defineQuery(`
     "bab": *[
       _type == "bab" &&
       sisi._ref == ^._id &&
-      count(*[_type == "offer" && bab._ref == ^._id]) >= 3 &&
-      count(*[_type == "offer" && bab._ref == ^._id]) <= 7
+      count(*[_type == "offer" && bab._ref == ^._id]) >= 3
     ] | order(urutan asc) {
       ${sideChapterPreviewFields}
     }
@@ -703,8 +698,11 @@ const chapterOfferCardFields = `
   "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),
   "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),
   "jenis": coalesce(jenis[_key == $locale][0].value, jenis[_key == "id"][0].value),
+  "syarat": coalesce(syarat[_key == $locale][0].value, syarat[_key == "id"][0].value),
   pasar,
-  urutan
+  urutan,
+  "pintuMasuk": coalesce(pintuMasuk, false),
+  "punyaHalaman": coalesce(halamanSendiri, false) || coalesce(pintuMasuk, false)
 `
 
 const chapterBridgeFields = `
@@ -713,6 +711,7 @@ const chapterBridgeFields = `
   "offer": select(
     offer->statusTinjauan == "disetujui" => offer->{
       "slug": slug.current,
+      "punyaHalaman": coalesce(halamanSendiri, false) || coalesce(pintuMasuk, false),
       "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
       "bab": bab->{
         "slug": slug.current,
@@ -730,6 +729,7 @@ const chapterBridgePreviewFields = `
   "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value),
   "offer": offer->{
     "slug": slug.current,
+    "punyaHalaman": coalesce(halamanSendiri, false) || coalesce(pintuMasuk, false),
     "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
     "bab": bab->{
       "slug": slug.current,
@@ -802,6 +802,7 @@ const offerBridgeFields = `
     jembatan.offer->bab->sisi->statusTinjauan == "disetujui" &&
     jembatan.offer->bab->sisi->unit->statusTinjauan == "disetujui" => jembatan.offer->{
       "slug": slug.current,
+      "punyaHalaman": coalesce(halamanSendiri, false) || coalesce(pintuMasuk, false),
       "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
       "bab": bab->{
         "slug": slug.current,
@@ -818,6 +819,7 @@ const offerBridgeFields = `
 const offerBridgePreviewFields = `
   "offer": jembatan.offer->{
     "slug": slug.current,
+    "punyaHalaman": coalesce(halamanSendiri, false) || coalesce(pintuMasuk, false),
     "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
     "bab": bab->{
       "slug": slug.current,
@@ -848,6 +850,16 @@ const offerReaderFields = `
       "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
     },
     "batas": coalesce(batas[_key == $locale][0].value, batas[_key == "id"][0].value),
+    "syarat": coalesce(syarat[_key == $locale][0].value, syarat[_key == "id"][0].value),
+    "tingkat": tingkat[]{
+      _key,
+      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
+      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value),
+      "poin": poin[]{
+        _key,
+        "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
+      }
+    },
     "langkahPertama": {
       "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value, bab->sisi->langkahPertama.label[_key == $locale][0].value, bab->sisi->langkahPertama.label[_key == "id"][0].value),
       "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value, bab->sisi->langkahPertama.sesudahnya[_key == $locale][0].value, bab->sisi->langkahPertama.sesudahnya[_key == "id"][0].value)
@@ -867,6 +879,7 @@ export const offerPageQuery = defineQuery(`
   *[
     _type == "offer" &&
     statusTinjauan == "disetujui" &&
+    (halamanSendiri == true || pintuMasuk == true) &&
     slug.current == $slug &&
     bab._ref in *[
       _type == "bab" &&
@@ -892,6 +905,7 @@ export const offerPageQuery = defineQuery(`
 export const offerPagePreviewQuery = defineQuery(`
   *[
     _type == "offer" &&
+    (halamanSendiri == true || pintuMasuk == true) &&
     slug.current == $slug &&
     bab._ref in *[
       _type == "bab" &&
@@ -920,6 +934,16 @@ export const offerPagePreviewQuery = defineQuery(`
       "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
     },
     "batas": coalesce(batas[_key == $locale][0].value, batas[_key == "id"][0].value),
+    "syarat": coalesce(syarat[_key == $locale][0].value, syarat[_key == "id"][0].value),
+    "tingkat": tingkat[]{
+      _key,
+      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
+      "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value),
+      "poin": poin[]{
+        _key,
+        "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
+      }
+    },
     "langkahPertama": {
       "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value, bab->sisi->langkahPertama.label[_key == $locale][0].value, bab->sisi->langkahPertama.label[_key == "id"][0].value),
       "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value, bab->sisi->langkahPertama.sesudahnya[_key == $locale][0].value, bab->sisi->langkahPertama.sesudahnya[_key == "id"][0].value)

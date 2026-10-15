@@ -171,6 +171,20 @@ export const offer = defineType({
       group: 'isi',
     }),
     defineField({
+      name: 'syarat',
+      title: 'Syarat',
+      description:
+        'Satu baris syarat untuk pekerjaan yang diatur aturan hukum atau platform, ditulis dengan rumusan aman. Tampil di bawah kalimat dampak, di daftar situasi dan di halaman pekerjaan. Kosongkan bila tidak ada.',
+      type: 'internationalizedArrayText',
+      validation: (Rule) =>
+        Rule.custom((value) =>
+          Array.isArray(value) && value.length > 0
+            ? requireIndonesian(value)
+            : true
+        ),
+      group: 'isi',
+    }),
+    defineField({
       name: 'langkahPertama',
       title: 'Langkah pertama',
       description:

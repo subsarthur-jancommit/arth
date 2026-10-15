@@ -272,15 +272,17 @@
     "marketAll": "All projects",
     "marketGovernment": "Government projects",
     "marketPrivate": "Private projects",
-    "audienceLabel": "For",
-    "typeLabel": "Type",
     "boundariesEyebrow": "Boundaries and terms",
     "bridgesEyebrow": "The next situation",
     "firstStepEyebrow": "First step",
     "firstStepLink": "Start a conversation",
     "navigationLabel": "Continue exploring",
     "backToSide": "Back to side",
-    "backToUnit": "Back to unit"
+    "backToUnit": "Back to unit",
+    "entryLabel": "Start here",
+    "askLink": "Ask about this work",
+    "readLink": "Read the page",
+    "conditionLabel": "Condition"
   },
   "offer": {
     "eyebrow": "Offer",
@@ -298,7 +300,9 @@
     "navigationLabel": "Back to the catalogue",
     "backToChapter": "Back to chapter",
     "backToSide": "Back to side",
-    "print": "Print this offer"
+    "print": "Print this offer",
+    "conditionLabel": "Condition",
+    "packagesEyebrow": "Two packages"
   },
   "network": {
     "paths": {
