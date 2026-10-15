@@ -1,11 +1,48 @@
-import { defineArrayMember, defineField, defineType } from 'sanity'
+import {
+  defineArrayMember,
+  defineField,
+  defineType,
+  type ValidationContext,
+} from 'sanity'
 
-import { ALL_SIDES, SIDE_STUDIO_TITLES } from '@/lib/content/units'
+import { VERBATIM_FIELDS } from '@/lib/content/style-gate'
+import {
+  ALL_SIDES,
+  isSideOf,
+  isUnit,
+  SIDE_STUDIO_TITLES,
+} from '@/lib/content/units'
 
+import { apiVersion } from '../env'
 import { localeValue, requireIndonesian } from '../utils/i18n-array'
-import { forbidPlaceholders, internalFields } from './internal'
+import { contentValidation, internalFields } from './internal'
 
 const DEFAULT_LOCALE = 'id'
+
+/**
+ * The side's key must be one of its parent unit's sides. Without this, a side
+ * filed under Teknologi with the key `pelaku-proyek` would publish, and no
+ * route would ever render it.
+ */
+async function sideBelongsToUnit(
+  kunci: string | undefined,
+  context: ValidationContext
+): Promise<true | string> {
+  const ref = (context.document?.['unit'] as { _ref?: string } | undefined)
+    ?._ref
+  if (!kunci || !ref) return true
+
+  const unit = await context
+    .getClient({ apiVersion })
+    .fetch<string | null>('*[_id in [$id, "drafts." + $id]][0].kunci', {
+      id: ref,
+    })
+  const unitKey = unit ?? undefined
+  if (!isUnit(unitKey)) return true
+  return isSideOf(unitKey, kunci)
+    ? true
+    : `Sisi ini tidak ada di unit ${unit}. Pilih salah satu sisi unit itu.`
+}
 
 const localizedLine = (name: string, title: string) =>
   defineField({
@@ -24,7 +61,7 @@ export const side = defineType({
     { name: 'isi', title: 'Isi', default: true },
     { name: 'internal', title: 'Internal' },
   ],
-  validation: (Rule) => Rule.custom(forbidPlaceholders),
+  validation: contentValidation(VERBATIM_FIELDS.side),
   fields: [
     defineField({
       name: 'unit',
@@ -44,19 +81,62 @@ export const side = defineType({
         })),
         layout: 'radio',
       },
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => Rule.required().custom(sideBelongsToUnit),
     }),
     localizedLine('nama', 'Nama untuk pembaca'),
     localizedLine('judul', 'Judul sisi'),
     defineField({
-      name: 'caraMembeli',
-      title: 'Cara membeli atau alur kerja',
+      name: 'pembeli',
+      title: 'Untuk siapa',
+      description:
+        'Pembeli di sisi ini, ditulis sebagai orang, dari Peta pembeli unit. Paling banyak delapan butir.',
       type: 'array',
       of: [
         defineArrayMember({
           type: 'object',
-          fields: [localizedLine('teks', 'Langkah')],
+          fields: [localizedLine('teks', 'Pembeli')],
           preview: { select: { title: 'teks.0.value' } },
+        }),
+      ],
+      validation: (Rule) => Rule.max(8),
+    }),
+    defineField({
+      name: 'caraMembeli',
+      title: 'Cara membeli atau alur kerja',
+      description:
+        'Setiap butir: nama cara atau langkahnya, lalu keterangannya. Teks lama satu baris tetap terbaca sampai migrasi V2 selesai.',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'nama',
+              title: 'Nama cara atau langkah',
+              type: 'internationalizedArrayString',
+            }),
+            defineField({
+              name: 'keterangan',
+              title: 'Keterangan',
+              description:
+                'Untuk cara membeli: kapan cara itu cocok. Untuk alur kerja: apa yang terjadi di langkah itu.',
+              type: 'internationalizedArrayText',
+            }),
+            defineField({
+              name: 'teks',
+              title: 'Teks lama satu baris',
+              type: 'internationalizedArrayString',
+              hidden: ({ parent }) => !parent?.teks,
+            }),
+          ],
+          validation: (Rule) =>
+            Rule.custom(
+              (value: { nama?: unknown; teks?: unknown } | undefined) =>
+                value?.nama || value?.teks ? true : 'Isi nama caranya.'
+            ),
+          preview: {
+            select: { title: 'nama.0.value', subtitle: 'keterangan.0.value' },
+          },
         }),
       ],
       validation: (Rule) => Rule.required().min(1),

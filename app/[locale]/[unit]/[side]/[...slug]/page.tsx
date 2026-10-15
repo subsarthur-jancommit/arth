@@ -105,6 +105,7 @@ function DetailNotFound() {
 
 const chapterReaderSchema = z.object({
   nama: z.string().nullable(),
+  pembeli: z.string().nullable(),
   kutipan: z.string().nullable(),
   situasi: z.string().nullable(),
   batas: z.string().nullable(),
@@ -176,6 +177,7 @@ function chapterIsSafe(data: ChapterReaderData): boolean {
 
   return canRenderPublicContent('chapter', [
     data.nama,
+    data.pembeli,
     data.kutipan,
     data.situasi,
     data.batas,
@@ -482,6 +484,9 @@ export default async function ArthurDetailPage({
             </blockquote>
             {chapterData.situasi ? (
               <p className="p-big">{chapterData.situasi}</p>
+            ) : null}
+            {chapterData.pembeli ? (
+              <p className="caption">{chapterData.pembeli}</p>
             ) : null}
           </header>
 

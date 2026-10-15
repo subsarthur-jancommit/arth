@@ -1,9 +1,15 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+import { VERBATIM_FIELDS } from '@/lib/content/style-gate'
 import { UNIT_STUDIO_TITLES, UNITS } from '@/lib/content/units'
 
 import { localeValue, requireIndonesian } from '../utils/i18n-array'
-import { forbidPlaceholders, internalFields } from './internal'
+import {
+  contentValidation,
+  headerPillarsField,
+  headerSummaryField,
+  internalFields,
+} from './internal'
 
 const DEFAULT_LOCALE = 'id'
 
@@ -24,7 +30,7 @@ export const unit = defineType({
     { name: 'isi', title: 'Isi', default: true },
     { name: 'internal', title: 'Internal' },
   ],
-  validation: (Rule) => Rule.custom(forbidPlaceholders),
+  validation: contentValidation(VERBATIM_FIELDS.unit),
   fields: [
     defineField({
       name: 'kunci',
@@ -42,13 +48,22 @@ export const unit = defineType({
     localizedLine('nama', 'Nama untuk pembaca'),
     localizedLine('judul', 'Judul unit'),
     defineField({
+      name: 'subjudul',
+      title: 'Subjudul',
+      type: 'internationalizedArrayText',
+      description:
+        'Baris miring di bawah judul header siap tayang, apa adanya.',
+    }),
+    defineField({
       name: 'pembuka',
       title: 'Pembuka',
       type: 'internationalizedArrayText',
       description:
-        'Paling banyak tiga kalimat; gunakan teks header yang disetujui apa adanya.',
+        'Paragraf pembuka header siap tayang, apa adanya. Bukan ringkasan buatan sendiri.',
       validation: (Rule) => Rule.required().custom(requireIndonesian),
     }),
+    headerPillarsField(),
+    headerSummaryField(),
     defineField({
       name: 'masalah',
       title: 'Masalah yang dijawab',

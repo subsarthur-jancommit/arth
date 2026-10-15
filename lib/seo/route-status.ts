@@ -263,7 +263,7 @@ export function brandedStatusDocument(
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>${escapeHtml(copy.message)} — ${escapeHtml(BRAND_NAME)}</title>
+<title>${escapeHtml(copy.message)} | ${escapeHtml(BRAND_NAME)}</title>
 <style>
 :root { color-scheme: light dark; --bg: #f6f5f3; --fg: #141414; --muted: #141414b3; --line: #14141426; }
 @media (prefers-color-scheme: dark) { :root { --bg: #0f0f0f; --fg: #f6f5f3; --muted: #f6f5f3b3; --line: #f6f5f326; } }

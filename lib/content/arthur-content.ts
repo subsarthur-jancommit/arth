@@ -19,6 +19,22 @@ const pointSchema = z.object({
   teks: textSchema.nullable(),
 })
 
+/** A labelled header paragraph, copied word for word from the master brief. */
+const pillarSchema = z.object({
+  _key: z.string(),
+  lead: textSchema.nullable(),
+  isi: textSchema.nullable(),
+})
+
+/** One way to buy, or one workflow step: a name, then when it fits or what happens. */
+const buyingStepSchema = z.object({
+  _key: z.string(),
+  nama: textSchema.nullable(),
+  keterangan: textSchema.nullable(),
+  /** The pre-V2 one-line form, read until the migration has run. */
+  teks: textSchema.nullable(),
+})
+
 const callToActionSchema = z.object({
   label: textSchema.nullable(),
   sesudahnya: textSchema.nullable(),
@@ -51,6 +67,9 @@ const unitContentSchema = z.object({
   nama: textSchema.nullable(),
   judul: textSchema.nullable(),
   pembuka: textSchema.nullable(),
+  subjudul: textSchema.nullable(),
+  pilar: z.array(pillarSchema).nullable(),
+  ringkas: textSchema.nullable(),
   masalah: z.array(pointSchema).nullable(),
   caraKerja: z.array(pointSchema).nullable(),
   sisi: z
@@ -88,7 +107,8 @@ const sideContentSchema = z.object({
   kunci: z.string(),
   nama: textSchema.nullable(),
   judul: textSchema.nullable(),
-  caraMembeli: z.array(pointSchema).nullable(),
+  pembeli: z.array(pointSchema).nullable(),
+  caraMembeli: z.array(buyingStepSchema).nullable(),
   langkahPertama: callToActionSchema.nullable(),
   bab: z
     .array(
@@ -150,6 +170,10 @@ export async function unitContent(
     parsed.data.nama,
     parsed.data.judul,
     parsed.data.pembuka,
+    parsed.data.subjudul,
+    parsed.data.ringkas,
+    ...(parsed.data.pilar?.flatMap((pillar) => [pillar.lead, pillar.isi]) ??
+      []),
     ...(parsed.data.masalah?.map((item) => item.teks) ?? []),
     ...(parsed.data.caraKerja?.map((item) => item.teks) ?? []),
     ...(parsed.data.sisi?.flatMap((side) => [side.nama, side.judul]) ?? []),
@@ -202,7 +226,12 @@ export async function sideContent(
   const values = [
     parsed.data.nama,
     parsed.data.judul,
-    ...(parsed.data.caraMembeli?.map((item) => item.teks) ?? []),
+    ...(parsed.data.pembeli?.map((item) => item.teks) ?? []),
+    ...(parsed.data.caraMembeli?.flatMap((item) => [
+      item.nama,
+      item.keterangan,
+      item.teks,
+    ]) ?? []),
     parsed.data.langkahPertama?.label,
     parsed.data.langkahPertama?.sesudahnya,
     ...(parsed.data.bab?.flatMap((bab) => [

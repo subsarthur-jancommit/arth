@@ -23,6 +23,8 @@ interface UnitHeroProps {
   eyebrow: string
   name: string
   title: string
+  /** The italic line under a ready-to-publish header, when the unit has one. */
+  subtitle?: string | null | undefined
   statement: string
   sideCount: string
   className?: string | undefined
@@ -33,6 +35,7 @@ export function UnitHero({
   eyebrow,
   name,
   title,
+  subtitle,
   statement,
   sideCount,
   className,
@@ -70,6 +73,9 @@ export function UnitHero({
         <h2 id={`${unit}-statement-title`} className={cn('h2', s.title)}>
           {title}
         </h2>
+        {subtitle ? (
+          <p className={cn('p-big', s.subtitle)}>{subtitle}</p>
+        ) : null}
         <p className={cn('p-big', s.copy)}>
           <ProgressText start="top 85%" end="bottom 35%">
             {statement}

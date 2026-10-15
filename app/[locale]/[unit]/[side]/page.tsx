@@ -68,15 +68,20 @@ export default async function SidePage({ params }: SidePageProps) {
   const [firstSide, secondSide] = SIDES[unit]
   const otherSide = side === firstSide ? secondSide : firstSide
   const title = content?.judul ?? fallback.judul
-  const steps = (content?.caraMembeli ?? []).flatMap((item) =>
-    item.teks ? [{ key: item._key, title: item.teks, body: '' }] : []
-  )
+  // A way to buy or a workflow step has a name and a line under it. The
+  // one-line `teks` is the pre-V2 shape, read until the migration has run.
+  const steps = (content?.caraMembeli ?? []).flatMap((item) => {
+    const name = item.nama ?? item.teks
+    return name
+      ? [{ key: item._key, title: name, body: item.keterangan ?? '' }]
+      : []
+  })
   const buyingSteps = steps.length
     ? steps
     : fallback.caraMembeli.map((item) => ({
         key: item._key,
-        title: item.teks,
-        body: '',
+        title: item.nama,
+        body: item.keterangan,
       }))
   const action = content?.langkahPertama ?? fallback.langkahPertama
   const chapters = (content?.bab ?? []).flatMap((chapter) => {
@@ -108,6 +113,10 @@ export default async function SidePage({ params }: SidePageProps) {
     ]
   })
   const sideName = content?.nama ?? fallback.nama
+  const candidateBuyers = (content?.pembeli ?? []).flatMap((item) =>
+    item.teks ? [item.teks] : []
+  )
+  const buyers = candidateBuyers.length ? candidateBuyers : fallback.pembeli
   const isNetworkSide = unit === 'peekabo' && side === 'jaringan'
   const networkContent = {
     caraKerja: content?.jaringan?.caraKerja ?? NETWORK_SIDE_FALLBACK.caraKerja,
@@ -176,6 +185,16 @@ export default async function SidePage({ params }: SidePageProps) {
             title={title}
             className={s.header}
           />
+          <div className={s.buyers}>
+            <p className="caption">{tSide('buyersLabel')}</p>
+            <ul className={s.buyerList}>
+              {buyers.map((buyer) => (
+                <li key={buyer} className="p">
+                  {buyer}
+                </li>
+              ))}
+            </ul>
+          </div>
         </header>
 
         {isNetworkSide ? (
@@ -183,7 +202,7 @@ export default async function SidePage({ params }: SidePageProps) {
             paths={networkPaths}
             steps={buyingSteps.map((step) => ({
               id: step.key,
-              text: step.title,
+              text: step.body ? `${step.title}. ${step.body}` : step.title,
             }))}
             moneySteps={networkMoneySteps}
             summary={networkContent.caraKerja}
@@ -214,7 +233,7 @@ export default async function SidePage({ params }: SidePageProps) {
         ) : (
           <>
             <StepSequence
-              label={tSide('buyingEyebrow')}
+              label={tSide(`buying.${side}`)}
               steps={buyingSteps}
               data-epic="side-buying-path"
               className={s.steps}

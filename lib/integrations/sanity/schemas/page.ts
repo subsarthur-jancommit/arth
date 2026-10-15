@@ -1,7 +1,7 @@
 import { defineField, defineType } from 'sanity'
 
 import { localeValue, requireIndonesian } from '../utils/i18n-array'
-import { forbidPlaceholders, internalFields } from './internal'
+import { contentValidation, internalFields } from './internal'
 
 const DEFAULT_LOCALE = 'id'
 
@@ -66,7 +66,7 @@ export const page = defineType({
     { name: 'internal', title: 'Internal' },
     { name: 'legacy', title: 'Warisan' },
   ],
-  validation: (Rule) => Rule.custom(forbidPlaceholders),
+  validation: contentValidation(),
   fields: [
     defineField({
       name: 'slug',

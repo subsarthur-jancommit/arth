@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'bun:test'
 
-import { askedOffers, percent, rolloutTable } from './measure-rollout'
+import {
+  askedOffers,
+  honestRows,
+  percent,
+  rolloutTable,
+} from './measure-rollout'
 
 describe('measure-rollout', () => {
   it('writes a percentage with an Indonesian decimal comma', () => {
@@ -28,5 +33,40 @@ describe('measure-rollout', () => {
     ].join('')
     expect(askedOffers(html)).toBe(2)
     expect(askedOffers('<main>Halaman tidak ditemukan</main>')).toBe(0)
+  })
+
+  it('prints a count without a denominator as a bare number', () => {
+    expect(
+      rolloutTable([{ label: 'Halaman pekerjaan terbit', value: 2 }])
+    ).toContain('| Halaman pekerjaan terbit | 2 | - |')
+  })
+
+  it('counts approved pages and chapters, never catalogue rows', () => {
+    const doc = (type: string, id: string, extra = {}) => ({
+      _id: id,
+      _type: type,
+      statusTinjauan: 'disetujui',
+      ...extra,
+    })
+    const rows = honestRows({
+      chapters: 55,
+      shownOnProduction: 3,
+      documents: [
+        doc('unit', 'u', { kunci: 'teknologi' }),
+        doc('side', 's', { kunci: 'siap-pakai', unit: { _ref: 'u' } }),
+        doc('bab', 'b', { sisi: { _ref: 's' }, slug: { current: 'kuliner' } }),
+        doc('offer', 'o1', { bab: { _ref: 'b' }, halamanSendiri: true }),
+        doc('offer', 'o2', { bab: { _ref: 'b' } }),
+        doc('offer', 'o3', { bab: { _ref: 'b' } }),
+        { _id: 'u2', _type: 'unit', statusTinjauan: 'perlu-anda' },
+      ],
+    })
+    const value = (label: string) =>
+      rows.find((row) => row.label === label)?.value
+    expect(value('Halaman disetujui pemilik')).toBe(3)
+    expect(value('Bab terbit')).toBe(1)
+    expect(value('Offer terpilih dan disetujui')).toBe(3)
+    expect(value('Halaman pekerjaan terbit')).toBe(1)
+    expect(value('Offer tampil di produksi')).toBe(3)
   })
 })

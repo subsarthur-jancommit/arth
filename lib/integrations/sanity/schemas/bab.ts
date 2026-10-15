@@ -1,7 +1,13 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+import { VERBATIM_FIELDS } from '@/lib/content/style-gate'
+
 import { localeValue, requireIndonesian } from '../utils/i18n-array'
-import { forbidPlaceholders, internalFields } from './internal'
+import {
+  contentValidation,
+  internalFields,
+  uniqueWithinParent,
+} from './internal'
 
 const DEFAULT_LOCALE = 'id'
 
@@ -28,7 +34,7 @@ export const bab = defineType({
     { name: 'isi', title: 'Isi', default: true },
     { name: 'internal', title: 'Internal' },
   ],
-  validation: (Rule) => Rule.custom(forbidPlaceholders),
+  validation: contentValidation(VERBATIM_FIELDS.bab),
   fields: [
     defineField({
       name: 'sisi',
@@ -45,8 +51,16 @@ export const bab = defineType({
       options: {
         source: (document) => localeValue(document.nama, DEFAULT_LOCALE) ?? '',
         maxLength: 96,
+        isUnique: uniqueWithinParent('bab', 'sisi'),
       },
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'pembeli',
+      title: 'Untuk siapa',
+      description:
+        'Baris Pembeli di bab master brief, ditulis sebagai orang: “Untuk pemilik kafe dan resto, …”.',
+      type: 'internationalizedArrayString',
     }),
     defineField({
       name: 'kutipan',
