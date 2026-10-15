@@ -104,7 +104,9 @@ bukan daftar langkah teknis. Ketiga halaman pekerjaan Kuliner ditulis ulang
 dalam bentuk itu dan disetujui pemilik. Pola dua paket berlaku untuk
 semua halaman pekerjaan Teknologi berikutnya. Halaman Buka langganan makan
 harian ([`R1-SERAH-LANGGANAN-MAKAN.md`](./R1-SERAH-LANGGANAN-MAKAN.md))
-menunggu persetujuan pemilik. Skema `offer` butuh medan
+disetujui pemilik. Halaman Bot stok bahan dan pesan ulang ke pemasok
+([`R1-SERAH-BOT-STOK-BAHAN.md`](./R1-SERAH-BOT-STOK-BAHAN.md)), yang terakhir
+dari lima pekerjaan Kuliner, menunggu persetujuan pemilik. Skema `offer` butuh medan
 `paket` di R2. Belum ada yang ditulis ke Sanity.
 
 Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk
