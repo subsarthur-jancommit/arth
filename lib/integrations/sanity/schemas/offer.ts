@@ -241,7 +241,7 @@ export const offer = defineType({
       name: 'halamanSendiri',
       title: 'Punya halaman sendiri',
       description:
-        'Hanya pintu masuk situasi, offer dalam rangkaian tiga unit, atau offer yang paling sering ditanyakan. Offer lain cukup tampil di daftar situasinya.',
+        'Hanya bila blok halamannya (situasi, dua paket, batas, langkah pertama) sudah ditulis dan disetujui: pintu masuk situasi, offer dalam rangkaian tiga unit, atau offer yang paling sering ditanyakan. Pintu masuk tanpa blok halaman tetap tampil di daftar sebagai “Mulai dari sini” (keputusan K-B).',
       type: 'boolean',
       initialValue: false,
       group: 'isi',

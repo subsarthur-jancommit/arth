@@ -404,6 +404,21 @@ export function draftDocuments(
   return `${docs.map((doc) => JSON.stringify(doc)).join('\n')}\n`
 }
 
+/** Every offer draft, chapter and bridge pair in the master brief. */
+export async function readCatalog(dir: string) {
+  const drafts: OfferDraft[] = []
+  const situations: SituationSource[] = []
+  for (const file of await sideFiles(dir)) {
+    const side = file.includes('Sisi A') ? 'A' : 'B'
+    const markdown = await readFile(file, 'utf8')
+    const place = { unit: unitOf(file), side } as const
+    drafts.push(...parseCatalog(markdown, place).map((row) => draftOffer(row)))
+    situations.push(...parseSituations(markdown, place))
+  }
+  const bridges = (await bridgeFiles(dir)).flatMap(parseBridges)
+  return { drafts, situations, bridges }
+}
+
 async function main() {
   const dir = process.argv.slice(2).find((arg) => !arg.startsWith('--'))
   const outIndex = process.argv.indexOf('--out')
@@ -415,16 +430,7 @@ async function main() {
     process.exit(1)
   }
 
-  const drafts: OfferDraft[] = []
-  const situations: SituationSource[] = []
-  for (const file of await sideFiles(dir)) {
-    const side = file.includes('Sisi A') ? 'A' : 'B'
-    const markdown = await readFile(file, 'utf8')
-    const place = { unit: unitOf(file), side } as const
-    drafts.push(...parseCatalog(markdown, place).map((row) => draftOffer(row)))
-    situations.push(...parseSituations(markdown, place))
-  }
-  const bridges = (await bridgeFiles(dir)).flatMap(parseBridges)
+  const { drafts, situations, bridges } = await readCatalog(dir)
 
   const auto = drafts.filter((draft) => draft.lane === 'otomatis').length
   console.log(

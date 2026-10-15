@@ -459,7 +459,7 @@ export const homeUnitsPreviewQuery = defineQuery(`
 const unitOfferCardFields = `
   _id,
   "slug": slug.current,
-  "punyaHalaman": coalesce(halamanSendiri, false) || coalesce(pintuMasuk, false),
+  "punyaHalaman": coalesce(halamanSendiri, false),
   "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
   "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),
   "untukSiapa": coalesce(untukSiapa[_key == $locale][0].value, untukSiapa[_key == "id"][0].value),
@@ -702,7 +702,7 @@ const chapterOfferCardFields = `
   pasar,
   urutan,
   "pintuMasuk": coalesce(pintuMasuk, false),
-  "punyaHalaman": coalesce(halamanSendiri, false) || coalesce(pintuMasuk, false)
+  "punyaHalaman": coalesce(halamanSendiri, false)
 `
 
 const chapterBridgeFields = `
@@ -711,7 +711,7 @@ const chapterBridgeFields = `
   "offer": select(
     offer->statusTinjauan == "disetujui" => offer->{
       "slug": slug.current,
-      "punyaHalaman": coalesce(halamanSendiri, false) || coalesce(pintuMasuk, false),
+      "punyaHalaman": coalesce(halamanSendiri, false),
       "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
       "bab": bab->{
         "slug": slug.current,
@@ -729,7 +729,7 @@ const chapterBridgePreviewFields = `
   "kalimat": coalesce(kalimat[_key == $locale][0].value, kalimat[_key == "id"][0].value),
   "offer": offer->{
     "slug": slug.current,
-    "punyaHalaman": coalesce(halamanSendiri, false) || coalesce(pintuMasuk, false),
+    "punyaHalaman": coalesce(halamanSendiri, false),
     "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
     "bab": bab->{
       "slug": slug.current,
@@ -802,7 +802,7 @@ const offerBridgeFields = `
     jembatan.offer->bab->sisi->statusTinjauan == "disetujui" &&
     jembatan.offer->bab->sisi->unit->statusTinjauan == "disetujui" => jembatan.offer->{
       "slug": slug.current,
-      "punyaHalaman": coalesce(halamanSendiri, false) || coalesce(pintuMasuk, false),
+      "punyaHalaman": coalesce(halamanSendiri, false),
       "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
       "bab": bab->{
         "slug": slug.current,
@@ -819,7 +819,7 @@ const offerBridgeFields = `
 const offerBridgePreviewFields = `
   "offer": jembatan.offer->{
     "slug": slug.current,
-    "punyaHalaman": coalesce(halamanSendiri, false) || coalesce(pintuMasuk, false),
+    "punyaHalaman": coalesce(halamanSendiri, false),
     "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
     "bab": bab->{
       "slug": slug.current,
@@ -879,7 +879,7 @@ export const offerPageQuery = defineQuery(`
   *[
     _type == "offer" &&
     statusTinjauan == "disetujui" &&
-    (halamanSendiri == true || pintuMasuk == true) &&
+    halamanSendiri == true &&
     slug.current == $slug &&
     bab._ref in *[
       _type == "bab" &&
@@ -905,7 +905,7 @@ export const offerPageQuery = defineQuery(`
 export const offerPagePreviewQuery = defineQuery(`
   *[
     _type == "offer" &&
-    (halamanSendiri == true || pintuMasuk == true) &&
+    halamanSendiri == true &&
     slug.current == $slug &&
     bab._ref in *[
       _type == "bab" &&

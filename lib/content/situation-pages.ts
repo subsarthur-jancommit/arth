@@ -11,6 +11,12 @@
 
 import type { CatalogUnit } from './offer-models'
 
+/**
+ * Units whose situation pages are derived today. A unit joins this list in
+ * the phase that builds its derivation (docs/RENCANA-KONTEKS-TAYANG.md).
+ */
+export const DERIVED_UNITS: readonly CatalogUnit[] = ['teknologi']
+
 export type SituationSource = {
   unit: CatalogUnit
   side: 'A' | 'B'

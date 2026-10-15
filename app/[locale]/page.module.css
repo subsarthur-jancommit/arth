@@ -1,6 +1,19 @@
+/*
+ * The home page owns rhythm and nothing else.
+ *
+ * Every section's internals live in its own block under `vault/blocks/`. What
+ * belongs here is the spacing between them and the page gutter — the two
+ * things no single section can decide on its own.
+ */
+
 .sections {
   display: flex;
   flex-direction: column;
+  /*
+   * Generous vertical rhythm. `DESIGN-SYSTEM.md` §3: the most common failure
+   * in almost-premium work is sections that are too tight, and whitespace is
+   * the cheapest expensive-looking asset there is.
+   */
   gap: mobile-vw(96px);
   padding-block: mobile-vw(96px) mobile-vw(128px);
 
@@ -11,12 +24,49 @@
 }
 
 .section {
+  /*
+   * The header-to-body rhythm every section shares.
+   *
+   * `#work` composes `SectionHeader` + `ProjectGrid` as plain children, so
+   * without this it had no gap at all: measured 0px, against 48px on
+   * `#studio` and `#contact`, which carry the same token inside their own
+   * blocks. The heading sat flush against the first cover and read as its
+   * caption rather than as a section title.
+   *
+   * Harmless on the blocks that already handle their own internals — they
+   * are a single flex child here, and a gap needs two.
+   */
   display: flex;
   flex-direction: column;
   gap: var(--section-lead);
-  padding-block-start: var(--section-lead);
-  padding-inline: var(--safe);
+  /*
+   * Where a section begins, said out loud.
+   *
+   * The page is 5749px at 1440 — it was 4385px before Tahap 12a put real work
+   * in it — and 160px of empty space between sections reads as a pause within
+   * one section as readily as the end of it. A reader scrolling that far had
+   * nothing but a change of heading to go on.
+   *
+   * A hairline, not numbering. `01 / 02 / 03` on Work, Studio and Contact
+   * would claim a sequence, and these are not one: they are three parts of a
+   * page a reader may enter at any of them from the nav. A rule says only
+   * "something new starts here", which is the thing that is actually true.
+   *
+   * The same `--section-lead` token below it as between the header and the
+   * body, so the rule joins the rhythm Tahap 11a established rather than
+   * introducing a second spacing vocabulary.
+   */
   border-block-start: 1px solid var(--line);
+  padding-block-start: var(--section-lead);
+  /* Matches the site gutter used by the header and footer, so a section edge
+     lines up with the wordmark above it rather than nearly lining up. */
+  padding-inline: var(--safe);
+  /*
+   * `scroll-margin-top` on the section, not just `scroll-padding-top` on
+   * `<html>`. The global rule handles the fixed header; this adds breathing
+   * room so an anchored section starts below the bar rather than flush
+   * against it.
+   */
   scroll-margin-top: calc(var(--header-height) + mobile-vw(24px));
 
   @media (--desktop) {
@@ -26,34 +76,79 @@
 
 .heroCta {
   display: inline-block;
-  padding: mobile-vw(16px) mobile-vw(24px);
-  color: var(--color-secondary);
-  text-decoration: none;
-  text-transform: uppercase;
+  /*
+   * Family, size and leading come from the `cta` utility now — Tahap 36.
+   *
+   * They were hand-rolled here, and `font-size: mobile-vw(12px)` floors at
+   * 10.24px on a 320px screen, under the 11px readability floor
+   * `typography.ts` set on purpose. `e2e/scale-continuity.e2e.ts` found it:
+   * one element on the whole site, and the only one.
+   *
+   * Only the tracking stays local, because this control is set uppercase and
+   * the scale's -0.01em is for lower case.
+   */
   letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-secondary);
+  padding: mobile-vw(16px) mobile-vw(24px);
+  /* Outline rather than border: it does not change the box, so the magnetic
+     wrapper's transform has nothing to fight. */
   outline: 1px solid var(--color-secondary);
   outline-offset: -1px;
+  /*
+   * INTENT and COMMIT, `MOTION-SPEC.md` §9.
+   *
+   * The fill was 400ms — the standard band, twice what §9 gives INTENT. A
+   * call to action that takes 400ms to acknowledge a pointer is the one
+   * control on the page that most needs to feel answered.
+   */
   transition:
     background-color var(--duration-fast) var(--ease-gleasing),
     color var(--duration-fast) var(--ease-gleasing),
     transform var(--duration-micro) var(--ease-out-quart);
 
   @media (--desktop) {
+    /* No `font-size` here either: `cta` already runs 12 to 14 as one curve. */
     padding: desktop-vw(16px) desktop-vw(32px);
   }
 
   @media (--hover) {
     &:hover {
-      color: var(--color-primary);
       background-color: var(--color-secondary);
+      color: var(--color-primary);
     }
   }
 
+  /* INTENT from the keyboard — the same state hover produces, not just a
+     ring. See the note in `header.module.css`. */
   &:focus-visible {
-    color: var(--color-primary);
     background-color: var(--color-secondary);
+    color: var(--color-primary);
     outline: 2px solid var(--color-contrast);
     outline-offset: 4px;
+  }
+}
+
+/*
+ * The statement's paragraphs, spaced like the prose column around them.
+ *
+ * `vault/blocks/studio-note` spaces its prose with a flex `gap`, and a gap
+ * reaches only direct children. This wrapper (it carries `data-statement`)
+ * sat between them, so its paragraphs touched: "…a menu of services." ran
+ * straight into "The work runs from…" at every width. Measured on the live
+ * site on 2026-10-05 (`docs/HANDOFF.md` §4.8, A5). `inherit` takes the
+ * column's own gap, so the two cannot drift apart.
+ */
+.statement {
+  display: flex;
+  flex-direction: column;
+  gap: inherit;
+}
+
+@media (--reduced-motion) {
+  .heroCta {
+    transition: none;
   }
 }
 
@@ -65,42 +160,5 @@
 
   @media (--desktop) {
     padding: desktop-vw(12px) desktop-vw(16px);
-  }
-}
-
-.sequence {
-  align-items: flex-start;
-}
-
-.sequenceCopy {
-  max-inline-size: 62ch;
-  margin: 0;
-}
-
-.textLink {
-  --press-scale: 0.98;
-  display: inline-block;
-  color: var(--color-secondary);
-  text-underline-offset: 0.25em;
-  transition:
-    opacity var(--duration-fast) var(--ease-out-quart),
-    transform var(--duration-micro) var(--ease-out-quart);
-
-  @media (--hover) {
-    &:hover {
-      opacity: 0.7;
-    }
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--color-contrast);
-    outline-offset: 4px;
-  }
-}
-
-@media (--reduced-motion) {
-  .heroCta,
-  .textLink {
-    transition: none;
   }
 }
