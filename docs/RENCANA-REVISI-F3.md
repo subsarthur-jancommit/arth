@@ -112,7 +112,14 @@ Pada 15 Oktober 2026 pemilik menghentikan penulisan halaman pekerjaan satu per
 satu: website adalah alat untuk mendatangkan dan mengukur leads, bukan buku.
 Pendekatan penggantinya, pola per model offer, ada di
 [`R1-PENDEKATAN-POLA-OFFER.md`](./R1-PENDEKATAN-POLA-OFFER.md) dan menunggu
-persetujuan pemilik. Halaman Bot stok bahan menjadi bahan uji pola. Skema `offer` butuh medan
+disetujui pemilik pada hari yang sama. Halaman Bot stok bahan menjadi bahan uji pola.
+
+Langkah 2 rekomendasinya dikerjakan di lokal: skema `offer` mendapat medan
+`model`, `tingkat`, dan `halamanSendiri`; `situasi` dan `batas` hanya wajib bagi offer
+berhalaman sendiri; `langkah` dan `serahan` opsional. Skrip
+`lib/scripts/import-catalog.ts` membaca 688 baris master brief dan memisahkan 506
+yang otomatis dari 182 yang ditulis tangan, tanpa menulis ke Sanity. Rute yang
+membaca `halamanSendiri` dan tampilan dua paket menyusul di R3 dan R5. Skema `offer` butuh medan
 `paket` di R2. Belum ada yang ditulis ke Sanity.
 
 Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk

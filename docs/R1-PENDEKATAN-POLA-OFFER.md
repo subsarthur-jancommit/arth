@@ -51,23 +51,23 @@ tertahan, dan dampaknya tidak menjanjikan hasil di tangan pihak lain.
 
 | #   | Model                                | Unit dan asal                                  | Offer   | †      | Tertahan | Dampak ditulis ulang | Siap    |
 | --- | ------------------------------------ | ---------------------------------------------- | ------- | ------ | -------- | -------------------- | ------- |
-| 1   | Sistem yang dipasang                 | Teknologi Bot, Workflow                        | 160     | 23     | 2        | 16                   | 119     |
-| 2   | Kanal pendapatan baru                | Teknologi Pasar                                | 59      | 4      | 1        | 4                    | 50      |
-| 3   | Angka dan laporan                    | Teknologi Data                                 | 55      | 3      | 3        | 3                    | 46      |
+| 1   | Sistem yang dipasang                 | Teknologi Bot, Workflow                        | 160     | 23     | 2        | 20                   | 115     |
+| 2   | Kanal pendapatan baru                | Teknologi Pasar                                | 59      | 4      | 1        | 15                   | 39      |
+| 3   | Angka dan laporan                    | Teknologi Data                                 | 55      | 3      | 3        | 9                    | 40      |
 | 4   | Pekerjaan teknis spesialis           | Teknologi Fondasi                              | 42      | 2      | 0        | 5                    | 35      |
 | 5   | Berkas dan administrasi proyek       | Konstruksi Celah di administrasi dan pengadaan | 49      | 3      | 0        | 3                    | 43      |
 | 6   | Tenaga, alat, dan desain di lapangan | Konstruksi Celah lainnya                       | 37      | 3      | 0        | 2                    | 32      |
-| 7   | Proyek dan bangunan jadi             | Konstruksi Paket, Nilai, paket rakitan         | 84      | 4      | 0        | 6                    | 74      |
+| 7   | Proyek dan bangunan jadi             | Konstruksi Paket, Nilai, paket rakitan         | 84      | 4      | 0        | 7                    | 73      |
 | 8   | Barang dan material                  | Konstruksi Pasok                               | 16      | 0      | 0        | 1                    | 15      |
 | 9   | Lewat mitra berizin                  | Konstruksi Jembatan, Celah modal dan mitra     | 16      | 10     | 0        | 0                    | 6       |
-| 10  | Layanan bulanan                      | Konstruksi Rawat, Peekabo Kelola, Operator     | 46      | 2      | 17       | 1                    | 26      |
+| 10  | Layanan bulanan                      | Konstruksi Rawat, Peekabo Kelola, Operator     | 46      | 2      | 17       | 4                    | 23      |
 | 11  | Konten dan aset                      | Peekabo Aset                                   | 25      | 0      | 0        | 1                    | 24      |
 | 12  | Arah, strategi, dan kelas            | Peekabo Arah                                   | 26      | 2      | 0        | 2                    | 22      |
 | 13  | Kampanye berbatas waktu              | Peekabo Kampanye                               | 21      | 5      | 0        | 1                    | 15      |
 | 14  | Orang untuk brand                    | Peekabo Talenta                                | 10      | 5      | 0        | 0                    | 5       |
 | 15  | Afiliasi untuk brand                 | Peekabo Jaringan di Sisi A                     | 11      | 6      | 1        | 0                    | 4       |
 | 16  | Ikut menjualkan                      | Seluruh Peekabo Sisi B                         | 31      | 11     | 4        | 1                    | 15      |
-|     | **Jumlah**                           |                                                | **688** | **83** | **28**   | **46**               | **531** |
+|     | **Jumlah**                           |                                                | **688** | **83** | **28**   | **71**               | **506** |
 
 Setiap offer masuk tepat satu model; tidak ada offer yang tersisa. Kolom †
 tidak menghitung offer † yang sudah tertahan.
@@ -83,10 +83,11 @@ tidak menghitung offer † yang sudah tertahan.
 Bab modal kerja tidak tertahan. Peta website menulisnya sebagai penjembatanan
 lewat mitra sampai mekanismenya diputuskan.
 
-**Dampak ditulis ulang (46)** dihitung dengan pencarian kata seperti naik,
-hilang, berkurang, cair, menang, dan terjual. Angka ini batas bawah: dampak
-seperti “pendapatan berulang” di langganan makan harian tidak tertangkap kata
-itu. Setiap dampak tetap dibaca sekali sebelum tayang.
+**Dampak ditulis ulang (71)** dihitung dengan pencarian kata seperti naik,
+hilang, berkurang, cair, menang, terjual, pendapatan, dan penjualan. Angka
+ini batas bawah. Setiap dampak tetap dibaca sekali sebelum tayang. Angka di
+tabel dihasilkan `lib/scripts/import-catalog.ts`; versi pertama dokumen ini
+mencatat 46 dan 531 sebelum kata pendapatan dan penjualan ditambahkan.
 
 ## 2. Templat per model
 
@@ -207,7 +208,7 @@ menjadi sumber.
 | Risiko                                                              | Penanganan                                                                                                                                                                                        |
 | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Halaman tipis yang mirip satu sama lain                             | Offer tidak punya halaman sendiri secara bawaan. Yang dipasarkan ke mesin pencari adalah halaman situasi, yang isinya berbeda per situasi                                                         |
-| Dampak otomatis yang menjanjikan hasil                              | Pencarian kata menandai 46 baris, dan semua dampak dibaca sekali sebelum tayang. Pencarian diperluas untuk kata pendapatan dan penjualan                                                          |
+| Dampak otomatis yang menjanjikan hasil                              | Pencarian kata menandai 71 baris, termasuk kata pendapatan dan penjualan, dan semua dampak dibaca sekali sebelum tayang                                                                           |
 | Offer † yang tidak cocok dengan templat                             | 83 offer † tidak lewat jalur otomatis. Rumusan amannya ditulis per model, karena aturannya berulang (mitra berizin, status platform, struktur)                                                    |
 | Perbedaan antarunit                                                 | Konstruksi dan Peekabo memakai bahasa tingkatnya sendiri. Peekabo Sisi B tidak memakai daftar offer: tiga halaman jalur dengan aturan jaringan                                                    |
 | Daftar terlalu panjang                                              | Situasi terbesar memuat 26 offer (Lintas sektor). Di sana daftar dibuka per jenis, dan hanya pintu masuk terbuka di awal                                                                          |
@@ -234,7 +235,7 @@ disetujui, termasuk dua paket.
 1. Anda menyetujui dokumen ini.
 2. Skema dan skrip impor dikerjakan di R2, lewat PR.
 3. Agen menulis tangan bagian yang tidak otomatis, per model: rumusan aman †,
-   46 dampak, dan batas bawaan Konstruksi dan Peekabo.
+   71 dampak, dan batas bawaan Konstruksi dan Peekabo.
 4. Halaman situasi Teknologi diturunkan lebih dulu, karena polanya sudah
    teruji di Kuliner.
 5. Halaman Cara kami dibayar ditulis sesudahnya, supaya blok cara bayar di

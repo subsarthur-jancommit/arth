@@ -307,6 +307,15 @@ export type Offer = {
   jenis?: InternationalizedArrayString;
   pasar?: "pemerintah" | "swasta" | "keduanya";
   situasi?: InternationalizedArrayText;
+  tingkat?: Array<{
+    nama?: InternationalizedArrayString;
+    kalimat?: InternationalizedArrayText;
+    poin?: Array<{
+      teks?: InternationalizedArrayString;
+      _key: string;
+    }>;
+    _key: string;
+  }>;
   langkah?: Array<{
     teks?: InternationalizedArrayString;
     _key: string;
@@ -326,6 +335,24 @@ export type Offer = {
   };
   urutan?: number;
   pintuMasuk?: boolean;
+  halamanSendiri?: boolean;
+  model?:
+    | "sistem-dipasang"
+    | "kanal-pendapatan"
+    | "angka-laporan"
+    | "teknis-spesialis"
+    | "berkas-administrasi"
+    | "lapangan"
+    | "proyek-jadi"
+    | "barang"
+    | "lewat-mitra"
+    | "bulanan"
+    | "konten-aset"
+    | "arah-kelas"
+    | "kampanye"
+    | "orang"
+    | "afiliasi"
+    | "ikut-menjualkan";
   metadata?: Metadata;
   idKatalog?: string;
   jejakSumber?: Array<{
