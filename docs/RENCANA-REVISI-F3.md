@@ -106,7 +106,13 @@ semua halaman pekerjaan Teknologi berikutnya. Halaman Buka langganan makan
 harian ([`R1-SERAH-LANGGANAN-MAKAN.md`](./R1-SERAH-LANGGANAN-MAKAN.md))
 disetujui pemilik. Halaman Bot stok bahan dan pesan ulang ke pemasok
 ([`R1-SERAH-BOT-STOK-BAHAN.md`](./R1-SERAH-BOT-STOK-BAHAN.md)), yang terakhir
-dari lima pekerjaan Kuliner, menunggu persetujuan pemilik. Skema `offer` butuh medan
+dari lima pekerjaan Kuliner, menunggu persetujuan pemilik.
+
+Pada 15 Oktober 2026 pemilik menghentikan penulisan halaman pekerjaan satu per
+satu: website adalah alat untuk mendatangkan dan mengukur leads, bukan buku.
+Pendekatan penggantinya, pola per model offer, ada di
+[`R1-PENDEKATAN-POLA-OFFER.md`](./R1-PENDEKATAN-POLA-OFFER.md) dan menunggu
+persetujuan pemilik. Halaman Bot stok bahan menjadi bahan uji pola. Skema `offer` butuh medan
 `paket` di R2. Belum ada yang ditulis ke Sanity.
 
 Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk
