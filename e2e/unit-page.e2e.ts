@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 import { SIDES, UNITS } from '../lib/content/units'
-import { routing } from '../lib/i18n/routing'
+import { PUBLISHED_LOCALES } from '../lib/i18n/routing'
 
 /**
  * Each unit has a page, exactly one URL, and exposes its two reader sides.
@@ -30,7 +30,8 @@ import { routing } from '../lib/i18n/routing'
  */
 
 test.describe('unit pages', () => {
-  for (const locale of routing.locales) {
+  // Only published locales render a unit page; English answers 307 (R0).
+  for (const locale of PUBLISHED_LOCALES) {
     for (const unit of UNITS) {
       test(`/${locale}/${unit} is a page about the unit`, async ({ page }) => {
         const response = await page.goto(`/${locale}/${unit}`)

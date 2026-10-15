@@ -81,15 +81,21 @@ test.describe('an address nothing answers at returns a real 404', () => {
 })
 
 test.describe('the pages that do answer are untouched by all of it', () => {
-  for (const locale of routing.locales) {
-    for (const unit of UNITS) {
-      test(`/${locale}/${unit} answers 200`, async ({ request }) => {
-        const response = await request.get(`/${locale}/${unit}`, {
-          maxRedirects: 0,
-        })
-        expect(response.status()).toBe(200)
-      })
-    }
+  for (const unit of UNITS) {
+    test(`/id/${unit} answers 200`, async ({ request }) => {
+      const response = await request.get(`/id/${unit}`, { maxRedirects: 0 })
+      expect(response.status()).toBe(200)
+    })
+
+    // Untranslated, so its English address answers with the Indonesian
+    // twin rather than a page (K2, R0).
+    test(`/en/${unit} answers 307 to /id/${unit}`, async ({ request }) => {
+      const response = await request.get(`/en/${unit}`, { maxRedirects: 0 })
+      expect(response.status()).toBe(307)
+      expect(
+        new URL(response.headers().location ?? '', 'http://x').pathname
+      ).toBe(`/id/${unit}`)
+    })
   }
 
   /*

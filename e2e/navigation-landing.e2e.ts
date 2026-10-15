@@ -73,7 +73,9 @@ async function navigate(
   await page.waitForTimeout(1200)
   if (prepare) await prepare(page)
 
-  const link = page.locator(`a[href="${to}"]`).first()
+  // `main`: on a phone the header's copy of the link sits in the closed
+  // sheet, and the reader presses the one on the page.
+  const link = page.locator(`main a[href="${to}"]`).first()
   await expect(link, `no link to ${to} on ${from}`).toBeVisible()
   await link.click()
   await page.waitForURL((url) => url.pathname === to)

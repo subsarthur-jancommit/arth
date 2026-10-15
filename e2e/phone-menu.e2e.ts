@@ -143,7 +143,7 @@ test.describe('the phone menu', () => {
       )
 
       await expect(
-        menu.getByRole('link', { name: 'Cara kami bekerja', exact: true }),
+        menu.getByRole('link', { name: 'Kontak', exact: true }),
         'the page the reader is on is not marked'
       ).toHaveAttribute('aria-current', 'page')
 
@@ -390,7 +390,7 @@ test.describe('the phone menu', () => {
 
     await openMenu(page)
     await expect(
-      menuOf(page).getByRole('link', { name: 'Cara kami bekerja', exact: true })
+      menuOf(page).getByRole('link', { name: 'Konstruksi', exact: true })
     ).toHaveAttribute('aria-current', 'page')
   })
 
@@ -523,7 +523,7 @@ test.describe('the same nav on desktop', () => {
       'Konstruksi',
       'Teknologi',
       'Peekabo',
-      'Cara kami bekerja',
+      // "Cara kami bekerja" returns when its page is published (R0, R5).
       'Kontak',
     ]) {
       await expect(

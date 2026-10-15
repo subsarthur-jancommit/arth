@@ -142,8 +142,10 @@ test.describe('project detail', () => {
      * `/en/en/work/foo`. That matches the CMS catch-all rather than the work
      * route, so every card in the grid led to a not-found page — served with
      * a 200 status, so nothing anywhere reported a problem.
+     *
+     * On the catalogue since F3-01 took the work grid off the home page.
      */
-    await page.goto('/id')
+    await page.goto('/id/work')
     const hrefs = await page
       .locator('a[href*="/work/"]')
       .evaluateAll((links) =>

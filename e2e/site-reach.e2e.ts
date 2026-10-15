@@ -52,7 +52,9 @@ import { FEATURED_WORK } from './fixtures'
  * a guess and it stays inside the requested locale.
  */
 const GUESSED: [typed: string, lands: string][] = [
-  ['/en/contact', '/en/kontak'],
+  // `/en/kontak` itself answers 307 to `/id/kontak` since R0 (K2), so the
+  // single-hop guess is the Indonesian one.
+  ['/id/contact', '/id/kontak'],
   ['/id/karya', '/id/work'],
 ]
 

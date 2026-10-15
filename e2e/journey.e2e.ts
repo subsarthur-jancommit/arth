@@ -172,7 +172,7 @@ test.describe('a reader moving through the site', () => {
     // Hop 2 — a unit to the next unit, through the sibling links the unit
     // page carries. Same component on both ends, which is where a leaked
     // transition name would do the most damage.
-    await page.locator(`a[href="/id/${second}"]`).first().click()
+    await page.locator(`main a[href="/id/${second}"]`).first().click()
     await page.waitForURL(`**/${second}`)
     const hop2 = await resting(page)
     assertOpenedAtTop(hop2, 'hop 2 unit → next unit')
@@ -211,7 +211,7 @@ test.describe('a reader moving through the site', () => {
     // Hop 6 — the same navigation as hop 2, six hops later. If any state
     // leaked along the way, this is where it shows: same assertions, and they
     // have to pass identically.
-    await page.locator(`a[href="/id/${second}"]`).first().click()
+    await page.locator(`main a[href="/id/${second}"]`).first().click()
     await page.waitForURL(`**/${second}`)
     const hop6 = await resting(page)
     assertOpenedAtTop(hop6, 'hop 6 (repeat of hop 2)')

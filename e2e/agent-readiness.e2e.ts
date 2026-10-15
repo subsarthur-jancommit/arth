@@ -178,7 +178,8 @@ test.describe('Markdown content negotiation', () => {
       if (htmlVary.includes(field)) expect(markdownVary).toContain(field)
     }
 
-    expect(body).toContain(`# Home | ${SITE.name}`)
+    // Indonesian is the default since F1-07 (K1); the home is "Beranda".
+    expect(body).toContain(`# Beranda | ${SITE.name}`)
     expect(body).toContain('## When to use')
     expect(body).toContain('## How to use')
   })
