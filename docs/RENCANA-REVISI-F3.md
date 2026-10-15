@@ -148,8 +148,13 @@ disetujui tetap di tempatnya (`lib/content/situation-overrides.ts`). Tinjauannya
 [`R1-SITUASI-TEKNOLOGI.md`](./R1-SITUASI-TEKNOLOGI.md). Saat menurunkannya, gerbang gaya
 menangkap 17 baris otomatis lagi (kata penguat, judul lebih dari 8 kata, dampak
 yang menjanjikan hasil); 15 di Teknologi, 1 di Konstruksi, 1 di Peekabo. Semuanya
-ditulis ulang di `catalog-overrides.ts` dan menunggu persetujuan pemilik bersama
-halaman situasinya. Skema `offer` butuh medan
+ditulis ulang di `catalog-overrides.ts` dan disetujui pemilik bersama halaman
+situasinya pada 15 Oktober 2026.
+
+Langkah 5, halaman Cara kami dibayar, ditulis di
+[`R1-SERAH-CARA-KAMI-DIBAYAR.md`](./R1-SERAH-CARA-KAMI-DIBAYAR.md), beserta pemendekan
+blok cara bayar di halaman pekerjaan sesudah halaman itu terbit. Menunggu
+persetujuan pemilik. Skema `offer` butuh medan
 `paket` di R2. Belum ada yang ditulis ke Sanity.
 
 Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk
