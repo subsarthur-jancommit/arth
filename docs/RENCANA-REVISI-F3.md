@@ -102,7 +102,9 @@ Pada 15 Oktober 2026 pemilik mengarahkan ulang halaman pekerjaan Teknologi: seti
 halaman menawarkan Paket Starter dan Paket Integrator (glosarium bagian 10),
 bukan daftar langkah teknis. Ketiga halaman pekerjaan Kuliner ditulis ulang
 dalam bentuk itu dan disetujui pemilik. Pola dua paket berlaku untuk
-semua halaman pekerjaan Teknologi berikutnya. Skema `offer` butuh medan
+semua halaman pekerjaan Teknologi berikutnya. Halaman Buka langganan makan
+harian ([`R1-SERAH-LANGGANAN-MAKAN.md`](./R1-SERAH-LANGGANAN-MAKAN.md))
+menunggu persetujuan pemilik. Skema `offer` butuh medan
 `paket` di R2. Belum ada yang ditulis ke Sanity.
 
 Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk
