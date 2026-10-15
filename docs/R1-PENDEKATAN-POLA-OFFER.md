@@ -12,6 +12,19 @@ tampil, agen menulis dari FULL KONTEKS tanpa placeholder, pola Starter dan
 Integrator untuk Teknologi, aturan isi dan tanda † ‡, tidak menulis ke Sanity
 tanpa “ok tulis”.
 
+**Prinsip utama: website adalah lead funnel yang baik, bukan buku.** Pemilik
+menyetujui penalaran pola ini dan menilai informasi yang lebih mengalir
+membuat proyek lebih unggul. Setiap halaman lolos tiga uji sebelum ditulis:
+
+1. **Konteks benar.** Halaman merujuk situasi, unit, dan pembaca yang tepat,
+   sehingga pembeli tahu dalam satu layar bahwa ia di tempat yang benar.
+2. **Padat.** Halaman hanya menulis hal yang ingin diketahui klien sebelum
+   bertanya: apa yang diserahkan, untuk siapa, batasnya, dan cara mulai.
+   Penjelasan yang berulang di banyak halaman pindah ke satu halaman yang
+   dirujuk (bagian 3, Dua halaman yang direncanakan).
+3. **Berakhir di langkah pertama yang terukur.** Setiap halaman ditutup satu
+   ajakan yang membawa asal halaman dan nama pekerjaannya.
+
 Angka di dokumen ini dihitung dengan skrip dari tabel katalog ketiga unit.
 Skrip membaca 688 baris; jumlah † per unit (23, 35, 40) dan ‡ (5) cocok
 dengan master brief.
@@ -165,6 +178,19 @@ Laporan bulanan untuk Anda: offer dan situasi yang paling sering ditanyakan.
 Angka itu yang menentukan offer mana naik menjadi pintu masuk atau mendapat
 halaman sendiri.
 
+**Dua halaman yang direncanakan.** Keduanya rencana, belum ditulis sekarang.
+Tujuannya memendekkan halaman pekerjaan: yang berulang dijelaskan sekali di
+sana, lalu cukup dirujuk.
+
+| Halaman                                                                                                                                                                                                          | Posisi di funnel                                                                                                                                                          | Yang pindah dari halaman pekerjaan                                                                                                                                                                                                                                                          | Dasar di FULL KONTEKS                                                                                                                                                                                                                                                             | Yang menahan                                                                                                                                                                                                                                                                                                         |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Cara kami dibayar.** Menafsirkan skema pembayaran dari filosofi Arthur: biaya pembangunan, kemitraan bagi hasil, komisi mitra yang diungkapkan, semuanya tertulis sebelum kerja, tanpa janji keuntungan instan | Tahap menimbang, sesudah pembeli tertarik pada satu pekerjaan dan sebelum ia bertanya. Dirujuk dari setiap halaman pekerjaan, halaman unit, dan halaman Cara kami bekerja | Paragraf kedua blok Cara kami bekerja (cara bayar dan komisi). Halaman pekerjaan menyisakan satu kalimat: “Komisi dari mitra kami ungkapkan sejak awal”, ditambah tautan. Kalimat wajib komisi tetap ada di halaman yang menyarankan vendor, karena Aturan isi mewajibkannya di halaman itu | Header Arthur, Cara kami bekerja; header Teknologi, “Pembayaran fleksibel”; Pola pikir Arthur, pegangan 5; aturan main gabungan 2, 3, 4, dan 10; Teknologi aturan 10 (bagi hasil dan ekuitas)                                                                                     | Tanpa angka sampai Anda menetapkan harga (Aturan isi 2). Bagi hasil ditulis sebagai bagi hasil pendapatan; ekuitas butuh valuasi dan akta, jadi tidak ditawarkan di halaman. Skema Konstruksi dan model monetisasi Peekabo belum dirumuskan untuk pembeli, jadi versi pertama memuat skema umum Arthur dan Teknologi |
+| **Dokumentasi.** Foto dan video pekerjaan nyata, diproduksi di studio foto Arthur, dengan halaman khusus                                                                                                         | Tahap percaya, tepat sebelum kontak. Dirujuk dari halaman situasi dan pekerjaan yang punya dokumentasi                                                                    | Galeri dan foto di halaman pekerjaan, beserta keterangan bahwa visual adalah rencana. Halaman pekerjaan cukup menautkan “Lihat dokumentasi” bila ada isinya                                                                                                                                 | Aturan membangun situs, Gambar: foto proyek nyata dengan izin pemiliknya, render diberi keterangan. Master brief, keputusan Bukti pertama (rekam jejak, tiga demo Teknologi, transaksi pertama). Konstruksi: foto progres 0, 50, dan 100 persen. Peekabo: produksi foto dan video | Belum ada foto proyek nyata yang boleh tampil, dan izin pemiliknya belum ada. Keputusan Bukti pertama dan keputusan 5 Kerangka pemandu (bukti yang boleh tampil) masih terbuka. Studio fotonya sendiri belum ada. Nama klien, logo, dan testimoni tetap tidak tampil tanpa izin tertulis                             |
+
+Halaman Dokumentasi adalah pengganti alami katalog Karya (`/work`) yang sekarang
+masih berisi isi dummy: rutenya sudah ada, dan dummy di sana tidak boleh
+menjadi sumber.
+
 **Dampak pada pekerjaan berikutnya:**
 
 | Bagian        | Perubahan                                                                                                                                                                                 |
@@ -178,15 +204,18 @@ halaman sendiri.
 
 ## 4. Tinjauan kritis dan rekomendasi
 
-| Risiko                                   | Penanganan                                                                                                                                                             |
-| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Halaman tipis yang mirip satu sama lain  | Offer tidak punya halaman sendiri secara bawaan. Yang dipasarkan ke mesin pencari adalah halaman situasi, yang isinya berbeda per situasi                              |
-| Dampak otomatis yang menjanjikan hasil   | Pencarian kata menandai 46 baris, dan semua dampak dibaca sekali sebelum tayang. Pencarian diperluas untuk kata pendapatan dan penjualan                               |
-| Offer † yang tidak cocok dengan templat  | 83 offer † tidak lewat jalur otomatis. Rumusan amannya ditulis per model, karena aturannya berulang (mitra berizin, status platform, struktur)                         |
-| Perbedaan antarunit                      | Konstruksi dan Peekabo memakai bahasa tingkatnya sendiri. Peekabo Sisi B tidak memakai daftar offer: tiga halaman jalur dengan aturan jaringan                         |
-| Daftar terlalu panjang                   | Situasi terbesar memuat 26 offer (Lintas sektor). Di sana daftar dibuka per jenis, dan hanya pintu masuk terbuka di awal                                               |
-| Website menjadi katalog                  | Peta website menulis “website menayangkan pilihan, bukan katalog”. Arahan terbaru Anda menang. Pilihan tetap terasa lewat pintu masuk di atas dan urutan menurut jenis |
-| Persetujuan per offer tidak lagi mungkin | Anda menyetujui templat per model dan daftar per situasi, bukan per offer. Offer yang Anda tolak cukup ditandai “ditahan” di Studio                                    |
+| Risiko                                                              | Penanganan                                                                                                                                                                                        |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Halaman tipis yang mirip satu sama lain                             | Offer tidak punya halaman sendiri secara bawaan. Yang dipasarkan ke mesin pencari adalah halaman situasi, yang isinya berbeda per situasi                                                         |
+| Dampak otomatis yang menjanjikan hasil                              | Pencarian kata menandai 46 baris, dan semua dampak dibaca sekali sebelum tayang. Pencarian diperluas untuk kata pendapatan dan penjualan                                                          |
+| Offer † yang tidak cocok dengan templat                             | 83 offer † tidak lewat jalur otomatis. Rumusan amannya ditulis per model, karena aturannya berulang (mitra berizin, status platform, struktur)                                                    |
+| Perbedaan antarunit                                                 | Konstruksi dan Peekabo memakai bahasa tingkatnya sendiri. Peekabo Sisi B tidak memakai daftar offer: tiga halaman jalur dengan aturan jaringan                                                    |
+| Daftar terlalu panjang                                              | Situasi terbesar memuat 26 offer (Lintas sektor). Di sana daftar dibuka per jenis, dan hanya pintu masuk terbuka di awal                                                                          |
+| Website menjadi katalog                                             | Peta website menulis “website menayangkan pilihan, bukan katalog”. Arahan terbaru Anda menang. Pilihan tetap terasa lewat pintu masuk di atas dan urutan menurut jenis                            |
+| Persetujuan per offer tidak lagi mungkin                            | Anda menyetujui templat per model dan daftar per situasi, bukan per offer. Offer yang Anda tolak cukup ditandai “ditahan” di Studio                                                               |
+| Tautan keluar mengurangi leads                                      | Halaman Cara kami dibayar dan Dokumentasi ditutup dengan ajakan yang sama, membawa asal halaman dan pekerjaan yang dirujuk. Pengukuran menunjukkan apakah kedua halaman itu membantu atau menahan |
+| Halaman cara dibayar terbaca sebagai janji untung atau daftar harga | Tanpa angka. Kalimat “Kami tidak menjanjikan keuntungan instan” dari header Arthur dipakai apa adanya. Bagi hasil ditulis sebagai cara bayar, bukan peluang investasi                             |
+| Dokumentasi terbaca sebagai rekam jejak yang belum terbukti         | Hanya pekerjaan nyata dengan izin pemiliknya. Render diberi keterangan. Tanpa angka proyek atau klien. Sampai ada isinya, halaman tidak tayang (P4)                                               |
 
 **Yang hilang dibanding halaman Kuliner yang sudah disetujui:**
 
@@ -208,6 +237,9 @@ disetujui, termasuk dua paket.
    46 dampak, dan batas bawaan Konstruksi dan Peekabo.
 4. Halaman situasi Teknologi diturunkan lebih dulu, karena polanya sudah
    teruji di Kuliner.
+5. Halaman Cara kami dibayar ditulis sesudahnya, supaya blok cara bayar di
+   semua halaman pekerjaan bisa dipendekkan sekaligus. Dokumentasi menunggu
+   foto nyata, izin pemiliknya, dan keputusan Bukti pertama.
 
 ## 5. Contoh: Kuliner dan F&B diturunkan dari pola
 
