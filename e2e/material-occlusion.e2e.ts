@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test'
 
 import { FEATURED_WORK } from './fixtures'
-import { REMOVED_IN_F3 } from './removed-in-f3'
 
 /**
  * A plate that hands its image to the canvas must leave a hole to the canvas.
@@ -68,7 +67,6 @@ test.describe('material occlusion', () => {
     test(`${route} leaves every handed-over plate a hole to the canvas`, async ({
       page,
     }) => {
-      test.fixme(route === '/id', REMOVED_IN_F3.plates)
       await page.goto(route, { waitUntil: 'load' })
       await page.evaluate(() => document.fonts.ready)
 
