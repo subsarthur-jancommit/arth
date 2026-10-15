@@ -180,6 +180,8 @@ describe('offer query', () => {
       'jejakSumber',
       'ditulisOleh',
       'tanggalDisetujui',
+      // The offer model is an internal template key (R1 pattern approach).
+      'model',
     ]) {
       expect(offerPageQuery).not.toContain(field)
       expect(offerPagePreviewQuery).not.toContain(field)
@@ -248,6 +250,8 @@ describe('chapter query', () => {
       'jejakSumber',
       'ditulisOleh',
       'tanggalDisetujui',
+      // The offer model is an internal template key (R1 pattern approach).
+      'model',
     ]) {
       expect(chapterPageQuery).not.toContain(field)
     }
