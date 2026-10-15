@@ -18,6 +18,10 @@ import {
 } from '@/lib/content/units'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
+import {
+  chapterQueryParams,
+  offerQueryParams,
+} from '@/lib/integrations/sanity/detail-params'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
 import {
   chapterPageQuery,
@@ -74,7 +78,7 @@ const fetchChapter = async (
 
   return sanityFetch({
     query: preview ? chapterPagePreviewQuery : chapterPageQuery,
-    params: { locale, ...values },
+    params: chapterQueryParams(values, locale),
     perspective: preview ? 'drafts' : 'published',
     stega: preview,
   })
@@ -89,7 +93,7 @@ const fetchOffer = async (
 
   return sanityFetch({
     query: preview ? offerPagePreviewQuery : offerPageQuery,
-    params: { locale, ...values },
+    params: offerQueryParams(values, locale),
     perspective: preview ? 'drafts' : 'published',
     stega: preview,
   })
@@ -577,9 +581,7 @@ export default async function ArthurDetailPage({
     <Wrapper theme="light">
       <article className={cn(s.page, s.offerPage)} data-offer-sheet="">
         <header className={cn(s.hero, s.offerHero)} data-epic="offer-arrival">
-          <p className="caption">
-            {t('eyebrow')} · {offerData.jenis}
-          </p>
+          <p className="caption">{offerData.jenis}</p>
           <TextReveal
             as="h1"
             split="lines"

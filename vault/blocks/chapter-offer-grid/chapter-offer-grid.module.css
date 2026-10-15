@@ -14,6 +14,11 @@
   gap: calc(8 / 375 * 100vw);
 }
 
+/* `display: flex` above would otherwise override the hidden attribute. */
+.filters[hidden] {
+  display: none;
+}
+
 .filter {
   padding: 0.5em 1em;
   border: 1px solid var(--line-strong);
