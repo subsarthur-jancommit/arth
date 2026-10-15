@@ -1,7 +1,7 @@
 # Serah halaman: Kuliner dan F&B
 
-Teknologi, untuk yang ingin hasil siap pakai · 15 Oktober 2026 · Status: perlu
-Anda · Placeholder: tidak ada
+Teknologi, untuk yang ingin hasil siap pakai · 15 Oktober 2026 · Status:
+disetujui pemilik, 15 Oktober 2026 · Placeholder: tidak ada
 
 Bagian pertama dokumen ini adalah halaman persis seperti yang dibaca pembeli.
 Tidak ada kode katalog di sana, dan tidak akan ada di website: kode hanya
