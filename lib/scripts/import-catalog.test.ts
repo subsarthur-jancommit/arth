@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'bun:test'
 
-import { draftOffer, parseCatalog, reviewMarkdown } from './import-catalog'
+import {
+  audienceOf,
+  draftOffer,
+  parseBridges,
+  parseCatalog,
+  parseSituations,
+  reviewMarkdown,
+} from './import-catalog'
 
 /*
  * A two-row slice in the master brief's own shape: a section heading, an
@@ -50,7 +57,7 @@ describe('draftOffer', () => {
     expect(draft.lane).toBe('otomatis')
     expect(draft.model).toBe('sistem-dipasang')
     expect(draft.jenis).toBe('Bot yang bekerja sendiri')
-    expect(draft.untukSiapa).toBe('Untuk warung dan kedai')
+    expect(draft.untukSiapa).toBe('Untuk pemilik warung dan kedai')
     expect(draft.slug).toBe('bot-pesan-antar-whatsapp')
     for (const field of [
       draft.judul,
@@ -162,5 +169,50 @@ describe('reviewMarkdown', () => {
     expect(markdown).toContain('## Sistem yang dipasang')
     expect(markdown).toContain('| siap | KUL-01 |')
     expect(markdown).not.toContain('RAK-03')
+  })
+})
+
+describe('audienceOf', () => {
+  it('addresses a place of business as its owner, as the approved Kuliner cards do', () => {
+    expect(audienceOf('Warung/kedai')).toBe('Untuk pemilik warung dan kedai')
+    expect(audienceOf('Franchise/multi-outlet')).toBe(
+      'Untuk pemilik franchise dan usaha banyak outlet'
+    )
+  })
+
+  it('keeps acronyms and roles as written', () => {
+    expect(audienceOf('UMKM produksi')).toBe('Untuk UMKM produksi')
+    expect(audienceOf('BUMDes')).toBe('Untuk BUMDes')
+    expect(audienceOf('Admin dan keuangan')).toBe('Untuk admin dan keuangan')
+  })
+})
+
+describe('parseSituations and parseBridges', () => {
+  it('reads the buyer line and quote of each chapter', () => {
+    const [kuliner] = parseSituations(
+      [
+        '## Kuliner dan F&B',
+        '',
+        '**Pembeli:** Warung dan kedai.',
+        '',
+        '**Yang biasa mereka katakan:** “Pesanan saya bercampur di chat.”',
+      ].join('\n'),
+      { unit: 'teknologi', side: 'B' }
+    )
+    expect(kuliner?.nama).toBe('Kuliner dan F&B')
+    expect(kuliner?.pembeli).toBe('Warung dan kedai.')
+    expect(kuliner?.kutipan).toBe('“Pesanan saya bercampur di chat.”')
+  })
+
+  it('reads one pair per bridge row and skips other tables', () => {
+    const pairs = parseBridges(
+      [
+        '| Konstruksi | Teknologi | Rangkaian |',
+        '| --- | --- | --- |',
+        '| FNB-01 Kafe siap buka | KUL-02 Pesan dan bayar dari meja | Kafe baru |',
+        '| Ukuran | 216 | 316 |',
+      ].join('\n')
+    )
+    expect(pairs).toEqual([['FNB-01', 'KUL-02']])
   })
 })

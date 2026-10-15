@@ -137,10 +137,19 @@ Langkah 3 untuk Peekabo (model 10 sampai 16) selesai dengan cara yang sama;
 tinjauannya di [`R1-TULIS-TANGAN-PEEKABO.md`](./R1-TULIS-TANGAN-PEEKABO.md). Dari 156
 offer Peekabo, 129 siap. Yang ditahan: 15 offer operator (SaaS pertama), 5 offer ‡
 (pilihan sub-agen), dan 7 offer yang nilainya status mitra resmi platform, sampai
-Peekabo terdaftar. Menunggu persetujuan pemilik.
+Peekabo terdaftar. Disetujui pemilik 15 Oktober 2026.
 
 Seluruh katalog: 652 dari 688 offer siap diturunkan; 36 ditahan menunggu
-keputusan pemilik atau pendaftaran program mitra. Skema `offer` butuh medan
+keputusan pemilik atau pendaftaran program mitra.
+
+Langkah 4, halaman situasi Teknologi, diturunkan oleh `lib/content/situation-pages.ts`
+dari master brief dan offer yang siap: 23 halaman, dengan teks Kuliner yang sudah
+disetujui tetap di tempatnya (`lib/content/situation-overrides.ts`). Tinjauannya di
+[`R1-SITUASI-TEKNOLOGI.md`](./R1-SITUASI-TEKNOLOGI.md). Saat menurunkannya, gerbang gaya
+menangkap 17 baris otomatis lagi (kata penguat, judul lebih dari 8 kata, dampak
+yang menjanjikan hasil); 15 di Teknologi, 1 di Konstruksi, 1 di Peekabo. Semuanya
+ditulis ulang di `catalog-overrides.ts` dan menunggu persetujuan pemilik bersama
+halaman situasinya. Skema `offer` butuh medan
 `paket` di R2. Belum ada yang ditulis ke Sanity.
 
 Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk

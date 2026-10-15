@@ -22,6 +22,7 @@
  * bun lib/scripts/import-catalog.ts "D:/ARTH/FULL KONTEKS/Master Brief Katalog"
  * bun lib/scripts/import-catalog.ts <dir> --out /path/outside/repo/offers.json
  * bun lib/scripts/import-catalog.ts <dir> --review docs/R1-TULIS-TANGAN-KONSTRUKSI.md --unit konstruksi
+ * bun lib/scripts/import-catalog.ts <dir> --situations docs/R1-SITUASI-TEKNOLOGI.md
  * ```
  */
 
@@ -39,6 +40,13 @@ import {
   offerModel,
   READER_TYPE,
 } from '@/lib/content/offer-models'
+import { SITUATION_OVERRIDES } from '@/lib/content/situation-overrides'
+import {
+  deriveSituation,
+  type SituationSource,
+  situationMarkdown,
+  situationSlug,
+} from '@/lib/content/situation-pages'
 
 /** Konstruksi's assembled packages have no type column (glossary, §1). */
 const ASSEMBLED_LABEL = 'Paket yang disusun menurut posisi Anda di proyek'
@@ -62,7 +70,7 @@ const HELD_IDS = new Map<string, string>([
  * once before it is published.
  */
 const RESULT_WORDS =
-  /\b(naik|meningkat|bertambah|hilang|berkurang|cair|menang|tepat waktu|laris|ramai|lebih cepat|lebih tinggi|tidak habis|kembali|cepat disewakan|tanpa komplain|terjual|pendapatan|penjualan|keuntungan)\b/i
+  /\b(naik|meningkat|bertambah|hilang|berkurang|cair|menang|tepat waktu|laris|ramai|lebih cepat|lebih tinggi|tidak habis|kembali|cepat disewakan|tanpa komplain|terjual|pendapatan|penjualan|keuntungan|menurun|turun|hemat|selalu|tidak lagi)\b/i
 
 export type CatalogRow = {
   idKatalog: string
@@ -168,6 +176,44 @@ export function parseCatalog(
   return rows
 }
 
+/** Each chapter heading with its "Pembeli" line and buyer quote. */
+export function parseSituations(
+  markdown: string,
+  place: { unit: CatalogUnit; side: 'A' | 'B' }
+): SituationSource[] {
+  const out: SituationSource[] = []
+  let current: Partial<SituationSource> = {}
+  for (const line of markdown.split('\n')) {
+    if (line.startsWith('## ')) current = { nama: line.slice(3).trim() }
+    const buyer = /^\*\*(?:Pembeli|Peserta):\*\*\s*(.+)$/.exec(line)
+    if (buyer?.[1]) current.pembeli = buyer[1].trim()
+    const quote = /^\*\*Yang biasa mereka katakan:\*\*\s*(.+)$/.exec(line)
+    if (quote && current.nama && current.pembeli) {
+      out.push({
+        ...place,
+        nama: current.nama,
+        pembeli: current.pembeli,
+        kutipan: quote[1]?.trim() ?? '',
+      })
+    }
+  }
+  return out
+}
+
+/** Offer pairs from a unit's bridge tables: two catalogue codes per row. */
+export function parseBridges(markdown: string): [string, string][] {
+  const code = /^([A-Z0-9]{2,4}-\d{2})\b/
+  const pairs: [string, string][] = []
+  for (const line of markdown.split('\n')) {
+    if (!line.startsWith('|')) continue
+    const [first, second] = cellsOf(line)
+    const a = code.exec(first ?? '')?.[1]
+    const b = code.exec(second ?? '')?.[1]
+    if (a && b) pairs.push([a, b])
+  }
+  return pairs
+}
+
 const slugOf = (title: string) =>
   title
     .toLowerCase()
@@ -176,10 +222,27 @@ const slugOf = (title: string) =>
     .replace(/^-|-$/g, '')
     .slice(0, 96)
 
-/** "Warung/kedai" becomes "Untuk warung dan kedai". A draft, read before use. */
-const audienceOf = (buyer: string) => {
-  const plain = buyer.replace(/\s*\([^)]*\)/g, '').replace(/\//g, ' dan ')
-  return plain ? `Untuk ${plain.charAt(0).toLowerCase()}${plain.slice(1)}` : ''
+/** Buyers named by their place of business are addressed as its owner. */
+const OWNED_PLACES =
+  /^(warung|kafe|katering|salon|bengkel|laundry|rental|klinik|apotek|gym|villa|hostel|toko|franchise|pabrik|home industry|bimbel)\b/i
+
+/**
+ * "Warung/kedai" becomes "Untuk pemilik warung dan kedai", as on the approved
+ * Kuliner cards. Acronyms keep their capitals ("UMKM", "BUMDes").
+ */
+export function audienceOf(buyer: string): string {
+  const plain = buyer
+    .replace(/\s*\([^)]*\)/g, '')
+    .replace(/\//g, ' dan ')
+    .replace(/multi-outlet/g, 'usaha banyak outlet')
+    .trim()
+  if (!plain) return ''
+  const lowered = /^[A-Z]{2}/.test(plain)
+    ? plain
+    : `${plain.charAt(0).toLowerCase()}${plain.slice(1)}`
+  return OWNED_PLACES.test(lowered)
+    ? `Untuk pemilik ${lowered}`
+    : `Untuk ${lowered}`
 }
 
 /**
@@ -235,6 +298,14 @@ export function draftOffer(
     ditinjau: override !== undefined,
     reasons: open,
   }
+}
+
+async function bridgeFiles(dir: string): Promise<string[]> {
+  const entries = await readdir(dir, { recursive: true, withFileTypes: true })
+  const files = entries
+    .filter((entry) => entry.isFile() && entry.name === 'Peta & aturan main.md')
+    .map((entry) => join(entry.parentPath, entry.name))
+  return Promise.all(files.map((file) => readFile(file, 'utf8')))
 }
 
 async function sideFiles(dir: string): Promise<string[]> {
@@ -293,14 +364,15 @@ async function main() {
   }
 
   const drafts: OfferDraft[] = []
+  const situations: SituationSource[] = []
   for (const file of await sideFiles(dir)) {
     const side = file.includes('Sisi A') ? 'A' : 'B'
-    const rows = parseCatalog(await readFile(file, 'utf8'), {
-      unit: unitOf(file),
-      side,
-    })
-    drafts.push(...rows.map((row) => draftOffer(row)))
+    const markdown = await readFile(file, 'utf8')
+    const place = { unit: unitOf(file), side } as const
+    drafts.push(...parseCatalog(markdown, place).map((row) => draftOffer(row)))
+    situations.push(...parseSituations(markdown, place))
   }
+  const bridges = (await bridgeFiles(dir)).flatMap(parseBridges)
 
   const auto = drafts.filter((draft) => draft.lane === 'otomatis').length
   console.log(
@@ -327,6 +399,30 @@ async function main() {
       )
     )
     console.log(`Tinjauan ditulis ke ${review}.`)
+  }
+
+  const situationsIndex = process.argv.indexOf('--situations')
+  const situationsOut =
+    situationsIndex === -1 ? undefined : process.argv[situationsIndex + 1]
+  if (situationsOut) {
+    const pages = situations
+      .filter((source) => source.unit === 'teknologi')
+      .toSorted((a, b) => b.side.localeCompare(a.side))
+      .map((source) =>
+        deriveSituation(
+          source,
+          drafts,
+          bridges,
+          SITUATION_OVERRIDES.get(
+            `${source.unit}/${source.side}/${situationSlug(source.nama)}`
+          )
+        )
+      )
+    await writeFile(
+      situationsOut,
+      situationMarkdown(pages, 'Halaman situasi Teknologi')
+    )
+    console.log(`${pages.length} halaman situasi ditulis ke ${situationsOut}.`)
   }
 
   if (out) {

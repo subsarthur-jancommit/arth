@@ -822,6 +822,131 @@ export const TEKNOLOGI_OVERRIDES = new Map<string, CatalogOverride>([
       alasan: '“Realtime” bukan kata sehari-hari pembaca Sisi B',
     },
   ],
+  // Found while deriving the situation pages (step 4): style on automatic rows.
+  [
+    'IND-02',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Anda memahami tiga cara menyimpan dan mengalirkan data dengan membangun sesuatu yang dipakai.',
+      alasan: '“Benar-benar” adalah kata penguat',
+    },
+  ],
+  [
+    'IND-09',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Calon klien bisa melihat karya Anda dan menghubungi Anda langsung.',
+      alasan: '“Terbaik”; kontak dipegang calon klien',
+    },
+  ],
+  [
+    'FRL-02',
+    {
+      keputusan: 'tetap',
+      judul: 'Modul bot dan workflow siap pasang untuk klien',
+      alasan: 'Judul kartu paling banyak 8 kata',
+    },
+  ],
+  [
+    'DAT-02',
+    {
+      keputusan: 'tetap',
+      judul: 'Migrasi Excel dan sistem lama ke SQL',
+      alasan: 'Judul kartu paling banyak 8 kata; pembaca Sisi A memakai “SQL”',
+    },
+  ],
+  [
+    'KON-03',
+    {
+      keputusan: 'tetap',
+      judul: 'Pengingat masa berlaku SBU, SKK, NIB, dan jaminan',
+      alasan: 'Judul kartu paling banyak 8 kata',
+    },
+  ],
+  [
+    'LIN-16',
+    {
+      keputusan: 'tetap',
+      judul: 'Kanal jualan WhatsApp dengan katalog dan tautan bayar',
+      alasan: 'Judul kartu paling banyak 8 kata',
+    },
+  ],
+  [
+    'LIN-26',
+    {
+      keputusan: 'tetap',
+      judul: 'Migrasi dari Excel dan chat ke data rapi',
+      alasan: 'Judul kartu paling banyak 8 kata',
+    },
+  ],
+  [
+    'STA-12',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Pemakaian cloud ditinjau dan dirapikan sebelum ronde pendanaan berikutnya.',
+      alasan: 'Tagihan turun bergantung pada pemakaian',
+    },
+  ],
+  [
+    'DAT-01',
+    {
+      keputusan: 'tetap',
+      alasan: '“Siap tumbuh” adalah kesiapan skema, bukan hasil pasar',
+    },
+  ],
+  [
+    'RIT-01',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Stok di semua kanal berasal dari satu sumber, sehingga barang yang habis tidak tampil tersedia.',
+      alasan: 'Batal atau tidak dipegang pembeli dan marketplace',
+    },
+  ],
+  [
+    'DIS-03',
+    {
+      keputusan: 'tetap',
+      alasan: '“Sampai lunas” adalah tahap alur, bukan janji pembayaran',
+    },
+  ],
+  [
+    'DIS-07',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Rute tersusun otomatis dari pesanan hari itu.',
+      alasan: 'Biaya kirim bergantung pada jalan dan armada',
+    },
+  ],
+  [
+    'DIS-09',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Stok fisik dan catatan dicocokkan berkala, dan selisihnya tercatat.',
+      alasan: '“Selalu cocok” tidak bisa dijanjikan',
+    },
+  ],
+  [
+    'EDU-01',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Orang tua menerima tagihan dan kode bayar SPP tanpa datang ke sekolah.',
+      alasan: 'Tunggakan dipegang orang tua',
+    },
+  ],
+  [
+    'LOG-04',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Rute dan muatan barang disusun lebih efisien.',
+      alasan: 'Hemat bahan bakar bergantung pada jalan dan sopir',
+    },
+  ],
 ])
 
 const NO_LOAN =
@@ -1142,6 +1267,15 @@ export const KONSTRUKSI_OVERRIDES = new Map<string, CatalogOverride>([
     'KOM-06',
     { keputusan: 'rumusan-aman', syarat: NO_LOAN, alasan: 'Aturan 7' },
   ],
+  // Caught in step 4 by the wider result-word search.
+  [
+    'ADM-10',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Data perusahaan di sistem pengadaan diperbarui berkala.',
+      alasan: '“Selalu mutakhir” tidak bisa dijanjikan',
+    },
+  ],
 ])
 
 const NOT_REGISTERED =
@@ -1445,6 +1579,16 @@ export const PEEKABO_OVERRIDES = new Map<string, CatalogOverride>([
       syarat:
         'Bentuk kerja disepakati tertulis, dan honor dipotong pajak sesuai aturan.',
       alasan: 'Aturan 7 dan 8',
+    },
+  ],
+  // Caught in step 4 by the wider result-word search.
+  [
+    'SOL-07',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Tim konten bekerja dari pilar dan kerangka cerita yang sudah disusun.',
+      alasan: '“Tidak lagi kehabisan ide” dipegang tim klien',
     },
   ],
 ])
