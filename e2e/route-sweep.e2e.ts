@@ -6,7 +6,9 @@ import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
 import { SIDES, type Unit, UNITS } from '../lib/content/units'
+import { publicLocaleRedirect } from '../lib/i18n/public-locale-redirect'
 import { PUBLISHED_LOCALES, routing } from '../lib/i18n/routing'
+import { isAwaitingContentPath } from '../lib/seo/route-status'
 import { axeTags } from './axe-tags'
 
 /**
@@ -187,7 +189,22 @@ function toRoutes(relativePagePath: string): string[] {
 function discoverRoutes(): string[] {
   if (!existsSync(APP_DIR) || !statSync(APP_DIR).isDirectory()) return []
 
-  const routes = findPageFiles(APP_DIR).flatMap(toRoutes)
+  /*
+   * Two kinds of discovered route do not render a page of their own, and the
+   * proxy answers them before rendering (R0):
+   *
+   * - a fixed page awaiting published content answers a real 404
+   *   (`lib/seo/awaiting-content.ts`) — `e2e/awaiting-content.e2e.ts`
+   *   asserts that status instead;
+   * - an untranslated Arthur page under `/en` answers 307 to its `/id` twin
+   *   (K2), which this sweep already renders under its own address.
+   */
+  const routes = findPageFiles(APP_DIR)
+    .flatMap(toRoutes)
+    .filter(
+      (route) =>
+        !isAwaitingContentPath(route) && publicLocaleRedirect(route) === null
+    )
 
   return [...new Set(routes)].sort()
 }

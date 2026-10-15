@@ -8,6 +8,8 @@
  * dependencies, and local context out of the result.
  */
 
+import { readFileSync } from 'node:fs'
+
 const PLACEHOLDER_PATTERN = /\[PERLU|isi contoh|teks sementara/i
 
 const SOURCE_FILE_PATTERN = /\.(?:[cm]?[jt]sx?)$/
@@ -25,6 +27,64 @@ const ALLOWED_SOURCES = new Set([
   'lib/content/sample-content.ts',
   'lib/integrations/sanity/schemas/internal.ts',
 ])
+
+/**
+ * Notes written for the owner or the editor rather than the buyer, and the
+ * placeholder contact details they annotate.
+ *
+ * Owner decision P4 (`docs/RENCANA-REVISI-F3.md`): a reader never sees a note
+ * meant for the editor. Before R0 these reached every page from the message
+ * catalogues — "Ganti sebelum kontak Arthur diterbitkan", a `NOTE:` prefix,
+ * `kontak@arth.invalid` (`docs/TINJAUAN-F01-F03.md` E7.1).
+ */
+const EDITOR_NOTE_PATTERN =
+  /\bNOTE:|\bdummy\b|Ganti sebelum|Replace it before|\.invalid\b|Contoh No\.|Example Street|setelah disusun di Sanity|disetujui untuk tayang|approved for publication|keputusan pemilik|setelah pemilik/i
+
+/**
+ * Message keys allowed to carry such a note, each with the reason no public
+ * reader reaches it.
+ */
+const ALLOWED_MESSAGE_KEYS = new Map([
+  // Rendered only inside Sanity draft mode, for the editor.
+  ['home.draftPreview', 'draft mode only'],
+  ['contactPage.draftPreview', 'draft mode only'],
+  ['policyPage.draftPreview', 'draft mode only'],
+  // `/kebijakan` answers 404 while it awaits content (`awaiting-content.ts`).
+  ['policyPage.emptyBody', '/kebijakan awaits content'],
+  // Legacy fixture pages, labelled dummy by plan until F5-04 removes them.
+  ['project.contactPlaceholderNote', '/work fixtures, removed at F5-04'],
+  ['journal.contactPlaceholderNote', '/journal fixtures, removed at F5-04'],
+  // No page reads the `studio` namespace since `/studio` became a redirect.
+  ['studio.closing', 'unread namespace'],
+])
+
+/** A next-intl message catalogue: strings, nested under namespace keys. */
+type MessageTree = string | { [key: string]: MessageTree }
+
+function messageViolations(): string[] {
+  const violations: string[] = []
+
+  for (const locale of ['id', 'en']) {
+    const path = `messages/${locale}.json`
+    const walk = (node: MessageTree, prefix: string) => {
+      if (typeof node === 'string') {
+        if (
+          EDITOR_NOTE_PATTERN.test(node) &&
+          !ALLOWED_MESSAGE_KEYS.has(prefix)
+        ) {
+          violations.push(`${path} ${prefix}`)
+        }
+        return
+      }
+      for (const [key, value] of Object.entries(node)) {
+        walk(value, prefix ? `${prefix}.${key}` : key)
+      }
+    }
+    walk(JSON.parse(readFileSync(path, 'utf8')) as MessageTree, '')
+  }
+
+  return violations
+}
 
 function trackedSourceFiles(): string[] {
   const result = Bun.spawnSync(['git', 'ls-files'])
@@ -60,6 +120,15 @@ async function main(): Promise<void> {
     }
   }
 
+  const notes = messageViolations()
+  if (notes.length > 0) {
+    console.error(
+      'check:public-copy: notes for the editor must not reach a reader (owner decision P4):'
+    )
+    for (const note of notes) console.error(`  ${note}`)
+    process.exit(1)
+  }
+
   if (violations.length > 0) {
     console.error(
       'check:public-copy: editorial placeholders belong in Sanity drafts, not reader-facing source:'
@@ -69,7 +138,7 @@ async function main(): Promise<void> {
   }
 
   console.log(
-    'check:public-copy: no placeholder literals outside reviewed guards'
+    'check:public-copy: no placeholder literals or editor notes outside reviewed guards'
   )
 }
 

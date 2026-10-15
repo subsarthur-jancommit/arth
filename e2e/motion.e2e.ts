@@ -203,9 +203,9 @@ test.describe('motion', () => {
   }
 
   test.describe('under prefers-reduced-motion', () => {
-    // /en redirects to /id; keep the English reduced-motion case on a
-    // rendered preview page, not a second visit to the Indonesian home.
-    for (const path of ['/id', '/en/cara-kerja']) {
+    // /en and Arthur's English pages redirect to /id (K2, R0); keep the
+    // English reduced-motion case on a page that is English: the journal.
+    for (const path of ['/id', '/en/journal']) {
       test(`${path} shows every line of the headline`, async ({ browser }) => {
         const { context, page } = await reducedMotionPage(browser, path)
 
@@ -893,9 +893,9 @@ test.describe('motion', () => {
  */
 const HEADING_ROUTES = [
   '/id',
-  '/id/cara-kerja',
+  '/id/kontak',
   '/en/journal',
-  '/en/cara-kerja',
+  '/id/konstruksi',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
 ]

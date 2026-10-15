@@ -56,6 +56,13 @@ revisi:
 
 Pekerjaan mekanis, tidak menunggu P1 sampai P3. Satu PR.
 
+**Status 15 Oktober 2026: dikerjakan** di branch `claude/f3-r0-stabil`, PR
+bertumpuk di atas PR #18. Satu penyesuaian dari usulan awal: `/en/*`
+dialihkan hanya untuk rute Arthur yang belum diterjemahkan (unit, sisi,
+kontak, cara kerja, satu klien tiga unit, kebijakan, halaman). `/en/work` dan
+`/en/journal` sudah berbahasa Inggris penuh dan tetap, sesuai bunyi K2 ("/en
+_tanpa terjemahan_").
+
 | Lingkup                                                            | Selesai bila                                                                                                                                                                                                  |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Soft-404 di `/cara-kerja` dan `/satu-klien-tiga-unit` (E3.1, E3.2) | Halaman tanpa isi terbit menjawab status 404 yang asli, dan tautannya keluar dari navigasi, beranda, dan footer sampai isinya terbit                                                                          |

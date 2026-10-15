@@ -32,7 +32,7 @@ const CONTAINED = 'h1, h2, h3, p, figcaption, [data-reveal-item]'
 test.describe('no element overflows its container', () => {
   // /en redirects to /id; use a real English preview page to preserve
   // English copy coverage rather than measuring the ID home twice.
-  for (const path of ['/id', '/en/cara-kerja']) {
+  for (const path of ['/id', '/id/konstruksi']) {
     test(`${path} fits every phone width`, async ({ page }) => {
       // Seven full navigations of the site's longest page. The default 30s is
       // not enough on a cold CI runner, and it was not enough the first time

@@ -19,18 +19,19 @@ test('the sitemap carries hreflang and honest dates', async ({ request }) => {
 
   expect(xml).toContain('xmlns:xhtml="http://www.w3.org/1999/xhtml"')
 
-  const workMethod = urlBlock(xml, '/id/cara-kerja')
+  // `/id/cara-kerja` awaits content and is not advertised (R0); the contact
+  // page is the fixed page that is.
+  expect(xml).not.toContain('/id/cara-kerja')
+  const contact = urlBlock(xml, '/id/kontak')
   for (const [tag, path] of [
-    ['id-ID', '/id/cara-kerja'],
-    ['x-default', '/id/cara-kerja'],
+    ['id-ID', '/id/kontak'],
+    ['x-default', '/id/kontak'],
   ] as const) {
-    expect(workMethod).toMatch(
-      new RegExp(`hreflang="${tag}" href="[^"]*${path}"`)
-    )
+    expect(contact).toMatch(new RegExp(`hreflang="${tag}" href="[^"]*${path}"`))
   }
   expect(xml).not.toContain('/en/')
   // A page that lists nothing has no date to claim.
-  expect(workMethod).not.toContain('<lastmod>')
+  expect(contact).not.toContain('<lastmod>')
 
   // F1-06 keeps the catalogue and journal index out of machine listings,
   // while individual published journal entries remain advertised.

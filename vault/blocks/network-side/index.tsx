@@ -49,7 +49,6 @@ export interface NetworkTerms {
 export interface NetworkLabels {
   pathsEyebrow: string
   pathsTitle: string
-  pathsNote: string
   chapterLabel: string
   openPath: string
   workEyebrow: string
@@ -64,8 +63,6 @@ export interface NetworkLabels {
   absentTitle: string
   conditionTitle: string
   registrationEyebrow: string
-  registrationStatus: string
-  registrationNote: string
 }
 
 interface NetworkSideProps {
@@ -74,8 +71,12 @@ interface NetworkSideProps {
   moneySteps: readonly NetworkMoneyStep[]
   summary: string
   terms: NetworkTerms
-  registrationTitle: string
-  registrationBody: string
+  /**
+   * The sign-up block, passed only once registration is open. Until the first
+   * commission card exists it is omitted rather than shown as "not open yet"
+   * (owner decision P4, R0).
+   */
+  registration?: { title: string; body: string } | undefined
   labels: NetworkLabels
   className?: string | undefined
 }
@@ -86,8 +87,7 @@ export function NetworkSide({
   moneySteps,
   summary,
   terms,
-  registrationTitle,
-  registrationBody,
+  registration,
   labels,
   className,
 }: NetworkSideProps) {
@@ -97,7 +97,6 @@ export function NetworkSide({
         <header data-reveal-item className={s.sectionHeader}>
           <p className={cn('caption', s.eyebrow)}>{labels.pathsEyebrow}</p>
           <h2 className={cn('h2', s.sectionTitle)}>{labels.pathsTitle}</h2>
-          <p className={cn('p', s.sectionNote)}>{labels.pathsNote}</p>
         </header>
 
         <ol className={s.pathList}>
@@ -199,18 +198,17 @@ export function NetworkSide({
         </dl>
       </Reveal>
 
-      <section
-        className={s.registration}
-        data-registration-state="waiting-commission-card"
-      >
-        <p className={cn('caption', s.eyebrow)}>{labels.registrationEyebrow}</p>
-        <h2 className={cn('h2', s.registrationTitle)}>{registrationTitle}</h2>
-        <p className={cn('p-big', s.registrationBody)}>{registrationBody}</p>
-        <p className={cn('caption', s.registrationStatus)}>
-          {labels.registrationStatus}
-        </p>
-        <p className={cn('p', s.registrationNote)}>{labels.registrationNote}</p>
-      </section>
+      {registration && (
+        <section className={s.registration}>
+          <p className={cn('caption', s.eyebrow)}>
+            {labels.registrationEyebrow}
+          </p>
+          <h2 className={cn('h2', s.registrationTitle)}>
+            {registration.title}
+          </h2>
+          <p className={cn('p-big', s.registrationBody)}>{registration.body}</p>
+        </section>
+      )}
     </div>
   )
 }

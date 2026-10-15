@@ -109,8 +109,8 @@ const SCROLL = 1600
 const ROUTES = [
   { path: '/en/journal', theme: 'light' },
   { path: '/id/journal', theme: 'light' },
-  { path: '/en/cara-kerja', theme: 'dark' },
-  { path: '/en/konstruksi', theme: 'dark' },
+  { path: '/id', theme: 'dark' },
+  { path: '/id/konstruksi', theme: 'light' },
   { path: `/en/work/${FEATURED_WORK}`, theme: 'dark' },
 ] as const
 

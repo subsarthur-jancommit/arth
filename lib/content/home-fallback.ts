@@ -154,6 +154,14 @@ export const FALLBACK_CONTACT = {
   socials: [] as readonly { label: string; url: string }[],
 } as const
 
+/**
+ * Whether an address is a placeholder rather than a mailbox: the reserved
+ * `.invalid` TLD (RFC 2606) that {@link FALLBACK_CONTACT} uses until K5.
+ */
+export function isPlaceholderEmail(email: string): boolean {
+  return /\.invalid$/i.test(email.trim())
+}
+
 export interface HomeContent {
   name: string
   headline: string

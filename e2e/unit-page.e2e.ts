@@ -60,26 +60,26 @@ test.describe('unit pages', () => {
   }
 
   for (const unit of UNITS) {
-    test(`/en/${unit} is the one canonical URL for ${unit}`, async ({
+    test(`/id/${unit} is the one canonical URL for ${unit}`, async ({
       page,
       request,
     }) => {
-      const html = await (await request.get(`/en/${unit}`)).text()
+      const html = await (await request.get(`/id/${unit}`)).text()
       const canonical = html.match(
         /<link[^>]+rel="canonical"[^>]+href="([^"]+)"/
       )?.[1]
 
-      expect(canonical, `/en/${unit} declares no canonical`).toBeTruthy()
+      expect(canonical, `/id/${unit} declares no canonical`).toBeTruthy()
       expect(
         new URL(canonical ?? '', 'https://example.test').pathname,
         'the unit page points its canonical somewhere else'
-      ).toBe(`/en/${unit}`)
+      ).toBe(`/id/${unit}`)
 
-      await page.goto(`/en/${unit}`)
+      await page.goto(`/id/${unit}`)
       expect(
         new URL(page.url()).pathname,
         'the unit page redirected away from its own address'
-      ).toBe(`/en/${unit}`)
+      ).toBe(`/id/${unit}`)
     })
   }
 
@@ -95,16 +95,16 @@ test.describe('unit pages', () => {
     page,
   }) => {
     const [first] = UNITS
-    await page.goto(`/en/${first}`)
+    await page.goto(`/id/${first}`)
 
     const next = UNITS[1]
     await expect(
-      page.locator(`main a[href="/en/${next}"]`),
-      `/en/${first} does not link onward to /en/${next}`
+      page.locator(`main a[href="/id/${next}"]`),
+      `/id/${first} does not link onward to /id/${next}`
     ).not.toHaveCount(0)
 
     await expect(
-      page.locator(`main a[href="/en/${first}"]`),
+      page.locator(`main a[href="/id/${first}"]`),
       'a unit page links to itself'
     ).toHaveCount(0)
   })

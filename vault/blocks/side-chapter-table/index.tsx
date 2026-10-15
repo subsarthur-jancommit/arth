@@ -63,7 +63,6 @@ interface SideChapterTableProps {
   typeLabel: string
   entryLabel: string
   offerCountLabel: string
-  empty: string
   className?: string | undefined
 }
 
@@ -120,7 +119,6 @@ export function SideChapterTable({
   typeLabel,
   entryLabel,
   offerCountLabel,
-  empty,
   className,
 }: SideChapterTableProps) {
   const rootRef = useRef<HTMLDivElement>(null)
@@ -154,9 +152,8 @@ export function SideChapterTable({
         <h2 className="h2">{title}</h2>
       </header>
 
-      {chapters.length === 0 ? (
-        <p className={cn('p-big', s.empty)}>{empty}</p>
-      ) : (
+      {/* Rendered only with chapters; the side page omits it otherwise. */}
+      {chapters.length > 0 && (
         <div ref={rootRef} className={s.reader}>
           <table className={s.table}>
             <thead>

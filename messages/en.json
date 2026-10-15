@@ -31,9 +31,7 @@
     "heroCta": "Choose your situation",
     "heroCtaContact": "Get in touch",
     "placeholderNote": "Placeholder copy. The studio’s own words replace this text as soon as the CMS has them.",
-    "contactPlaceholderNote": "This email address is a non-working placeholder. Replace it before Arthur's contact details are published.",
     "addressHeading": "Address",
-    "addressPlaceholderNote": "NOTE: this address is an example, not a real place or visitor location. Replace it before Arthur's contact details are published.",
     "heroIndexLabel": "Unit",
     "practiceEyebrow": "Unit",
     "practiceTitle": "Arthur's three units",
@@ -54,7 +52,8 @@
     "methodFallback": "Scope, price, targets, and reporting are agreed in writing before work begins.",
     "actionEyebrow": "First step",
     "actionFallback": "Tell us the problem.",
-    "actionAfterFallback": "We will decide which unit should work first."
+    "actionAfterFallback": "We will decide which unit should work first.",
+    "actionLink": "Go to the contact page"
   },
   "contactPage": {
     "eyebrow": "About and contact",
@@ -63,26 +62,17 @@
     "heroAction": "See contact status",
     "ownerEyebrow": "Owner statement",
     "ownerTitle": "From Arthur's owner.",
-    "ownerMissingTitle": "The owner's statement is not published yet.",
-    "ownerMissingBody": "Until the owner's words are approved, this page states only Arthur's structure, its confirmed service areas, and the contact status as it stands.",
     "regionsEyebrow": "Service area",
     "regionsTitle": "Three areas, stated plainly.",
     "regionsIntro": "Arthur works for needs in Subang, Purwakarta, and Bandung. This is a service area, not an office address.",
     "regionsLabel": "Arthur service areas",
     "contactEyebrow": "Contact",
     "contactReadyTitle": "Choose the channel you use.",
-    "contactHeldTitle": "Contact is not open yet.",
-    "contactHeldBody": "The primary channel and response time still await the owner's decision. The dummy information below only keeps the page reviewable; no message will arrive.",
     "whatsapp": "Send via WhatsApp",
     "email": "Email",
-    "emailDummy": "Dummy email",
-    "emailDummyNote": "NOTE: this email is inactive and is not an Arthur contact channel. Replace it before the contact page is published.",
     "responseTime": "Response time",
-    "responseTimeMissing": "No response time has been promised.",
     "address": "Temporary address",
-    "addressDummyNote": "NOTE: this address is an example only. It is not a real place, office, or visitor location.",
     "socials": "Official accounts",
-    "formNote": "No form is available. A form is built only after the channel is decided and the security review is complete.",
     "copy": "Copy address",
     "copied": "Copied",
     "copyFailed": "Couldn't copy — select the address above",
@@ -147,10 +137,6 @@
   },
   "footer": {
     "contact": "Commissions",
-    "contactPlaceholderNote": "This email address is a non-working placeholder. Replace it before Arthur's contact details are published.",
-    "addressHeading": "Temporary address",
-    "addressPlaceholderNote": "NOTE: this address is an example, not a real place or visitor location.",
-    "elsewherePlaceholderNote": "Arthur's official profiles will be added once the owner confirms them.",
     "elsewhere": "Elsewhere",
     "colophon": "Colophon",
     "rights": "© {year} {name}.",
@@ -243,8 +229,7 @@
     "bridgeEyebrow": "Bridge",
     "bridgeTitle": "When the problem continues into another unit.",
     "ctaEyebrow": "First step",
-    "ctaLink": "Email Arthur",
-    "dummyContactNote": "NOTE: this email address is a non-working placeholder. Replace it before Arthur's contact details are published.",
+    "ctaLink": "Go to the contact page",
     "nextUnit": "Next unit"
   },
   "side": {
@@ -278,7 +263,6 @@
     "typeLabel": "Work type",
     "entryLabel": "Entry offer",
     "offerCount": "{count} offers",
-    "chaptersEmpty": "Chapters appear once at least three offers on this side are approved for publication.",
     "firstStepEyebrow": "First step",
     "firstStepLink": "Start a conversation"
   },
@@ -320,7 +304,6 @@
     "paths": {
       "eyebrow": "Choose a path",
       "title": "Three ways into the network.",
-      "note": "Each path opens as a chapter after its offers and commission card are approved.",
       "chapterLabel": "Chapter",
       "open": "Open path",
       "referrer": {
@@ -360,9 +343,7 @@
       "condition": "Payment condition"
     },
     "registration": {
-      "eyebrow": "Registration",
-      "status": "Not open yet",
-      "note": "Registration opens after the first commission card is ready. Until then, this page only explains the flow."
+      "eyebrow": "Registration"
     }
   },
   "sample": {

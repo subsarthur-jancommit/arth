@@ -36,6 +36,7 @@ import {
 import {
   brandedStatusDocument,
   GONE_STATUS,
+  isAwaitingContentPath,
   isGonePath,
   isUnknownSingleSegment,
   NOT_FOUND_STATUS,
@@ -100,6 +101,9 @@ export function isLocalizable(pathname: string): boolean {
 export const MACHINE_PATHS = new Set([MARKDOWN_HANDLER_PATH])
 
 export const FILE_EXTENSION = /\/[^/]+\.[^/]+$/
+
+/** The cookie Next.js sets when `draftMode().enable()` runs. */
+export const DRAFT_MODE_COOKIE = '__prerender_bypass'
 
 /**
  * Canonical destination for fixed pages that used to share the generic CMS
@@ -224,9 +228,12 @@ export function proxy(request: NextRequest) {
   }
 
   // English remains a supported Sanity field/preview locale, but the public
-  // site has not approved English as a visitor-facing language yet. Keep the
-  // URL shape stable while serving the Indonesian destination instead.
-  const indonesianPath = publicLocaleRedirect(request.nextUrl.pathname)
+  // site has not approved English for Arthur's pages yet (K2). Their `/en`
+  // address answers 307 to the Indonesian twin; draft mode is exempt so
+  // Presentation can still preview the English fields.
+  const indonesianPath = request.cookies.has(DRAFT_MODE_COOKIE)
+    ? null
+    : publicLocaleRedirect(request.nextUrl.pathname)
   if (indonesianPath) {
     const destination = request.nextUrl.clone()
     destination.pathname = indonesianPath
@@ -292,6 +299,21 @@ export function proxy(request: NextRequest) {
   }
 
   if (isUnknownSingleSegment(documentPath)) {
+    return brandedStatusResponse(NOT_FOUND_STATUS, documentPath)
+  }
+
+  /*
+   * A fixed page whose content is not published yet answers a real 404
+   * (owner decision P4; the list and its reasoning are in
+   * `lib/seo/awaiting-content.ts`). Sanity draft mode passes through so
+   * Presentation can preview the draft. The cookie is only a hint here: the
+   * page itself still checks `draftMode()`, so a forged cookie reaches the
+   * same empty page the 404 replaced, never a draft.
+   */
+  if (
+    isAwaitingContentPath(documentPath) &&
+    !request.cookies.has(DRAFT_MODE_COOKIE)
+  ) {
     return brandedStatusResponse(NOT_FOUND_STATUS, documentPath)
   }
 

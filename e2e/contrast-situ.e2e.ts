@@ -76,10 +76,10 @@ const ROUTES = [
   '/id',
   '/en/work',
   '/en/work/arus-balik',
-  '/en/cara-kerja',
+  '/id/kontak',
   '/en/journal',
   '/en/journal/scope-is-the-deliverable',
-  '/en/konstruksi',
+  '/id/konstruksi',
   '/id/work/arus-balik',
 ] as const
 

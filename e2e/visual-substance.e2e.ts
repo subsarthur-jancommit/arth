@@ -58,10 +58,10 @@ const GUTTER_ROUTES = [
   '/id',
   '/en/journal',
   '/en/journal/scope-is-the-deliverable',
-  '/en/cara-kerja',
+  '/id/kontak',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
-  '/id/cara-kerja',
+  '/id/konstruksi',
 ]
 
 /*

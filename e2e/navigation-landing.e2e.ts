@@ -124,7 +124,7 @@ test.describe('a navigation lands at the top of the page it asked for', () => {
   })
 
   test('a unit page → the next unit', async ({ page }) => {
-    const result = await navigate(page, `/en/${UNITS[0]}`, `/en/${UNITS[1]}`)
+    const result = await navigate(page, `/id/${UNITS[0]}`, `/id/${UNITS[1]}`)
     assertLandedAtTheTop(result, 'unit → next unit')
   })
 })

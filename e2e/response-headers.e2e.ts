@@ -43,7 +43,7 @@ test.describe('response headers', () => {
        * instead, below and in `e2e/catalogue-layout.e2e.ts`: the catalogue
        * must render in full, server-side, filtered or not.
        */
-      ...UNITS.map((unit) => `/en/${unit}`),
+      ...UNITS.map((unit) => `/id/${unit}`),
     ]
 
     for (const path of paths) {
@@ -154,7 +154,7 @@ test.describe('response headers', () => {
   }) => {
     const paths = [
       '/id',
-      '/id/cara-kerja',
+      '/id/kontak',
       '/en/work',
       '/sitemap.xml',
       '/robots.txt',
@@ -191,12 +191,7 @@ test.describe('response headers', () => {
      * different question from whether the shell does, and this is the only
      * place that can ask it.
      */
-    for (const path of [
-      '/id',
-      '/id/konstruksi',
-      '/en/work',
-      '/id/cara-kerja',
-    ]) {
+    for (const path of ['/id', '/id/konstruksi', '/en/work', '/id/kontak']) {
       const html = await (await request.get(path)).text()
       expect(html, `${path} must carry meta robots`).toMatch(
         /<meta name="robots" content="[^"]*noindex/

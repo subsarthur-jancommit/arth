@@ -19,7 +19,7 @@ import { expect, test } from '@playwright/test'
 
 import { FEATURED_WORK } from './fixtures'
 
-const ROUTES = ['/id', `/en/work/${FEATURED_WORK}`, '/en/cara-kerja']
+const ROUTES = ['/id', `/en/work/${FEATURED_WORK}`, '/id/konstruksi']
 const MAX_TABS = 40
 
 test.describe('keyboard focus', () => {

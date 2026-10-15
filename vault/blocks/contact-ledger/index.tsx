@@ -11,7 +11,6 @@ interface ContactLedgerProps {
   regions: readonly { id: string; name: string }[]
   email: string
   emailHref: string | null
-  emailIsPlaceholder: boolean
   whatsappHref: string | null
   responseTime: string | null
   address: string
@@ -24,18 +23,11 @@ interface ContactLedgerProps {
     regionsLabel: string
     contactEyebrow: string
     contactReadyTitle: string
-    contactHeldTitle: string
-    contactHeldBody: string
     whatsapp: string
     email: string
-    emailDummy: string
-    emailDummyNote: string
     responseTime: string
-    responseTimeMissing: string
     address: string
-    addressDummyNote: string
     socials: string
-    formNote: string
     copy: string
     copied: string
     copyFailed: string
@@ -54,7 +46,6 @@ export function ContactLedger({
   regions,
   email,
   emailHref,
-  emailIsPlaceholder,
   whatsappHref,
   responseTime,
   address,
@@ -87,39 +78,34 @@ export function ContactLedger({
         </ol>
       </Reveal>
 
-      <Reveal as="section" id="contact" className={s.contact} perItem>
-        <SectionHeader
-          eyebrow={labels.contactEyebrow}
-          title={
-            hasRealChannel ? labels.contactReadyTitle : labels.contactHeldTitle
-          }
-        />
+      {/*
+        Channels, only once one is real (owner decision P4, R0). Until K5
+        names a channel there is nothing a reader can use here, and a dummy
+        address with a note to the editor is worse than no section.
+      */}
+      {hasRealChannel && (
+        <Reveal as="section" id="contact" className={s.contact} perItem>
+          <SectionHeader
+            eyebrow={labels.contactEyebrow}
+            title={labels.contactReadyTitle}
+          />
 
-        {!hasRealChannel && (
-          <p data-reveal-item className={cn('p-big', s.hold)}>
-            {labels.contactHeldBody}
-          </p>
-        )}
+          <div data-reveal-item className={s.channels}>
+            {whatsappHref && (
+              <Link
+                href={whatsappHref}
+                newTab
+                className={cn('cta', s.primary)}
+                data-press="cta"
+                data-intent=""
+              >
+                {labels.whatsapp}
+              </Link>
+            )}
 
-        <div data-reveal-item className={s.channels}>
-          {whatsappHref && (
-            <Link
-              href={whatsappHref}
-              newTab
-              className={cn('cta', s.primary)}
-              data-press="cta"
-              data-intent=""
-            >
-              {labels.whatsapp}
-            </Link>
-          )}
-
-          <div className={s.fact}>
-            <h3 className={cn('caption', s.factLabel)}>
-              {emailIsPlaceholder ? labels.emailDummy : labels.email}
-            </h3>
-            {emailHref ? (
-              <>
+            {emailHref && (
+              <div className={s.fact}>
+                <h3 className={cn('caption', s.factLabel)}>{labels.email}</h3>
                 <Link href={emailHref} className={cn('p-big', s.email)}>
                   {email}
                 </Link>
@@ -129,60 +115,46 @@ export function ContactLedger({
                   copied={labels.copied}
                   failed={labels.copyFailed}
                 />
-              </>
-            ) : (
-              <>
-                <p className={cn('p-big', s.inactive)}>{email}</p>
-                <p data-placeholder-note className={cn('caption', s.note)}>
-                  {labels.emailDummyNote}
-                </p>
-              </>
+              </div>
+            )}
+
+            {responseTime && (
+              <div className={s.fact}>
+                <h3 className={cn('caption', s.factLabel)}>
+                  {labels.responseTime}
+                </h3>
+                <p className={cn('p-big', s.factValue)}>{responseTime}</p>
+              </div>
+            )}
+
+            {!addressIsPlaceholder && (
+              <div className={s.fact}>
+                <h3 className={cn('caption', s.factLabel)}>{labels.address}</h3>
+                <p className={cn('p-big', s.factValue)}>{address}</p>
+              </div>
+            )}
+
+            {socials.length > 0 && (
+              <div className={s.fact}>
+                <h3 className={cn('caption', s.factLabel)}>{labels.socials}</h3>
+                <ul className={s.socials}>
+                  {socials.map((social) => (
+                    <li key={social.url}>
+                      <Link
+                        href={social.url}
+                        newTab
+                        className={cn('p', s.social)}
+                      >
+                        {social.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
           </div>
-
-          <div className={s.fact}>
-            <h3 className={cn('caption', s.factLabel)}>
-              {labels.responseTime}
-            </h3>
-            <p className={cn('p-big', s.factValue)}>
-              {responseTime ?? labels.responseTimeMissing}
-            </p>
-          </div>
-
-          <div className={s.fact}>
-            <h3 className={cn('caption', s.factLabel)}>{labels.address}</h3>
-            <p className={cn('p-big', s.factValue)}>{address}</p>
-            {addressIsPlaceholder && (
-              <p data-placeholder-note className={cn('caption', s.note)}>
-                {labels.addressDummyNote}
-              </p>
-            )}
-          </div>
-
-          {socials.length > 0 && (
-            <div className={s.fact}>
-              <h3 className={cn('caption', s.factLabel)}>{labels.socials}</h3>
-              <ul className={s.socials}>
-                {socials.map((social) => (
-                  <li key={social.url}>
-                    <Link
-                      href={social.url}
-                      newTab
-                      className={cn('p', s.social)}
-                    >
-                      {social.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-
-        <p data-reveal-item className={cn('caption', s.formNote)}>
-          {labels.formNote}
-        </p>
-      </Reveal>
+        </Reveal>
+      )}
     </div>
   )
 }

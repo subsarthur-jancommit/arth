@@ -32,6 +32,26 @@ Backlog, Sistem animasi, Peta rute dan komponen, Peta website, Suara dan gaya),
 membawa `[skip ci]`, jadi `ci` dan `e2e` berjalan pada head PR #18. Hasilnya
 yang menentukan langkah berikut, bukan laporan lokal.
 
+### A4. Hasil e2e pertama di PR #18
+
+Run 38629133499 pada head `98c90fe`, 15 Oktober 2026: `ci` hijau, `e2e`
+**gagal, 93 tes** (setelah retry) di 25 berkas. Log GitHub hanya memuat rincian
+13 galat pertama; laporan lengkapnya artefak 822 MB yang tidak diunduh.
+Penggolongan di bawah dibaca dari nama tes dan rincian yang tersedia.
+
+| Golongan                 | Tes                                                                                                                                                                                                                                                             | Penyebab                                                                               |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Fitur yang dicabut di F3 | `material-layer`, `material-occlusion`, `material-shape`, `visual-substance` (material), `image-resolution /id`, `journey`, `navigation-landing`, `motion` (morph beranda dan praktik, proses studio), `section-link-studio`, `address-copy`, `webgl-lifecycle` | Lintasan, grid karya WebGL, daftar praktik, dan halaman studio tidak ada lagi (E1, E3) |
+| Bahasa (C2)              | `no-javascript /en/<unit>`, `contrast-situ /en/konstruksi`, `route-sweep /en/<sisi>`, `hreflang-source`, `locale-place`, `agent-readiness`                                                                                                                      | `/en` Arthur campur bahasa atau berubah tanpa tes disesuaikan                          |
+| Soft-404 (E3)            | `canonical-sweep`, `back-to-top-clear`, `contrast-situ /en/cara-kerja`                                                                                                                                                                                          | `/cara-kerja` merender tampilan 404 dengan HTTP 200                                    |
+| Placeholder berlabel     | `promises` (dua tes)                                                                                                                                                                                                                                            | Tes Tahap 35 yang dibalik oleh P4                                                      |
+| Halaman sisi             | `route-sweep` untuk empat sisi non-jaringan di dua bahasa, `side-page`                                                                                                                                                                                          | Rincian galat tidak ada di log yang terpotong                                          |
+| Lainnya                  | `command-palette` (empat), `project-detail`, `responsive /id`, `phone-menu` tanpa JavaScript                                                                                                                                                                    | Rincian galat tidak ada di log yang terpotong                                          |
+
+Satu galat yang terbaca adalah pelanggaran aturan #11: teks pembuka di halaman
+unit diukur **4,04:1** di atas latarnya, di bawah ambang 4,5:1
+(`contrast-situ`, `/en/konstruksi`, 1280 px).
+
 ## B. Beranda dibanding `main`
 
 | No. | Temuan                                                                                                                                                                                                                                                                                                            | Bukti                                                            |

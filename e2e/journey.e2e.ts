@@ -248,9 +248,9 @@ test.describe('a reader moving through the site', () => {
      */
     const [first, second] = UNITS
 
-    await page.goto(`/en/${first}`)
+    await page.goto(`/id/${first}`)
     await page.waitForTimeout(1500)
-    await page.locator(`a[href="/en/${second}"]`).first().click()
+    await page.locator(`a[href="/id/${second}"]`).first().click()
     await page.waitForURL(`**/${second}`)
     await page.waitForTimeout(1800)
 
@@ -334,9 +334,9 @@ test.describe('a reader moving through the site', () => {
     const page = await context.newPage()
     try {
       const [first, second] = UNITS
-      await page.goto(`/en/${first}`)
+      await page.goto(`/id/${first}`)
       await page.waitForTimeout(1200)
-      await page.locator(`a[href="/en/${second}"]`).first().click()
+      await page.locator(`a[href="/id/${second}"]`).first().click()
       await page.waitForURL(`**/${second}`)
       await page.waitForTimeout(1200)
       await page.goBack()

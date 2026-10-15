@@ -218,15 +218,11 @@ export default async function UnitPage({ params }: UnitPageProps) {
           <p data-reveal-item className="p-big">
             {action.sesudahnya}
           </p>
-          <p
-            data-reveal-item
-            data-placeholder-note
-            className={cn('caption', s.actionLink)}
-          >
-            {t('ctaLink')}
-          </p>
-          <p data-reveal-item className={cn('caption', s.note)}>
-            {t('dummyContactNote')}
+          {/* The contact page until K5 names a channel (P4, R0). */}
+          <p data-reveal-item>
+            <Link href="/kontak" className={cn('caption', s.actionLink)}>
+              {t('ctaLink')}
+            </Link>
           </p>
         </Reveal>
 

@@ -30,6 +30,7 @@ import {
   siteSettingsPreviewQuery,
   siteSettingsQuery,
 } from '@/lib/integrations/sanity/queries'
+import { isAwaitingContent } from '@/lib/seo/awaiting-content'
 import { ContactBlock } from '@/vault/blocks/contact-block'
 import { Hero } from '@/vault/blocks/hero'
 import { SituationLinks } from '@/vault/blocks/situation-links'
@@ -38,8 +39,6 @@ import { type UnitDoor, UnitDoors } from '@/vault/blocks/unit-doors'
 import { Reveal } from '@/vault/motion/reveal'
 
 import s from './page.module.css'
-
-const FLOWMAP_SIM: ('fluid' | 'flowmap')[] = ['flowmap']
 
 async function fetchPublishedHome(locale: Locale) {
   'use cache'
@@ -204,8 +203,13 @@ export default async function Home() {
     <Wrapper
       theme="dark"
       lenis={{ anchors: true }}
+      /*
+       * `webgl` for the hero's SceneShell. No `simTypes`: the flowmap's only
+       * reader was the material-image work grid, removed in F3-01, and a
+       * simulation with no consumer still costs a GPU pass per frame
+       * (`docs/TINJAUAN-F01-F03.md` B5). R4 brings it back with the plates.
+       */
       webgl
-      simTypes={FLOWMAP_SIM}
       gsap
     >
       <Hero
@@ -276,36 +280,55 @@ export default async function Home() {
           title={t('methodTitle')}
         >
           <p className="p-big">{workPromise}</p>
-          <Link href="/cara-kerja" className={cn('caption', s.textLink)}>
-            {t('methodLink')}
-          </Link>
+          {!isAwaitingContent('/cara-kerja') && (
+            <Link href="/cara-kerja" className={cn('caption', s.textLink)}>
+              {t('methodLink')}
+            </Link>
+          )}
         </StudioNote>
 
-        <ContactBlock
-          id="contact"
-          className={s.section}
-          eyebrow={t('actionEyebrow')}
-          title={`${actionLabel} ${actionAfter}`}
-          email={content.email}
-          emailIsPlaceholder={content.fallbacks.email}
-          address={content.address}
-          addressHeading={t('addressHeading')}
-          addressIsPlaceholder={content.fallbacks.address}
-          {...(content.fallbacks.address && {
-            addressNote: t('addressPlaceholderNote'),
-          })}
-          emailLabel={t('emailLabel', { name: content.name })}
-          socials={content.socials}
-          {...(content.fallbacks.email && {
-            note: t('contactPlaceholderNote'),
-          })}
-          socialsHeading={t('socialsHeading')}
-          copy={{
-            label: t('copyAddress'),
-            copied: t('addressCopied'),
-            failed: t('copyFailed'),
-          }}
-        />
+        {/*
+          The first step. Until K5 names a real channel the fallback address
+          is a reserved `.invalid` placeholder, and P4 is that a reader never
+          sees one, so the action points to the contact page instead.
+        */}
+        {content.fallbacks.email ? (
+          <Reveal as="section" id="contact" className={s.section}>
+            <SectionHeader
+              eyebrow={t('actionEyebrow')}
+              title={`${actionLabel} ${actionAfter}`}
+            />
+            <p data-reveal-item>
+              <Link
+                href="/kontak"
+                className={cn('cta', s.heroCta)}
+                data-press="cta"
+                data-intent=""
+              >
+                {t('actionLink')}
+              </Link>
+            </p>
+          </Reveal>
+        ) : (
+          <ContactBlock
+            id="contact"
+            className={s.section}
+            eyebrow={t('actionEyebrow')}
+            title={`${actionLabel} ${actionAfter}`}
+            email={content.email}
+            address={content.address}
+            addressHeading={t('addressHeading')}
+            addressIsPlaceholder={content.fallbacks.address}
+            emailLabel={t('emailLabel', { name: content.name })}
+            socials={content.socials}
+            socialsHeading={t('socialsHeading')}
+            copy={{
+              label: t('copyAddress'),
+              copied: t('addressCopied'),
+              failed: t('copyFailed'),
+            }}
+          />
+        )}
       </div>
     </Wrapper>
   )

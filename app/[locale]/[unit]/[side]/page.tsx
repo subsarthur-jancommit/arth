@@ -192,12 +192,9 @@ export default async function SidePage({ params }: SidePageProps) {
               absent: networkContent.yangTidakAda,
               condition: networkContent.syarat,
             }}
-            registrationTitle={networkContent.ajakanDaftar.label}
-            registrationBody={networkContent.ajakanDaftar.sesudahnya}
             labels={{
               pathsEyebrow: tNetwork('paths.eyebrow'),
               pathsTitle: tNetwork('paths.title'),
-              pathsNote: tNetwork('paths.note'),
               chapterLabel: tNetwork('paths.chapterLabel'),
               openPath: tNetwork('paths.open'),
               workEyebrow: tNetwork('work.eyebrow'),
@@ -212,8 +209,6 @@ export default async function SidePage({ params }: SidePageProps) {
               absentTitle: tNetwork('terms.absent'),
               conditionTitle: tNetwork('terms.condition'),
               registrationEyebrow: tNetwork('registration.eyebrow'),
-              registrationStatus: tNetwork('registration.status'),
-              registrationNote: tNetwork('registration.note'),
             }}
           />
         ) : (
@@ -225,23 +220,25 @@ export default async function SidePage({ params }: SidePageProps) {
               className={s.steps}
             />
 
-            <SideChapterTable
-              label={tSide('chaptersEyebrow')}
-              title={tSide('chaptersTitle')}
-              chapters={chapters}
-              chapterLabel={tSide('chapterLabel')}
-              typeLabel={tSide('typeLabel')}
-              entryLabel={tSide('entryLabel')}
-              offerCountLabel={tSide('offerCount')}
-              empty={tSide('chaptersEmpty')}
-              className={s.chapters}
-            />
+            {/* Only once a chapter has published offers (P4, R0). */}
+            {chapters.length > 0 && (
+              <SideChapterTable
+                label={tSide('chaptersEyebrow')}
+                title={tSide('chaptersTitle')}
+                chapters={chapters}
+                chapterLabel={tSide('chapterLabel')}
+                typeLabel={tSide('typeLabel')}
+                entryLabel={tSide('entryLabel')}
+                offerCountLabel={tSide('offerCount')}
+                className={s.chapters}
+              />
+            )}
 
             <section className={s.action}>
               <p className="caption">{tSide('firstStepEyebrow')}</p>
               <h2 className="h2">{action.label}</h2>
               <p className="p-big">{action.sesudahnya}</p>
-              <Link href="/#contact" className={cn('caption', s.actionLink)}>
+              <Link href="/kontak" className={cn('caption', s.actionLink)}>
                 {tSide('firstStepLink')}
               </Link>
             </section>

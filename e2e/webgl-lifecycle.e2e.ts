@@ -60,7 +60,7 @@ const CYCLES = 4
 
 /** A route with a canvas, and one without, to navigate between. */
 const HOME = '/id'
-const AWAY = '/en/cara-kerja'
+const AWAY = '/en/journal'
 
 interface Counts {
   /** Canvas elements that have ever been in the document. */

@@ -299,7 +299,7 @@
 
   /*
    * On a phone the same links are the sheet's words — the fork: display
-   * type, one size, fitted to the longest of them in this language
+   * type, one size, fitted to the longest word among them in this language
    * (`--fit-chars`, set by `index.tsx`) with the nameplate's 0.72em per
    * character. "Journal" is 71px on a 390px phone, "Jurnal" 83; `14svh` caps
    * a phone on its side, where width is plentiful and height is not.
@@ -322,6 +322,9 @@
     line-height: 0.95;
     letter-spacing: -0.04em;
     text-transform: none;
+    /* A multi-word label wraps rather than shrinking every word (index.tsx). */
+    white-space: normal;
+    text-wrap: balance;
 
     /*
      * "You are here" by more than a step of ink. Review measured the muted

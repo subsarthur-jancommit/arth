@@ -39,7 +39,7 @@ async function openWithShortcut(page: Page) {
 }
 
 test.describe('the search palette', () => {
-  for (const path of ['/en/cara-kerja', '/id'] as const) {
+  for (const path of ['/en/journal', '/id'] as const) {
     test(`${path}: the button and the shortcut both open it`, async ({
       page,
     }) => {
@@ -224,7 +224,7 @@ test.describe('the search palette', () => {
     await expect(page.locator('[role="dialog"]')).toBeHidden()
   })
 
-  for (const path of ['/en/cara-kerja', '/id'] as const) {
+  for (const path of ['/en/journal', '/id'] as const) {
     test(`${path}: axe is clean with the palette open`, async ({ page }) => {
       await page.goto(path)
       await page.waitForTimeout(1200)
