@@ -180,7 +180,22 @@ pendekatan pola, bagian 3:
 
 Belum: blok Cara kami bekerja Teknologi di halaman offer, halaman Cara kami
 dibayar, dan pembacaan `dari`/`pekerjaan` di halaman kontak (menunggu K5 dan
-F5-06). Semua ini baru terlihat setelah isi ditulis ke Sanity dengan “ok tulis”. Skema `offer` butuh medan
+F5-06). Semua ini baru terlihat setelah isi ditulis ke Sanity dengan “ok tulis”.
+
+### Penulisan pertama ke Sanity (ok tulis pemilik, 16 Oktober 2026)
+
+Pemilik memberi “ok tulis” untuk 1 bab dan 11 offer Kuliner. Dokumen disusun
+`lib/content/sanity-drafts.ts` lewat `import-catalog.ts --drafts`, lalu ditulis
+ke dataset `production` sebagai draf: `drafts.arthur-bab-teknologi-siap-pakai-kuliner`
+dan `drafts.arthur-offer-kul-01` sampai `-kul-11`. Diverifikasi dengan query:
+12 draf, 0 terbit, semua berstatus `perlu-anda`; pintu masuk KUL-01; halaman
+sendiri KUL-01 dan KUL-02. Tidak ada yang diterbitkan.
+
+Supaya halaman tampil di situs, pemilik menyetujui dan menerbitkan berurutan:
+unit Teknologi, sisi siap pakai, bab Kuliner, lalu offer-nya. Draf sisi dan
+unit yang dibuat sebelumnya masih punya dua catatan yang belum disentuh: referensi
+unit di draf sisi kosong, dan urutan sisi siap pakai bernilai 1. Jembatan ke
+FNB-01 ditulis saat offer itu ada. Skema `offer` butuh medan
 `paket` di R2. Belum ada yang ditulis ke Sanity.
 
 Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk
