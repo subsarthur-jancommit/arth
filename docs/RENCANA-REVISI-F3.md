@@ -131,7 +131,16 @@ Langkah 3 untuk Konstruksi (model 5 sampai 9 dan perawatan di model 10)
 dikerjakan dengan cara yang sama; tinjauannya di
 [`R1-TULIS-TANGAN-KONSTRUKSI.md`](./R1-TULIS-TANGAN-KONSTRUKSI.md). Dari 216 offer
 Konstruksi, 214 siap; 2 membership perawatan ditahan menunggu keputusan ekonomi
-Membership Care. Menunggu persetujuan pemilik. Peekabo menyusul. Skema `offer` butuh medan
+Membership Care. Disetujui pemilik 15 Oktober 2026.
+
+Langkah 3 untuk Peekabo (model 10 sampai 16) selesai dengan cara yang sama;
+tinjauannya di [`R1-TULIS-TANGAN-PEEKABO.md`](./R1-TULIS-TANGAN-PEEKABO.md). Dari 156
+offer Peekabo, 129 siap. Yang ditahan: 15 offer operator (SaaS pertama), 5 offer ‡
+(pilihan sub-agen), dan 7 offer yang nilainya status mitra resmi platform, sampai
+Peekabo terdaftar. Menunggu persetujuan pemilik.
+
+Seluruh katalog: 652 dari 688 offer siap diturunkan; 36 ditahan menunggu
+keputusan pemilik atau pendaftaran program mitra. Skema `offer` butuh medan
 `paket` di R2. Belum ada yang ditulis ke Sanity.
 
 Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk

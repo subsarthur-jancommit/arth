@@ -837,7 +837,8 @@ const FAIR_MARGIN =
 
 /**
  * Konstruksi, models 5 to 9 and the Rawat rows of model 10. Rules cited are
- * Konstruksi's Peta & aturan main, rules 1 to 13. Waits for approval.
+ * Konstruksi's Peta & aturan main, rules 1 to 13. Approved by the owner on
+ * 15 October 2026.
  */
 export const KONSTRUKSI_OVERRIDES = new Map<string, CatalogOverride>([
   // Paket dan paket rakitan.
@@ -1143,8 +1144,314 @@ export const KONSTRUKSI_OVERRIDES = new Map<string, CatalogOverride>([
   ],
 ])
 
+const NOT_REGISTERED =
+  'Nilainya adalah status mitra resmi platform; tidak bisa dirumuskan aman sebelum Peekabo terdaftar (Aturan isi 7, rumusan aman 4)'
+const WRITTEN_WORK = 'Bentuk hubungan kerja disepakati tertulis sebelum mulai.'
+const SKILL_NOT_LOTTERY =
+  'Lomba berbasis kemampuan, bukan undian; izin keramaian dan lokasi diurus sebelum acara.'
+const COMMISSION_CARD =
+  'Besaran bagian Anda tertulis di kartu komisi sebelum Anda mulai merujuk.'
+const PLATFORM_AFFILIATE =
+  'Mengikuti syarat afiliasi platform; komisi dihitung dari pembelian yang selesai.'
+const CLASS_SEPARATE =
+  'Kelas dijual terpisah dan tidak menjadi syarat atau biaya masuk jaringan.'
+
+/**
+ * Peekabo, models 10 to 16. Rules cited are Peekabo's Peta & aturan main,
+ * rules 1 to 16. Offers whose value is an official platform partner status
+ * are held until Peekabo is registered. Waits for approval.
+ */
+export const PEEKABO_OVERRIDES = new Map<string, CatalogOverride>([
+  // Automatic rows with a style problem.
+  [
+    'PRD-05',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Obrolan dan siaran Anda tampil rapi dengan beberapa kamera.',
+      alasan: '“Profesional” ada di daftar frasa yang tidak dipakai',
+    },
+  ],
+  [
+    'LIV-02',
+    {
+      keputusan: 'tetap',
+      judul: 'Paket live bulanan 2, 4, atau 8 jam',
+      alasan: 'Judul kartu paling banyak 8 kata',
+    },
+  ],
+  [
+    'EKO-04',
+    {
+      keputusan: 'tetap',
+      judul: 'Hitung ulang margin setiap biaya platform berubah',
+      alasan: 'Judul kartu paling banyak 8 kata',
+    },
+  ],
+
+  // Sisi A: kelola, kampanye, aset, arah.
+  [
+    '1A-09',
+    {
+      keputusan: 'tetap',
+      alasan:
+        'Menelusuri sampai penjualan adalah proses; contoh yang boleh di Aturan isi',
+    },
+  ],
+  [
+    'MKT-07',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Pelanggan lama yang setuju menerima pesan dihubungi lagi lewat WhatsApp dan email pada waktunya.',
+      alasan: 'Pembelian ulang dipegang pelanggan; aturan 10',
+    },
+  ],
+  [
+    'LIV-04',
+    {
+      keputusan: 'tetap',
+      alasan: 'Skema bayar dari penjualan selama live adalah cara bayar',
+    },
+  ],
+  [
+    '2B-03',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Warga sekitar diundang lebih dulu, sebelum gerai baru dibuka.',
+      alasan: '“Ramai sejak hari pertama” dipegang warga',
+    },
+  ],
+  [
+    '3A-10',
+    {
+      keputusan: 'rumusan-aman',
+      syarat: PLATFORM_AFFILIATE,
+      alasan: 'Aturan 2',
+    },
+  ],
+  [
+    'MKT-10',
+    {
+      keputusan: 'rumusan-aman',
+      syarat: 'Prospek dihubungi hanya bila memberi izin.',
+      alasan: 'Aturan 10',
+    },
+  ],
+  [
+    '1B-10',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Beberapa versi iklan diuji berdampingan, dan versi yang unggul di hasil uji dipakai lebih lama.',
+      alasan: '“Menang” tertangkap kata',
+    },
+  ],
+  [
+    '2A-04',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Aturan, rute, pos, dan hadiah dirancang jelas, supaya warga mudah ikut.',
+      syarat: SKILL_NOT_LOTTERY,
+      alasan: 'Aturan 9; kemauan warga dipegang warga',
+    },
+  ],
+  [
+    'SOL-01',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Daftar isu yang sedang dibicarakan, dan sudut yang aman dipakai brand Anda.',
+      alasan: '“Naik” tertangkap kata',
+    },
+  ],
+  [
+    'SOL-06',
+    {
+      keputusan: 'rumusan-aman',
+      syarat:
+        'Nama diperiksa ketersediaannya sebagai merek sebelum diserahkan.',
+      alasan: 'Aturan 13',
+    },
+  ],
+  [
+    'SOL-08',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Konsep acara berseri bermerek, dengan format yang bisa diulang setiap episode.',
+      alasan: 'Audiens kembali dipegang audiens',
+    },
+  ],
+  [
+    '2A-07',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Perlengkapan, izin lokasi, dan alur peserta diurus oleh tim kami.',
+      syarat: 'Izin keramaian dan keselamatan peserta dipenuhi sebelum acara.',
+      alasan: 'Aturan 9',
+    },
+  ],
+  [
+    '2B-01',
+    {
+      keputusan: 'rumusan-aman',
+      judul: 'Event hunting kota',
+      syarat: SKILL_NOT_LOTTERY,
+      alasan: 'Aturan 9; “(contoh Subang)” catatan katalog',
+    },
+  ],
+  [
+    '2B-08',
+    {
+      keputusan: 'rumusan-aman',
+      syarat:
+        'Data peserta dibagikan ke sponsor hanya dengan persetujuan peserta.',
+      alasan: 'Aturan 10',
+    },
+  ],
+
+  // Sisi A: orang dan live.
+  [
+    '3A-01',
+    {
+      keputusan: 'rumusan-aman',
+      alasan:
+        'Aturan 3; nama program tidak disebut, pengelolaan kreator tidak bergantung pada status mitra',
+    },
+  ],
+  [
+    '3A-05',
+    {
+      keputusan: 'rumusan-aman',
+      syarat: 'Siaran mengikuti aturan live setiap platform.',
+      alasan: 'Aturan 3; nama program tidak disebut',
+    },
+  ],
+  [
+    '3A-04',
+    { keputusan: 'rumusan-aman', syarat: WRITTEN_WORK, alasan: 'Aturan 8' },
+  ],
+  [
+    '2A-02',
+    { keputusan: 'rumusan-aman', syarat: WRITTEN_WORK, alasan: 'Aturan 8' },
+  ],
+  [
+    '3A-03',
+    {
+      keputusan: 'rumusan-aman',
+      syarat: WRITTEN_WORK,
+      alasan: 'Aturan 8; bayaran tetap dan bonus adalah cara bayar',
+    },
+  ],
+
+  // Sisi A: afiliasi dan program platform.
+  ['LIV-07', { keputusan: 'ditahan', alasan: NOT_REGISTERED }],
+  ['3B-06', { keputusan: 'ditahan', alasan: NOT_REGISTERED }],
+  ['EKO-01', { keputusan: 'ditahan', alasan: NOT_REGISTERED }],
+  ['EKO-02', { keputusan: 'ditahan', alasan: NOT_REGISTERED }],
+  ['EKO-03', { keputusan: 'ditahan', alasan: NOT_REGISTERED }],
+  [
+    '3C-09',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Anggota komunitas membuat konten untuk brand, dan karya yang terpilih dibayar.',
+      syarat:
+        'Tantangan berbasis kemampuan dengan kriteria tertulis, bukan undian.',
+      alasan: 'Aturan 2 dan 9',
+    },
+  ],
+  [
+    'EKO-06',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Pembeli klien yang butuh cicilan atau proteksi dirujuk ke mitra resmi.',
+      syarat:
+        'Pembiayaan oleh perusahaan pembiayaan berizin; asuransi dijual agen berlisensi.',
+      alasan: 'Aturan 5 dan 6',
+    },
+  ],
+
+  // Sisi B: ikut menjualkan. Kalimat wajib jaringan ada di halaman jalurnya.
+  [
+    '3B-03',
+    {
+      keputusan: 'rumusan-aman',
+      syarat:
+        'Komisi dari penjualan Anda sendiri, tanpa biaya masuk dan tanpa bonus rekrutmen.',
+      alasan: 'Aturan 1 dan 2',
+    },
+  ],
+  [
+    '3B-07',
+    {
+      keputusan: 'tetap',
+      alasan: '“Komisi cair” adalah status yang ditampilkan',
+    },
+  ],
+  [
+    'OCS-01',
+    {
+      keputusan: 'rumusan-aman',
+      syarat: COMMISSION_CARD,
+      alasan: 'Aturan 4; dampak sudah menyebut perantara berizin',
+    },
+  ],
+  [
+    'OCS-03',
+    { keputusan: 'rumusan-aman', syarat: COMMISSION_CARD, alasan: 'Aturan 5' },
+  ],
+  [
+    'OCS-04',
+    {
+      keputusan: 'rumusan-aman',
+      syarat: 'Polis dijual agen berlisensi; Anda merujuk, bukan menjual.',
+      alasan: 'Aturan 6',
+    },
+  ],
+  [
+    'OCS-09',
+    { keputusan: 'rumusan-aman', syarat: CLASS_SEPARATE, alasan: 'Aturan 14' },
+  ],
+  [
+    '3A-09',
+    { keputusan: 'rumusan-aman', syarat: CLASS_SEPARATE, alasan: 'Aturan 14' },
+  ],
+  [
+    '3C-04',
+    {
+      keputusan: 'rumusan-aman',
+      syarat: 'Pembelian kolektif mengikuti aturan perlindungan konsumen.',
+      alasan: 'Aturan 15',
+    },
+  ],
+  [
+    '3B-08',
+    {
+      keputusan: 'rumusan-aman',
+      syarat: PLATFORM_AFFILIATE,
+      alasan: 'Aturan 2',
+    },
+  ],
+  ['KRE-01', { keputusan: 'ditahan', alasan: NOT_REGISTERED }],
+  ['KRE-02', { keputusan: 'ditahan', alasan: NOT_REGISTERED }],
+  [
+    'KRE-03',
+    {
+      keputusan: 'rumusan-aman',
+      syarat:
+        'Bentuk kerja disepakati tertulis, dan honor dipotong pajak sesuai aturan.',
+      alasan: 'Aturan 7 dan 8',
+    },
+  ],
+])
+
 /** Every handwritten answer the import reads. */
 export const CATALOG_OVERRIDES = new Map<string, CatalogOverride>([
   ...TEKNOLOGI_OVERRIDES,
   ...KONSTRUKSI_OVERRIDES,
+  ...PEEKABO_OVERRIDES,
 ])
