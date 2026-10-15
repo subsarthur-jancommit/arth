@@ -1,7 +1,7 @@
 # Serah halaman: Layar pesanan di dapur
 
 Halaman pekerjaan di Kuliner dan F&B, Teknologi, untuk yang ingin hasil siap
-pakai · 15 Oktober 2026 · Status: perlu Anda (versi dua paket) · Placeholder:
+pakai · 15 Oktober 2026 · Status: disetujui pemilik, 15 Oktober 2026 (versi dua paket) · Placeholder:
 tidak ada
 
 Pekerjaan ketiga dari lima yang tayang di [halaman Kuliner](./R1-SERAH-BAB-KULINER.md).
