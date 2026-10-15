@@ -56,8 +56,11 @@ revisi:
 
 Pekerjaan mekanis, tidak menunggu P1 sampai P3. Satu PR.
 
-**Status 15 Oktober 2026: dikerjakan** di branch `claude/f3-r0-stabil`, PR
-bertumpuk di atas PR #18. Satu penyesuaian dari usulan awal: `/en/*`
+**Status 15 Oktober 2026: selesai.** PR #20, bertumpuk di atas PR #18,
+di-merge ke `codex/f2-02-unit-side-model` sebagai `6730a24`. `ci` dan `e2e`
+hijau pada head `e5c687f` (run 38679015289: 674 lulus, 0 gagal, 62 dilewati
+sebagai `test.fixme` dan opt-out beralasan); preview Vercel ditinjau pemilik.
+Tidak ke `main`: PR #18 dipisah lebih dulu (bagian Nasib PR #18). Satu penyesuaian dari usulan awal: `/en/*`
 dialihkan hanya untuk rute Arthur yang belum diterjemahkan (unit, sisi,
 kontak, cara kerja, satu klien tiga unit, kebijakan, halaman). `/en/work` dan
 `/en/journal` sudah berbahasa Inggris penuh dan tetap, sesuai bunyi K2 ("/en
