@@ -93,7 +93,8 @@ Serah bab Kuliner dan F&B ([`R1-SERAH-BAB-KULINER.md`](./R1-SERAH-BAB-KULINER.md
 ditulis ulang atas arahan pemilik: tanpa kode katalog di bagian halaman, tanpa
 placeholder, dengan pekerjaan yang tayang dipilih agen dari master brief;
 disetujui pemilik. Halaman pekerjaan pertama, Bot pesan-antar WhatsApp
-([`R1-SERAH-BOT-PESAN-ANTAR.md`](./R1-SERAH-BOT-PESAN-ANTAR.md)), menunggu
+([`R1-SERAH-BOT-PESAN-ANTAR.md`](./R1-SERAH-BOT-PESAN-ANTAR.md)), disetujui pemilik. Halaman Pesan dan bayar dari meja
+([`R1-SERAH-PESAN-BAYAR-MEJA.md`](./R1-SERAH-PESAN-BAYAR-MEJA.md)) menunggu
 persetujuan pemilik. Belum ada yang ditulis ke Sanity.
 
 Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk
