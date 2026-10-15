@@ -1,7 +1,7 @@
 # Serah halaman: Pesan dan bayar dari meja
 
 Halaman pekerjaan di Kuliner dan F&B, Teknologi, untuk yang ingin hasil siap
-pakai · 15 Oktober 2026 · Status: perlu Anda · Placeholder: tidak ada
+pakai · 15 Oktober 2026 · Status: disetujui pemilik, 15 Oktober 2026 · Placeholder: tidak ada
 
 Pekerjaan kedua dari lima yang tayang di [halaman Kuliner](./R1-SERAH-BAB-KULINER.md),
 ditulis dengan cara yang sama seperti
