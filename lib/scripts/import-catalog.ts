@@ -28,7 +28,12 @@ import { readdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 import {
+  type CatalogOverride,
+  TEKNOLOGI_OVERRIDES,
+} from '@/lib/content/catalog-overrides'
+import {
   type CatalogUnit,
+  OFFER_MODELS,
   type OfferModel,
   offerModel,
   READER_TYPE,
@@ -81,7 +86,11 @@ export type OfferDraft = {
   untukSiapa: string
   jenis: string | undefined
   slug: string
+  /** A † offer's condition, from the handwritten overrides. */
+  syarat: string | undefined
   lane: 'otomatis' | 'tulis-tangan'
+  /** True when an agent answered this row in `catalog-overrides.ts`. */
+  ditinjau: boolean
   reasons: string[]
 }
 
@@ -172,8 +181,21 @@ const audienceOf = (buyer: string) => {
   return plain ? `Untuk ${plain.charAt(0).toLowerCase()}${plain.slice(1)}` : ''
 }
 
+/**
+ * Which reasons an override settles. Holds (‡ and open decisions) are never
+ * settled here: only the owner's decision releases them.
+ */
+function settles(override: CatalogOverride | undefined, reason: string) {
+  if (!override || override.keputusan === 'ditahan') return false
+  if (reason.startsWith('†')) return override.keputusan === 'rumusan-aman'
+  return reason.startsWith('dampak')
+}
+
 /** Assign the model and the lane. Pure, so a test can pin every rule. */
-export function draftOffer(row: CatalogRow): OfferDraft {
+export function draftOffer(
+  row: CatalogRow,
+  overrides: ReadonlyMap<string, CatalogOverride> = TEKNOLOGI_OVERRIDES
+): OfferDraft {
   const model = offerModel({
     unit: row.unit,
     side: row.side,
@@ -191,19 +213,26 @@ export function draftOffer(row: CatalogRow): OfferDraft {
   if (RESULT_WORDS.test(row.impact))
     reasons.push('dampak menjanjikan hasil pihak lain: tulis ulang')
 
+  const override = overrides.get(row.idKatalog)
+  if (override?.keputusan === 'ditahan')
+    reasons.push(`ditahan agen: ${override.alasan ?? 'tanpa alasan'}`)
+  const open = reasons.filter((reason) => !settles(override, reason))
+
   return {
     idKatalog: row.idKatalog,
     unit: row.unit,
     side: row.side,
     situation: row.situation,
     model,
-    judul: row.title,
-    dampak: row.impact,
+    judul: override?.judul ?? row.title,
+    dampak: override?.dampak ?? row.impact,
     untukSiapa: audienceOf(row.buyer),
     jenis: row.type ? READER_TYPE.get(row.type) : ASSEMBLED_LABEL,
-    slug: slugOf(row.title),
-    lane: reasons.length === 0 ? 'otomatis' : 'tulis-tangan',
-    reasons,
+    slug: slugOf(override?.judul ?? row.title),
+    syarat: override?.syarat,
+    lane: open.length === 0 ? 'otomatis' : 'tulis-tangan',
+    ditinjau: override !== undefined,
+    reasons: open,
   }
 }
 
@@ -213,6 +242,37 @@ async function sideFiles(dir: string): Promise<string[]> {
     .filter((entry) => entry.isFile() && /^Sisi [AB] /.test(entry.name))
     .map((entry) => join(entry.parentPath, entry.name))
     .toSorted()
+}
+
+/**
+ * The rows an agent answered, per model, for the owner to read in one pass.
+ * The reader's words come first; the catalogue code sits in the last column.
+ */
+export function reviewMarkdown(drafts: OfferDraft[]): string {
+  const lines = [
+    '# Tinjauan tulis tangan',
+    '',
+    'Dihasilkan `lib/scripts/import-catalog.ts --review` dari',
+    '`lib/content/catalog-overrides.ts`. Jangan disunting di sini.',
+  ]
+  const reviewed = drafts.filter((draft) => draft.ditinjau)
+  for (const [model, rows] of Map.groupBy(reviewed, (draft) => draft.model)) {
+    lines.push(
+      '',
+      `## ${OFFER_MODELS.find(({ key }) => key === model)?.title ?? model}`,
+      '',
+      '| Judul | Dampak | Syarat | Status | Kode |',
+      '| --- | --- | --- | --- | --- |'
+    )
+    for (const draft of rows) {
+      const status =
+        draft.lane === 'otomatis' ? 'siap' : draft.reasons.join('; ')
+      lines.push(
+        `| ${draft.judul} | ${draft.dampak} | ${draft.syarat ?? ''} | ${status} | ${draft.idKatalog} |`
+      )
+    }
+  }
+  return `${lines.join('\n')}\n`
 }
 
 async function main() {
@@ -233,7 +293,7 @@ async function main() {
       unit: unitOf(file),
       side,
     })
-    drafts.push(...rows.map(draftOffer))
+    drafts.push(...rows.map((row) => draftOffer(row)))
   }
 
   const auto = drafts.filter((draft) => draft.lane === 'otomatis').length
@@ -244,6 +304,13 @@ async function main() {
   for (const [model, rows] of perModel) {
     const ready = rows.filter((draft) => draft.lane === 'otomatis').length
     console.log(`  ${model}: ${rows.length} (${ready} otomatis)`)
+  }
+
+  const reviewIndex = process.argv.indexOf('--review')
+  const review = reviewIndex === -1 ? undefined : process.argv[reviewIndex + 1]
+  if (review) {
+    await writeFile(review, reviewMarkdown(drafts))
+    console.log(`Tinjauan ditulis ke ${review}.`)
   }
 
   if (out) {

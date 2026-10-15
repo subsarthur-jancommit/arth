@@ -25,6 +25,9 @@ const SIDE = `# Sisi B: untuk yang ingin hasil akhir siap pakai
 
 const rows = parseCatalog(SIDE, { unit: 'teknologi', side: 'B' })
 
+/** The lanes as the catalogue alone sets them, before any handwritten answer. */
+const NO_OVERRIDES = new Map()
+
 describe('parseCatalog', () => {
   it('reads offer rows and skips explanatory tables', () => {
     expect(rows.map((row) => row.idKatalog)).toEqual([
@@ -60,13 +63,13 @@ describe('draftOffer', () => {
   })
 
   it('hands an impact that promises income to a writer (Aturan isi 3)', () => {
-    const draft = draftOffer(rows[1]!)
+    const draft = draftOffer(rows[1]!, NO_OVERRIDES)
     expect(draft.lane).toBe('tulis-tangan')
     expect(draft.reasons.join()).toContain('dampak')
   })
 
   it('hands a † offer to a writer for its safe wording', () => {
-    const draft = draftOffer(rows[2]!)
+    const draft = draftOffer(rows[2]!, NO_OVERRIDES)
     expect(draft.lane).toBe('tulis-tangan')
     expect(draft.reasons.join()).toContain('rumusan aman')
   })
@@ -78,5 +81,68 @@ describe('draftOffer', () => {
       situation: 'Keuangan, trading, dan pembiayaan',
     })
     expect(draft.reasons.join()).toContain('posisi bot trading')
+  })
+})
+
+describe('handwritten overrides', () => {
+  const kul07 = rows[1]!
+  const lin09 = rows[2]!
+
+  it('settles a flagged impact with the rewritten one', () => {
+    const draft = draftOffer(
+      kul07,
+      new Map([
+        [
+          'KUL-07',
+          {
+            keputusan: 'ditulis-ulang',
+            dampak: 'Langganan makan harian, ditagih otomatis.',
+          },
+        ],
+      ])
+    )
+    expect(draft.lane).toBe('otomatis')
+    expect(draft.dampak).toBe('Langganan makan harian, ditagih otomatis.')
+    expect(draft.ditinjau).toBe(true)
+  })
+
+  it('settles † only with a safe wording, and carries its condition', () => {
+    const rewritten = draftOffer(
+      lin09,
+      new Map([['LIN-09', { keputusan: 'ditulis-ulang', dampak: 'x' }]])
+    )
+    expect(rewritten.lane).toBe('tulis-tangan')
+
+    const safe = draftOffer(
+      lin09,
+      new Map([
+        [
+          'LIN-09',
+          {
+            keputusan: 'rumusan-aman',
+            syarat: 'Data KTP dijaga sesuai UU PDP.',
+          },
+        ],
+      ])
+    )
+    expect(safe.lane).toBe('otomatis')
+    expect(safe.syarat).toBe('Data KTP dijaga sesuai UU PDP.')
+  })
+
+  it('never releases a row held by an open decision', () => {
+    const draft = draftOffer(
+      { ...rows[0]!, idKatalog: 'KEU-01', situation: 'Keuangan' },
+      new Map([['KEU-01', { keputusan: 'rumusan-aman', syarat: 'x' }]])
+    )
+    expect(draft.lane).toBe('tulis-tangan')
+    expect(draft.reasons.join()).toContain('posisi bot trading')
+  })
+
+  it('lets an agent hold a row the catalogue did not mark', () => {
+    const draft = draftOffer(
+      rows[0]!,
+      new Map([['KUL-01', { keputusan: 'ditahan', alasan: 'uji' }]])
+    )
+    expect(draft.lane).toBe('tulis-tangan')
   })
 })

@@ -119,7 +119,13 @@ Langkah 2 rekomendasinya dikerjakan di lokal: skema `offer` mendapat medan
 berhalaman sendiri; `langkah` dan `serahan` opsional. Skrip
 `lib/scripts/import-catalog.ts` membaca 688 baris master brief dan memisahkan 506
 yang otomatis dari 182 yang ditulis tangan, tanpa menulis ke Sanity. Rute yang
-membaca `halamanSendiri` dan tampilan dua paket menyusul di R3 dan R5. Skema `offer` butuh medan
+membaca `halamanSendiri` dan tampilan dua paket menyusul di R3 dan R5.
+
+Langkah 3 untuk model Teknologi (model 1 sampai 4) dikerjakan di lokal. Jawaban
+agen per baris tersimpan di `lib/content/catalog-overrides.ts` dan dibaca skrip
+impor; tinjauannya di [`R1-TULIS-TANGAN-TEKNOLOGI.md`](./R1-TULIS-TANGAN-TEKNOLOGI.md).
+Dari 316 offer Teknologi, 309 siap; 7 ditahan karena posisi bot trading.
+Menunggu persetujuan pemilik. Konstruksi dan Peekabo menyusul. Skema `offer` butuh medan
 `paket` di R2. Belum ada yang ditulis ke Sanity.
 
 Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk

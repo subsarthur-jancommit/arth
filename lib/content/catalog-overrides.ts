@@ -1,0 +1,826 @@
+/**
+ * The handwritten half of the pattern approach, step 3
+ * (`docs/R1-PENDEKATAN-POLA-OFFER.md`).
+ *
+ * `lib/scripts/import-catalog.ts` sends a row to the handwritten lane when it
+ * carries †, waits on an open decision, or has an impact line that promises a
+ * result someone else controls (Aturan isi 3). Each entry here is the agent's
+ * answer for one such row, written from FULL KONTEKS:
+ *
+ * - `tetap`: the search word was a false alarm; the impact stands as written.
+ * - `ditulis-ulang`: the impact is rewritten as the work that produces it.
+ * - `rumusan-aman`: a † offer, published only with the safe wording in
+ *   `dampak` and the condition in `syarat` (Aturan isi, Rumusan aman).
+ * - `ditahan`: not published until the owner decides.
+ *
+ * An entry may also correct a title or an impact on an automatic row, when
+ * the owner has already approved other wording (the Kuliner pages).
+ *
+ * The † and the reasons stay here and in the repository. Neither is written
+ * to Sanity, whose published documents can be read publicly.
+ */
+
+export type CatalogDecision =
+  | 'tetap'
+  | 'ditulis-ulang'
+  | 'rumusan-aman'
+  | 'ditahan'
+
+export type CatalogOverride = {
+  keputusan: CatalogDecision
+  judul?: string
+  dampak?: string
+  /** A † offer's condition, shown as one short line under its impact. */
+  syarat?: string
+  /** Why, for the owner's review. Never rendered. */
+  alasan?: string
+}
+
+const PDP_HEALTH =
+  'Data pasien dijaga sebagai data pribadi yang sensitif, sesuai UU PDP.'
+const PUBLIC_DATA = 'Hanya dari data publik atau API resmi yang mengizinkannya.'
+const OFFICIAL_ROUTE = 'Hanya lewat kerja sama atau jalur resmi instansinya.'
+
+/**
+ * Teknologi, models 1 to 4. The Kuliner entries carry wording the owner
+ * approved on 15 October 2026; the rest waits for approval.
+ */
+export const TEKNOLOGI_OVERRIDES = new Map<string, CatalogOverride>([
+  // Kuliner, owner-approved wording from docs/R1-SERAH-BAB-KULINER.md.
+  [
+    'KUL-01',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Bot mencatat dan menagih setiap pesanan WhatsApp, juga saat tidak ada admin yang berjaga.',
+      alasan: 'Tiga serangkai dipecah; disetujui pemilik',
+    },
+  ],
+  [
+    'KUL-02',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Tamu memesan dan membayar dari meja; pesanan langsung masuk ke dapur.',
+      alasan: 'Peta website; disetujui pemilik',
+    },
+  ],
+  [
+    'KUL-03',
+    {
+      keputusan: 'ditulis-ulang',
+      judul: 'Layar pesanan di dapur',
+      dampak:
+        'Setiap pesanan tampil di layar dapur saat itu juga, berikut urutan dan waktu sajinya.',
+      alasan: '“Realtime” dibuang; disetujui pemilik',
+    },
+  ],
+  [
+    'KUL-04',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Reservasi meja masuk lewat bot, dengan uang muka yang tercatat otomatis.',
+      alasan: 'Peta website',
+    },
+  ],
+  [
+    'KUL-06',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Toko makanan beku untuk pembeli luar kota, dengan ongkir, resi, dan pelacakan yang berjalan sendiri.',
+      alasan: '“Terjual” bergantung pada pembeli',
+    },
+  ],
+  [
+    'KUL-07',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Pekerja kantor dan penghuni kos bisa berlangganan makan harian, dengan tagihan yang terkirim otomatis.',
+      alasan: 'Pendapatan bergantung pada pembeli; disetujui pemilik',
+    },
+  ],
+  [
+    'KUL-08',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Stok bahan tercatat, dan pesanan ke pemasok terkirim sendiri saat bahan menipis.',
+      alasan: 'Habis dan terbuang bergantung pada pemakaian; disetujui pemilik',
+    },
+  ],
+  [
+    'KUL-09',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Setiap tamu diajak menulis ulasan, puas atau tidak, dan draf balasannya disiapkan.',
+      alasan: 'Kalimat wajib ulasan terbaca di kartu',
+    },
+  ],
+  [
+    'KUL-10',
+    {
+      keputusan: 'tetap',
+      alasan: '“Penjualan dan royalti tercatat” adalah pencatatan',
+    },
+  ],
+  [
+    'KUL-11',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Jam ramai dan menu laris terlihat seketika di satu layar.',
+      alasan: 'Jadwal staf bergantung pada pemilik',
+    },
+  ],
+
+  // Individu, freelancer, software house, startup, tim IT.
+  [
+    'IND-01',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Anda mencoba agen AI dan MCP pada pekerjaan Anda sendiri, dipandu per sesi.',
+      alasan: '“Naik daun” dan “hitungan sesi” tidak berpegangan',
+    },
+  ],
+  [
+    'IND-07',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Lowongan dan beasiswa yang sesuai kriteria Anda dikirim segera setelah terbit.',
+      syarat: PUBLIC_DATA,
+      alasan: 'Teknologi aturan 6',
+    },
+  ],
+  [
+    'IND-08',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Anda diberi tahu saat harga barang atau tiket turun, tanpa memeriksa setiap hari.',
+      syarat:
+        'Bot hanya memantau dan memberi tahu; pembelian tetap Anda lakukan sendiri.',
+      alasan:
+        'Aturan 6; jauh dari bot pembeli tiket, yang sengaja tidak dijual',
+    },
+  ],
+  [
+    'FRL-01',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Anda menjual proyeknya, dan kami mengerjakannya atas nama Anda.',
+      alasan: 'Kapasitas klien bukan hasil kerja Arthur',
+    },
+  ],
+  [
+    'FRL-05',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Proyek booking dan checkout klien Anda dirakit dari modul yang sudah teruji.',
+      alasan: 'Margin bergantung pada klien; saldo dibuang (aturan 2)',
+    },
+  ],
+  [
+    'FRL-15',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Situs klien Anda dipercepat, dengan skor sebelum dan sesudahnya tercatat.',
+      alasan: 'Konversi bergantung pada pengunjung',
+    },
+  ],
+  [
+    'SWH-10',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Produk klien Anda diuji celahnya dan disiapkan untuk audit PDP dan PSE.',
+      syarat:
+        'Pendaftaran PSE dan kepatuhan PDP tetap tanggung jawab pemilik produk.',
+      alasan: 'Aturan 4',
+    },
+  ],
+  [
+    'SWH-15',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Kode tim Anda ditinjau, dan tim junior didampingi di pekerjaan nyata.',
+      alasan: 'Kualitas dan pertumbuhan tim bergantung pada tim',
+    },
+  ],
+  [
+    'STA-14',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Kuesioner keamanan calon klien enterprise dijawab dengan hasil uji dan dokumen yang siap.',
+      syarat: 'Keputusan lolos tetap di tangan calon klien.',
+      alasan: '“Lolos” dipegang calon klien; aturan 4',
+    },
+  ],
+  [
+    'STA-15',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Prospek dihubungi hanya bila memberi izin, lalu diurutkan menurut minatnya.',
+      syarat: 'Pesan dikirim lewat kanal resmi.',
+      alasan: 'Aturan 7',
+    },
+  ],
+  [
+    'STA-17',
+    {
+      keputusan: 'rumusan-aman',
+      dampak: 'Identitas pengguna diverifikasi lewat jalur resmi.',
+      syarat:
+        'Hanya lewat penyedia verifikasi identitas yang bekerja sama resmi.',
+      alasan: 'Aturan 5',
+    },
+  ],
+  [
+    'TIM-02',
+    { keputusan: 'tetap', alasan: '“Naik sendiri” berarti eskalasi tiket' },
+  ],
+  ['TIM-07', { keputusan: 'tetap', alasan: '“Data penjualan” adalah data' }],
+  [
+    'DAT-08',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Penjualan, mesin, atau armada terlihat saat itu juga.',
+      alasan:
+        '“Terlihat hidup” tidak berpegangan; judul tetap, karena pembaca Sisi A memakai “realtime” sehari-hari',
+    },
+  ],
+  [
+    'DAT-21',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Struktur komisi referral dan afiliasi terlihat dan bisa diperiksa.',
+      syarat:
+        'Struktur komisi diperiksa terhadap aturan perdagangan sebelum dipakai.',
+      alasan: 'Aturan 8',
+    },
+  ],
+  [
+    'DAT-22',
+    {
+      keputusan: 'rumusan-aman',
+      syarat:
+        'Hanya dari data tender publik; kami membantu menyiapkan penawaran, bukan mengatur hasil.',
+      alasan: 'Aturan 6; kalimat wajib tender',
+    },
+  ],
+
+  // Ritel, distributor, jasa lokal.
+  [
+    'RIT-03',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Toko online milik brand sendiri, dengan data pembeli yang menjadi milik brand.',
+      alasan: 'Penjualan bergantung pada pembeli',
+    },
+  ],
+  [
+    'RIT-04',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Retur dicatat dan disetujui, dan pengembalian dana diproses tanpa surat-menyurat manual.',
+      alasan: '“Dananya kembali” tertangkap kata',
+    },
+  ],
+  [
+    'RIT-05',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Perubahan harga pesaing di halaman publik dilaporkan kepada Anda.',
+      syarat: 'Harga jual tetap Anda yang menentukan.',
+      alasan: 'Aturan 6',
+    },
+  ],
+  ['RIT-08', { keputusan: 'tetap', alasan: 'Pencatatan penjualan' }],
+  [
+    'RIT-09',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Program poin dan hadiah berjalan untuk pelanggan Anda, dan data belanjanya terkumpul.',
+      alasan: 'Pelanggan kembali bergantung pada pelanggan',
+    },
+  ],
+  [
+    'RIT-10',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Pembeli melihat produk yang sering dibeli bersama, dari pola belanja di toko Anda.',
+      alasan: 'Nilai keranjang bergantung pada pembeli',
+    },
+  ],
+  [
+    'RIT-11',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Seller lain memakai layanan multi-kurir Anda; ongkir termurah dipilih otomatis, dan Anda menetapkan selisih tarifnya.',
+      alasan: 'Pendapatan ditulis sebagai cara kerjanya',
+    },
+  ],
+  [
+    'DIS-08',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Kenaikan harga pemasok di sumber publik terdeteksi dan dilaporkan lebih dulu.',
+      syarat: 'Harga jual tetap Anda yang menentukan.',
+      alasan: 'Aturan 6',
+    },
+  ],
+  [
+    'JAS-01',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Pelanggan memesan jadwal lewat bot dan menerima pengingat sebelum datang.',
+      alasan: 'Kehadiran bergantung pada pelanggan',
+    },
+  ],
+  [
+    'JAS-03',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Pelanggan menerima pengingat saat servis berkalanya jatuh tempo.',
+      alasan: 'Pelanggan kembali bergantung pada pelanggan',
+    },
+  ],
+  [
+    'JAS-04',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Mesin laundry koin menyala setelah pembayaran QRIS, tanpa penjaga.',
+      alasan: 'Pendapatan ditulis sebagai cara kerjanya',
+    },
+  ],
+  [
+    'JAS-08',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Paket perawatan atau servis dibuka sebagai langganan bulanan.',
+      alasan: 'Pendapatan bergantung pada pelanggan',
+    },
+  ],
+  [
+    'JAS-09',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Pelanggan diberi kabar lewat pesan saat cuciannya selesai.',
+      alasan: 'Berkurangnya pertanyaan bergantung pada pelanggan',
+    },
+  ],
+  [
+    'JAS-10',
+    {
+      keputusan: 'tetap',
+      alasan: 'Pendapatan per mesin adalah data yang ditampilkan',
+    },
+  ],
+
+  // Kesehatan dan pendidikan.
+  [
+    'KES-01',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Pasien membuat janji sendiri lewat bot, tanpa menunggu telepon dijawab.',
+      syarat: PDP_HEALTH,
+      alasan: 'Aturan 4',
+    },
+  ],
+  [
+    'KES-02',
+    {
+      keputusan: 'rumusan-aman',
+      dampak: 'Pasien menerima pengingat jadwal kontrol dan obat.',
+      syarat:
+        'Pengingat hanya untuk pasien yang setuju; data pasien dijaga sesuai UU PDP.',
+      alasan: 'Aturan 4 dan 7; kedatangan dipegang pasien',
+    },
+  ],
+  [
+    'KES-04',
+    { keputusan: 'rumusan-aman', syarat: PDP_HEALTH, alasan: 'Aturan 4' },
+  ],
+  [
+    'KES-05',
+    {
+      keputusan: 'rumusan-aman',
+      syarat: 'Hanya lewat jalur resmi SATUSEHAT.',
+      alasan: 'Aturan 5',
+    },
+  ],
+  [
+    'KES-07',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Pasien di luar area berkonsultasi dan memesan obat secara online, dengan pembayaran dan pengiriman tersambung.',
+      syarat:
+        'Layanan medis dan obat tetap dijalankan tenaga kesehatan klinik yang berwenang.',
+      alasan: 'Aturan 4; rumusan aman 2 (pihak berwenang)',
+    },
+  ],
+  [
+    'KES-10',
+    { keputusan: 'rumusan-aman', syarat: PDP_HEALTH, alasan: 'Aturan 4' },
+  ],
+  [
+    'KES-11',
+    { keputusan: 'rumusan-aman', syarat: OFFICIAL_ROUTE, alasan: 'Aturan 5' },
+  ],
+  [
+    'EDU-03',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Kelas online berlangganan dibuka di samping kelas tatap muka.',
+      alasan: 'Pendapatan bergantung pada peserta',
+    },
+  ],
+  [
+    'EDU-06',
+    {
+      keputusan: 'ditulis-ulang',
+      judul: 'Portal orang tua: kehadiran dan nilai',
+      dampak:
+        'Orang tua melihat kehadiran dan nilai anak seketika lewat portal.',
+      alasan: '“Realtime”; berkurangnya pertanyaan bergantung pada orang tua',
+    },
+  ],
+  [
+    'EDU-07',
+    {
+      keputusan: 'rumusan-aman',
+      syarat: 'Hanya lewat jalur resmi Dapodik.',
+      alasan: 'Aturan 5',
+    },
+  ],
+
+  // Properti, keuangan, konstruksi, travel.
+  [
+    'PRO-06',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Calon pembeli menghitung cicilan dan mengajukan ke leasing dari situs, dengan status pengajuan yang terpantau.',
+      syarat: 'Persetujuan pembiayaan di tangan perusahaan pembiayaan berizin.',
+      alasan: 'Kalimat wajib pembiayaan',
+    },
+  ],
+  [
+    'PRO-07',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Pelanggan lama menerima pengingat servis, pajak, dan asuransi kendaraannya.',
+      alasan: 'Pelanggan kembali bergantung pada pelanggan',
+    },
+  ],
+  [
+    'KEU-06',
+    {
+      keputusan: 'ditahan',
+      alasan:
+        'Bot investasi dekat dengan bot trading; menunggu keputusan posisi bot trading',
+    },
+  ],
+  [
+    'KEU-10',
+    {
+      keputusan: 'rumusan-aman',
+      dampak: 'Berkas pemohon diverifikasi, dan setiap keputusan tercatat.',
+      syarat:
+        'Keputusan pembiayaan tetap di tangan pemberi pembiayaan berizin.',
+      alasan: 'Kalimat wajib pembiayaan',
+    },
+  ],
+  [
+    'KEU-11',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Polis yang mendekati jatuh tempo diingatkan kepada agen untuk ditindaklanjuti.',
+      syarat: 'Penjualan asuransi tetap oleh agen berlisensi.',
+      alasan: 'Aturan main gabungan 5',
+    },
+  ],
+  [
+    'KEU-12',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Lini pulsa, token listrik, dan tagihan dibuka dari supplier, dengan selisih harga yang Anda tetapkan.',
+      syarat: 'Produk yang boleh dijual mengikuti kontrak dengan supplier.',
+      alasan: 'Aturan 3',
+    },
+  ],
+  [
+    'KON-01',
+    {
+      keputusan: 'rumusan-aman',
+      syarat:
+        'Dari situs pengadaan publik; kami membantu menyiapkan, bukan mengatur hasil.',
+      alasan: 'Aturan 6; kalimat wajib tender',
+    },
+  ],
+  [
+    'KON-10',
+    {
+      keputusan: 'rumusan-aman',
+      syarat:
+        'Hanya dari data tender publik; kami membantu menyiapkan penawaran, bukan mengatur hasil.',
+      alasan: 'Aturan 6; kalimat wajib tender',
+    },
+  ],
+  [
+    'TRV-01',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Tiket, hotel, dan paket dari supplier ditawarkan lewat situs Anda, dengan komisi atau markup.',
+      syarat: 'Produk yang boleh dijual mengikuti kontrak dengan supplier.',
+      alasan: 'Aturan 3',
+    },
+  ],
+  [
+    'TRV-04',
+    {
+      keputusan: 'rumusan-aman',
+      syarat: 'Lewat sambungan resmi setiap platform.',
+      alasan: 'Aturan 3',
+    },
+  ],
+  [
+    'TRV-05',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Tiket event dijual online, dipindai di pintu, dan penjualannya terlihat seketika.',
+      alasan: '“Realtime”',
+    },
+  ],
+  [
+    'TRV-09',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Hari libur dan lonjakan permintaan diperingatkan lebih dulu, supaya harga bisa Anda sesuaikan.',
+      alasan: '“Tepat waktu” bergantung pada pemilik',
+    },
+  ],
+
+  // Media, logistik, produksi, publik, profesional, kebugaran, lintas sektor.
+  [
+    'MED-04',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Membership penggemar dengan konten eksklusif, ditagih bulanan.',
+      alasan: 'Pendapatan bergantung pada penggemar',
+    },
+  ],
+  [
+    'MED-08',
+    { keputusan: 'tetap', alasan: 'Pendapatan adalah data yang ditampilkan' },
+  ],
+  [
+    'MED-12',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Pembaca yang mendaftar menerima kabar sesuai minatnya.',
+      alasan: 'Pembaca kembali bergantung pada pembaca; persetujuan',
+    },
+  ],
+  [
+    'LOG-02',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Pelanggan diberi kabar di setiap tahap pengiriman.',
+      alasan: 'Berkurangnya pertanyaan bergantung pada pelanggan',
+    },
+  ],
+  [
+    'LOG-03',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Foto, tanda tangan, dan lokasi serah terima tercatat sebagai bukti.',
+      alasan: 'Klaim bergantung pada pihak lain',
+    },
+  ],
+  [
+    'LOG-08',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Seller memilih kurir termurah lewat agregator Anda, dan Anda menetapkan selisih tarifnya.',
+      alasan: 'Pendapatan ditulis sebagai cara kerjanya',
+    },
+  ],
+  [
+    'MAN-08',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Toko online untuk produk kemasan, menjangkau pembeli luar kota tanpa perantara.',
+      alasan: '“Terjual” bergantung pada pembeli',
+    },
+  ],
+  [
+    'MAN-09',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Kebutuhan bahan diperkirakan dari pola penjualan, sebagai dasar pembelian.',
+      alasan: 'Stok bergantung pada keputusan pembelian',
+    },
+  ],
+  [
+    'PUB-08',
+    { keputusan: 'rumusan-aman', syarat: OFFICIAL_ROUTE, alasan: 'Aturan 5' },
+  ],
+  [
+    'PUB-11',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Marketplace untuk produk UMKM desa, dengan komisi untuk BUMDes dari setiap transaksi.',
+      alasan: '“Terjual” bergantung pada pembeli',
+    },
+  ],
+  [
+    'PRF-07',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Klien melihat progres dan dokumen proyeknya sendiri lewat portal.',
+      alasan: 'Berkurangnya pertanyaan bergantung pada klien',
+    },
+  ],
+  [
+    'PRF-08',
+    {
+      keputusan: 'rumusan-aman',
+      syarat:
+        'Tanda tangan elektronik lewat penyelenggara sertifikasi elektronik yang berizin.',
+      alasan: 'Rumusan aman 2 (pihak berizin)',
+    },
+  ],
+  [
+    'FIT-04',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak: 'Keanggotaan dan paket sesi dibuka dengan tagihan berulang.',
+      alasan: 'Pendapatan bergantung pada anggota',
+    },
+  ],
+  [
+    'LIN-01',
+    { keputusan: 'tetap', alasan: 'Ringkasan penjualan adalah laporan' },
+  ],
+  [
+    'LIN-02',
+    { keputusan: 'tetap', alasan: '“Penjualan anjlok” adalah isi peringatan' },
+  ],
+  [
+    'LIN-04',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Tagihan diingatkan bertahap kepada pelanggan sampai jatuh tempo.',
+      alasan: 'Kas masuk bergantung pada pelanggan',
+    },
+  ],
+  [
+    'LIN-09',
+    {
+      keputusan: 'rumusan-aman',
+      syarat: 'Data KTP dijaga sebagai data pribadi, sesuai UU PDP.',
+      alasan: 'Aturan 4',
+    },
+  ],
+  [
+    'LIN-22',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Jaringan reseller dan afiliasi dengan komisi yang tercatat otomatis.',
+      syarat:
+        'Komisi satu tingkat, diperiksa terhadap aturan perdagangan sebelum dibuka.',
+      alasan: 'Aturan 8; aturan main gabungan 4',
+    },
+  ],
+  [
+    'LIN-23',
+    {
+      keputusan: 'rumusan-aman',
+      dampak:
+        'Panggilan yang tak terjawab dicatat menjadi pesanan atau jadwal.',
+      syarat:
+        'Bot memperkenalkan diri sebagai bot, dan rekaman hanya dengan persetujuan penelepon.',
+      alasan: 'Aturan 9; Peta website, bot memperkenalkan diri',
+    },
+  ],
+  [
+    'LIN-24',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Pembelian tercatat dan disetujui, lalu dibayar sesuai jadwalnya.',
+      alasan: '“Tepat waktu” bergantung pada pembayar',
+    },
+  ],
+  // Judul untuk pembaca hasil siap pakai tanpa “realtime” (Suara dan gaya 13),
+  // mengikuti judul Kuliner yang disetujui. Sisi A tetap memakainya.
+  [
+    'DIS-10',
+    {
+      keputusan: 'tetap',
+      judul: 'Dasbor sales dan stok yang diperbarui seketika',
+      alasan: '“Realtime” bukan kata sehari-hari pembaca Sisi B',
+    },
+  ],
+  [
+    'KES-03',
+    {
+      keputusan: 'tetap',
+      judul: 'Antrean pasien yang terlihat langsung',
+      alasan: '“Realtime” bukan kata sehari-hari pembaca Sisi B',
+    },
+  ],
+  [
+    'PRO-03',
+    {
+      keputusan: 'tetap',
+      judul: 'Etalase unit yang diperbarui langsung',
+      alasan: '“Realtime” bukan kata sehari-hari pembaca Sisi B',
+    },
+  ],
+  [
+    'KON-06',
+    {
+      keputusan: 'tetap',
+      judul: 'Dasbor arus kas dan kurva S terkini',
+      alasan: '“Realtime” bukan kata sehari-hari pembaca Sisi B',
+    },
+  ],
+  [
+    'MED-01',
+    {
+      keputusan: 'tetap',
+      judul: 'Overlay donasi dan alert langsung di layar',
+      alasan: '“Realtime” bukan kata sehari-hari pembaca Sisi B',
+    },
+  ],
+  [
+    'LOG-01',
+    {
+      keputusan: 'tetap',
+      judul: 'Pelacakan armada langsung',
+      alasan: '“Realtime” bukan kata sehari-hari pembaca Sisi B',
+    },
+  ],
+  [
+    'PUB-04',
+    {
+      keputusan: 'tetap',
+      judul: 'Dasbor aduan dan layanan terkini',
+      alasan: '“Realtime” bukan kata sehari-hari pembaca Sisi B',
+    },
+  ],
+  [
+    'FIT-07',
+    {
+      keputusan: 'tetap',
+      judul: 'Klasemen dan skor langsung',
+      alasan: '“Realtime” bukan kata sehari-hari pembaca Sisi B',
+    },
+  ],
+  [
+    'LIN-12',
+    {
+      keputusan: 'tetap',
+      judul: 'Dasbor pemilik yang diperbarui seketika',
+      alasan: '“Realtime” bukan kata sehari-hari pembaca Sisi B',
+    },
+  ],
+])
