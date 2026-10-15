@@ -204,7 +204,26 @@ Menerbitkan dokumen Arthur tidak mengubah produksi: `main` (`098893b`) tidak
 membaca tipe unit, sisi, bab, atau offer. Yang berubah hanya preview cabang R0
 sampai R3, dan hanya untuk dokumen berstatus `disetujui`. Studio tertanam di
 `/cms`; CORS proyek baru memuat `http://localhost:3333`, jadi Studio di preview
-belum bisa dipakai sampai pemilik menambahkan origin-nya. Jembatan ke
+belum bisa dipakai sampai pemilik menambahkan origin-nya.
+
+### Penerbitan pertama (keputusan pemilik, 16 Oktober 2026)
+
+Studio lokal gagal dibuka, dan pemilik meminta agen menyetujui dan menerbitkan
+lewat MCP Sanity. Keputusan pemilik: rantai Kuliner lengkap; pembuka unit
+Teknologi diganti kalimat header siap tayang; sisi paham teknis ke urutan 1.
+
+- Pembuka unit Teknologi dipotong menjadi kalimat header siap tayang apa adanya:
+  “Bot dan workflow yang bekerja dua puluh empat jam untuk bisnis Anda, di sektor
+  apa pun.” Kalimat suntingan partner dibuang (Aturan isi 11).
+- 14 dokumen disetel `disetujui` (16 Oktober 2026) lalu diterbitkan berurutan:
+  unit Teknologi, sisi siap pakai, bab Kuliner, 11 offer.
+- Diverifikasi dengan predikat query situs (perspektif published): unit, sisi
+  (urutan 0, satu bab layak), bab Kuliner dengan 11 offer, dan dua halaman
+  pekerjaan dengan dua paket masing-masing.
+
+Produksi (`main`) tidak berubah. Isi baru terbaca di preview cabang R0 sampai
+R3 setelah build berikutnya. Isi lain di unit Teknologi (daftar masalah dan cara
+kerja) adalah tulisan partner yang belum melewati R1. Jembatan ke
 FNB-01 ditulis saat offer itu ada. Skema `offer` butuh medan
 `paket` di R2. Belum ada yang ditulis ke Sanity.
 
