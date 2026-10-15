@@ -335,13 +335,27 @@ describe('site settings cutover', () => {
  * reads the same flag, so no list, bridge or unit card points at a 404.
  */
 describe('offer routes follow the pattern approach', () => {
-  const OWN_PAGE = '(halamanSendiri == true || pintuMasuk == true)'
-  const FLAG =
-    '"punyaHalaman": coalesce(halamanSendiri, false) || coalesce(pintuMasuk, false)'
+  // Decision K-B (16 October 2026): an entry offer has no page of its own
+  // until its page blocks are written; only halamanSendiri opens a route.
+  const OWN_PAGE = 'halamanSendiri == true &&'
+  const FLAG = '"punyaHalaman": coalesce(halamanSendiri, false)'
 
   it('serves an offer page only for an offer with its own page', () => {
     expect(offerPageQuery).toContain(OWN_PAGE)
     expect(offerPagePreviewQuery).toContain(OWN_PAGE)
+  })
+
+  it('never lets the entry flag open a route or a link on its own (K-B)', () => {
+    for (const query of [
+      offerPageQuery,
+      offerPagePreviewQuery,
+      chapterPageQuery,
+      chapterPagePreviewQuery,
+      unitPageQuery,
+    ]) {
+      expect(query).not.toContain('pintuMasuk == true)')
+      expect(query).not.toContain('|| coalesce(pintuMasuk')
+    }
   })
 
   it('tells every card, bridge and unit example whether that page exists', () => {
