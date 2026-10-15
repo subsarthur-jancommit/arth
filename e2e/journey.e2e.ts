@@ -2,7 +2,6 @@ import type { ConsoleMessage, Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
 import { UNITS } from '../lib/content/units'
-import { REMOVED_IN_F3 } from './removed-in-f3'
 
 declare global {
   /** Overlay states sampled inside the page by the probes below. */
@@ -146,7 +145,6 @@ function collectErrors(page: Page) {
 
 test.describe('a reader moving through the site', () => {
   test('seven hops leave nothing behind', async ({ page }) => {
-    test.fixme(true, REMOVED_IN_F3.practiceList)
     const errors = collectErrors(page)
     const [first, second] = UNITS
 
@@ -160,7 +158,9 @@ test.describe('a reader moving through the site', () => {
     // the exact navigation Tahap 15b measured landing at 1522.
     await page.locator('#unit summary').first().click()
     await page.waitForTimeout(700)
-    await page.locator(`a[href="/id/${first}"]`).first().click()
+    // The panel's own link: the header carries the same href, and at 390px
+    // it sits collapsed behind the menu, so `.first()` alone picked it.
+    await page.locator(`#unit a[href="/id/${first}"]`).first().click()
     await page.waitForURL(`**/${first}`)
     const hop1 = await resting(page)
     assertOpenedAtTop(hop1, 'hop 1 home → unit')
@@ -408,7 +408,7 @@ test.describe('a reader moving through the site', () => {
      */
     await page
       .locator(
-        'a[href="#situasi"]:visible, a[href="#work"]:visible, a[href="#contact"]:visible'
+        'a[href="#unit"]:visible, a[href="#work"]:visible, a[href="#contact"]:visible'
       )
       .first()
       .click()
@@ -516,7 +516,6 @@ test.describe('the pinned passage never takes the page away', () => {
   })
 
   test('reduced motion adds no empty scroll', async ({ browser }) => {
-    test.fixme(true, REMOVED_IN_F3.passage)
     /*
      * The failure this shape exists to avoid, and the one that would be
      * invisible in review: a pin spacer is created by ScrollTrigger, not by

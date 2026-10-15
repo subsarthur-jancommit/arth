@@ -159,7 +159,72 @@ pesan-antar WhatsApp serta Pesan dan bayar dari meja.
 
 Kelima langkah rekomendasi pendekatan pola sudah dikerjakan di lokal. Halaman
 Dokumentasi tetap menunggu foto nyata, izin pemiliknya, dan keputusan Bukti
-pertama. Skema `offer` butuh medan
+pertama.
+
+### R3, bagian pertama: daftar pekerjaan dan halaman sendiri
+
+PR bertumpuk di atas #21. Kode mengikuti struktur informasi yang disetujui di
+pendekatan pola, bagian 3:
+
+- Halaman situasi menampilkan semua offer terbit (batas tujuh dicabut): pintu
+  masuk di atas dengan tanda “Mulai dari sini”, sisanya berkelompok di bawah
+  label jenisnya, tinggi kartu mengikuti isi (temuan D), dan baris syarat
+  untuk offer †.
+- Setiap kartu punya tombol “Tanyakan pekerjaan ini” ke `/kontak?dari=…&pekerjaan=…`.
+  Keduanya slug halaman, bukan data pengunjung.
+- Halaman offer hanya ada untuk offer `halamanSendiri` atau pintu masuk. Kartu,
+  jembatan, dan contoh di halaman unit menautkan halaman situasi bila offer
+  tidak punya halaman sendiri.
+- Halaman offer menampilkan dua paket (`tingkat`) bila diisi, dan syarat di
+  bawah dampaknya. Skema `offer` mendapat medan `syarat`.
+
+Belum: blok Cara kami bekerja Teknologi di halaman offer, halaman Cara kami
+dibayar, dan pembacaan `dari`/`pekerjaan` di halaman kontak (menunggu K5 dan
+F5-06). Semua ini baru terlihat setelah isi ditulis ke Sanity dengan “ok tulis”.
+
+### Penulisan pertama ke Sanity (ok tulis pemilik, 16 Oktober 2026)
+
+Pemilik memberi “ok tulis” untuk 1 bab dan 11 offer Kuliner. Dokumen disusun
+`lib/content/sanity-drafts.ts` lewat `import-catalog.ts --drafts`, lalu ditulis
+ke dataset `production` sebagai draf: `drafts.arthur-bab-teknologi-siap-pakai-kuliner`
+dan `drafts.arthur-offer-kul-01` sampai `-kul-11`. Diverifikasi dengan query:
+12 draf, 0 terbit, semua berstatus `perlu-anda`; pintu masuk KUL-01; halaman
+sendiri KUL-01 dan KUL-02. Tidak ada yang diterbitkan.
+
+Supaya halaman tampil di situs, pemilik menyetujui dan menerbitkan berurutan:
+unit Teknologi, sisi siap pakai, bab Kuliner, lalu offer-nya. Koreksi 16 Oktober 2026: referensi unit di keenam draf sisi ternyata benar
+(referensi lemah ke ID terbit unit yang tepat, dengan `_strengthenOnPublish`);
+ia terbaca kosong hanya karena unitnya belum terbit, jadi tidak diubah. Atas
+“ok tulis” pemilik, urutan sisi siap pakai diubah menjadi 0; sisi paham teknis
+juga bernilai 0, sehingga keduanya seri sampai paham teknis diubah menjadi 1.
+Draf unit dan sisi ditulis partner dan belum melewati R1; pembuka unit
+Teknologi menyunting kalimat header siap tayang.
+
+Menerbitkan dokumen Arthur tidak mengubah produksi: `main` (`098893b`) tidak
+membaca tipe unit, sisi, bab, atau offer. Yang berubah hanya preview cabang R0
+sampai R3, dan hanya untuk dokumen berstatus `disetujui`. Studio tertanam di
+`/cms`; CORS proyek baru memuat `http://localhost:3333`, jadi Studio di preview
+belum bisa dipakai sampai pemilik menambahkan origin-nya.
+
+### Penerbitan pertama (keputusan pemilik, 16 Oktober 2026)
+
+Studio lokal gagal dibuka, dan pemilik meminta agen menyetujui dan menerbitkan
+lewat MCP Sanity. Keputusan pemilik: rantai Kuliner lengkap; pembuka unit
+Teknologi diganti kalimat header siap tayang; sisi paham teknis ke urutan 1.
+
+- Pembuka unit Teknologi dipotong menjadi kalimat header siap tayang apa adanya:
+  “Bot dan workflow yang bekerja dua puluh empat jam untuk bisnis Anda, di sektor
+  apa pun.” Kalimat suntingan partner dibuang (Aturan isi 11).
+- 14 dokumen disetel `disetujui` (16 Oktober 2026) lalu diterbitkan berurutan:
+  unit Teknologi, sisi siap pakai, bab Kuliner, 11 offer.
+- Diverifikasi dengan predikat query situs (perspektif published): unit, sisi
+  (urutan 0, satu bab layak), bab Kuliner dengan 11 offer, dan dua halaman
+  pekerjaan dengan dua paket masing-masing.
+
+Produksi (`main`) tidak berubah. Isi baru terbaca di preview cabang R0 sampai
+R3 setelah build berikutnya. Isi lain di unit Teknologi (daftar masalah dan cara
+kerja) adalah tulisan partner yang belum melewati R1. Jembatan ke
+FNB-01 ditulis saat offer itu ada. Skema `offer` butuh medan
 `paket` di R2. Belum ada yang ditulis ke Sanity.
 
 Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk

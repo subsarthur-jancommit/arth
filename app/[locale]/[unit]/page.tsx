@@ -59,7 +59,9 @@ function offerRoute(offer: Offer): string | null {
     return null
   }
 
-  return `/${unit}/${side}/${chapter}/${offer.slug}`
+  // An offer without its own page is read in its situation's list.
+  const situation = `/${unit}/${side}/${chapter}`
+  return offer.punyaHalaman ? `${situation}/${offer.slug}` : situation
 }
 
 function sideDoorsFor(unit: Unit, content: UnitContent | null): SideDoor[] {

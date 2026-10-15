@@ -18,6 +18,10 @@ import {
 } from '@/lib/content/units'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
+import {
+  chapterQueryParams,
+  offerQueryParams,
+} from '@/lib/integrations/sanity/detail-params'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
 import {
   chapterPageQuery,
@@ -74,7 +78,7 @@ const fetchChapter = async (
 
   return sanityFetch({
     query: preview ? chapterPagePreviewQuery : chapterPageQuery,
-    params: { locale, ...values },
+    params: chapterQueryParams(values, locale),
     perspective: preview ? 'drafts' : 'published',
     stega: preview,
   })
@@ -89,7 +93,7 @@ const fetchOffer = async (
 
   return sanityFetch({
     query: preview ? offerPagePreviewQuery : offerPageQuery,
-    params: { locale, ...values },
+    params: offerQueryParams(values, locale),
     perspective: preview ? 'drafts' : 'published',
     stega: preview,
   })
@@ -113,7 +117,10 @@ const chapterReaderSchema = z.object({
         dampak: z.string().nullable(),
         untukSiapa: z.string().nullable(),
         jenis: z.string().nullable(),
+        syarat: z.string().nullable(),
         pasar: z.enum(['keduanya', 'pemerintah', 'swasta']).nullable(),
+        pintuMasuk: z.boolean(),
+        punyaHalaman: z.boolean(),
       })
     )
     .nullable(),
@@ -125,6 +132,7 @@ const chapterReaderSchema = z.object({
         offer: z
           .object({
             slug: z.string().nullable(),
+            punyaHalaman: z.boolean(),
             judul: z.string().nullable(),
             bab: z
               .object({
@@ -151,9 +159,10 @@ type ChapterReaderData = z.infer<typeof chapterReaderSchema>
 
 function chapterIsSafe(data: ChapterReaderData): boolean {
   const offers = data.offers ?? []
+  // A situation lists every published offer (pattern approach, section 3);
+  // three is the floor below which it is not yet a situation page.
   const cardsAreComplete =
     offers.length >= 3 &&
-    offers.length <= 7 &&
     offers.every(
       (offer) =>
         offer.slug !== null &&
@@ -175,6 +184,7 @@ function chapterIsSafe(data: ChapterReaderData): boolean {
       offer.dampak,
       offer.untukSiapa,
       offer.jenis,
+      offer.syarat,
     ]) ?? []),
     ...(data.jembatan?.map((bridge) => bridge.kalimat) ?? []),
     data.ajakan?.label,
@@ -182,7 +192,21 @@ function chapterIsSafe(data: ChapterReaderData): boolean {
   ])
 }
 
-function chapterCards(data: ChapterReaderData) {
+/**
+ * The contact page, carrying where the question came from. Both values are
+ * page slugs, never anything about the reader (pattern approach, section 3).
+ */
+function askHref(chapter: string, offer?: string) {
+  const query = new URLSearchParams({ dari: chapter })
+  if (offer) query.set('pekerjaan', offer)
+  return `/kontak?${query.toString()}`
+}
+
+function chapterCards(
+  data: ChapterReaderData,
+  values: Omit<RouteValues, 'offer'>
+) {
+  const base = `/${values.unit}/${values.side}/${values.chapter}`
   return (data.offers ?? []).flatMap((offer) => {
     if (
       !offer.slug ||
@@ -197,12 +221,15 @@ function chapterCards(data: ChapterReaderData) {
     return [
       {
         id: offer._id,
-        slug: offer.slug,
         title: offer.judul,
         impact: offer.dampak,
         audience: offer.untukSiapa,
         type: offer.jenis,
         market: offer.pasar,
+        condition: offer.syarat,
+        href: offer.punyaHalaman ? `${base}/${offer.slug}` : null,
+        askHref: askHref(values.chapter, offer.slug),
+        entry: offer.pintuMasuk,
       },
     ]
   })
@@ -226,11 +253,12 @@ function chapterBridges(data: ChapterReaderData) {
       return []
     }
 
+    const situation = `/${targetUnit}/${targetSideKey}/${chapter.slug}`
     return [
       {
         id: bridge._key,
         text: bridge.kalimat,
-        href: `/${targetUnit}/${targetSideKey}/${chapter.slug}/${target.slug}`,
+        href: target.punyaHalaman ? `${situation}/${target.slug}` : situation,
       },
     ]
   })
@@ -252,6 +280,19 @@ const offerReaderSchema = z.object({
     .array(z.object({ _key: z.string(), teks: z.string().nullable() }))
     .nullable(),
   batas: z.string().nullable(),
+  syarat: z.string().nullable(),
+  tingkat: z
+    .array(
+      z.object({
+        _key: z.string(),
+        nama: z.string().nullable(),
+        kalimat: z.string().nullable(),
+        poin: z
+          .array(z.object({ _key: z.string(), teks: z.string().nullable() }))
+          .nullable(),
+      })
+    )
+    .nullable(),
   langkahPertama: z
     .object({ label: z.string().nullable(), sesudahnya: z.string().nullable() })
     .nullable(),
@@ -261,6 +302,7 @@ const offerReaderSchema = z.object({
       offer: z
         .object({
           slug: z.string().nullable(),
+          punyaHalaman: z.boolean(),
           judul: z.string().nullable(),
           bab: z
             .object({
@@ -292,9 +334,27 @@ function wordCount(value: string): number {
   return value.trim().split(/\s+/u).filter(Boolean).length
 }
 
+/** The two packages, when both are complete (glossary, section 10). */
+function offerPackages(data: OfferReaderData) {
+  const packages = (data.tingkat ?? []).flatMap((item) =>
+    item.nama?.trim() && item.kalimat?.trim()
+      ? [
+          {
+            id: item._key,
+            name: item.nama,
+            sentence: item.kalimat,
+            points: offerItems(item.poin),
+          },
+        ]
+      : []
+  )
+  return packages.length === (data.tingkat ?? []).length ? packages : []
+}
+
 function offerIsSafe(data: OfferReaderData): boolean {
   const steps = data.langkah ?? []
   const deliverables = data.serahan ?? []
+  const packages = offerPackages(data)
   const required = [
     data.judul,
     data.dampak,
@@ -305,11 +365,13 @@ function offerIsSafe(data: OfferReaderData): boolean {
     data.langkahPertama?.label,
     data.langkahPertama?.sesudahnya,
   ]
+  // Either the approved two packages, or the older steps and deliverables.
   const completeLists =
-    steps.length > 0 &&
-    deliverables.length > 0 &&
-    steps.every((item) => Boolean(item.teks?.trim())) &&
-    deliverables.every((item) => Boolean(item.teks?.trim()))
+    packages.length > 0 ||
+    (steps.length > 0 &&
+      deliverables.length > 0 &&
+      steps.every((item) => Boolean(item.teks?.trim())) &&
+      deliverables.every((item) => Boolean(item.teks?.trim())))
 
   if (
     !completeLists ||
@@ -330,6 +392,12 @@ function offerIsSafe(data: OfferReaderData): boolean {
     data.batas,
     ...steps.map((item) => item.teks),
     ...deliverables.map((item) => item.teks),
+    data.syarat,
+    ...packages.flatMap((item) => [
+      item.name,
+      item.sentence,
+      ...item.points.map((point) => point.text),
+    ]),
     data.langkahPertama?.label,
     data.langkahPertama?.sesudahnya,
     data.jembatan?.kalimat,
@@ -362,10 +430,11 @@ function offerBridge(data: OfferReaderData) {
     return null
   }
 
+  const situation = `/${targetUnit}/${targetSideKey}/${chapter.slug}`
   return {
     text: data.jembatan.kalimat,
     title: target.judul,
-    href: `/${targetUnit}/${targetSideKey}/${chapter.slug}/${target.slug}`,
+    href: target.punyaHalaman ? `${situation}/${target.slug}` : situation,
   }
 }
 
@@ -394,7 +463,11 @@ export default async function ArthurDetailPage({
 
     const chapterData = parsed.data
 
-    const cards = chapterCards(chapterData)
+    const cards = chapterCards(chapterData, {
+      unit: values.unit,
+      side: values.side,
+      chapter: values.chapter,
+    })
     const bridges = chapterBridges(chapterData)
     const isProjectMarket =
       values.unit === 'konstruksi' && values.side === 'pelaku-proyek'
@@ -414,16 +487,15 @@ export default async function ArthurDetailPage({
 
           <ChapterOfferGrid
             offers={cards}
-            unit={values.unit}
-            side={values.side}
-            chapter={values.chapter}
             label={t('offersEyebrow')}
             marketLabel={t('marketLabel')}
             allLabel={t('marketAll')}
             governmentLabel={t('marketGovernment')}
             privateLabel={t('marketPrivate')}
-            audienceLabel={t('audienceLabel')}
-            typeLabel={t('typeLabel')}
+            entryLabel={t('entryLabel')}
+            askLabel={t('askLink')}
+            readLabel={t('readLink')}
+            conditionLabel={t('conditionLabel')}
             marketFilter={isProjectMarket}
             className={s.offers}
           />
@@ -455,7 +527,10 @@ export default async function ArthurDetailPage({
               <p className="caption">{t('firstStepEyebrow')}</p>
               <h2 className="h2">{chapterData.ajakan.label}</h2>
               <p className="p-big">{chapterData.ajakan.sesudahnya}</p>
-              <Link href="/#contact" className={cn('caption', s.actionLink)}>
+              <Link
+                href={askHref(values.chapter)}
+                className={cn('caption', s.actionLink)}
+              >
                 {t('firstStepLink')}
               </Link>
             </section>
@@ -498,6 +573,7 @@ export default async function ArthurDetailPage({
   const offerData = parsed.data
   const steps = offerItems(offerData.langkah)
   const deliverables = offerItems(offerData.serahan)
+  const packages = offerPackages(offerData)
   const bridge = offerBridge(offerData)
   const chapterHref = `/${values.unit}/${values.side}/${values.chapter}`
 
@@ -505,9 +581,7 @@ export default async function ArthurDetailPage({
     <Wrapper theme="light">
       <article className={cn(s.page, s.offerPage)} data-offer-sheet="">
         <header className={cn(s.hero, s.offerHero)} data-epic="offer-arrival">
-          <p className="caption">
-            {t('eyebrow')} · {offerData.jenis}
-          </p>
+          <p className="caption">{offerData.jenis}</p>
           <TextReveal
             as="h1"
             split="lines"
@@ -517,6 +591,11 @@ export default async function ArthurDetailPage({
             {offerData.judul ?? ''}
           </TextReveal>
           <p className={cn('p-big', s.impact)}>{offerData.dampak}</p>
+          {offerData.syarat ? (
+            <p className={cn('p', s.condition)}>
+              {t('conditionLabel')}: {offerData.syarat}
+            </p>
+          ) : null}
         </header>
 
         <OfferAudience label={t('audienceEyebrow')} className={s.audience}>
@@ -528,16 +607,39 @@ export default async function ArthurDetailPage({
           <p className="p-big">{offerData.situasi}</p>
         </section>
 
-        <OfferScope
-          workLabel={t('workEyebrow')}
-          measureLabel={t('workMeasure')}
-          measureFrom={t('workFrom')}
-          measureTo={t('workTo')}
-          steps={steps}
-          deliverablesLabel={t('deliverablesEyebrow')}
-          deliverables={deliverables}
-          className={s.offerScope}
-        />
+        {packages.length > 0 ? (
+          <section className={s.packages}>
+            <h2 className="caption">{t('packagesEyebrow')}</h2>
+            <ul className={s.packageList}>
+              {packages.map((item) => (
+                <li key={item.id} className={s.package}>
+                  <h3 className="h3">{item.name}</h3>
+                  <p className="p-big">{item.sentence}</p>
+                  {item.points.length > 0 ? (
+                    <ul className={s.packagePoints}>
+                      {item.points.map((point) => (
+                        <li key={point.id} className="p">
+                          {point.text}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : (
+          <OfferScope
+            workLabel={t('workEyebrow')}
+            measureLabel={t('workMeasure')}
+            measureFrom={t('workFrom')}
+            measureTo={t('workTo')}
+            steps={steps}
+            deliverablesLabel={t('deliverablesEyebrow')}
+            deliverables={deliverables}
+            className={s.offerScope}
+          />
+        )}
 
         <OfferBoundaries
           label={t('boundariesEyebrow')}
@@ -550,7 +652,10 @@ export default async function ArthurDetailPage({
           <p className="caption">{t('firstStepEyebrow')}</p>
           <h2 className="h2">{offerData.langkahPertama?.label}</h2>
           <p className="p-big">{offerData.langkahPertama?.sesudahnya}</p>
-          <Link href="/#contact" className={cn('caption', s.actionLink)}>
+          <Link
+            href={askHref(values.chapter, offerData.slug ?? undefined)}
+            className={cn('caption', s.actionLink)}
+          >
             {t('firstStepLink')}
           </Link>
         </section>

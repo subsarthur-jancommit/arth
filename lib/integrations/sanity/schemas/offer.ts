@@ -171,6 +171,20 @@ export const offer = defineType({
       group: 'isi',
     }),
     defineField({
+      name: 'syarat',
+      title: 'Syarat',
+      description:
+        'Satu baris syarat untuk pekerjaan yang diatur aturan hukum atau platform, ditulis dengan rumusan aman. Tampil di bawah kalimat dampak, di daftar situasi dan di halaman pekerjaan. Kosongkan bila tidak ada.',
+      type: 'internationalizedArrayText',
+      validation: (Rule) =>
+        Rule.custom((value) =>
+          Array.isArray(value) && value.length > 0
+            ? requireIndonesian(value)
+            : true
+        ),
+      group: 'isi',
+    }),
+    defineField({
       name: 'langkahPertama',
       title: 'Langkah pertama',
       description:
@@ -227,7 +241,7 @@ export const offer = defineType({
       name: 'halamanSendiri',
       title: 'Punya halaman sendiri',
       description:
-        'Hanya pintu masuk situasi, offer dalam rangkaian tiga unit, atau offer yang paling sering ditanyakan. Offer lain cukup tampil di daftar situasinya.',
+        'Hanya bila blok halamannya (situasi, dua paket, batas, langkah pertama) sudah ditulis dan disetujui: pintu masuk situasi, offer dalam rangkaian tiga unit, atau offer yang paling sering ditanyakan. Pintu masuk tanpa blok halaman tetap tampil di daftar sebagai “Mulai dari sini” (keputusan K-B).',
       type: 'boolean',
       initialValue: false,
       group: 'isi',

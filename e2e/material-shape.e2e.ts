@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test'
 import sharp from 'sharp'
 
-import { REMOVED_IN_F3 } from './removed-in-f3'
 import {
   plateSkipReason,
   waitForCanvas,
@@ -93,7 +92,6 @@ test.describe('the material layer keeps each picture its own shape', () => {
     page,
     request,
   }) => {
-    test.fixme(true, REMOVED_IN_F3.plates)
     // Every published plate, each waited for up to WEBGL_ARRIVAL_MS — Tahap 90.
     test.setTimeout(600_000)
     await page.setViewportSize({ width: 1600, height: 900 })

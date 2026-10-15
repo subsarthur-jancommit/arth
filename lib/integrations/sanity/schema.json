@@ -2023,6 +2023,14 @@
         },
         "optional": true
       },
+      "syarat": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "internationalizedArrayText"
+        },
+        "optional": true
+      },
       "langkahPertama": {
         "type": "objectAttribute",
         "value": {

@@ -193,6 +193,16 @@ function collectRuns(): Facts {
      */
     const style = getComputedStyle(el)
     if (style.display === 'none' || style.visibility === 'hidden') continue
+    /*
+     * Text the browser does not paint at all: the panel of a closed
+     * `<details>`, which Chromium holds as `content-visibility: hidden`
+     * content. Its line boxes still resolve, so without this the gate sampled
+     * whatever sits where the panel would be — on the home page's unit list at
+     * 390px, the next unit's heading — and reported 1.00:1 for words nobody
+     * can see. `checkVisibility()` is false exactly for skipped content and
+     * for `display: none`; a painted run is still measured.
+     */
+    if (!el.checkVisibility()) continue
 
     // Only the element that directly owns the characters, so a wrapper is not
     // judged for text its child paints in another colour.

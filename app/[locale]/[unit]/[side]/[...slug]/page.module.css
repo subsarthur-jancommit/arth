@@ -132,6 +132,54 @@
   text-underline-offset: 0.2em;
 }
 
+/* A † offer's condition, one line under the impact. */
+.condition {
+  max-width: 54rem;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+/* Paket Starter and Paket Integrator (glossary, section 10). */
+.packages {
+  display: grid;
+  gap: calc(18 / 375 * 100vw);
+  max-width: 72rem;
+}
+
+.packages > h2:first-child {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.packageList {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: calc(12 / 375 * 100vw);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.package {
+  display: grid;
+  gap: calc(12 / 375 * 100vw);
+  align-content: start;
+  padding: calc(20 / 375 * 100vw);
+  border: 1px solid var(--line-strong);
+}
+
+.package h3,
+.package p {
+  margin: 0;
+}
+
+.packagePoints {
+  display: grid;
+  gap: calc(6 / 375 * 100vw);
+  margin: 0;
+  padding-left: 1.2em;
+}
+
 .offerUtilities {
   display: flex;
   flex-wrap: wrap;
@@ -188,6 +236,24 @@
 
   .offerUtilities {
     gap: calc(16 / 1440 * 100vw);
+  }
+
+  .packages {
+    gap: calc(16 / 1440 * 100vw);
+  }
+
+  .packageList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(16 / 1440 * 100vw);
+  }
+
+  .package {
+    gap: calc(14 / 1440 * 100vw);
+    padding: calc(28 / 1440 * 100vw);
+  }
+
+  .packagePoints {
+    gap: calc(6 / 1440 * 100vw);
   }
 }
 

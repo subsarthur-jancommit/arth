@@ -30,6 +30,7 @@
     "socialsHeading": "Elsewhere",
     "heroCta": "Choose your situation",
     "heroCtaContact": "Get in touch",
+    "heroCtaUnits": "See the three units",
     "placeholderNote": "Placeholder copy. The studio’s own words replace this text as soon as the CMS has them.",
     "addressHeading": "Address",
     "heroIndexLabel": "Unit",
@@ -267,23 +268,24 @@
     "firstStepLink": "Start a conversation"
   },
   "chapter": {
-    "offersEyebrow": "Offers for this situation",
-    "marketLabel": "Filter offers by project market",
+    "offersEyebrow": "Work for this situation",
+    "marketLabel": "Filter by who commissions the project",
     "marketAll": "All projects",
     "marketGovernment": "Government projects",
     "marketPrivate": "Private projects",
-    "audienceLabel": "For",
-    "typeLabel": "Type",
     "boundariesEyebrow": "Boundaries and terms",
-    "bridgesEyebrow": "The next situation",
+    "bridgesEyebrow": "When the work continues",
     "firstStepEyebrow": "First step",
     "firstStepLink": "Start a conversation",
     "navigationLabel": "Continue exploring",
-    "backToSide": "Back to side",
-    "backToUnit": "Back to unit"
+    "backToSide": "Back to the situations",
+    "backToUnit": "Back to unit",
+    "entryLabel": "Start here",
+    "askLink": "Ask about this work",
+    "readLink": "Read the page",
+    "conditionLabel": "Condition"
   },
   "offer": {
-    "eyebrow": "Offer",
     "audienceEyebrow": "Who this is for",
     "situationEyebrow": "The situation",
     "workEyebrow": "What we do",
@@ -295,10 +297,12 @@
     "firstStepEyebrow": "First step",
     "firstStepLink": "Start a conversation",
     "bridgeEyebrow": "When the work continues",
-    "navigationLabel": "Back to the catalogue",
-    "backToChapter": "Back to chapter",
-    "backToSide": "Back to side",
-    "print": "Print this offer"
+    "navigationLabel": "Back to the list of work",
+    "backToChapter": "Back to the situation",
+    "backToSide": "Back to the situations",
+    "print": "Print this page",
+    "conditionLabel": "Condition",
+    "packagesEyebrow": "Two packages"
   },
   "network": {
     "paths": {

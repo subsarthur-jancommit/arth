@@ -8,7 +8,6 @@ import { contribution, legibility, tone } from '../lib/styles/scripts/luminance'
 import { material } from '../vault/motion/tokens'
 import { FEATURED_WORK } from './fixtures'
 import { waitForEntrance } from './page-settled'
-import { REMOVED_IN_F3 } from './removed-in-f3'
 import {
   plateSkipReason,
   waitForCanvas,
@@ -722,7 +721,6 @@ test.describe('the material is a material, not a picture', () => {
   )
 
   test('the plate is not frozen', async ({ page }) => {
-    test.fixme(true, REMOVED_IN_F3.plates)
     test.setTimeout(120_000)
     const { region } = await readyPlate(page)
 
@@ -757,7 +755,6 @@ test.describe('the material is a material, not a picture', () => {
   test('scrolling reaches the shader, and the surface settles', async ({
     page,
   }) => {
-    test.fixme(true, REMOVED_IN_F3.plates)
     test.setTimeout(120_000)
 
     /*

@@ -23,6 +23,7 @@
  * bun lib/scripts/import-catalog.ts <dir> --out /path/outside/repo/offers.json
  * bun lib/scripts/import-catalog.ts <dir> --review docs/R1-TULIS-TANGAN-KONSTRUKSI.md --unit konstruksi
  * bun lib/scripts/import-catalog.ts <dir> --situations docs/R1-SITUASI-TEKNOLOGI.md
+ * bun lib/scripts/import-catalog.ts <dir> --drafts kuliner.ndjson --situation kuliner --side-id <id>
  * ```
  */
 
@@ -40,9 +41,12 @@ import {
   offerModel,
   READER_TYPE,
 } from '@/lib/content/offer-models'
+import { OFFER_PAGES } from '@/lib/content/offer-pages'
+import { babDraft, babId, offerDraft } from '@/lib/content/sanity-drafts'
 import { SITUATION_OVERRIDES } from '@/lib/content/situation-overrides'
 import {
   deriveSituation,
+  type SituationPage,
   type SituationSource,
   situationMarkdown,
   situationSlug,
@@ -352,6 +356,69 @@ export function reviewMarkdown(
   return `${lines.join('\n')}\n`
 }
 
+/** Side keys in the URL, by catalogue side, for the Teknologi unit. */
+const TEKNOLOGI_SIDE_KEYS = { A: 'paham-teknis', B: 'siap-pakai' } as const
+
+/**
+ * One NDJSON line per draft document: the situation, then its offers in the
+ * order the page shows them. Nothing here reaches Sanity.
+ */
+export function draftDocuments(
+  page: SituationPage,
+  sideId: string,
+  drafts: OfferDraft[]
+): string {
+  const sideKey = TEKNOLOGI_SIDE_KEYS[page.side]
+  const items = [
+    page.pintuMasuk,
+    ...page.kelompok.flatMap((group) => group.items),
+  ].filter((item) => item !== undefined)
+  const byId = new Map(drafts.map((draft) => [draft.idKatalog, draft]))
+  const code = items[0]?.idKatalog.split('-')[0] ?? ''
+  const parent = babId(page.unit, sideKey, page.slug)
+  const docs = [
+    babDraft(page, sideId, sideKey, 0, code),
+    ...items.flatMap((item, index) => {
+      const draft = byId.get(item.idKatalog)
+      if (!draft) return []
+      return [
+        offerDraft(
+          {
+            idKatalog: draft.idKatalog,
+            model: draft.model,
+            judul: item.judul,
+            dampak: item.dampak,
+            untukSiapa: item.untukSiapa,
+            jenis: draft.jenis,
+            slug: draft.slug,
+            syarat: item.syarat,
+          },
+          parent,
+          index,
+          item === page.pintuMasuk,
+          OFFER_PAGES.get(draft.idKatalog)
+        ),
+      ]
+    }),
+  ]
+  return `${docs.map((doc) => JSON.stringify(doc)).join('\n')}\n`
+}
+
+/** Every offer draft, chapter and bridge pair in the master brief. */
+export async function readCatalog(dir: string) {
+  const drafts: OfferDraft[] = []
+  const situations: SituationSource[] = []
+  for (const file of await sideFiles(dir)) {
+    const side = file.includes('Sisi A') ? 'A' : 'B'
+    const markdown = await readFile(file, 'utf8')
+    const place = { unit: unitOf(file), side } as const
+    drafts.push(...parseCatalog(markdown, place).map((row) => draftOffer(row)))
+    situations.push(...parseSituations(markdown, place))
+  }
+  const bridges = (await bridgeFiles(dir)).flatMap(parseBridges)
+  return { drafts, situations, bridges }
+}
+
 async function main() {
   const dir = process.argv.slice(2).find((arg) => !arg.startsWith('--'))
   const outIndex = process.argv.indexOf('--out')
@@ -363,16 +430,7 @@ async function main() {
     process.exit(1)
   }
 
-  const drafts: OfferDraft[] = []
-  const situations: SituationSource[] = []
-  for (const file of await sideFiles(dir)) {
-    const side = file.includes('Sisi A') ? 'A' : 'B'
-    const markdown = await readFile(file, 'utf8')
-    const place = { unit: unitOf(file), side } as const
-    drafts.push(...parseCatalog(markdown, place).map((row) => draftOffer(row)))
-    situations.push(...parseSituations(markdown, place))
-  }
-  const bridges = (await bridgeFiles(dir)).flatMap(parseBridges)
+  const { drafts, situations, bridges } = await readCatalog(dir)
 
   const auto = drafts.filter((draft) => draft.lane === 'otomatis').length
   console.log(
@@ -401,23 +459,41 @@ async function main() {
     console.log(`Tinjauan ditulis ke ${review}.`)
   }
 
-  const situationsIndex = process.argv.indexOf('--situations')
-  const situationsOut =
-    situationsIndex === -1 ? undefined : process.argv[situationsIndex + 1]
-  if (situationsOut) {
-    const pages = situations
-      .filter((source) => source.unit === 'teknologi')
-      .toSorted((a, b) => b.side.localeCompare(a.side))
-      .map((source) =>
-        deriveSituation(
-          source,
-          drafts,
-          bridges,
-          SITUATION_OVERRIDES.get(
-            `${source.unit}/${source.side}/${situationSlug(source.nama)}`
-          )
+  const arg = (name: string) => {
+    const index = process.argv.indexOf(name)
+    return index === -1 ? undefined : process.argv[index + 1]
+  }
+  const pages = situations
+    .filter((source) => source.unit === 'teknologi')
+    .toSorted((a, b) => b.side.localeCompare(a.side))
+    .map((source) =>
+      deriveSituation(
+        source,
+        drafts,
+        bridges,
+        SITUATION_OVERRIDES.get(
+          `${source.unit}/${source.side}/${situationSlug(source.nama)}`
         )
       )
+    )
+
+  const draftsOut = arg('--drafts')
+  if (draftsOut) {
+    const slug = arg('--situation')
+    const sideId = arg('--side-id')
+    const page = pages.find((item) => item.slug === slug)
+    if (!page || !sideId) {
+      console.error('--drafts needs --situation <slug> and --side-id <id>')
+      process.exit(1)
+    }
+    await writeFile(draftsOut, draftDocuments(page, sideId, drafts))
+    console.log(
+      `Draf untuk ${page.nama} ditulis ke ${draftsOut}. Tidak ada yang ditulis ke Sanity.`
+    )
+  }
+
+  const situationsOut = arg('--situations')
+  if (situationsOut) {
     await writeFile(
       situationsOut,
       situationMarkdown(pages, 'Halaman situasi Teknologi')
