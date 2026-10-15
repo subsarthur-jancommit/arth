@@ -1,6 +1,7 @@
 # Glosarium pembaca (R1)
 
-Tanggal: 15 Oktober 2026 · Status: perlu Anda · Dasar: keputusan P1
+Tanggal: 15 Oktober 2026 · Status: disetujui pemilik, 15 Oktober 2026 ·
+Dasar: keputusan P1
 (`docs/RENCANA-REVISI-F3.md`)
 
 Glosarium ini menentukan kata yang dilihat pembeli untuk setiap istilah
@@ -224,24 +225,27 @@ menetapkan katanya lebih dulu. “Hapus” berarti label itu tidak dibutuhkan.
 Kunci beranda, kontak, jaringan, dan cara kerja ditulis ulang bersama copy
 halamannya, tidak di sini.
 
-## 9. Pertanyaan untuk pemilik
+## 9. Keputusan yang ikut disetujui
 
-1. **Nama unit dalam bahasa Inggris.** Usul agen: Konstruksi, Teknologi, dan
-   Peekabo tetap sebagai nama, dengan penjelas pada sebutan pertama. Akibatnya
-   alamat dan merek sama di dua bahasa.
-2. **“Unit” tetap tampil.** Usul agen: ya, karena header siap tayang
-   memakainya. Bila Anda ingin kata lain, header payung harus diubah oleh
-   Anda sendiri.
-3. **Label jenis yang berbentuk tiga serangkai** (“Modal, alat, dan jaminan
-   lewat mitra”, “Arah, strategi, dan kelas”, “Kreator, host, dan sales”).
-   Gerbang gaya membatasi tiga serangkai di tagline. Usul agen: tetap, karena
-   ketiganya menyebut isi jenis itu apa adanya, dan label bukan kalimat.
-4. **Label Teknologi Sisi B.** “Untuk yang ingin hasil siap pakai” enam kata
-   dan muat di pengalih desktop; di ponsel menjadi “Hasil siap pakai”. Usul
-   agen: setujui keduanya.
-5. **Peekabo Sisi B.** “Untuk yang ingin ikut menjualkan” menggantikan
-   “Jaringan penjual”, karena pembacanya calon penjual, bukan jaringan. Usul
-   agen: setujui; kata “jaringan” tetap dipakai di isi halaman.
+Pemilik menyetujui glosarium pada 15 Oktober 2026 dan meminta agen menulis
+sendiri dari FULL KONTEKS, tanpa menahan halaman dengan pertanyaan. Lima
+keputusan berikut berlaku:
+
+1. **Nama unit dalam bahasa Inggris.** Konstruksi, Teknologi, dan Peekabo
+   tetap sebagai nama, dengan penjelas pada sebutan pertama, supaya alamat dan
+   merek sama di dua bahasa.
+2. **“Unit” tetap tampil**, karena header siap tayang memakainya.
+3. **Label jenis berbentuk tiga serangkai** (“Modal, alat, dan jaminan lewat
+   mitra”, “Arah, strategi, dan kelas”, “Kreator, host, dan sales”) tetap,
+   karena ketiganya menyebut isi jenis itu apa adanya, dan label bukan kalimat.
+4. **Teknologi Sisi B** tampil sebagai “Untuk yang ingin hasil siap pakai” di
+   desktop dan “Hasil siap pakai” di ponsel.
+5. **Peekabo Sisi B** tampil sebagai “Untuk yang ingin ikut menjualkan”, karena
+   pembacanya calon penjual. Kata “jaringan” tetap dipakai di isi halaman.
+
+Kode katalog (KUL-01, RAK-03, dan seterusnya) tidak pernah tampil di website.
+Ia hanya tersimpan di medan Internal `idKatalog`, dan query publik dijaga tes
+agar tidak mengambilnya.
 
 ## Jejak sumber
 

@@ -87,11 +87,17 @@ Pekerjaan dokumen, tanpa kode. Bergantung pada P1 dan P3.
 
 Copy yang disetujui ditulis ke draf Sanity sesudah "ok tulis" tersendiri.
 
-**Status 15 Oktober 2026:** draf glosarium
-([`R1-GLOSARIUM-PEMBACA.md`](./R1-GLOSARIUM-PEMBACA.md)) dan serah bab Kuliner
-dan F&B dengan usulan daftar pendek
-([`R1-SERAH-BAB-KULINER.md`](./R1-SERAH-BAB-KULINER.md)) menunggu persetujuan
-pemilik. Belum ada yang ditulis ke Sanity.
+**Status 15 Oktober 2026:** glosarium
+([`R1-GLOSARIUM-PEMBACA.md`](./R1-GLOSARIUM-PEMBACA.md)) disetujui pemilik.
+Serah bab Kuliner dan F&B ([`R1-SERAH-BAB-KULINER.md`](./R1-SERAH-BAB-KULINER.md))
+ditulis ulang atas arahan pemilik: tanpa kode katalog di bagian halaman, tanpa
+placeholder, dengan pekerjaan yang tayang dipilih agen dari master brief;
+menunggu persetujuan pemilik. Belum ada yang ditulis ke Sanity.
+
+Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk
+memilih pekerjaan yang tayang, dan mencatat keputusannya beserta sumbernya.
+Placeholder hanya untuk fakta yang memang tidak ada di FULL KONTEKS, seperti
+nomor kontak.
 
 ### R2 Isi wakil untuk merancang
 
