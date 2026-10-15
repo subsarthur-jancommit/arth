@@ -153,8 +153,13 @@ situasinya pada 15 Oktober 2026.
 
 Langkah 5, halaman Cara kami dibayar, ditulis di
 [`R1-SERAH-CARA-KAMI-DIBAYAR.md`](./R1-SERAH-CARA-KAMI-DIBAYAR.md), beserta pemendekan
-blok cara bayar di halaman pekerjaan sesudah halaman itu terbit. Menunggu
-persetujuan pemilik. Skema `offer` butuh medan
+blok cara bayar di halaman pekerjaan sesudah halaman itu terbit. Disetujui
+pemilik 15 Oktober 2026, dan pemendekannya sudah diterapkan di halaman Bot
+pesan-antar WhatsApp serta Pesan dan bayar dari meja.
+
+Kelima langkah rekomendasi pendekatan pola sudah dikerjakan di lokal. Halaman
+Dokumentasi tetap menunggu foto nyata, izin pemiliknya, dan keputusan Bukti
+pertama. Skema `offer` butuh medan
 `paket` di R2. Belum ada yang ditulis ke Sanity.
 
 Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk

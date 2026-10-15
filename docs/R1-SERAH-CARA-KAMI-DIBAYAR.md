@@ -1,6 +1,6 @@
 # Serah halaman: Cara kami dibayar
 
-Halaman payung Arthur · 15 Oktober 2026 · Status: perlu Anda · Placeholder:
+Halaman payung Arthur · 15 Oktober 2026 · Status: disetujui pemilik, 15 Oktober 2026 · Placeholder:
 tidak ada
 
 Langkah 5 dari pendekatan pola (`R1-PENDEKATAN-POLA-OFFER.md`). Halaman ini

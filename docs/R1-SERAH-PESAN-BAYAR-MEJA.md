@@ -49,9 +49,9 @@ diserahkan kepada Anda.
 Paket untuk usaha Anda ditentukan di sesi diagnosis, dari masalah yang Anda
 ceritakan. Kami tidak membangun dari nol bila layanan yang sudah matang menyelesaikan masalahnya; kami menyarankannya lebih dulu, dan berkata jujur bila sesuatu belum perlu Anda beli.
 
-Bayarannya bisa berupa biaya pembangunan atau kemitraan bagi hasil. Bila
-layanan jadi Anda beli lewat kami, mitra membayar kami komisi di luar biaya
-Anda, dan kami menyebutkannya sejak awal.
+Bila Anda membeli layanan jadi lewat kami, mitra membayar kami komisi, dan
+kami menyebutkannya sejak awal. Semua cara kami dibayar dijelaskan di satu
+halaman. → _tautan ke Cara kami dibayar_
 
 #### Batas dan syarat
 
@@ -81,15 +81,15 @@ _(Sampai kanal kontak ditetapkan, tombol membuka halaman kontak.)_
 
 ## 2. Keputusan yang saya ambil dari konteks
 
-| Hal                         | Keputusan                                                                                                               | Dasar                                                                                                               |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Dua paket                   | Starter memakai layanan yang sudah jadi; Integrator merakit dan menyambungkan ke pembayaran, catatan, atau aturan usaha | Arahan pemilik 15 Okt 2026; Teknologi Sisi B, Alur kerja langkah 3 (layanan matang, rakit ringan)                   |
-| Isi poin paket              | Dari kolom dampak dan bidang di balik pekerjaan ini, tanpa fitur tambahan                                               | Arahan pemilik: tidak menambah fitur tanpa alasan; Aturan isi 4                                                     |
-| Bangun penuh                | Tidak ditawarkan di halaman ini                                                                                         | Langkah 3: bangun otonom penuh hanya untuk franchise, multi-cabang, dan perusahaan besar                            |
-| Langkah teknis              | Tidak ditulis di halaman; dipakai untuk mengisi poin paket                                                              | Arahan pemilik: versi sebelumnya terasa seperti layanan berat                                                       |
-| Cara dibayar                | Biaya pembangunan, kemitraan bagi hasil, atau komisi mitra yang diungkapkan                                             | Header Teknologi (siap tayang), Cara kami bekerja; Jalur komisi dua sisi; Aturan isi, kalimat wajib vendor dan SaaS |
-| Kalimat jujur               | Dipakai apa adanya di blok Cara kami bekerja                                                                            | Header Teknologi (siap tayang); Pola pikir Arthur, Pintu masuk ringan                                               |
-| Untuk siapa, situasi, batas | Sama dengan versi yang sudah disetujui                                                                                  | Versi sebelumnya                                                                                                    |
+| Hal                         | Keputusan                                                                                                                   | Dasar                                                                                                               |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Dua paket                   | Starter memakai layanan yang sudah jadi; Integrator merakit dan menyambungkan ke pembayaran, catatan, atau aturan usaha     | Arahan pemilik 15 Okt 2026; Teknologi Sisi B, Alur kerja langkah 3 (layanan matang, rakit ringan)                   |
+| Isi poin paket              | Dari kolom dampak dan bidang di balik pekerjaan ini, tanpa fitur tambahan                                                   | Arahan pemilik: tidak menambah fitur tanpa alasan; Aturan isi 4                                                     |
+| Bangun penuh                | Tidak ditawarkan di halaman ini                                                                                             | Langkah 3: bangun otonom penuh hanya untuk franchise, multi-cabang, dan perusahaan besar                            |
+| Langkah teknis              | Tidak ditulis di halaman; dipakai untuk mengisi poin paket                                                                  | Arahan pemilik: versi sebelumnya terasa seperti layanan berat                                                       |
+| Cara dibayar                | Dijelaskan di halaman Cara kami dibayar; di sini tinggal kalimat komisi wajib dan tautannya (disetujui pemilik 15 Okt 2026) | Header Teknologi (siap tayang), Cara kami bekerja; Jalur komisi dua sisi; Aturan isi, kalimat wajib vendor dan SaaS |
+| Kalimat jujur               | Dipakai apa adanya di blok Cara kami bekerja                                                                                | Header Teknologi (siap tayang); Pola pikir Arthur, Pintu masuk ringan                                               |
+| Untuk siapa, situasi, batas | Sama dengan versi yang sudah disetujui                                                                                      | Versi sebelumnya                                                                                                    |
 
 ## 3. Hasil uji
 
