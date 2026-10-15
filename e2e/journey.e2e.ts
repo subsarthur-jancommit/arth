@@ -158,7 +158,9 @@ test.describe('a reader moving through the site', () => {
     // the exact navigation Tahap 15b measured landing at 1522.
     await page.locator('#unit summary').first().click()
     await page.waitForTimeout(700)
-    await page.locator(`a[href="/id/${first}"]`).first().click()
+    // The panel's own link: the header carries the same href, and at 390px
+    // it sits collapsed behind the menu, so `.first()` alone picked it.
+    await page.locator(`#unit a[href="/id/${first}"]`).first().click()
     await page.waitForURL(`**/${first}`)
     const hop1 = await resting(page)
     assertOpenedAtTop(hop1, 'hop 1 home → unit')
