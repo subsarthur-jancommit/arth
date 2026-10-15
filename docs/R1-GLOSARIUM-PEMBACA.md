@@ -247,6 +247,39 @@ Kode katalog (KUL-01, RAK-03, dan seterusnya) tidak pernah tampil di website.
 Ia hanya tersimpan di medan Internal `idKatalog`, dan query publik dijaga tes
 agar tidak mengambilnya.
 
+## 10. Dua paket: Starter dan Integrator
+
+Ditambahkan 15 Oktober 2026 atas arahan pemilik: Arthur menyediakan Paket
+Starter dan Paket Integrator sesuai misi dan keadaan klien. Keunggulannya dua:
+cara mengambil keuntungan yang fleksibel, dan konsultasi yang tidak menambah
+fitur tanpa alasan. Kedua nama paket adalah nama diri, jadi sama di dua bahasa.
+
+| Paket            | Isi untuk pembeli                                                                            | Jalur di brief                                                                                 | Inggris (draf)     |
+| ---------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------ |
+| Paket Starter    | Masalahnya diselesaikan dengan layanan yang sudah jadi, dipasang dan diatur untuk usaha Anda | Teknologi Sisi B, Alur kerja langkah 3: “pakai layanan matang dan terima komisi dari dua sisi” | Starter package    |
+| Paket Integrator | Beberapa layanan dirakit dan disambungkan ke pembayaran, catatan, dan aturan usaha Anda      | Langkah 3 yang sama: “rakit ringan dari beberapa layanan dan proyek open source (jalur inti)”  | Integrator package |
+
+Aturan memakainya:
+
+1. Setiap halaman pekerjaan Teknologi untuk hasil siap pakai menampilkan dua
+   paket ini, masing-masing dengan satu kalimat dan paling banyak tiga poin.
+   Isi poin diambil dari baris katalog pekerjaan itu: Starter memegang dampak
+   intinya, Integrator memegang sambungan ke pembayaran, catatan, atau aturan.
+2. Paket ditentukan di sesi diagnosis. Halaman tidak meminta pembeli memilih
+   sendiri sebelum bicara.
+3. Bangun penuh tidak menjadi paket. Ia disebut satu kalimat hanya di halaman
+   untuk franchise dan usaha banyak cabang, sesuai langkah 3.
+4. Cara Arthur dibayar disebut terbuka: biaya pembangunan, kemitraan bagi
+   hasil, atau komisi dari penyedia layanan yang diungkapkan sejak awal.
+5. Kalimat jujur dari header Teknologi dipakai apa adanya di setiap halaman
+   pekerjaan: “Kami tidak membangun dari nol bila layanan yang sudah matang
+   menyelesaikan masalahnya; kami menyarankannya lebih dulu, dan berkata jujur
+   bila sesuatu belum perlu Anda beli.”
+
+Langkah kerja teknis per pekerjaan (menyambungkan, menyusun, menampilkan)
+tidak lagi ditulis di halaman. Langkah itu tetap dipakai agen untuk mengisi
+poin paket, dan dicatat di jejak sumber.
+
 ## Jejak sumber
 
 | Bagian | Sumber                                                                                                         |

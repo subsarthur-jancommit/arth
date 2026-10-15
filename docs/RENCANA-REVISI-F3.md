@@ -96,7 +96,13 @@ disetujui pemilik. Halaman pekerjaan pertama, Bot pesan-antar WhatsApp
 ([`R1-SERAH-BOT-PESAN-ANTAR.md`](./R1-SERAH-BOT-PESAN-ANTAR.md)), disetujui pemilik. Halaman Pesan dan bayar dari meja
 ([`R1-SERAH-PESAN-BAYAR-MEJA.md`](./R1-SERAH-PESAN-BAYAR-MEJA.md)) disetujui pemilik. Halaman Layar pesanan di dapur
 ([`R1-SERAH-LAYAR-DAPUR.md`](./R1-SERAH-LAYAR-DAPUR.md)) menunggu
-persetujuan pemilik. Belum ada yang ditulis ke Sanity.
+persetujuan pemilik.
+
+Pada 15 Oktober 2026 pemilik mengarahkan ulang halaman pekerjaan Teknologi: setiap
+halaman menawarkan Paket Starter dan Paket Integrator (glosarium bagian 10),
+bukan daftar langkah teknis. Ketiga halaman pekerjaan Kuliner ditulis ulang
+dalam bentuk itu dan menunggu persetujuan ulang. Skema `offer` butuh medan
+`paket` di R2. Belum ada yang ditulis ke Sanity.
 
 Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk
 memilih pekerjaan yang tayang, dan mencatat keputusannya beserta sumbernya.
