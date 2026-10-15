@@ -14,6 +14,11 @@
   gap: calc(8 / 375 * 100vw);
 }
 
+/* `display: flex` above would otherwise override the hidden attribute. */
+.filters[hidden] {
+  display: none;
+}
+
 .filter {
   padding: 0.5em 1em;
   border: 1px solid var(--line-strong);
@@ -28,6 +33,22 @@
   color: var(--surface);
 }
 
+.groups {
+  display: grid;
+  gap: calc(32 / 375 * 100vw);
+  --reveal-stagger: var(--stagger-cards);
+}
+
+.group {
+  display: grid;
+  gap: calc(12 / 375 * 100vw);
+}
+
+.type {
+  margin: 0;
+  color: var(--text-muted);
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -35,7 +56,6 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  --reveal-stagger: var(--stagger-cards);
 }
 
 .item,
@@ -44,34 +64,57 @@
   height: 100%;
 }
 
+/* Height follows the content: a situation can list twenty offers. */
 .card {
   display: grid;
-  gap: calc(20 / 375 * 100vw);
+  gap: calc(10 / 375 * 100vw);
   align-content: start;
-  min-height: min(74svh, 36rem);
   padding: calc(20 / 375 * 100vw);
   border: 1px solid var(--line-strong);
   color: inherit;
-  text-decoration: none;
 }
 
-.type,
+.entry {
+  gap: calc(16 / 375 * 100vw);
+  border-color: var(--text-primary);
+}
+
+.entryLabel,
 .audience {
   color: var(--text-muted);
 }
 
+.title,
 .impact,
+.condition,
 .audience {
   margin: 0;
 }
 
-.audience {
-  align-self: end;
+.condition {
+  color: var(--text-muted);
 }
 
-.card:hover,
-.card:focus-visible {
-  background: var(--surface-2);
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(16 / 375 * 100vw);
+  align-self: end;
+  padding-top: calc(8 / 375 * 100vw);
+}
+
+.read,
+.ask {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.read:hover,
+.ask:hover,
+.read:focus-visible,
+.ask:focus-visible {
+  text-decoration-thickness: 2px;
 }
 
 @media (--desktop) {
@@ -83,15 +126,31 @@
     gap: calc(8 / 1440 * 100vw);
   }
 
+  .groups {
+    gap: calc(48 / 1440 * 100vw);
+  }
+
+  .group {
+    gap: calc(16 / 1440 * 100vw);
+  }
+
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: calc(16 / 1440 * 100vw);
   }
 
   .card {
-    gap: calc(28 / 1440 * 100vw);
-    min-height: min(46svh, 38rem);
+    gap: calc(12 / 1440 * 100vw);
     padding: calc(28 / 1440 * 100vw);
+  }
+
+  .entry {
+    gap: calc(20 / 1440 * 100vw);
+  }
+
+  .actions {
+    gap: calc(24 / 1440 * 100vw);
+    padding-top: calc(8 / 1440 * 100vw);
   }
 }
 

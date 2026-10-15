@@ -9,16 +9,12 @@
  * package that brings the feature back, and that package removes the mark.
  * Only tests checked to depend on the removed feature are marked; a test that
  * failed for another reason stays red.
+ *
+ * Fase 1 of `docs/RENCANA-KONTEKS-TAYANG.md` restored `main`'s home
+ * composition (passage, work grid on the material, practice list), so the
+ * marks for those features are gone and their tests run again.
  */
 export const REMOVED_IN_F3 = {
-  plates:
-    'F3-01 removed the home work grid and its WebGL plates (E1.3); drawing plates return in R4 (P2)',
-  passage:
-    'F3-01 removed the pinned passage (E1.2); it returns with the drawing plates in R4',
-  homeWork:
-    'F3-01 removed the work grid from the home page (E1.3), so home links no project; R5 rebuilds the home page',
-  practiceList:
-    'F3-01 replaced the practice-list disclosure with unit doors (E1.4); R5 re-points this through the doors',
   studio:
     'F3-08 replaced the studio process with a Cara kerja page that awaits content and answers 404 since R0 (E3.1); re-tested in R5',
   copyAddress:

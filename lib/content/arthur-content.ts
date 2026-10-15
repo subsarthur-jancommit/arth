@@ -27,6 +27,8 @@ const callToActionSchema = z.object({
 const offerCardSchema = z.object({
   _id: z.string(),
   slug: textSchema.nullable(),
+  /** Whether the offer renders its own page (pattern approach, section 3). */
+  punyaHalaman: z.boolean(),
   judul: textSchema.nullable(),
   dampak: textSchema.nullable(),
   untukSiapa: textSchema.nullable(),

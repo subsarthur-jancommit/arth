@@ -34,6 +34,7 @@ import {
   projectsQuery,
   sequencesPreviewQuery,
   sequencesQuery,
+  sidePagePreviewQuery,
   sidePageQuery,
   siteSettingsQuery,
   unitPageQuery,
@@ -180,6 +181,8 @@ describe('offer query', () => {
       'jejakSumber',
       'ditulisOleh',
       'tanggalDisetujui',
+      // The offer model is an internal template key (R1 pattern approach).
+      'model',
     ]) {
       expect(offerPageQuery).not.toContain(field)
       expect(offerPagePreviewQuery).not.toContain(field)
@@ -248,6 +251,8 @@ describe('chapter query', () => {
       'jejakSumber',
       'ditulisOleh',
       'tanggalDisetujui',
+      // The offer model is an internal template key (R1 pattern approach).
+      'model',
     ]) {
       expect(chapterPageQuery).not.toContain(field)
     }
@@ -320,5 +325,54 @@ describe('site settings cutover', () => {
       expect(query).not.toContain('jejakSumber')
       expect(query).not.toContain('ditulisOleh')
     }
+  })
+})
+
+/**
+ * The pattern approach (docs/R1-PENDEKATAN-POLA-OFFER.md, section 3): a
+ * situation lists every published offer, and only an offer with its own
+ * page (or the situation's entry offer) has a route. Every link to an offer
+ * reads the same flag, so no list, bridge or unit card points at a 404.
+ */
+describe('offer routes follow the pattern approach', () => {
+  // Decision K-B (16 October 2026): an entry offer has no page of its own
+  // until its page blocks are written; only halamanSendiri opens a route.
+  const OWN_PAGE = 'halamanSendiri == true &&'
+  const FLAG = '"punyaHalaman": coalesce(halamanSendiri, false)'
+
+  it('serves an offer page only for an offer with its own page', () => {
+    expect(offerPageQuery).toContain(OWN_PAGE)
+    expect(offerPagePreviewQuery).toContain(OWN_PAGE)
+  })
+
+  it('never lets the entry flag open a route or a link on its own (K-B)', () => {
+    for (const query of [
+      offerPageQuery,
+      offerPagePreviewQuery,
+      chapterPageQuery,
+      chapterPagePreviewQuery,
+      unitPageQuery,
+    ]) {
+      expect(query).not.toContain('pintuMasuk == true)')
+      expect(query).not.toContain('|| coalesce(pintuMasuk')
+    }
+  })
+
+  it('tells every card, bridge and unit example whether that page exists', () => {
+    expect(chapterPageQuery).toContain(FLAG)
+    expect(chapterPagePreviewQuery).toContain(FLAG)
+    expect(offerPageQuery).toContain(FLAG)
+    expect(unitPageQuery).toContain(FLAG)
+  })
+
+  it('lists every published offer of a situation, with no upper bound', () => {
+    expect(sidePageQuery).not.toContain('<= 7')
+    expect(sidePagePreviewQuery).not.toContain('<= 7')
+    expect(chapterPageQuery).toContain('"syarat"')
+  })
+
+  it('reads the two packages on the offer page', () => {
+    expect(offerPageQuery).toContain('"tingkat": tingkat[]')
+    expect(offerPagePreviewQuery).toContain('"tingkat": tingkat[]')
   })
 })

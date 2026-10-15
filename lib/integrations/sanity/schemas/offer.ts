@@ -1,4 +1,11 @@
-import { defineArrayMember, defineField, defineType } from 'sanity'
+import {
+  defineArrayMember,
+  defineField,
+  defineType,
+  type ValidationContext,
+} from 'sanity'
+
+import { OFFER_MODELS } from '@/lib/content/offer-models'
 
 import { localeValue, requireIndonesian } from '../utils/i18n-array'
 import { forbidPlaceholders, internalFields } from './internal'
@@ -17,6 +24,8 @@ const localizedSteps = (name: string, title: string) =>
   defineField({
     name,
     title,
+    description:
+      'Opsional sejak pola per model offer: halaman Teknologi memakai Dua paket.',
     type: 'array',
     of: [
       defineArrayMember({
@@ -25,8 +34,26 @@ const localizedSteps = (name: string, title: string) =>
         preview: { select: { title: 'teks.0.value' } },
       }),
     ],
-    validation: (Rule) => Rule.required().min(1),
   })
+
+/**
+ * Required only on an offer that renders its own page. An offer that appears
+ * only in its situation's list shows its title, impact and audience, and the
+ * model's default limit covers the rest (`docs/R1-PENDEKATAN-POLA-OFFER.md`).
+ */
+const requiredForOwnPage = (
+  // oxlint-disable-next-line anti-slop/no-unknown-parameters -- Sanity passes raw localized values to validators
+  value: unknown,
+  context: ValidationContext
+): true | string => {
+  const empty = !Array.isArray(value) || value.length === 0
+  if (empty) {
+    return context.document?.['halamanSendiri'] === true
+      ? 'Wajib untuk offer yang punya halaman sendiri.'
+      : true
+  }
+  return requireIndonesian(value)
+}
 
 /** A routable Arthur offer, with the eight reader-facing blocks. */
 export const offer = defineType({
@@ -91,8 +118,45 @@ export const offer = defineType({
       title: 'Situasinya',
       type: 'internationalizedArrayText',
       description:
-        'Dua sampai tiga kalimat tentang pembaca, tanpa kalimat tentang Arthur.',
-      validation: (Rule) => Rule.required().custom(requireIndonesian),
+        'Dua sampai tiga kalimat tentang pembaca, tanpa kalimat tentang Arthur. Wajib bila offer punya halaman sendiri.',
+      validation: (Rule) => Rule.custom(requiredForOwnPage),
+      group: 'isi',
+    }),
+    defineField({
+      name: 'tingkat',
+      title: 'Dua paket',
+      description:
+        'Teknologi: Paket Starter dan Paket Integrator. Konstruksi dan Peekabo memakai bahasa tingkatnya sendiri. Satu kalimat dan paling banyak tiga poin per paket.',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          fields: [
+            localizedLine('nama', 'Nama paket'),
+            defineField({
+              name: 'kalimat',
+              title: 'Kalimat',
+              type: 'internationalizedArrayText',
+              validation: (Rule) => Rule.required().custom(requireIndonesian),
+            }),
+            defineField({
+              name: 'poin',
+              title: 'Poin',
+              type: 'array',
+              of: [
+                defineArrayMember({
+                  type: 'object',
+                  fields: [localizedLine('teks', 'Poin')],
+                  preview: { select: { title: 'teks.0.value' } },
+                }),
+              ],
+              validation: (Rule) => Rule.max(3),
+            }),
+          ],
+          preview: { select: { title: 'nama.0.value' } },
+        }),
+      ],
+      validation: (Rule) => Rule.max(2),
       group: 'isi',
     }),
     localizedSteps('langkah', 'Yang kami kerjakan'),
@@ -102,8 +166,22 @@ export const offer = defineType({
       title: 'Batas dan syarat',
       type: 'internationalizedArrayText',
       description:
-        'Satu hal yang tidak termasuk dan syarat yang sudah disetujui; jangan menyimpan tanda katalog atau catatan tinjauan.',
-      validation: (Rule) => Rule.required().custom(requireIndonesian),
+        'Satu hal yang tidak termasuk dan syarat yang sudah disetujui; jangan menyimpan tanda katalog atau catatan tinjauan. Wajib bila offer punya halaman sendiri; offer di daftar memakai batas bawaan modelnya.',
+      validation: (Rule) => Rule.custom(requiredForOwnPage),
+      group: 'isi',
+    }),
+    defineField({
+      name: 'syarat',
+      title: 'Syarat',
+      description:
+        'Satu baris syarat untuk pekerjaan yang diatur aturan hukum atau platform, ditulis dengan rumusan aman. Tampil di bawah kalimat dampak, di daftar situasi dan di halaman pekerjaan. Kosongkan bila tidak ada.',
+      type: 'internationalizedArrayText',
+      validation: (Rule) =>
+        Rule.custom((value) =>
+          Array.isArray(value) && value.length > 0
+            ? requireIndonesian(value)
+            : true
+        ),
       group: 'isi',
     }),
     defineField({
@@ -158,6 +236,26 @@ export const offer = defineType({
       type: 'boolean',
       initialValue: false,
       group: 'isi',
+    }),
+    defineField({
+      name: 'halamanSendiri',
+      title: 'Punya halaman sendiri',
+      description:
+        'Hanya bila blok halamannya (situasi, dua paket, batas, langkah pertama) sudah ditulis dan disetujui: pintu masuk situasi, offer dalam rangkaian tiga unit, atau offer yang paling sering ditanyakan. Pintu masuk tanpa blok halaman tetap tampil di daftar sebagai “Mulai dari sini” (keputusan K-B).',
+      type: 'boolean',
+      initialValue: false,
+      group: 'isi',
+    }),
+    defineField({
+      name: 'model',
+      title: 'Model offer',
+      description:
+        'Pengelompokan internal menurut barang yang diserahkan. Tidak dirender.',
+      type: 'string',
+      options: {
+        list: OFFER_MODELS.map(({ key, title }) => ({ title, value: key })),
+      },
+      group: 'internal',
     }),
     defineField({
       name: 'metadata',

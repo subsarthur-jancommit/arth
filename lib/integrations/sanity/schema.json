@@ -1883,6 +1883,76 @@
         },
         "optional": true
       },
+      "tingkat": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "nama": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "internationalizedArrayString"
+                },
+                "optional": true
+              },
+              "kalimat": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "internationalizedArrayText"
+                },
+                "optional": true
+              },
+              "poin": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "array",
+                  "of": {
+                    "type": "object",
+                    "attributes": {
+                      "teks": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "inline",
+                          "name": "internationalizedArrayString"
+                        },
+                        "optional": true
+                      }
+                    },
+                    "rest": {
+                      "type": "object",
+                      "attributes": {
+                        "_key": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "optional": true
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      },
       "langkah": {
         "type": "objectAttribute",
         "value": {
@@ -1953,6 +2023,14 @@
         },
         "optional": true
       },
+      "syarat": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "internationalizedArrayText"
+        },
+        "optional": true
+      },
       "langkahPertama": {
         "type": "objectAttribute",
         "value": {
@@ -2014,6 +2092,86 @@
         "type": "objectAttribute",
         "value": {
           "type": "boolean"
+        },
+        "optional": true
+      },
+      "halamanSendiri": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
+      },
+      "model": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "sistem-dipasang"
+            },
+            {
+              "type": "string",
+              "value": "kanal-pendapatan"
+            },
+            {
+              "type": "string",
+              "value": "angka-laporan"
+            },
+            {
+              "type": "string",
+              "value": "teknis-spesialis"
+            },
+            {
+              "type": "string",
+              "value": "berkas-administrasi"
+            },
+            {
+              "type": "string",
+              "value": "lapangan"
+            },
+            {
+              "type": "string",
+              "value": "proyek-jadi"
+            },
+            {
+              "type": "string",
+              "value": "barang"
+            },
+            {
+              "type": "string",
+              "value": "lewat-mitra"
+            },
+            {
+              "type": "string",
+              "value": "bulanan"
+            },
+            {
+              "type": "string",
+              "value": "konten-aset"
+            },
+            {
+              "type": "string",
+              "value": "arah-kelas"
+            },
+            {
+              "type": "string",
+              "value": "kampanye"
+            },
+            {
+              "type": "string",
+              "value": "orang"
+            },
+            {
+              "type": "string",
+              "value": "afiliasi"
+            },
+            {
+              "type": "string",
+              "value": "ikut-menjualkan"
+            }
+          ]
         },
         "optional": true
       },

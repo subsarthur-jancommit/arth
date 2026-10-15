@@ -30,6 +30,7 @@
     "socialsHeading": "Di tempat lain",
     "heroCta": "Pilih situasi Anda",
     "heroCtaContact": "Hubungi kami",
+    "heroCtaUnits": "Lihat tiga unit",
     "placeholderNote": "Teks sementara. Akan diganti oleh kata-kata studio sendiri begitu CMS-nya terisi.",
     "addressHeading": "Alamat",
     "heroIndexLabel": "Unit",
@@ -267,23 +268,24 @@
     "firstStepLink": "Mulai percakapan"
   },
   "chapter": {
-    "offersEyebrow": "Offer untuk situasi ini",
-    "marketLabel": "Saring offer menurut pasar proyek",
+    "offersEyebrow": "Pekerjaan untuk situasi ini",
+    "marketLabel": "Saring menurut pemberi kerja",
     "marketAll": "Semua proyek",
     "marketGovernment": "Proyek pemerintah",
     "marketPrivate": "Proyek swasta",
-    "audienceLabel": "Untuk",
-    "typeLabel": "Jenis",
     "boundariesEyebrow": "Batas dan syarat",
-    "bridgesEyebrow": "Situasi berikutnya",
+    "bridgesEyebrow": "Bila pekerjaannya berlanjut",
     "firstStepEyebrow": "Langkah pertama",
     "firstStepLink": "Mulai percakapan",
     "navigationLabel": "Lanjutkan penjelajahan",
-    "backToSide": "Kembali ke sisi",
-    "backToUnit": "Kembali ke unit"
+    "backToSide": "Kembali ke daftar situasi",
+    "backToUnit": "Kembali ke unit",
+    "entryLabel": "Mulai dari sini",
+    "askLink": "Tanyakan pekerjaan ini",
+    "readLink": "Baca halamannya",
+    "conditionLabel": "Syarat"
   },
   "offer": {
-    "eyebrow": "Offer",
     "audienceEyebrow": "Untuk siapa",
     "situationEyebrow": "Situasinya",
     "workEyebrow": "Yang kami kerjakan",
@@ -295,10 +297,12 @@
     "firstStepEyebrow": "Langkah pertama",
     "firstStepLink": "Mulai percakapan",
     "bridgeEyebrow": "Bila pekerjaan berlanjut",
-    "navigationLabel": "Kembali ke katalog",
-    "backToChapter": "Kembali ke bab",
-    "backToSide": "Kembali ke sisi",
-    "print": "Cetak offer"
+    "navigationLabel": "Kembali ke daftar pekerjaan",
+    "backToChapter": "Kembali ke situasi",
+    "backToSide": "Kembali ke daftar situasi",
+    "print": "Cetak halaman ini",
+    "conditionLabel": "Syarat",
+    "packagesEyebrow": "Dua paket"
   },
   "network": {
     "paths": {

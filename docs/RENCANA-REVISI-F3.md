@@ -87,6 +87,151 @@ Pekerjaan dokumen, tanpa kode. Bergantung pada P1 dan P3.
 
 Copy yang disetujui ditulis ke draf Sanity sesudah "ok tulis" tersendiri.
 
+**Status 15 Oktober 2026:** glosarium
+([`R1-GLOSARIUM-PEMBACA.md`](./R1-GLOSARIUM-PEMBACA.md)) disetujui pemilik.
+Serah bab Kuliner dan F&B ([`R1-SERAH-BAB-KULINER.md`](./R1-SERAH-BAB-KULINER.md))
+ditulis ulang atas arahan pemilik: tanpa kode katalog di bagian halaman, tanpa
+placeholder, dengan pekerjaan yang tayang dipilih agen dari master brief;
+disetujui pemilik. Halaman pekerjaan pertama, Bot pesan-antar WhatsApp
+([`R1-SERAH-BOT-PESAN-ANTAR.md`](./R1-SERAH-BOT-PESAN-ANTAR.md)), disetujui pemilik. Halaman Pesan dan bayar dari meja
+([`R1-SERAH-PESAN-BAYAR-MEJA.md`](./R1-SERAH-PESAN-BAYAR-MEJA.md)) disetujui pemilik. Halaman Layar pesanan di dapur
+([`R1-SERAH-LAYAR-DAPUR.md`](./R1-SERAH-LAYAR-DAPUR.md)) menunggu
+persetujuan pemilik.
+
+Pada 15 Oktober 2026 pemilik mengarahkan ulang halaman pekerjaan Teknologi: setiap
+halaman menawarkan Paket Starter dan Paket Integrator (glosarium bagian 10),
+bukan daftar langkah teknis. Ketiga halaman pekerjaan Kuliner ditulis ulang
+dalam bentuk itu dan disetujui pemilik. Pola dua paket berlaku untuk
+semua halaman pekerjaan Teknologi berikutnya. Halaman Buka langganan makan
+harian ([`R1-SERAH-LANGGANAN-MAKAN.md`](./R1-SERAH-LANGGANAN-MAKAN.md))
+disetujui pemilik. Halaman Bot stok bahan dan pesan ulang ke pemasok
+([`R1-SERAH-BOT-STOK-BAHAN.md`](./R1-SERAH-BOT-STOK-BAHAN.md)), yang terakhir
+dari lima pekerjaan Kuliner, menunggu persetujuan pemilik.
+
+Pada 15 Oktober 2026 pemilik menghentikan penulisan halaman pekerjaan satu per
+satu: website adalah alat untuk mendatangkan dan mengukur leads, bukan buku.
+Pendekatan penggantinya, pola per model offer, ada di
+[`R1-PENDEKATAN-POLA-OFFER.md`](./R1-PENDEKATAN-POLA-OFFER.md) dan menunggu
+disetujui pemilik pada hari yang sama. Halaman Bot stok bahan menjadi bahan uji pola.
+
+Langkah 2 rekomendasinya dikerjakan di lokal: skema `offer` mendapat medan
+`model`, `tingkat`, dan `halamanSendiri`; `situasi` dan `batas` hanya wajib bagi offer
+berhalaman sendiri; `langkah` dan `serahan` opsional. Skrip
+`lib/scripts/import-catalog.ts` membaca 688 baris master brief dan memisahkan 506
+yang otomatis dari 182 yang ditulis tangan, tanpa menulis ke Sanity. Rute yang
+membaca `halamanSendiri` dan tampilan dua paket menyusul di R3 dan R5.
+
+Langkah 3 untuk model Teknologi (model 1 sampai 4) dikerjakan di lokal. Jawaban
+agen per baris tersimpan di `lib/content/catalog-overrides.ts` dan dibaca skrip
+impor; tinjauannya di [`R1-TULIS-TANGAN-TEKNOLOGI.md`](./R1-TULIS-TANGAN-TEKNOLOGI.md).
+Dari 316 offer Teknologi, 309 siap; 7 ditahan karena posisi bot trading.
+Disetujui pemilik 15 Oktober 2026.
+
+Langkah 3 untuk Konstruksi (model 5 sampai 9 dan perawatan di model 10)
+dikerjakan dengan cara yang sama; tinjauannya di
+[`R1-TULIS-TANGAN-KONSTRUKSI.md`](./R1-TULIS-TANGAN-KONSTRUKSI.md). Dari 216 offer
+Konstruksi, 214 siap; 2 membership perawatan ditahan menunggu keputusan ekonomi
+Membership Care. Disetujui pemilik 15 Oktober 2026.
+
+Langkah 3 untuk Peekabo (model 10 sampai 16) selesai dengan cara yang sama;
+tinjauannya di [`R1-TULIS-TANGAN-PEEKABO.md`](./R1-TULIS-TANGAN-PEEKABO.md). Dari 156
+offer Peekabo, 129 siap. Yang ditahan: 15 offer operator (SaaS pertama), 5 offer ‡
+(pilihan sub-agen), dan 7 offer yang nilainya status mitra resmi platform, sampai
+Peekabo terdaftar. Disetujui pemilik 15 Oktober 2026.
+
+Seluruh katalog: 652 dari 688 offer siap diturunkan; 36 ditahan menunggu
+keputusan pemilik atau pendaftaran program mitra.
+
+Langkah 4, halaman situasi Teknologi, diturunkan oleh `lib/content/situation-pages.ts`
+dari master brief dan offer yang siap: 23 halaman, dengan teks Kuliner yang sudah
+disetujui tetap di tempatnya (`lib/content/situation-overrides.ts`). Tinjauannya di
+[`R1-SITUASI-TEKNOLOGI.md`](./R1-SITUASI-TEKNOLOGI.md). Saat menurunkannya, gerbang gaya
+menangkap 17 baris otomatis lagi (kata penguat, judul lebih dari 8 kata, dampak
+yang menjanjikan hasil); 15 di Teknologi, 1 di Konstruksi, 1 di Peekabo. Semuanya
+ditulis ulang di `catalog-overrides.ts` dan disetujui pemilik bersama halaman
+situasinya pada 15 Oktober 2026.
+
+Langkah 5, halaman Cara kami dibayar, ditulis di
+[`R1-SERAH-CARA-KAMI-DIBAYAR.md`](./R1-SERAH-CARA-KAMI-DIBAYAR.md), beserta pemendekan
+blok cara bayar di halaman pekerjaan sesudah halaman itu terbit. Disetujui
+pemilik 15 Oktober 2026, dan pemendekannya sudah diterapkan di halaman Bot
+pesan-antar WhatsApp serta Pesan dan bayar dari meja.
+
+Kelima langkah rekomendasi pendekatan pola sudah dikerjakan di lokal. Halaman
+Dokumentasi tetap menunggu foto nyata, izin pemiliknya, dan keputusan Bukti
+pertama.
+
+### R3, bagian pertama: daftar pekerjaan dan halaman sendiri
+
+PR bertumpuk di atas #21. Kode mengikuti struktur informasi yang disetujui di
+pendekatan pola, bagian 3:
+
+- Halaman situasi menampilkan semua offer terbit (batas tujuh dicabut): pintu
+  masuk di atas dengan tanda “Mulai dari sini”, sisanya berkelompok di bawah
+  label jenisnya, tinggi kartu mengikuti isi (temuan D), dan baris syarat
+  untuk offer †.
+- Setiap kartu punya tombol “Tanyakan pekerjaan ini” ke `/kontak?dari=…&pekerjaan=…`.
+  Keduanya slug halaman, bukan data pengunjung.
+- Halaman offer hanya ada untuk offer `halamanSendiri` atau pintu masuk. Kartu,
+  jembatan, dan contoh di halaman unit menautkan halaman situasi bila offer
+  tidak punya halaman sendiri.
+- Halaman offer menampilkan dua paket (`tingkat`) bila diisi, dan syarat di
+  bawah dampaknya. Skema `offer` mendapat medan `syarat`.
+
+Belum: blok Cara kami bekerja Teknologi di halaman offer, halaman Cara kami
+dibayar, dan pembacaan `dari`/`pekerjaan` di halaman kontak (menunggu K5 dan
+F5-06). Semua ini baru terlihat setelah isi ditulis ke Sanity dengan “ok tulis”.
+
+### Penulisan pertama ke Sanity (ok tulis pemilik, 16 Oktober 2026)
+
+Pemilik memberi “ok tulis” untuk 1 bab dan 11 offer Kuliner. Dokumen disusun
+`lib/content/sanity-drafts.ts` lewat `import-catalog.ts --drafts`, lalu ditulis
+ke dataset `production` sebagai draf: `drafts.arthur-bab-teknologi-siap-pakai-kuliner`
+dan `drafts.arthur-offer-kul-01` sampai `-kul-11`. Diverifikasi dengan query:
+12 draf, 0 terbit, semua berstatus `perlu-anda`; pintu masuk KUL-01; halaman
+sendiri KUL-01 dan KUL-02. Tidak ada yang diterbitkan.
+
+Supaya halaman tampil di situs, pemilik menyetujui dan menerbitkan berurutan:
+unit Teknologi, sisi siap pakai, bab Kuliner, lalu offer-nya. Koreksi 16 Oktober 2026: referensi unit di keenam draf sisi ternyata benar
+(referensi lemah ke ID terbit unit yang tepat, dengan `_strengthenOnPublish`);
+ia terbaca kosong hanya karena unitnya belum terbit, jadi tidak diubah. Atas
+“ok tulis” pemilik, urutan sisi siap pakai diubah menjadi 0; sisi paham teknis
+juga bernilai 0, sehingga keduanya seri sampai paham teknis diubah menjadi 1.
+Draf unit dan sisi ditulis partner dan belum melewati R1; pembuka unit
+Teknologi menyunting kalimat header siap tayang.
+
+Menerbitkan dokumen Arthur tidak mengubah produksi: `main` (`098893b`) tidak
+membaca tipe unit, sisi, bab, atau offer. Yang berubah hanya preview cabang R0
+sampai R3, dan hanya untuk dokumen berstatus `disetujui`. Studio tertanam di
+`/cms`; CORS proyek baru memuat `http://localhost:3333`, jadi Studio di preview
+belum bisa dipakai sampai pemilik menambahkan origin-nya.
+
+### Penerbitan pertama (keputusan pemilik, 16 Oktober 2026)
+
+Studio lokal gagal dibuka, dan pemilik meminta agen menyetujui dan menerbitkan
+lewat MCP Sanity. Keputusan pemilik: rantai Kuliner lengkap; pembuka unit
+Teknologi diganti kalimat header siap tayang; sisi paham teknis ke urutan 1.
+
+- Pembuka unit Teknologi dipotong menjadi kalimat header siap tayang apa adanya:
+  “Bot dan workflow yang bekerja dua puluh empat jam untuk bisnis Anda, di sektor
+  apa pun.” Kalimat suntingan partner dibuang (Aturan isi 11).
+- 14 dokumen disetel `disetujui` (16 Oktober 2026) lalu diterbitkan berurutan:
+  unit Teknologi, sisi siap pakai, bab Kuliner, 11 offer.
+- Diverifikasi dengan predikat query situs (perspektif published): unit, sisi
+  (urutan 0, satu bab layak), bab Kuliner dengan 11 offer, dan dua halaman
+  pekerjaan dengan dua paket masing-masing.
+
+Produksi (`main`) tidak berubah. Isi baru terbaca di preview cabang R0 sampai
+R3 setelah build berikutnya. Isi lain di unit Teknologi (daftar masalah dan cara
+kerja) adalah tulisan partner yang belum melewati R1. Jembatan ke
+FNB-01 ditulis saat offer itu ada. Skema `offer` butuh medan
+`paket` di R2. Belum ada yang ditulis ke Sanity.
+
+Arahan pemilik untuk sisa R1: agen menulis sendiri dari FULL KONTEKS, termasuk
+memilih pekerjaan yang tayang, dan mencatat keputusannya beserta sumbernya.
+Placeholder hanya untuk fakta yang memang tidak ada di FULL KONTEKS, seperti
+nomor kontak.
+
 ### R2 Isi wakil untuk merancang
 
 Bergantung pada R1 dan F0-06.

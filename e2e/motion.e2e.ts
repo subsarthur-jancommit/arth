@@ -254,7 +254,6 @@ test.describe('motion', () => {
     test('the route-change overlay never becomes visible', async ({
       browser,
     }) => {
-      test.fixme(true, REMOVED_IN_F3.homeWork)
       const { context, page } = await reducedMotionPage(browser, '/id')
       try {
         /*
@@ -429,7 +428,6 @@ test.describe('motion', () => {
   test('the same cover morphs from the home page, far down it', async ({
     page,
   }) => {
-    test.fixme(true, REMOVED_IN_F3.homeWork)
     /*
      * The case the catalogue test could not see, and the reason Tahap 15b
      * found a defect at all.
@@ -677,7 +675,6 @@ test.describe('motion', () => {
   })
 
   test('a practice name morphs into its own page', async ({ page }) => {
-    test.fixme(true, REMOVED_IN_F3.practiceList)
     /*
      * The second pair on the site, added in Tahap 15.
      *
@@ -830,7 +827,6 @@ test.describe('motion', () => {
   test('the route-change overlay covers, then always uncovers', async ({
     page,
   }) => {
-    test.fixme(true, REMOVED_IN_F3.homeWork)
     await installLiveRoot(page)
     await page.goto('/id')
     await page.waitForTimeout(800)
