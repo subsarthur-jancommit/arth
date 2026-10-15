@@ -39,11 +39,11 @@ async function openWithShortcut(page: Page) {
 }
 
 test.describe('the search palette', () => {
-  for (const locale of ['en', 'id'] as const) {
-    test(`/${locale}: the button and the shortcut both open it`, async ({
+  for (const path of ['/en/journal', '/id'] as const) {
+    test(`${path}: the button and the shortcut both open it`, async ({
       page,
     }) => {
-      await page.goto(`/${locale}`)
+      await page.goto(path)
       await page.waitForTimeout(1200)
 
       const trigger = page.locator('[data-search-trigger]')
@@ -76,7 +76,7 @@ test.describe('the search palette', () => {
   }
 
   test('it searches content, not only route names', async ({ page }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
     await openWithShortcut(page)
 
@@ -98,7 +98,7 @@ test.describe('the search palette', () => {
   })
 
   test('the words may arrive in any order', async ({ page }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
     await openWithShortcut(page)
     await page.waitForSelector('[data-search-row]')
@@ -124,18 +124,19 @@ test.describe('the search palette', () => {
       (await results('tanjung 2025')).join(' '),
       'the client and the year are one line of the row, and typing both finds nothing'
     ).toContain('Arus Balik')
+    // Indonesian since F1-07 (K1): the entry is "Lingkup adalah hasilnya".
     expect(
-      (await results('scope deliverable')).join(' '),
+      (await results('lingkup hasilnya')).join(' '),
       "an entry's own words, in order, without its connectives"
-    ).toContain('Scope is the deliverable')
+    ).toContain('Lingkup adalah hasilnya')
   })
 
   test('a title match outranks a passing mention', async ({ page }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
     await openWithShortcut(page)
 
-    await page.keyboard.type('scope')
+    await page.keyboard.type('lingkup')
     await page.waitForTimeout(400)
 
     const highlighted = await page.evaluate(
@@ -152,13 +153,13 @@ test.describe('the search palette', () => {
     expect(
       highlighted,
       `Enter would open "${highlighted}" — a page that merely mentions the word, rather than the entry whose title is it`
-    ).toContain('Scope is the deliverable')
+    ).toContain('Lingkup adalah hasilnya')
   })
 
   test('it is operable from the keyboard alone, and gives focus back', async ({
     page,
   }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
 
     // Focus the trigger by tabbing to it rather than clicking, so this test
@@ -175,7 +176,7 @@ test.describe('the search palette', () => {
       'focus did not land in the search field when the palette opened'
     ).toBe('combobox')
 
-    await page.keyboard.type('journal')
+    await page.keyboard.type('konstruksi')
     await page.waitForTimeout(400)
     await page.keyboard.press('ArrowDown')
     await page.waitForTimeout(200)
@@ -208,7 +209,7 @@ test.describe('the search palette', () => {
   })
 
   test('Enter opens the highlighted result', async ({ page }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
     await openWithShortcut(page)
 
@@ -220,13 +221,13 @@ test.describe('the search palette', () => {
     expect(
       new URL(page.url()).pathname,
       'Enter on the only result did not navigate to it'
-    ).toBe('/en/work/arus-balik')
+    ).toBe('/id/work/arus-balik')
     await expect(page.locator('[role="dialog"]')).toBeHidden()
   })
 
-  for (const locale of ['en', 'id'] as const) {
-    test(`/${locale}: axe is clean with the palette open`, async ({ page }) => {
-      await page.goto(`/${locale}`)
+  for (const path of ['/en/journal', '/id'] as const) {
+    test(`${path}: axe is clean with the palette open`, async ({ page }) => {
+      await page.goto(path)
       await page.waitForTimeout(1200)
       await page.locator('[data-search-trigger]').click()
       await page.waitForSelector('[data-search-row]')
@@ -277,7 +278,7 @@ test.describe('the search palette', () => {
    */
 
   test('the counter answers the query', async ({ page }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
     await openWithShortcut(page)
     await page.waitForSelector('[data-search-row]')
@@ -297,7 +298,7 @@ test.describe('the search palette', () => {
       /^\d+\/\d+$/
     )
 
-    await page.keyboard.type('scope')
+    await page.keyboard.type('lingkup')
     await page.waitForTimeout(400)
     const filtered = await read()
 
@@ -312,7 +313,7 @@ test.describe('the search palette', () => {
   test('an index still loading does not claim the query matched nothing', async ({
     page,
   }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
 
     // Hold the index back so the gap between opening and having data is real,
@@ -351,7 +352,7 @@ test.describe('the search palette', () => {
   test('a failed index says so, and says what still works', async ({
     page,
   }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
     await page.route('**/search.json', (route) =>
       route.fulfill({ status: 500, body: 'no' })
@@ -368,17 +369,18 @@ test.describe('the search palette', () => {
     // "Nothing matched" would be a lie about a fetch that failed, and it is
     // what this said before Tahap 29.
     expect(text).not.toContain('Nothing matches')
+    // "pencarian sedang tidak tersedia" on /id since F1-07 (K1).
     expect(
       text.toLowerCase(),
       'a broken search does not tell the reader it is broken'
-    ).toContain('unavailable')
+    ).toContain('tidak tersedia')
   })
 
   test('reduced motion leaves the rows still and fully visible', async ({
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1200)
     await page.locator('[data-search-trigger]').click()
     await page.waitForSelector('[data-search-row]')
@@ -415,7 +417,7 @@ test.describe('the search palette', () => {
     const context = await browser.newContext({ javaScriptEnabled: false })
     const page = await context.newPage()
     try {
-      await page.goto('/en', { waitUntil: 'domcontentloaded' })
+      await page.goto('/id', { waitUntil: 'domcontentloaded' })
 
       // Present in the markup — the header is a client component and React
       // renders it server-side — but never shown, which is the contract.

@@ -82,16 +82,20 @@ async function renderWithoutJavaScript(browser: Browser, path: string) {
 }
 
 test.describe('readable without JavaScript', () => {
-  for (const locale of routing.locales) {
-    test(`/${locale} renders its content server-side`, async ({ browser }) => {
-      const rendered = await renderWithoutJavaScript(browser, `/${locale}`)
+  // Arthur's English pages answer 307 to /id until English copy is approved
+  // (K2, R0). Keep English coverage on a page that is English: the journal.
+  for (const path of ['/id', '/en/journal']) {
+    test(`${path} renders its content server-side`, async ({ browser }) => {
+      const rendered = await renderWithoutJavaScript(browser, path)
 
       expect(rendered.chars, `only rendered: ${rendered.text}`).toBeGreaterThan(
         MIN_CHARS
       )
       expect(rendered.headings, 'exactly one h1').toBe(1)
     })
+  }
 
+  for (const locale of routing.locales) {
     test(`/${locale}/work lists work server-side`, async ({ browser }) => {
       const rendered = await renderWithoutJavaScript(browser, `/${locale}/work`)
 
@@ -109,28 +113,22 @@ test.describe('readable without JavaScript', () => {
   }
 
   for (const unit of UNITS) {
-    test(`/en/${unit} renders server-side`, async ({ browser }) => {
+    test(`/id/${unit} renders server-side`, async ({ browser }) => {
       /*
-       * The unit's own page. It replaces the per-practice test that stood
-       * here, which pointed at `/en/practice/<value>`.
+       * The unit's own page, in Indonesian: its English address answers 307
+       * here until English copy is approved (K2, R0).
        *
-       * No `MIN_CHARS` floor, and the difference is deliberate rather than a
-       * relaxation: the practice page carried a statement, and this page
-       * carries a labelled sample block and an owner placeholder, because
-       * Arthur's own unit statements are not written yet (F2-02 holds them,
-       * F3-02 shows them). A character floor here would be a floor on how
-       * much placeholder text the page must carry, which is not a property
-       * worth defending. What is worth defending without JavaScript is that
-       * the page renders, names itself once, and shows the label that says
-       * the text is sample content — because a label that only appears with
-       * script is a label that is missing exactly when the page looks most
-       * finished.
+       * F3-02 gave the page its statement, problems, and method from the
+       * owner-approved drafts, so the floor is the same as any page with
+       * content. The sample-content label this used to require is gone: the
+       * owner's decision P4 is that a reader never sees a note meant for the
+       * editor (`docs/RENCANA-REVISI-F3.md`).
        */
-      const rendered = await renderWithoutJavaScript(browser, `/en/${unit}`)
+      const rendered = await renderWithoutJavaScript(browser, `/id/${unit}`)
 
       expect(rendered.headings, 'exactly one h1').toBe(1)
-      expect(rendered.sampleBlocks, 'the sample-content label').toBeGreaterThan(
-        0
+      expect(rendered.chars, `only rendered: ${rendered.text}`).toBeGreaterThan(
+        MIN_CHARS
       )
     })
   }
@@ -139,7 +137,7 @@ test.describe('readable without JavaScript', () => {
     // Take a real slug from the sitemap rather than hardcoding one, so the
     // test does not silently pass against a dataset that no longer has it.
     const sitemap = await (await request.get('/sitemap.xml')).text()
-    const match = sitemap.match(/<loc>[^<]*?(\/en\/work\/[^<]+)<\/loc>/)
+    const match = sitemap.match(/<loc>[^<]*?(\/id\/work\/[^<]+)<\/loc>/)
     test.skip(!match, 'no published project in the sitemap to check')
 
     const rendered = await renderWithoutJavaScript(browser, match?.[1] ?? '')

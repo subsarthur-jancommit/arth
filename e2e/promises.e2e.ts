@@ -1,6 +1,10 @@
 import { expect, test } from '@playwright/test'
 
-import { routing } from '../lib/i18n/routing'
+/**
+ * `/en` and Arthur's untranslated English pages redirect to `/id` (K2, R0); the
+ * journal is English, so it carries the English side of these checks.
+ */
+const LOCALE_SURFACES = ['/id', '/en/journal'] as const
 
 /**
  * The site keeps the promises it makes about itself.
@@ -53,9 +57,9 @@ test.describe('URLs the site tells agents to visit', () => {
 })
 
 test.describe('the skip link', () => {
-  for (const locale of routing.locales) {
-    test(`/${locale}: moves focus into main`, async ({ page }) => {
-      await page.goto(`/${locale}`, { waitUntil: 'networkidle' })
+  for (const path of LOCALE_SURFACES) {
+    test(`${path}: moves focus into main`, async ({ page }) => {
+      await page.goto(path, { waitUntil: 'networkidle' })
 
       await page.keyboard.press('Tab')
       const focused = await page.evaluate(
@@ -101,7 +105,11 @@ test.describe('locale parity', () => {
      * regression to one shared string must.
      */
     const read = async (path: string) => {
-      const html = await (await request.get(path)).text()
+      const response = await request.get(path, { maxRedirects: 0 })
+      expect(response.status(), `${path} redirected instead of rendering`).toBe(
+        200
+      )
+      const html = await response.text()
 
       const meta = html.match(/<meta name="description" content="([^"]*)"/)?.[1]
 
@@ -120,8 +128,10 @@ test.describe('locale parity', () => {
       }
     }
 
-    const en = await read('/en')
-    const id = await read('/id')
+    // Arthur's own pages have no public English address yet (K2, R0). The
+    // journal index exists in both languages, so compare it.
+    const en = await read('/en/journal')
+    const id = await read('/id/journal')
 
     expect(en.meta, 'no meta description on /en').toBeTruthy()
     expect(en.description, 'no Organization description on /en').toBeTruthy()
@@ -141,7 +151,10 @@ test.describe('locale parity', () => {
       const html = await (await request.get(path)).text()
       return html.match(/"@id":"([^"]*#organization)"/)?.[1]
     }
-    expect(await organizationId('/id')).toBe(await organizationId('/en'))
+    const englishId = await organizationId('/en/journal')
+    const indonesianId = await organizationId('/id/journal')
+    expect(englishId).toBeTruthy()
+    expect(englishId).toBe(indonesianId)
   })
 })
 
@@ -155,12 +168,9 @@ test.describe('locale parity', () => {
  */
 test.describe('the site does not assert what it does not know', () => {
   /*
-   * `.example` is RFC 2606's reserved TLD: it exists so that an address can
-   * never resolve. Showing one to a person is a placeholder; publishing one
-   * as `schema.org/Organization.email` hands a machine a fact it will index.
-   *
-   * Human surfaces are deliberately not covered here — see
-   * `docs/stages/TAHAP-35.md` §3.1 for why the split runs where it does.
+   * Reserved placeholder domains belong only on labeled human surfaces.
+   * Publishing one as `schema.org/Organization.email` hands a machine a fact
+   * it will index. Human-facing contact tests below require a visible note.
    */
   const MACHINE_SURFACES = ['/llms.txt', '/sitemap.xml'] as const
 
@@ -170,17 +180,26 @@ test.describe('the site does not assert what it does not know', () => {
 
       // Anti-vacuum: an empty response must not pass.
       expect(body.length, `${path} returned nothing`).toBeGreaterThan(200)
-      expect(body, `${path} publishes a .example address`).not.toContain(
-        '.example'
-      )
+      for (const domain of ['.example', '.invalid']) {
+        expect(body, `${path} publishes a ${domain} address`).not.toContain(
+          domain
+        )
+      }
+      for (const placeholder of ['Example City', 'Kota Contoh']) {
+        expect(body, `${path} publishes a dummy postal address`).not.toContain(
+          placeholder
+        )
+      }
     })
   }
 
-  for (const locale of routing.locales) {
-    test(`the ${locale} JSON-LD publishes no reserved-TLD address`, async ({
+  for (const path of LOCALE_SURFACES) {
+    test(`${path} JSON-LD publishes no reserved-TLD address`, async ({
       request,
     }) => {
-      const html = await (await request.get(`/${locale}`)).text()
+      const response = await request.get(path, { maxRedirects: 0 })
+      expect(response.status(), `${path} redirected`).toBe(200)
+      const html = await response.text()
       const blocks = [
         ...html.matchAll(
           /<script type="application\/ld\+json">([\s\S]*?)<\/script>/g
@@ -189,47 +208,66 @@ test.describe('the site does not assert what it does not know', () => {
 
       expect(blocks.length, 'no JSON-LD on the page').toBeGreaterThan(0)
       for (const block of blocks) {
-        expect(block, 'JSON-LD publishes a .example address').not.toContain(
-          '.example'
-        )
+        for (const domain of ['.example', '.invalid']) {
+          expect(block, `JSON-LD publishes a ${domain} address`).not.toContain(
+            domain
+          )
+        }
+        for (const placeholder of ['Example City', 'Kota Contoh']) {
+          expect(
+            block,
+            'JSON-LD publishes a dummy postal address'
+          ).not.toContain(placeholder)
+        }
       }
     })
   }
 
   /*
-   * The defect this was written for: `isPlaceholder` was
-   * `settings === null`, while every field fell back independently. With a
-   * half-filled settings document the flag read false, the note went unshown,
-   * and the fallback paragraphs shipped as if the studio had written them.
+   * Owner decision P4 (`docs/RENCANA-REVISI-F3.md`), which reverses Tahap 35.
+   *
+   * Tahap 35 required a placeholder to be shown *with a label*. In practice
+   * the labels were notes to the editor — "Ganti sebelum kontak Arthur
+   * diterbitkan", a `NOTE:` prefix — printed three times on every page
+   * (`docs/TINJAUAN-F01-F03.md` E6.5, E7.1). Now a placeholder is not shown at
+   * all: the contact action points to the contact page until K5 names a real
+   * channel, and an empty section is omitted.
    */
-  for (const locale of routing.locales) {
-    test(`${locale} labels fallback prose as fallback`, async ({ page }) => {
-      await page.goto(`/${locale}`)
-      await page.waitForLoadState('networkidle')
+  const READER_PAGES = [
+    '/id',
+    '/id/konstruksi',
+    '/id/konstruksi/pelaku-proyek',
+    '/id/peekabo/jaringan',
+    '/id/kontak',
+  ] as const
+  const EDITOR_NOTE =
+    /NOTE:|\bdummy\b|\.invalid\b|\.example\b|Contoh No\.|Example Street|Kota Contoh|Ganti sebelum|setelah disusun di Sanity|disetujui untuk tayang|belum diterbitkan|Belum dibuka/i
 
-      const shown = await page.evaluate(() => {
-        const note = document.querySelector('[data-placeholder-note]')
-        const statement = document.querySelector('[data-statement]')
-        return {
-          hasNote: note !== null,
-          fromFallback:
-            statement?.getAttribute('data-statement') === 'fallback',
-          foundStatement: statement !== null,
-        }
-      })
+  for (const path of READER_PAGES) {
+    test(`${path} shows no placeholder and no note for the editor`, async ({
+      page,
+    }) => {
+      await page.goto(path)
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
 
-      // Anti-vacuum: the statement block must exist for the claim to mean
-      // anything.
-      expect(shown.foundStatement, 'no statement block on the page').toBe(true)
-
-      if (shown.fromFallback) {
-        expect(
-          shown.hasNote,
-          'the page shows fallback prose without saying so'
-        ).toBe(true)
-      }
+      const text = await page.locator('body').innerText()
+      // Anti-vacuum: a page that rendered nothing must not pass.
+      expect(text.length, `${path} rendered almost nothing`).toBeGreaterThan(
+        200
+      )
+      expect(text).not.toMatch(EDITOR_NOTE)
+      await expect(page.locator('[data-placeholder-note]')).toHaveCount(0)
     })
   }
+
+  test('the home page action leads to the contact page, not a dead address', async ({
+    page,
+  }) => {
+    await page.goto('/id')
+    const action = page.locator('#contact')
+    await expect(action.locator('a[href="/id/kontak"]')).toHaveCount(1)
+    await expect(action.locator('a[href^="mailto:"]')).toHaveCount(0)
+  })
 
   /*
    * A 308 still answers 200 once the client follows it, which is why the

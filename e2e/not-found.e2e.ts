@@ -112,9 +112,9 @@ test.describe('branded 404', () => {
      */
     const recovery = page.locator('#main-content')
     for (const [name, href] of [
-      ['Work', '/en/work'],
-      ['Studio', '/en/studio'],
-      ['Journal', '/en/journal'],
+      ['Konstruksi', '/en/konstruksi'],
+      ['Teknologi', '/en/teknologi'],
+      ['Peekabo', '/en/peekabo'],
     ] as const) {
       await expect(
         recovery.getByRole('link', { name, exact: true })

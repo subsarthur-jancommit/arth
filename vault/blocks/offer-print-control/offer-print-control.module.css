@@ -1,0 +1,19 @@
+.button {
+  width: fit-content;
+  padding: 0.5em 1em;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: inherit;
+}
+
+.button:hover,
+.button:focus-visible {
+  background: var(--surface-2);
+}
+
+@media print {
+  .button {
+    display: none;
+  }
+}

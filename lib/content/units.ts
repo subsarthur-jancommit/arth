@@ -90,10 +90,20 @@ export const UNIT_STUDIO_TITLES = {
   peekabo: 'Peekabo',
 } as const satisfies Record<Unit, string>
 
+/** Editor-facing side titles, kept beside the route keys they describe. */
+export const SIDE_STUDIO_TITLES = {
+  'pelaku-proyek': 'Pelaku proyek',
+  'pemilik-bangunan': 'Pemilik bangunan',
+  'siap-pakai': 'Siap pakai',
+  'paham-teknis': 'Paham teknis',
+  'pemilik-usaha': 'Pemilik usaha',
+  jaringan: 'Jaringan penjual',
+} as const satisfies Record<Side, string>
+
 /** Every side across every unit, for a sweep that does not care which unit. */
 export const ALL_SIDES = UNITS.flatMap((unit) => SIDES[unit]) as readonly Side[]
 
-export function isSideOf(unit: Unit, value: string | undefined): boolean {
+export function isSideOf(unit: Unit, value: string | undefined): value is Side {
   return (
     value !== undefined && (SIDES[unit] as readonly string[]).includes(value)
   )

@@ -1,0 +1,293 @@
+.page {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  gap: calc(96 / 375 * 100vw);
+  padding: calc(40 / 375 * 100vw) calc(20 / 375 * 100vw) calc(96 / 375 * 100vw);
+}
+
+.hero {
+  display: grid;
+  gap: calc(24 / 375 * 100vw);
+  min-height: 62svh;
+  align-content: end;
+  max-width: 72rem;
+}
+
+.hero > p,
+.quote,
+.boundaries p,
+.action p,
+.action h2,
+.bridges ul {
+  margin: 0;
+}
+
+.hero > p,
+.boundaries > p:first-child,
+.bridges > p:first-child,
+.action > p:first-child {
+  color: var(--text-muted);
+}
+
+.quote {
+  font-style: normal;
+}
+
+.offers {
+  margin-inline: calc(-20 / 375 * 100vw);
+  padding-inline: calc(20 / 375 * 100vw);
+}
+
+.boundaries,
+.action,
+.bridges {
+  display: grid;
+  gap: calc(18 / 375 * 100vw);
+  max-width: 60rem;
+}
+
+.boundaries,
+.action {
+  padding-block: calc(40 / 375 * 100vw);
+  border-block: 1px solid var(--line-strong);
+}
+
+.bridges ul {
+  display: grid;
+  gap: calc(12 / 375 * 100vw);
+  padding: 0;
+  list-style: none;
+}
+
+.bridges a,
+.actionLink {
+  color: inherit;
+}
+
+.actionLink {
+  width: fit-content;
+}
+
+.navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(8 / 375 * 100vw);
+}
+
+.route {
+  padding: 0.5em 1em;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-full);
+  color: inherit;
+  text-decoration: none;
+}
+
+.offerPage {
+  max-width: 96rem;
+  margin-inline: auto;
+}
+
+.offerHero {
+  max-width: 76rem;
+}
+
+.offerTitle,
+.impact,
+.situation h2,
+.situation p,
+.offerBridge h2,
+.offerBridge p,
+.offerBridge h3 {
+  margin: 0;
+}
+
+.impact {
+  max-width: 54rem;
+}
+
+.audience,
+.situation,
+.offerScope,
+.offerBoundaries,
+.offerBridge {
+  max-width: 72rem;
+}
+
+.situation,
+.offerBridge {
+  display: grid;
+  gap: calc(18 / 375 * 100vw);
+}
+
+.situation > h2:first-child,
+.offerBridge > h2:first-child {
+  color: var(--text-muted);
+}
+
+.bridgeLink {
+  width: fit-content;
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+/* A † offer's condition, one line under the impact. */
+.condition {
+  max-width: 54rem;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+/* Paket Starter and Paket Integrator (glossary, section 10). */
+.packages {
+  display: grid;
+  gap: calc(18 / 375 * 100vw);
+  max-width: 72rem;
+}
+
+.packages > h2:first-child {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.packageList {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: calc(12 / 375 * 100vw);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.package {
+  display: grid;
+  gap: calc(12 / 375 * 100vw);
+  align-content: start;
+  padding: calc(20 / 375 * 100vw);
+  border: 1px solid var(--line-strong);
+}
+
+.package h3,
+.package p {
+  margin: 0;
+}
+
+.packagePoints {
+  display: grid;
+  gap: calc(6 / 375 * 100vw);
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.offerUtilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(12 / 375 * 100vw);
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (--desktop) {
+  .page {
+    gap: calc(152 / 1440 * 100vw);
+    padding: calc(64 / 1440 * 100vw) calc(64 / 1440 * 100vw)
+      calc(128 / 1440 * 100vw);
+  }
+
+  .hero {
+    min-height: 76svh;
+  }
+
+  .offers {
+    margin-inline: calc(-64 / 1440 * 100vw);
+    padding-inline: calc(64 / 1440 * 100vw);
+  }
+
+  .boundaries,
+  .action,
+  .bridges {
+    gap: calc(24 / 1440 * 100vw);
+  }
+
+  .boundaries,
+  .action {
+    padding-block: calc(56 / 1440 * 100vw);
+  }
+
+  .bridges ul {
+    gap: calc(16 / 1440 * 100vw);
+  }
+
+  .situation,
+  .offerBridge {
+    grid-template-columns: 2fr 10fr;
+    gap: calc(16 / 1440 * 100vw);
+  }
+
+  .situation > p:last-child,
+  .offerBridge > :not(:first-child) {
+    grid-column: 2;
+  }
+
+  .offerBridge > h2:first-child {
+    grid-row: 1 / span 2;
+  }
+
+  .offerUtilities {
+    gap: calc(16 / 1440 * 100vw);
+  }
+
+  .packages {
+    gap: calc(16 / 1440 * 100vw);
+  }
+
+  .packageList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(16 / 1440 * 100vw);
+  }
+
+  .package {
+    gap: calc(14 / 1440 * 100vw);
+    padding: calc(28 / 1440 * 100vw);
+  }
+
+  .packagePoints {
+    gap: calc(6 / 1440 * 100vw);
+  }
+}
+
+@media print {
+  .page {
+    display: block;
+    max-width: none;
+    padding: 0;
+  }
+
+  .page > * {
+    margin-block-end: 24pt;
+  }
+
+  .hero {
+    min-height: 0;
+    max-width: none;
+  }
+
+  .offerTitle {
+    font-size: 28pt;
+  }
+
+  .audience,
+  .situation,
+  .offerScope,
+  .offerBoundaries,
+  .action,
+  .offerBridge {
+    max-width: none;
+  }
+
+  .navigation,
+  .offerUtilities {
+    display: none;
+  }
+}

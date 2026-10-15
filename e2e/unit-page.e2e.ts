@@ -1,10 +1,10 @@
 import { expect, test } from '@playwright/test'
 
-import { UNITS } from '../lib/content/units'
-import { routing } from '../lib/i18n/routing'
+import { SIDES, UNITS } from '../lib/content/units'
+import { PUBLISHED_LOCALES } from '../lib/i18n/routing'
 
 /**
- * Each unit has a page, exactly one URL, and says that its text is sample.
+ * Each unit has a page, exactly one URL, and exposes its two reader sides.
  *
  * ## What this file replaces
  *
@@ -21,14 +21,6 @@ import { routing } from '../lib/i18n/routing'
  * not redirect any more, it is `410 Gone`, and `e2e/route-status.e2e.ts`
  * proves that.
  *
- * ## Why the sample label is asserted here and not left to a reviewer
- *
- * The content rules this project works to permit dummy text on the site while
- * it is built, on the condition that it shows on screen that it is sample
- * content. A condition nobody checks is a condition that holds until the
- * first hurried commit. The label is the whole protection, so it is measured
- * on the served page rather than trusted to the component that renders it.
- *
  * ## Why canonicality is asserted, not assumed
  *
  * A page can exist, render and still be the second address for its subject.
@@ -38,7 +30,8 @@ import { routing } from '../lib/i18n/routing'
  */
 
 test.describe('unit pages', () => {
-  for (const locale of routing.locales) {
+  // Only published locales render a unit page; English answers 307 (R0).
+  for (const locale of PUBLISHED_LOCALES) {
     for (const unit of UNITS) {
       test(`/${locale}/${unit} is a page about the unit`, async ({ page }) => {
         const response = await page.goto(`/${locale}/${unit}`)
@@ -52,37 +45,42 @@ test.describe('unit pages', () => {
           'the h1 is empty'
         ).toBeGreaterThan(0)
 
-        // And it says, on screen, that what follows is not Arthur's own words
-        // yet.
+        // The approved statement and both routes into the unit stay present.
         await expect(
-          page.locator('[data-sample-content]'),
-          'the page carries unlabelled sample text'
-        ).not.toHaveCount(0)
+          page.locator('[data-unit-statement]'),
+          'the unit statement is missing'
+        ).toHaveCount(1)
+        for (const side of SIDES[unit]) {
+          await expect(
+            page.locator(`main a[href="/${locale}/${unit}/${side}"]`),
+            `the page does not link to its ${side} side`
+          ).not.toHaveCount(0)
+        }
       })
     }
   }
 
   for (const unit of UNITS) {
-    test(`/en/${unit} is the one canonical URL for ${unit}`, async ({
+    test(`/id/${unit} is the one canonical URL for ${unit}`, async ({
       page,
       request,
     }) => {
-      const html = await (await request.get(`/en/${unit}`)).text()
+      const html = await (await request.get(`/id/${unit}`)).text()
       const canonical = html.match(
         /<link[^>]+rel="canonical"[^>]+href="([^"]+)"/
       )?.[1]
 
-      expect(canonical, `/en/${unit} declares no canonical`).toBeTruthy()
+      expect(canonical, `/id/${unit} declares no canonical`).toBeTruthy()
       expect(
         new URL(canonical ?? '', 'https://example.test').pathname,
         'the unit page points its canonical somewhere else'
-      ).toBe(`/en/${unit}`)
+      ).toBe(`/id/${unit}`)
 
-      await page.goto(`/en/${unit}`)
+      await page.goto(`/id/${unit}`)
       expect(
         new URL(page.url()).pathname,
         'the unit page redirected away from its own address'
-      ).toBe(`/en/${unit}`)
+      ).toBe(`/id/${unit}`)
     })
   }
 
@@ -94,20 +92,20 @@ test.describe('unit pages', () => {
    * depends on it: its second hop is unit → unit, and without these links
    * there is no same-component navigation on the site to measure.
    */
-  test('a unit page links to the other two units', async ({ page }) => {
+  test('a unit page links onward through the three-unit circuit', async ({
+    page,
+  }) => {
     const [first] = UNITS
-    await page.goto(`/en/${first}`)
+    await page.goto(`/id/${first}`)
 
-    const others = UNITS.filter((unit) => unit !== first)
-    for (const other of others) {
-      await expect(
-        page.locator(`main a[href="/en/${other}"]`),
-        `/en/${first} does not link to /en/${other}`
-      ).not.toHaveCount(0)
-    }
+    const next = UNITS[1]
+    await expect(
+      page.locator(`main a[href="/id/${next}"]`),
+      `/id/${first} does not link onward to /id/${next}`
+    ).not.toHaveCount(0)
 
     await expect(
-      page.locator(`main a[href="/en/${first}"]`),
+      page.locator(`main a[href="/id/${first}"]`),
       'a unit page links to itself'
     ).toHaveCount(0)
   })

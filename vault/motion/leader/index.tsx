@@ -43,11 +43,16 @@ import s from './leader.module.css'
 
 interface LeaderProps {
   className?: string | undefined
+  /** Reveal on scroll by default; intent waits for its linked row. */
+  trigger?: 'reveal' | 'intent' | undefined
 }
 
-export function Leader({ className }: LeaderProps) {
+export function Leader({ className, trigger = 'reveal' }: LeaderProps) {
   return (
-    <span aria-hidden="true" className={cn(s.leader, className)}>
+    <span
+      aria-hidden="true"
+      className={cn(s.leader, trigger === 'intent' && s.intent, className)}
+    >
       <span className={s.drop} />
       <span className={s.run} />
       <span className={s.dot} />

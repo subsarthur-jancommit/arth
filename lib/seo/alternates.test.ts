@@ -10,7 +10,7 @@
 
 import { describe, expect, it } from 'bun:test'
 
-import { LOCALE_TAGS, routing } from '@/lib/i18n/routing'
+import { LOCALE_TAGS, PUBLISHED_LOCALES } from '@/lib/i18n/routing'
 
 import { routeAlternates } from './alternates'
 import { FEED_TITLES } from './atom-feed'
@@ -31,7 +31,7 @@ function alternates(path: string) {
 describe('routeAlternates', () => {
   it('is self-referential — canonical is the path passed in', () => {
     expect(alternates('/en').canonical).toBe('/en')
-    expect(alternates('/id/studio').canonical).toBe('/id/studio')
+    expect(alternates('/id/cara-kerja').canonical).toBe('/id/cara-kerja')
   })
 
   it('matches the URL the sitemap submits, for every advertised route', () => {
@@ -43,27 +43,20 @@ describe('routeAlternates', () => {
     }
   })
 
-  it('advertises every locale plus x-default, keyed by BCP 47 tag', () => {
-    const languages = alternates('/en/studio').languages
+  it('advertises only approved translations plus x-default', () => {
+    const languages = alternates('/id/cara-kerja').languages
 
-    // BCP 47 tags, not the URL segment: hreflang is a language declaration,
-    // and `en` and `en-US` are not interchangeable to a search engine.
-    for (const locale of routing.locales) {
-      expect(languages?.[LOCALE_TAGS[locale]]).toBe(`/${locale}/studio`)
+    for (const locale of PUBLISHED_LOCALES) {
+      expect(languages?.[LOCALE_TAGS[locale]]).toBe(`/${locale}/cara-kerja`)
     }
 
-    // Without x-default, engines guess which version to serve a visitor whose
-    // language matches neither.
-    expect(languages?.['x-default']).toBe('/en/studio')
+    expect(languages?.['x-default']).toBe('/id/cara-kerja')
+    expect(alternates('/en/cara-kerja').languages).toBeUndefined()
   })
 
-  it('points every locale at the same template, not at itself', () => {
-    // A common bilingual bug: each page advertising only its own URL under
-    // every hreflang key, which tells engines the translations do not exist.
-    const fromEn = alternates('/en').languages
-    const fromId = alternates('/id').languages
-
-    expect(fromEn).toEqual(fromId ?? {})
+  it('does not present an unapproved locale as a translation', () => {
+    expect(alternates('/en').languages).toBeUndefined()
+    expect(alternates('/id').languages?.['en-US']).toBeUndefined()
   })
 
   it('advertises no hreflang for an unlocalized route', () => {
@@ -81,7 +74,7 @@ describe('routeAlternates', () => {
         'application/atom+xml'
       ]
     ).toEqual([{ url: '/id/journal/feed.xml', title: FEED_TITLES.id }])
-    expect(alternates('/en/studio').types?.['application/atom+xml']).toBe(
+    expect(alternates('/en/cara-kerja').types?.['application/atom+xml']).toBe(
       undefined
     )
   })

@@ -73,13 +73,13 @@ import {
  * wrap differently and put different text under the same sticky row.
  */
 const ROUTES = [
-  '/en',
+  '/id',
   '/en/work',
   '/en/work/arus-balik',
-  '/en/studio',
+  '/id/kontak',
   '/en/journal',
   '/en/journal/scope-is-the-deliverable',
-  '/en/konstruksi',
+  '/id/konstruksi',
   '/id/work/arus-balik',
 ] as const
 
@@ -193,6 +193,16 @@ function collectRuns(): Facts {
      */
     const style = getComputedStyle(el)
     if (style.display === 'none' || style.visibility === 'hidden') continue
+    /*
+     * Text the browser does not paint at all: the panel of a closed
+     * `<details>`, which Chromium holds as `content-visibility: hidden`
+     * content. Its line boxes still resolve, so without this the gate sampled
+     * whatever sits where the panel would be — on the home page's unit list at
+     * 390px, the next unit's heading — and reported 1.00:1 for words nobody
+     * can see. `checkVisibility()` is false exactly for skipped content and
+     * for `display: none`; a painted run is still measured.
+     */
+    if (!el.checkVisibility()) continue
 
     // Only the element that directly owns the characters, so a wrapper is not
     // judged for text its child paints in another colour.
@@ -413,7 +423,7 @@ for (const route of ROUTES) {
            * Only text an ancestor hid is a clipped run. A line whose last few
            * pixels peek over the viewport's bottom edge is too thin to sample
            * whatever clips it — measured on the first run of this counter:
-           * `/en/studio` and the retired `/en/practice/consulting` at 1280x720 reported
+           * `/en/cara-kerja` and the retired `/en/practice/consulting` at 1280x720 reported
            * their bottom line, starting at y=715, as "clipped", which would
            * have made the over-clip guard below count the viewport's own edge.
            */

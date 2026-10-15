@@ -72,10 +72,12 @@ async function navigate(
   await page.waitForTimeout(1200)
   if (prepare) await prepare(page)
 
-  const link = page.locator(`a[href="${to}"]`).first()
+  // `main`: on a phone the header's copy of the link sits in the closed
+  // sheet, and the reader presses the one on the page.
+  const link = page.locator(`main a[href="${to}"]`).first()
   await expect(link, `no link to ${to} on ${from}`).toBeVisible()
   await link.click()
-  await page.waitForURL(`**${to.replace(/^\/[a-z]{2}/, '')}`)
+  await page.waitForURL((url) => url.pathname === to)
   await page.waitForTimeout(SETTLED)
 
   return landing(page)
@@ -105,7 +107,7 @@ function assertLandedAtTheTop(
 
 test.describe('a navigation lands at the top of the page it asked for', () => {
   test('home → a unit page', async ({ page }) => {
-    const result = await navigate(page, '/en', `/en/${UNITS[0]}`, async (p) => {
+    const result = await navigate(page, '/id', `/id/${UNITS[0]}`, async (p) => {
       // The link lives inside a closed `<details>`; a reader opens it first.
       await p.locator('#unit summary').first().click()
       await p.waitForTimeout(700)
@@ -114,7 +116,7 @@ test.describe('a navigation lands at the top of the page it asked for', () => {
   })
 
   test('home → a project page', async ({ page }) => {
-    const result = await navigate(page, '/en', `/en/work/${FEATURED_WORK}`)
+    const result = await navigate(page, '/id', `/id/work/${FEATURED_WORK}`)
     assertLandedAtTheTop(result, 'home → project')
   })
 
@@ -124,7 +126,7 @@ test.describe('a navigation lands at the top of the page it asked for', () => {
   })
 
   test('a unit page → the next unit', async ({ page }) => {
-    const result = await navigate(page, `/en/${UNITS[0]}`, `/en/${UNITS[1]}`)
+    const result = await navigate(page, `/id/${UNITS[0]}`, `/id/${UNITS[1]}`)
     assertLandedAtTheTop(result, 'unit → next unit')
   })
 })

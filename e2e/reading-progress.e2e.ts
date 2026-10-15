@@ -35,7 +35,7 @@ const LONG_READS = [
   '/en/work/arus-balik',
 ]
 
-const SHORT = ['/en', '/en/journal', '/en/work']
+const SHORT = ['/id', '/en/journal', '/en/work']
 
 const BAR = '[data-reading-progress-bar]'
 
@@ -104,7 +104,7 @@ test.describe('the reading progress reports the reading', () => {
           : original(...(args as [string]))
     })
 
-    await page.goto(LONG_READS[0] ?? '/en')
+    await page.goto(LONG_READS[0] ?? '/id')
     await page.addStyleTag({
       content: '[data-reading-progress-bar]{animation:none !important}',
     })
@@ -128,7 +128,7 @@ test.describe('the reading progress reports the reading', () => {
   })
 
   test('it is never in the way', async ({ page }) => {
-    await page.goto(LONG_READS[0] ?? '/en')
+    await page.goto(LONG_READS[0] ?? '/id')
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(500)
 
@@ -160,7 +160,7 @@ test.describe('the reading progress reports the reading', () => {
     const context = await browser.newContext({ reducedMotion: 'reduce' })
     const page = await context.newPage()
     try {
-      await page.goto(LONG_READS[0] ?? '/en')
+      await page.goto(LONG_READS[0] ?? '/id')
       await page.waitForLoadState('networkidle')
       await page.waitForTimeout(500)
 

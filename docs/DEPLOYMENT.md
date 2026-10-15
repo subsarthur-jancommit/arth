@@ -220,16 +220,17 @@ Run these against the live domain. Each one catches a different real failure.
 SITE=https://yourdomain.com
 
 # Root must redirect to a locale, not serve a page
-curl -sSI $SITE/ | grep -i "^location"          # expect /en
+curl -sSI $SITE/ | grep -i "^location"          # expect /id
 
-# Both languages render
+# Indonesian renders; the unapproved English root redirects
 curl -sSo /dev/null -w "%{http_code}\n" $SITE/en
 curl -sSo /dev/null -w "%{http_code}\n" $SITE/id
+curl -sSI $SITE/en | grep -i "^location"       # expect /id
 
-# hreflang present, and pointing at the real domain (not localhost)
-curl -sS $SITE/en | grep -o '<link rel="alternate" hrefLang[^>]*>'
+# Approved hreflang present, and pointing at the real domain (not localhost)
+curl -sS $SITE/id | grep -o '<link rel="alternate" hrefLang[^>]*>'
 
-# Sitemap lists both locales, with the real domain
+# Sitemap lists approved Indonesian routes, with the real domain
 curl -sS $SITE/sitemap.xml | grep -o '<loc>[^<]*</loc>'
 
 # The CMS loads
@@ -333,7 +334,7 @@ Two things Vercel did for you that you now own:
 
 ### Gates
 
-- [ ] `/` redirects to `/en`; `/en` and `/id` return 200
+- [ ] `/` and `/en` redirect to `/id`; `/id` returns 200
 - [ ] `sitemap.xml` and `hreflang` show the real domain
 - [ ] Every sitemap URL matches that page's own canonical and `og:url`
       (`e2e/canonical-sweep.e2e.ts` asserts this; run it against the deploy if

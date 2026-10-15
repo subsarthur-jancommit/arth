@@ -201,6 +201,20 @@ describe('every unit is read from exactly two sides', () => {
   it('counts every side exactly once across the units', () => {
     expect(ALL_SIDES).toHaveLength(UNITS.length * 2)
   })
+
+  for (const locale of LOCALES) {
+    it(`labels every side in ${locale}`, () => {
+      const sideNamespace = section(locale, ['side'])
+      const missing = ALL_SIDES.filter(
+        (side) => (sideNamespace[side] ?? '').trim() === ''
+      )
+
+      expect(
+        missing,
+        `${locale}: sides with no label — a heading or route link would render the raw key`
+      ).toEqual([])
+    })
+  }
 })
 
 /*

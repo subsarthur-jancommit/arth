@@ -1,0 +1,32 @@
+.section {
+  --reveal-transform: translateY(calc(var(--gap) * 0.5));
+}
+
+.plate {
+  display: grid;
+  gap: calc(20 / 375 * 100vw);
+  padding: calc(28 / 375 * 100vw);
+}
+
+.label,
+.copy {
+  margin: 0;
+}
+
+.label {
+  color: var(--text-muted);
+}
+
+@media (--desktop) {
+  .plate {
+    gap: calc(28 / 1440 * 100vw);
+    padding: calc(48 / 1440 * 100vw);
+  }
+}
+
+@media print {
+  .plate {
+    gap: 12pt;
+    padding: 18pt;
+  }
+}

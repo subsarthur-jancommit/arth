@@ -1,8 +1,16 @@
 import type { MetadataRoute } from 'next'
 
-import { type Unit, UNITS, unitTemplate } from '@/lib/content/units'
+import {
+  SIDES,
+  type Side,
+  sideTemplate,
+  type Unit,
+  UNITS,
+  unitTemplate,
+} from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
-import { type Locale, routing } from '@/lib/i18n/routing'
+import { PUBLISHED_LOCALES, type Locale } from '@/lib/i18n/routing'
+import { isAwaitingContent } from '@/lib/seo/awaiting-content'
 import { type Localized, SITE } from '@/lib/seo/site'
 
 export interface StaticRoute {
@@ -30,7 +38,7 @@ export interface LocalizedStaticRoute extends Omit<
 > {
   label: string
   description: string
-  /** The locale-free path this entry was expanded from (`/`, `/studio`). */
+  /** The locale-free path this entry was expanded from (`/`, `/cara-kerja`). */
   template: string
   locale: Locale
 }
@@ -87,68 +95,115 @@ const UNIT_DESCRIPTIONS = {
   },
 } satisfies Record<Unit, Localized<string>>
 
-export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
-  {
-    path: '/',
-    label: { en: 'Home', id: 'Beranda' },
-    description: SITE.description,
-    changeFrequency: 'daily',
-    priority: 1,
+const SIDE_LABELS = {
+  'pelaku-proyek': { en: 'People running a project', id: 'Pelaku proyek' },
+  'pemilik-bangunan': { en: 'Building owners', id: 'Pemilik bangunan' },
+  'siap-pakai': { en: 'Ready to use', id: 'Siap pakai' },
+  'paham-teknis': { en: 'Technically fluent', id: 'Paham teknis' },
+  'pemilik-usaha': { en: 'Business owners', id: 'Pemilik usaha' },
+  jaringan: { en: 'The seller network', id: 'Jaringan penjual' },
+} satisfies Record<Side, Localized<string>>
+
+/*
+ * Side descriptions remain taxonomy, not sales copy. They tell a machine
+ * which unit and reader vantage point a URL represents without filling the
+ * three owner-controlled beats on the visible page with invented claims.
+ */
+const SIDE_DESCRIPTIONS = {
+  'pelaku-proyek': {
+    en: 'The Konstruksi side for people running a project.',
+    id: 'Sisi Konstruksi untuk pelaku proyek.',
   },
-  {
-    path: '/journal',
-    label: { en: 'Journal', id: 'Jurnal' },
-    description: {
-      en: 'Notes on how the work is scoped, decided and delivered: method rather than announcements.',
-      id: 'Catatan tentang bagaimana pekerjaan ditentukan lingkupnya, diputuskan, dan dikirim: metode, bukan pengumuman.',
+  'pemilik-bangunan': {
+    en: 'The Konstruksi side for people who own the building.',
+    id: 'Sisi Konstruksi untuk pemilik bangunan.',
+  },
+  'siap-pakai': {
+    en: 'The Teknologi side for people who want something ready to use.',
+    id: 'Sisi Teknologi untuk pembaca yang menginginkan hasil siap pakai.',
+  },
+  'paham-teknis': {
+    en: 'The Teknologi side for technically fluent readers.',
+    id: 'Sisi Teknologi untuk pembaca yang paham teknis.',
+  },
+  'pemilik-usaha': {
+    en: 'The Peekabo side for business owners.',
+    id: 'Sisi Peekabo untuk pemilik usaha.',
+  },
+  jaringan: {
+    en: 'The Peekabo side for the seller network.',
+    id: 'Sisi Peekabo untuk jaringan penjual.',
+  },
+} satisfies Record<Side, Localized<string>>
+
+/*
+ * A fixed page still awaiting published content is not advertised anywhere
+ * (`lib/seo/awaiting-content.ts`): the proxy answers it 404, and a sitemap,
+ * llms.txt or search entry pointing at a 404 is a broken promise.
+ */
+export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = (
+  [
+    {
+      path: '/',
+      label: { en: 'Home', id: 'Beranda' },
+      description: SITE.description,
+      changeFrequency: 'daily',
+      priority: 1,
     },
-    changeFrequency: 'weekly',
-    priority: 0.6,
-  },
-  {
-    path: '/studio',
-    label: { en: 'Studio', id: 'Studio' },
-    description: {
-      en: 'How the work is scoped, decided and delivered, the units it runs through, and the colophon for this site.',
-      id: 'Bagaimana pekerjaan ditentukan lingkupnya, diputuskan, dan dikirim, unit yang menjalankannya, serta kolofon situs ini.',
+    {
+      path: '/cara-kerja',
+      label: { en: 'How we work', id: 'Cara kami bekerja' },
+      description: {
+        en: 'Sample information about how Arthur works, pending owner review.',
+        id: 'Informasi contoh tentang cara Arthur bekerja, menunggu tinjauan pemilik.',
+      },
+      changeFrequency: 'monthly',
+      priority: 0.7,
     },
-    changeFrequency: 'monthly',
-    priority: 0.7,
-  },
-  {
-    path: '/work',
-    label: { en: 'Work', id: 'Karya' },
-    description: {
-      en: 'The full catalogue of completed engagements, with client, year, engagement and scope for each.',
-      id: 'Katalog lengkap penugasan yang sudah selesai, lengkap dengan klien, tahun, bentuk keterlibatan, dan lingkupnya.',
+    {
+      path: '/kontak',
+      label: { en: 'About and contact', id: 'Tentang dan kontak' },
+      description: {
+        en: "Arthur's structure, confirmed service area, and current contact status.",
+        id: 'Struktur Arthur, wilayah kerja yang sudah dikonfirmasi, dan status kontaknya saat ini.',
+      },
+      changeFrequency: 'monthly',
+      priority: 0.6,
     },
-    changeFrequency: 'weekly',
-    priority: 0.9,
-  },
-  /*
-   * One entry per unit. Side routes join when F1-04 builds their pages — a
-   * sitemap must not advertise a page that does not answer yet.
-   *
-   * These are not filter permutations of `/work` — they are `○` static pages
-   * with their own `<h1>`, their own description and their own canonical, and
-   * they are the pages that should rank for a unit's own name rather than
-   * the generic index.
-   *
-   * Generated from the same constant the route's `generateStaticParams` uses,
-   * so the sitemap cannot list a view that is not built, or omit one that is.
-   */
-  ...UNITS.map((unit): StaticRoute => ({
-    path: unitTemplate(unit),
-    label: UNIT_LABELS[unit],
-    description: UNIT_DESCRIPTIONS[unit],
-    changeFrequency: 'weekly',
-    priority: 0.7,
-  })),
-]
+    /*
+     * One entry per unit, followed by its two side routes. A sitemap only
+     * advertises the sides now that F1-04 gives each one a page that answers.
+     *
+     * These are not filter permutations of `/work` — they are `○` static pages
+     * with their own `<h1>`, their own description and their own canonical, and
+     * they are the pages that should rank for a unit's own name rather than
+     * the generic index.
+     *
+     * Generated from the same constant the route's `generateStaticParams` uses,
+     * so the sitemap cannot list a view that is not built, or omit one that is.
+     */
+    ...UNITS.map((unit): StaticRoute => ({
+      path: unitTemplate(unit),
+      label: UNIT_LABELS[unit],
+      description: UNIT_DESCRIPTIONS[unit],
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    })),
+    ...UNITS.flatMap((unit) =>
+      SIDES[unit].map((side): StaticRoute => ({
+        path: sideTemplate(unit, side),
+        label: SIDE_LABELS[side],
+        description: SIDE_DESCRIPTIONS[side],
+        changeFrequency: 'weekly',
+        priority: 0.6,
+      }))
+    ),
+  ] satisfies StaticRoute[]
+).filter((route) => !isAwaitingContent(route.path))
 
 /**
- * Every static route, expanded across every locale — `/en`, `/id`,
- * `/en/studio`, `/id/studio`.
+ * Every static route with approved visitor-facing copy. English stays out of
+ * machine surfaces until its translation is approved.
  *
  * This is what gets *advertised*: the sitemap, `/llms.txt`, and the
  * Markdown-representation lookup in `lib/seo/alternates.ts` all read
@@ -158,7 +213,7 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
  * index another.
  */
 export const STATIC_ROUTES: readonly LocalizedStaticRoute[] =
-  routing.locales.flatMap((locale) =>
+  PUBLISHED_LOCALES.flatMap((locale) =>
     STATIC_ROUTE_TEMPLATES.map((route) => ({
       ...route,
       label: route.label[locale],

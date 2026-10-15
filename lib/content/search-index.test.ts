@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'bun:test'
 
 import { resolveJournalEntries } from './journal-fallback'
+import type { SearchEntry } from './search-index'
 import {
   buildSearchIndex,
   journalEntries,
@@ -52,6 +53,17 @@ describe('page entries', () => {
     expect(units.map((entry) => entry.href).sort()).toEqual(
       UNITS.map((unit) => `/en/${unit}`).sort()
     )
+  })
+
+  test('the Arthur destinations are present without promoting hidden indexes', () => {
+    const paths = pageEntries('id').map((entry) => entry.href)
+    // Awaiting published content (`lib/seo/awaiting-content.ts`), so not
+    // offered until the R5 change that publishes it removes it from the list.
+    expect(paths).not.toContain('/id/cara-kerja')
+    expect(paths).toContain('/id/kontak')
+    for (const unit of UNITS) expect(paths).toContain(`/id/${unit}`)
+    expect(paths).not.toContain('/id/work')
+    expect(paths).not.toContain('/id/journal')
   })
 
   test('every entry carries a label, a description and a locale-prefixed href', () => {
@@ -159,23 +171,18 @@ describe('the whole index', () => {
 describe('match score', () => {
   const journal = journalEntries('en', resolveJournalEntries('en', null))
   const scope = journal.find((entry) => entry.label.startsWith('Scope'))
-  /*
-   * The journal index, not the home page.
-   *
-   * The defect needs a page whose *description* carries a word another
-   * entry's *title* carries. That used to be the home page, whose
-   * description said "scopes"; `lib/seo/site.ts` now describes Arthur as an
-   * umbrella over three units and says nothing about scope. `/journal`'s own
-   * description — "how the work is scoped, decided and delivered" — carries
-   * the same passing mention, so the defect is reproduced rather than
-   * dropped.
-   */
-  const home = pageEntries('en').find((entry) => entry.href === '/en/journal')
+  const mention: SearchEntry = {
+    id: 'page:mention',
+    kind: 'page',
+    label: 'Arthur',
+    description: 'scope',
+    href: '/en',
+    meta: null,
+  }
 
   test('the defect it was written for: a title beats a passing mention', () => {
     expect(scope).toBeDefined()
-    expect(home).toBeDefined()
-    if (!scope || !home) return
+    if (!scope) return
 
     /*
      * Measured before this function existed. A static page's description
@@ -183,9 +190,9 @@ describe('match score', () => {
      * word of this journal entry's own headline highlighted that page and
      * Enter opened it.
      */
-    expect(searchHaystack(home)).toContain('scope')
+    expect(searchHaystack(mention)).toContain('scope')
     expect(matchScore(scope, 'scope')).toBeGreaterThan(
-      matchScore(home, 'scope')
+      matchScore(mention, 'scope')
     )
   })
 
@@ -231,6 +238,14 @@ describe('word order and the query as words', () => {
   })
   const find = (query: string) =>
     index.filter((entry) => matchScore(entry, query) > 0).map((e) => e.label)
+  const broadMatch: SearchEntry = {
+    id: 'page:scope-only',
+    kind: 'page',
+    label: 'Scope notes',
+    description: 'scope',
+    href: '/en',
+    meta: null,
+  }
 
   /*
    * Each of these returned nothing before the query was read as words.
@@ -253,8 +268,12 @@ describe('word order and the query as words', () => {
   })
 
   test('every word must appear — a second word narrows, never widens', () => {
-    const one = find('scope')
-    const two = find('scope deliverable')
+    const one = [broadMatch, ...index]
+      .filter((entry) => matchScore(entry, 'scope') > 0)
+      .map((entry) => entry.label)
+    const two = [broadMatch, ...index]
+      .filter((entry) => matchScore(entry, 'scope deliverable') > 0)
+      .map((entry) => entry.label)
     expect(two.length).toBeLessThan(one.length)
     // An OR would have made this longer, which is the behaviour that makes a
     // search feel broken.

@@ -146,24 +146,19 @@
   gap: inherit;
 }
 
-.placeholder {
-  /*
-   * Says out loud that the copy above is a stand-in. It is set back rather
-   * than hidden: a placeholder nobody can see is how placeholder copy ends up
-   * shipped.
-   */
-  margin: 0;
-  padding-top: mobile-vw(12px);
-  border-top: 1px solid var(--line);
-  color: var(--text-muted);
-
-  @media (--desktop) {
-    padding-top: desktop-vw(16px);
-  }
-}
-
 @media (--reduced-motion) {
   .heroCta {
     transition: none;
+  }
+}
+
+.previewFlag {
+  margin: 0 var(--safe);
+  padding: mobile-vw(12px) mobile-vw(16px);
+  color: var(--color-primary);
+  background: var(--color-secondary);
+
+  @media (--desktop) {
+    padding: desktop-vw(12px) desktop-vw(16px);
   }
 }

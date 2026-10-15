@@ -20,7 +20,7 @@ import { isLocale } from './routing'
  * | ------------------ | ------------- |
  * | `/en/contact`      | 404           |
  * | `/en/practice`     | 404           |
- * | `/id/kontak`       | 404           |
+ * | `/id/kontak`       | 404 (sebelum F3-09) |
  * | `/id/praktik`      | 404           |
  * | `/id/karya`        | 404           |
  *
@@ -37,9 +37,12 @@ import { isLocale } from './routing'
  *
  * ## What is deliberately absent
  *
- * `studio` is **not** in this table, and no longer needs to be: Tahap 24 made
- * it a real route, so it resolves rather than being redirected. It moved to
- * `REAL_SEGMENTS` below, which is where a guess must never shadow a page.
+ * `studio` remains a real legacy route that permanently redirects to
+ * `/cara-kerja`; both it and the destination are in `REAL_SEGMENTS` below so
+ * the guess table can never shadow either route.
+ *
+ * `kontak` is now a real fixed page. The English label remains a guess that
+ * redirects to that page instead of the old home-page anchor.
  *
  * `practice` and `praktik` were here, pointing at a `#practice` anchor. They
  * are gone as of F1-03: the practice routes are retired, so `/en/practice`
@@ -60,9 +63,8 @@ import { isLocale } from './routing'
  * here first.
  */
 const GUESSED_SEGMENTS = new Map([
-  // Home-page anchors, in both spellings of each label.
-  ['contact', '#contact'],
-  ['kontak', '#contact'],
+  // English label for the Indonesian canonical route segment.
+  ['contact', '/kontak'],
   /*
    * The catalogue, which is `/work` in both locales. `karya` is the label an
    * Indonesian reader sees, so it is the one they type; the English spelling
@@ -89,7 +91,15 @@ const GUESSED_SEGMENTS = new Map([
  * name the same segment, and so `route-status.test.ts` can assert this list
  * stays a subset of the segments something actually answers.
  */
-export const REAL_SEGMENTS = new Set([...UNITS, 'work', 'studio', 'journal'])
+export const REAL_SEGMENTS = new Set([
+  ...UNITS,
+  'cara-kerja',
+  'kebijakan',
+  'kontak',
+  'studio',
+  'work',
+  'journal',
+])
 
 /** Every key the table answers to. Exported for the unit test. */
 export const GUESSED_KEYS = [...GUESSED_SEGMENTS.keys()]

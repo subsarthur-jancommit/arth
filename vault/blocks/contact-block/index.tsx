@@ -41,19 +41,14 @@ interface ContactBlockProps {
   eyebrow: ReactNode
   title: ReactNode
   email: string
+  address: string
+  addressHeading: ReactNode
+  /** A placeholder address is not printed at all (owner decision P4). */
+  addressIsPlaceholder?: boolean | undefined
   /** Screen-reader label for the mail link — "Email {name}", not "click here". */
   emailLabel: string
   socials: readonly { label: string; url: string }[]
   socialsHeading: ReactNode
-  /**
-   * A qualification on the address above it, rendered only when there is one.
-   *
-   * Optional because a real address needs no note. The home page passes it
-   * when `resolveHomeContent` reports the email came from the fallback rather
-   * than the CMS — Tahap 35, where an unlabelled placeholder counted as a
-   * defect rather than a rough edge.
-   */
-  note?: ReactNode | undefined
   /**
    * The words for copying the address as well as opening it. A page that
    * passes none gets the address alone, as before.
@@ -77,10 +72,12 @@ export function ContactBlock({
   eyebrow,
   title,
   email,
+  address,
+  addressHeading,
+  addressIsPlaceholder = false,
   emailLabel,
   socials,
   socialsHeading,
-  note,
   copy,
   className,
 }: ContactBlockProps) {
@@ -123,6 +120,11 @@ export function ContactBlock({
             without claiming either. It moves the wrapper, not the noun, so
             the 150ms COMMIT band is untouched.
           */}
+          {/*
+            The block is only rendered with a real address. Until K5 names
+            one, the home page renders a link to the contact page instead
+            (owner decision P4, R0) rather than a placeholder with a note.
+          */}
           <Magnetic>
             <Link
               href={`mailto:${email}`}
@@ -138,10 +140,13 @@ export function ContactBlock({
           </Magnetic>
           {copy && <CopyAddress address={email} {...copy} />}
 
-          {note && (
-            <p data-placeholder-note className={cn('caption', s.note)}>
-              {note}
-            </p>
+          {!addressIsPlaceholder && (
+            <div className={s.address}>
+              <h3 className={cn('caption', s.addressHeading)}>
+                {addressHeading}
+              </h3>
+              <p className={cn('caption', s.addressText)}>{address}</p>
+            </div>
           )}
 
           {socials.length > 0 && (

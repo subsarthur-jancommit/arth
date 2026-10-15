@@ -6,7 +6,7 @@ import { sanityFetch } from '@/integrations/sanity/live'
 import { urlForReference } from '@/integrations/sanity/utils/link'
 import { resolveJournalEntries } from '@/lib/content/journal-fallback'
 import { localizedPath } from '@/lib/i18n/paths'
-import { type Locale, routing } from '@/lib/i18n/routing'
+import { PUBLISHED_LOCALES, type Locale } from '@/lib/i18n/routing'
 import { MARKDOWN_HANDLER_PATH } from '@/lib/seo/markdown-path'
 import { STATIC_ROUTE_TEMPLATES, STATIC_ROUTES } from '@/lib/seo/route-catalog'
 
@@ -65,7 +65,12 @@ const staticPaths = new Set(STATIC_ROUTE_TEMPLATES.map((route) => route.path))
  * and real: the catalogue route added in Tahap 8 would otherwise be shadowed
  * by a project whose slug happened to be `work`.
  */
-const RESERVED_PATHS = new Set(['/cms', '/work', MARKDOWN_HANDLER_PATH])
+const RESERVED_PATHS = new Set([
+  '/cms',
+  '/work',
+  '/kebijakan',
+  MARKDOWN_HANDLER_PATH,
+])
 
 /**
  * Every document type with a `slug` — kept permissive (`nullable()` fields)
@@ -110,16 +115,23 @@ const routableDocumentSchema = z.object({
  * `docs/PANDUAN-STUDIO.md` §7 told the studio that unfeaturing hid a work
  * while all three surfaces kept advertising it.
  */
-const routableContentQuery = defineQuery(`
+export const routableContentQuery = defineQuery(`
   *[_type in ["page", "project"]
     && defined(slug.current)
-    && (_type != "project" || listed != false)] {
+    && (_type != "project" || listed != false)
+    && (_type != "page" || (
+      statusTinjauan == "disetujui" &&
+      metadata.noIndex != true
+    ))] {
     _type,
     slug,
     _updatedAt,
     "title": select(
       _type == "project" => title[_key == "en"][0].value,
-      title
+      _type == "page" => coalesce(
+        judul[_key == "id"][0].value,
+        title
+      )
     )
   }
 `)
@@ -259,7 +271,7 @@ export function localizedContentRoutes(
   routes: readonly ContentRoute[],
   locale?: Locale
 ): ContentRoute[] {
-  const locales = locale ? [locale] : routing.locales
+  const locales = locale ? [locale] : PUBLISHED_LOCALES
 
   return routes.flatMap((route) =>
     locales.map((each) => ({
@@ -305,7 +317,7 @@ export async function getCmsRoutes(): Promise<ContentRoute[]> {
  * this is the second place it now has to be closed.
  */
 export function journalContentRoutes(locale?: Locale): ContentRoute[] {
-  const locales = locale ? [locale] : routing.locales
+  const locales = locale ? [locale] : PUBLISHED_LOCALES
 
   return locales.flatMap((each) =>
     resolveJournalEntries(each, null).map((entry) => ({

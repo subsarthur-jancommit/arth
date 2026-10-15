@@ -1,265 +1,131 @@
-# Panduan Studio — mengelola isi situs Arth
+# Panduan Studio Arthur
 
-Dokumen ini untuk **studio**, bukan untuk programmer. Tidak ada terminal, tidak
-ada kode. Kalau Anda bisa mengisi formulir, Anda bisa mengelola situs ini.
+Panduan ini untuk orang yang menyiapkan dan meninjau isi Arthur di Studio.
+Arthur adalah payung atas tiga unit: **Konstruksi**, **Teknologi**, dan
+**Peekabo**. Semua pembaca saat ini menerima halaman Indonesia; Inggris belum
+ditawarkan sampai isinya disetujui.
 
-Semua teks di situs punya **dua bahasa**: Inggris (EN) dan Indonesia (ID).
-Pengunjung dari Indonesia melihat versi ID, pengunjung lain melihat EN.
+Studio tersedia di `https://<domain-situs>/cms`. Masuklah dengan akun yang
+diundang ke proyek Sanity. Bila Studio membuka tetapi data tidak termuat,
+catat pesan yang tampil dan minta pemilik memeriksa CORS di pengaturan Sanity;
+pengaturan itu tidak diubah dari dalam Studio.
 
----
+## Cara kerja isi Arthur
 
-## 1. Masuk ke Studio
+Struktur isi selalu dibaca dalam urutan berikut:
 
-Studio adalah ruang admin situs. Alamatnya:
-
-```
-https://<domain-situs>/cms
-```
-
-Login memakai akun Google atau email yang sudah diundang. Kalau belum diundang,
-mintalah undangan lewat **manage.sanity.io → Project → Members → Invite**.
-
-> Kalau halaman Studio terbuka lalu semua isinya gagal dimuat, hampir selalu
-> penyebabnya satu: domain situs belum didaftarkan di daftar CORS Sanity.
-> Itu urusan sekali seumur hidup dan ada di `docs/DEPLOYMENT.md` §2.
-
----
-
-## 2. Menambah satu karya
-
-Di kolom kiri pilih **Project → +** (tanda tambah).
-
-Isi dari atas ke bawah. Yang bertanda **wajib** akan menolak disimpan kalau
-kosong.
-
-| Field               | Wajib | Isi apa                                                                         |
-| ------------------- | ----- | ------------------------------------------------------------------------------- |
-| **Title**           | ✅    | Judul karya. Ada **dua kotak**: EN dan ID.                                      |
-| **Slug**            | ✅    | Alamat karya. Klik **Generate** — jangan diketik manual.                        |
-| **Cover image**     | ✅    | Foto utama. Ini yang muncul di grid dan saat dibagikan.                         |
-| **Alt text**        | ✅    | Deskripsi gambar, dua bahasa. Lihat §4 — ini penting.                           |
-| **Gallery**         |       | Foto tambahan. Tiap foto juga butuh alt text.                                   |
-| **Client**          |       | Nama pemesan. Satu bahasa saja — nama tidak diterjemahkan.                      |
-| **Year**            |       | Tahun, angka saja: `2026`.                                                      |
-| **Practice**        | ✅    | Yang dipakai filter di halaman Karya. **Sedang berpindah ke Unit** — lihat §6b. |
-| **Medium**          |       | Contoh: `Acrylic on canvas` / `Akrilik di atas kanvas`.                         |
-| **Dimensions**      |       | Contoh: `120 × 90 cm`. Satu bahasa — satuan sama di mana pun.                   |
-| **Description**     |       | Cerita karyanya. Dua bahasa.                                                    |
-| **Order**           |       | Angka kecil tampil lebih dulu. Default `100`.                                   |
-| **Featured**        |       | Nyalakan supaya muncul di **halaman depan**.                                    |
-| **Listed publicly** |       | Nyalakan = tampil di katalog publik. Lihat §7.                                  |
-| **Grid span**       |       | `Half` = setengah lebar, `Full` = selebar layar.                                |
-| **Published at**    |       | Terisi otomatis. Biarkan saja.                                                  |
-| **SEO & Metadata**  |       | Boleh dikosongkan — lihat §5.                                                   |
-
-Setelah selesai, tekan **Publish** (tombol hijau, kanan bawah). Situs akan
-memperbarui dirinya sendiri dalam beberapa detik. **Tidak perlu memanggil siapa
-pun.**
-
-> **Judul dan Alt text wajib diisi dalam KEDUA bahasa.** Studio menolak Publish
-> kalau salah satunya kosong, dan itu disengaja: kalau judul bahasa Inggris
-> kosong, halaman versi Inggris dulu menampilkan alamat URL-nya sendiri sebagai
-> judul.
-
-Selama belum ditekan Publish, karya itu masih _draft_: tersimpan, tapi belum
-terlihat pengunjung.
-
----
-
-## 3. Tentang Slug — satu aturan yang tidak boleh dilanggar
-
-Slug adalah alamat karya di internet:
-
-```
-Slug "rimbun"  →  arth.studio/en/work/rimbun
-                  arth.studio/id/work/rimbun
+```text
+Unit → Sisi → Bab → Offer
 ```
 
-Satu slug dipakai untuk kedua bahasa. Itu disengaja: satu karya, satu alamat.
+- **Unit** adalah Konstruksi, Teknologi, atau Peekabo.
+- **Sisi** adalah sudut pembaca pada satu unit. Sisi tidak boleh dipindah ke
+  unit lain.
+- **Bab** mengumpulkan situasi pembeli dan offer yang menjawabnya.
+- **Offer** adalah satu jawaban kerja yang utuh, bukan nama layanan umum.
 
-**Setelah sebuah karya terbit, jangan mengubah slug-nya.** Semua tautan yang
-sudah tersebar — di Instagram, di pesan ke klien, di hasil pencarian Google —
-akan mati. Kalau memang harus berubah, beri tahu yang mengelola deploy dulu.
+Di sidebar Studio, buka **Struktur offer** lalu ikuti nomor 1 sampai 4. Buat
+induknya lebih dulu: jangan membuat sisi tanpa unit, bab tanpa sisi, atau
+offer tanpa bab. Referensi tersebut menjaga halaman tetap berada di alamat
+yang benar.
 
-Slug juga **tidak boleh memuat titik** (`.`). Studio akan menolaknya, dan itu
-memang disengaja: alamat bertitik dianggap sebagai berkas, bukan halaman, lalu
-hilang diam-diam dari sitemap dan dari pencarian.
+## Status tinjauan dan urutan terbit
 
----
+Semua tipe Arthur memakai tab **Internal** dengan status berikut:
 
-## 4. Alt text — kenapa wajib, dan bagaimana menulisnya
+| Status     | Makna                                                                             | Siapa yang menindaklanjuti                              |
+| ---------- | --------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Usulan     | Bahan awal dari katalog atau penulis. Tidak terlihat pembaca.                     | Penulis/agen menyiapkan.                                |
+| Dipilih    | Masuk daftar pendek untuk halaman yang akan ditulis.                              | Pemilik memilih.                                        |
+| Perlu Anda | Draf sudah siap ditinjau tetapi masih membutuhkan keputusan atau koreksi pemilik. | Pemilik meninjau.                                       |
+| Disetujui  | Isi sudah diperiksa dan boleh menjadi kandidat terbit.                            | Hanya administrator pemilik menyetel lewat **Setujui**. |
+| Ditahan    | Tidak dipakai sekarang; disimpan agar alasannya tidak hilang.                     | Pemilik dapat meninjau ulang.                           |
 
-Alt text dibaca oleh pembaca layar (pengunjung tunanetra) dan oleh mesin
-pencari. Untuk situs yang isinya gambar, ini bukan formalitas.
+Jangan menganggap status sebagai hiasan. Halaman publik hanya membaca dokumen
+berstatus **Disetujui**, dan query publik tidak membawa `idKatalog`, jejak
+sumber, penulis, tanggal persetujuan, atau medan internal lain ke HTML.
 
-Tulis **apa yang terlihat**, bukan perannya di halaman:
+Urutan penerbitan juga penting:
 
-| ❌ Jangan       | ✅ Begini                                            |
-| --------------- | ---------------------------------------------------- |
-| `gambar proyek` | `mural tiga sosok dengan warna oker di dinding kafe` |
-| `foto 1`        | `lukisan akrilik, dua burung di atas latar biru tua` |
-| `karya Arth`    | `detail sapuan kuas pada bagian bawah kanvas`        |
+1. Terbitkan Unit.
+2. Terbitkan Sisi di dalam Unit itu.
+3. Terbitkan Bab di dalam Sisi tersebut.
+4. Terbitkan Offer di dalam Bab yang sudah terbit.
 
-Satu kalimat sudah cukup. Isi keduanya, EN dan ID.
+Sesudah draf lengkap dan statusnya benar, administrator pemilik memilih
+**Setujui**, lalu **Terbitkan**. Tombol terbit biasa untuk tipe Arthur sengaja
+diganti; tombol **Terbitkan** tetap mati sampai draf disetujui. Administrator
+tambahan juga memiliki kuasa yang sama, jadi keanggotaan administrator harus
+ditinjau pemilik sebelum peluncuran.
 
----
+## Menulis offer
 
-## 5. Kapan mengisi SEO & Metadata
+Offer memiliki delapan blok pembaca: judul, dampak, untuk siapa, jenis, pasar,
+situasi, langkah, serahan, batas, dan langkah pertama. Isilah sesuai lembar
+rencana editorial dan sumber yang tercatat di **Jejak sumber**. Tulis langsung
+kepada situasi pembeli, sebut benda atau langkah kerja yang konkret, dan jangan
+menjanjikan hasil di luar kendali Arthur.
 
-Kosongkan saja, kecuali ada alasan khusus.
+Jangan menerbitkan teks yang masih memuat `[PERLU …]`, `isi contoh`, atau
+`teks sementara`. Studio menolaknya. Bila fakta seperti kanal kontak, alamat,
+harga, angka, atau izin klaim belum tersedia, tandai **Perlu Anda** dan tulis
+pertanyaannya pada jejak sumber—jangan mengisinya dengan tebakan.
 
-Kalau dibiarkan kosong, situs otomatis memakai judul karya, kalimat pertama
-**Description**-nya, dan **Cover image** sebagai gambar yang muncul saat
-tautannya dibagikan. Itu biasanya lebih baik daripada tulisan pemasaran.
+`idKatalog` adalah kode sumber seperti `RAK-03`, bukan judul yang dibaca
+pengunjung. Setelah impor ia menjadi hanya-baca. Jangan membuat `_id` Sanity
+sendiri, jangan mengubah `idKatalog` untuk menyiasati duplikasi, dan jangan
+menghapus jejak sumber saat memperbaiki copy.
 
-> Versi sebelumnya dari panduan ini menjanjikan hal yang sama padahal belum
-> berlaku untuk karya: deskripsinya kosong, dan kartu bagikannya memakai logo
-> Arth alih-alih lukisannya. Sudah diperbaiki.
+## Pengaturan situs dan isi pendukung
 
-Isi hanya kalau:
+**Pengaturan situs** adalah singleton `siteSettings`. Ia menampung pernyataan
+pemilik, wilayah, dan kanal kontak. Email `kontak@arth.invalid` serta alamat
+contoh yang terlihat hari ini adalah dummy—bukan alamat atau lokasi nyata—dan
+harus diganti sebelum halaman kontak boleh diterbitkan.
 
-- judul yang muncul di Google perlu berbeda dari judul karya, atau
-- Anda ingin satu karya **tidak** muncul di pencarian → centang **No index**.
+**Cara kami bekerja** juga singleton. **Rangkaian tiga unit**, **Tanya jawab**,
+dan **Halaman tetap** ada di bagian Isi pendukung. Page memakai `judul` dan
+`isi` berbahasa; medan lama tetap terlihat hanya-baca selama migrasi yang
+disetujui belum terjadi. Jangan menghapus atau mengosongkan medan lama tanpa
+rencana tulis dan izin penghapusan terpisah.
 
----
+## Daftar pendek dan impor katalog
 
-## 6. Teks halaman depan dan kontak
+Daftar pendek bukan saat untuk mengisi seluruh katalog. Untuk setiap bab,
+pilih 3–7 offer yang paling jelas menjawab masalah pembeli dan setel statusnya
+**Dipilih** atau **Ditahan** setelah rencana penulisan disetujui. Offer yang
+belum dipilih tidak menjadi dasar halaman atau copy publik.
 
-Semua teks halaman depan ada di satu dokumen: **Studio** (bukan Project).
+Impor Master Brief hanya dilakukan lewat skrip impor yang telah ditinjau.
+Skrip membaca versi terbit dan draf, tidak menimpa offer yang sudah terbit,
+serta hanya memperbarui draf berstatus Usulan pada medan yang dimilikinya.
+Jangan mengimpor ulang melalui editor manual. Sebelum tiap mutasi, pemilik
+harus menyetujui rencana tertulis yang memuat pemetaan sumber, jumlah per unit,
+cadangan, dry-run, dan cara pemulihan.
 
-| Field                | Isi apa                                                     |
-| -------------------- | ----------------------------------------------------------- |
-| **Studio name**      | Nama yang muncul di footer dan tombol kontak.               |
-| **Hero headline**    | Kalimat besar paling atas. Dua bahasa.                      |
-| **Hero subline**     | Satu kalimat di bawahnya. **Satu kalimat**, bukan paragraf. |
-| **Studio statement** | Bagian "tentang". Boleh beberapa paragraf.                  |
-| **Portrait**         | Foto studio atau potret. Butuh alt text.                    |
-| **Contact email**    | Alamat email yang bisa diklik pengunjung.                   |
-| **Social links**     | Label + URL lengkap (`https://instagram.com/namaanda`).     |
+## Meninjau di Presentation
 
-Sebelum ini diisi, situs menampilkan **teks contoh** beserta catatan kecil yang
-mengatakan bahwa itu teks sementara. Begitu Anda menekan Publish di dokumen
-Studio, teks contoh itu hilang, field demi field.
+Presentation dipakai untuk meninjau draf pada alamat situs sebelum terbit.
+Bukalah dokumen, lalu pilih tampilan Presentation apabila rutenya sudah
+tersedia. Periksa bahasa, urutan blok, tautan, keterbacaan ponsel, dan apakah
+teks internal atau placeholder tidak terlihat. Bila rute belum tersedia,
+jangan menyimpulkan isi sudah aman hanya karena formulir Studio tampak benar;
+tandai **Perlu Anda** sampai halaman dan pratinjau dibangun.
 
-### Yang masih ditunggu dari studio
+Draft mode dapat menampilkan draf untuk tinjauan, tetapi tidak mengubah aturan
+terbit. Jangan membagikan URL pratinjau sebagai URL publik, dan jangan
+mengubah pengaturan domain, CORS, token, webhook, atau Vercel dari Studio.
 
-Nilai-nilai berikut masih placeholder di dalam kode dan **harus diganti sebelum
-peluncuran** (mintalah ke yang mengelola deploy, ini bukan lewat Studio):
+## Jika ada masalah
 
-- alamat email asli — sekarang `studio@arth.example`, alamat yang sengaja tidak
-  bisa menerima surat
-- tautan profil Instagram / Are.na yang sebenarnya
-- domain final situs
+| Gejala                             | Tindakan pertama                                                                  |
+| ---------------------------------- | --------------------------------------------------------------------------------- |
+| Tombol Setujui atau Terbitkan mati | Pastikan Anda administrator, ada draf, dan status memenuhi urutan di atas.        |
+| Dokumen tidak muncul di halaman    | Pastikan induknya terbit lebih dulu dan status dokumen adalah Disetujui.          |
+| Validasi menolak teks              | Cari placeholder atau teks contoh; ganti dengan isi nyata atau tandai Perlu Anda. |
+| Studio kosong atau gagal jaringan  | Catat pesannya; pemilik memeriksa CORS dan status proyek.                         |
+| Kontak/alamat terlihat             | Perlakukan sebagai dummy sampai pemilik mengganti dan menyetujui kanal nyata.     |
 
----
-
-## 6b. Halaman Karya dan filternya
-
-Semua karya yang **Listed publicly** tampil di halaman katalog, dan pengunjung
-bisa menyaringnya. Alamatnya bisa dibagikan langsung:
-
-```
-/id/work                              semua karya
-/id/work/practice/<nilai>             hanya satu kelompok
-```
-
-Yang menentukan sebuah karya masuk kelompok mana adalah field **Practice** —
-bukan **Medium**. Medium adalah kalimat bebas ("Akrilik di atas kanvas");
-Practice adalah satu dari tiga pilihan tetap, dan daftarnya hidup di satu
-tempat, `lib/content/practices.ts`. Sebuah kelompok hanya muncul sebagai
-tombol filter kalau ada karya di dalamnya.
-
-> **Satu slug yang tidak boleh dipakai: `practice`.** Kata itu sudah menjadi
-> alamat filter di atas. Kalau sebuah karya diberi slug `practice`, halaman
-> karyanya tidak akan pernah bisa dibuka. Studio akan menolaknya saat Publish,
-> jadi ini bukan sesuatu yang perlu diingat-ingat — cukup tahu kenapa
-> peringatannya muncul.
-
-### Ke mana ini berpindah
-
-Struktur Arthur menggantikan kelompok ini: **tiga unit** — Konstruksi,
-Teknologi, dan Peekabo — masing-masing dengan **dua sisi** pembeli, berisi
-**bab**, berisi **offer**. Istilah itulah yang akan Anda pakai di Studio.
-
-Belum sekarang, dan tanggalnya tidak ditebak di sini. Rute unit dan sisi
-dibangun di paket F1-03 dan F1-04; tipe Sanity `unit`, `side`, `bab` dan
-`offer` di F2-02 sampai F2-04; dan bab ini ditulis ulang penuh — dengan alur
-status dan urutan terbitnya — di F2-11. Sampai itu, yang ada di Studio adalah
-field **Practice** di atas, dan panduan ini menjelaskan yang ada.
-
-Kemajuannya di [`PROGRES-ARTHUR.md`](./PROGRES-ARTHUR.md).
-
-Catatan untuk yang membaca versi lama dokumen ini: bagian ini pernah menyebut
-field **Discipline** dengan nilai Lukisan / Mural / Ilustrasi dan alamat
-`/id/work/discipline/…`. Itu sudah tidak ada sejak Tahap 13, yang mengganti
-nama medannya — `lib/content/practices.ts` mencatat sendiri kenapa. Jadi
-alamat-alamat itu sudah mati jauh sebelum Arthur, bukan karena Arthur.
-
----
-
-## 6c. Halaman berdiri sendiri (_Page_)
-
-Selain **Project** dan pengaturan studio, Studio punya satu tipe lagi:
-**Page**. Gunanya untuk halaman yang bukan karya — kebijakan privasi, syarat
-dan ketentuan, halaman "pameran", apa pun yang perlu alamat sendiri.
-
-Isi judul dan slug, lalu **Publish**. Halamannya langsung terbit di
-`/id/<slug>` dan `/en/<slug>`, dan otomatis masuk peta situs. Tidak perlu
-menghubungi siapa pun.
-
-Tiga hal yang perlu diketahui:
-
-- **Judul dan isi diisi dua bahasa**, sama seperti karya. Slug-nya satu, dipakai
-  bersama kedua bahasa.
-- **Slug-nya tidak boleh mengandung titik**, dengan alasan yang sama seperti di
-  §3.
-- **Halaman ini tidak muncul di menu apa pun secara otomatis.** Menu atas
-  ditentukan di kode, bukan di Studio. Kalau sebuah halaman perlu masuk menu,
-  itu permintaan ke pengembang — bukan sesuatu yang bisa diatur dari sini.
-
-> **Catatan.** Sampai Agustus 2026 Studio juga menampilkan dua tipe lain,
-> **Article** dan **Navigation**. Keduanya sudah dihapus. Article adalah tipe
-> blog yang tidak pernah direncanakan untuk situs ini, dan Navigation tidak
-> dirender di mana pun — apa pun yang diisi di situ tidak pernah muncul di
-> situs. Kalau Anda pernah mengisinya, tidak ada yang hilang: memang tidak
-> pernah tampil.
-
----
-
-## 7. Mengubah dan menghapus
-
-**Mengubah:** buka karyanya, ubah, tekan **Publish** lagi.
-
-**Menghapus:** tombol titik-tiga di kanan atas → **Delete**. Karya langsung
-hilang dari situs, dan tautannya mati.
-
-**Menyembunyikan tanpa menghapus:** matikan **Listed publicly**, lalu Publish.
-Karyanya hilang dari halaman Karya, dari peta situs, dan dari tautan "karya
-berikutnya". Halamannya sendiri tetap terbuka bagi yang sudah punya tautannya —
-jadi tautan yang pernah dikirim ke klien tidak mati — tetapi mesin pencari
-diberi tahu untuk tidak mengindeksnya lagi.
-
-> **Koreksi.** Panduan ini sebelumnya menyuruh Anda mematikan **Featured**
-> untuk menyembunyikan karya. Itu **salah**: Featured hanya mengatur halaman
-> depan; karyanya tetap ada di peta situs dan tetap bisa ditemukan. Itulah
-> sebabnya **Listed publicly** ditambahkan — dua tombol untuk dua hal yang
-> memang berbeda:
->
-> - **Featured** — tampil di halaman depan. Pilihan kurasi.
-> - **Listed publicly** — ada di katalog publik sama sekali atau tidak.
-
----
-
-## 8. Kalau ada yang aneh
-
-| Gejala                                      | Kemungkinan penyebab                                                               |
-| ------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Karya sudah di-Publish tapi belum muncul    | Tunggu ~1 menit lalu muat ulang. Kalau tetap, webhook belum aktif (§4 DEPLOYMENT). |
-| Tombol Publish mati/abu-abu                 | Ada field wajib yang kosong. Sanity menandainya merah di atas.                     |
-| Judul muncul dalam satu bahasa saja         | Kotak bahasa yang satunya belum diisi.                                             |
-| Gambar tampak buram                         | File aslinya kecil. Unggah minimal ~2000 px sisi terpanjang.                       |
-| Studio terbuka tapi kosong / error jaringan | Domain belum ada di daftar CORS Sanity.                                            |
-
-Untuk apa pun yang tidak ada di tabel ini, catat **apa yang Anda lakukan** dan
-**apa yang muncul di layar**, lalu kirimkan ke yang mengelola deploy. Dua
-kalimat itu biasanya sudah cukup untuk menemukan penyebabnya.
+Untuk setiap masalah, catat dokumen yang dibuka, statusnya, tindakan terakhir,
+dan pesan yang terlihat. Informasi itu lebih berguna daripada mencoba bypass
+status atau menerbitkan ulang berulang kali.

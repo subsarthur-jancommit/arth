@@ -59,7 +59,7 @@ export const Short: Story = {
 }
 
 /**
- * Each step can be pointed at, as on `/studio`. Open the canvas with
+ * Each step can be pointed at, as on a project detail page. Open the canvas with
  * `#process-decide` in the address and the third step is marked with the
  * entry arrow; the held column copies the step at the reading line.
  */

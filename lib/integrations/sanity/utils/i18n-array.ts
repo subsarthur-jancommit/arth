@@ -54,6 +54,7 @@ export function localeValue(
  * app's routing configuration.
  */
 const REQUIRED_LOCALES = ['en', 'id'] as const
+const REQUIRED_DEFAULT_LOCALE = 'id'
 
 /**
  * Validation for an `internationalizedArray*` field that needs every language.
@@ -88,4 +89,24 @@ export function requireEveryLocale(
   if (missing.length === 0) return true
 
   return `Fill in every language before publishing. Missing: ${missing.join(', ')}.`
+}
+
+/**
+ * Validation for new Arthur content while English remains unapproved (K2).
+ * Indonesian is the published default and the query layer falls back to it.
+ */
+export function requireIndonesian(
+  // oxlint-disable-next-line anti-slop/no-unknown-parameters -- Sanity passes raw localized values to validators
+  field: unknown
+): true | string {
+  const parsed = fieldSchema.safeParse(field)
+  if (!parsed.success) return 'Expected a translatable field.'
+
+  const value = parsed.data.find(
+    (entry) => entry._key === REQUIRED_DEFAULT_LOCALE
+  )?.value
+
+  return value?.trim()
+    ? true
+    : 'Fill in Bahasa Indonesia before publishing. English follows K2.'
 }

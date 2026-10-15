@@ -13,7 +13,7 @@ test.describe('the page grid is drawn on request', () => {
   test('the toggle and the g key draw it, and take it away', async ({
     page,
   }) => {
-    await page.goto('/en/studio')
+    await page.goto('/en/journal')
     // Hydrated first: the toggle is in the server's HTML, and a press before
     // its script arrives does nothing.
     await page.waitForLoadState('networkidle')
@@ -35,7 +35,7 @@ test.describe('the page grid is drawn on request', () => {
   })
 
   test('typing a g in search does not draw it', async ({ page }) => {
-    await page.goto('/en/studio')
+    await page.goto('/en/journal')
     await page.waitForLoadState('networkidle')
     await page.keyboard.press('Control+k')
     const field = page.getByRole('combobox')

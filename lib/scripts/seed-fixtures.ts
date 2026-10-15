@@ -546,7 +546,7 @@ export const PLATES = {
   },
   portrait: {
     width: 1440,
-    height: 1800, // studioSettings.portrait — 4:5
+    height: 1800, // siteSettings.portrait — retained during migration
     // Lighter than the works on purpose. It sits in `#studio` beside body
     // text rather than in a grid of work, so it has to hold its own next to
     // prose on a near-black page instead of competing with the engagements.
@@ -947,11 +947,14 @@ async function seed() {
   await mutate([
     {
       createOrReplace: {
-        _id: `${PREFIX}studioSettings`,
-        _type: 'studioSettings',
+        _id: `${PREFIX}siteSettings`,
+        _type: 'siteSettings',
         name: BRAND_NAME,
-        headline: i18n('Work that has to hold up', 'Karya yang harus bertahan'),
-        subline: i18nText(
+        heroJudul: i18n(
+          'Work that has to hold up',
+          'Karya yang harus bertahan'
+        ),
+        heroSubjudul: i18nText(
           'Consulting, AI and data, and commissioned build, scoped to a brief and delivered against it.',
           'Konsultasi, AI dan data, serta pengerjaan pesanan, dengan lingkup sesuai brief dan dikerjakan sesuai itu.'
         ),
@@ -970,13 +973,22 @@ async function seed() {
           ...ref('portrait'),
           alt: i18n('The studio at working light', 'Studio dalam cahaya kerja'),
         },
-        email: 'studio@arth.example',
+        kanal: { _type: 'object', email: 'kontak@arth.invalid' },
+        alamat: i18n(
+          '0 Example Street, Example City, Indonesia',
+          'Jl. Contoh No. 00, Kota Contoh, Indonesia'
+        ),
+        wilayah: [
+          { _type: 'object', nama: i18n('Subang', 'Subang') },
+          { _type: 'object', nama: i18n('Purwakarta', 'Purwakarta') },
+          { _type: 'object', nama: i18n('Bandung', 'Bandung') },
+        ],
       },
     },
   ])
 
   console.log(
-    `Seeded ${PROJECTS.length} projects, ${plates.length} assets, and one studio document.`
+    `Seeded ${PROJECTS.length} projects, ${plates.length} assets, and one site settings document.`
   )
 }
 

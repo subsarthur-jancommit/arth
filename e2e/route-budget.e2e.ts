@@ -92,17 +92,8 @@ import { expect, test } from '@playwright/test'
 
 /** Byte totals are uncompressed response bodies, not transfer size. */
 const ROUTES: { path: string }[] = [
-  // The page with a scene, and the one that animates.
-  { path: '/en' },
-  /*
-   * The Indonesian home page, which was **not measured at all** until Tahap
-   * 22 added it.
-   *
-   * It is the same page and carries the same 1899KB and the same two
-   * libraries, so a regression there would have been invisible: every route
-   * in this list was an `/en` one, and a bilingual site whose gate only reads
-   * one language is checking half of what it ships.
-   */
+  // The Indonesian home page carries the scene and entrance animation.
+  // The English root redirects here; English subroutes remain previewable.
   { path: '/id' },
   /*
    * The catalogue and a project page opt into `gsap` as of Tahap 23.
@@ -175,7 +166,7 @@ const ROUTES: { path: string }[] = [
    * nothing on this route has asked for one yet. When a stage wants it, it
    * adds `three` here and says why.
    */
-  { path: '/en/konstruksi' },
+  { path: '/id/konstruksi' },
   /*
    * The studio page (Tahap 24) opts into `gsap` and nothing else.
    *
@@ -184,7 +175,7 @@ const ROUTES: { path: string }[] = [
    * which is a scroll scrub and therefore needs ScrollTrigger. No three.js:
    * nothing on this route has asked for a scene.
    */
-  { path: '/en/studio' },
+  { path: '/id/kontak' },
   /*
    * The journal, index and entry. Both opt into `gsap` for one thing only:
    * `TextReveal` on their `h1`, which is the entrance vocabulary every route

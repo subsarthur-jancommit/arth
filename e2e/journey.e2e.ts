@@ -149,7 +149,7 @@ test.describe('a reader moving through the site', () => {
     const [first, second] = UNITS
 
     // Hop 0 — arrival. Everything after this is client-side.
-    await page.goto('/en')
+    await page.goto('/id')
     const arrival = await resting(page)
     expect(arrival.y, 'a fresh load should start at the top').toBe(0)
     assertSettled(arrival, 'arrival')
@@ -158,7 +158,9 @@ test.describe('a reader moving through the site', () => {
     // the exact navigation Tahap 15b measured landing at 1522.
     await page.locator('#unit summary').first().click()
     await page.waitForTimeout(700)
-    await page.locator(`a[href="/en/${first}"]`).first().click()
+    // The panel's own link: the header carries the same href, and at 390px
+    // it sits collapsed behind the menu, so `.first()` alone picked it.
+    await page.locator(`#unit a[href="/id/${first}"]`).first().click()
     await page.waitForURL(`**/${first}`)
     const hop1 = await resting(page)
     assertOpenedAtTop(hop1, 'hop 1 home → unit')
@@ -170,7 +172,7 @@ test.describe('a reader moving through the site', () => {
     // Hop 2 — a unit to the next unit, through the sibling links the unit
     // page carries. Same component on both ends, which is where a leaked
     // transition name would do the most damage.
-    await page.locator(`a[href="/en/${second}"]`).first().click()
+    await page.locator(`main a[href="/id/${second}"]`).first().click()
     await page.waitForURL(`**/${second}`)
     const hop2 = await resting(page)
     assertOpenedAtTop(hop2, 'hop 2 unit → next unit')
@@ -192,7 +194,7 @@ test.describe('a reader moving through the site', () => {
     // Hop 4 — back again, to the home page, where the reader had scrolled a
     // long way down. Losing that position is the defect this hop watches.
     await page.goBack()
-    await page.waitForURL('**/en')
+    await page.waitForURL('**/id')
     const hop4 = await resting(page)
     assertSettled(hop4, 'hop 4 back to home')
     expect(
@@ -209,7 +211,7 @@ test.describe('a reader moving through the site', () => {
     // Hop 6 — the same navigation as hop 2, six hops later. If any state
     // leaked along the way, this is where it shows: same assertions, and they
     // have to pass identically.
-    await page.locator(`a[href="/en/${second}"]`).first().click()
+    await page.locator(`main a[href="/id/${second}"]`).first().click()
     await page.waitForURL(`**/${second}`)
     const hop6 = await resting(page)
     assertOpenedAtTop(hop6, 'hop 6 (repeat of hop 2)')
@@ -248,9 +250,9 @@ test.describe('a reader moving through the site', () => {
      */
     const [first, second] = UNITS
 
-    await page.goto(`/en/${first}`)
+    await page.goto(`/id/${first}`)
     await page.waitForTimeout(1500)
-    await page.locator(`a[href="/en/${second}"]`).first().click()
+    await page.locator(`main a[href="/id/${second}"]`).first().click()
     await page.waitForURL(`**/${second}`)
     await page.waitForTimeout(1800)
 
@@ -334,9 +336,9 @@ test.describe('a reader moving through the site', () => {
     const page = await context.newPage()
     try {
       const [first, second] = UNITS
-      await page.goto(`/en/${first}`)
+      await page.goto(`/id/${first}`)
       await page.waitForTimeout(1200)
-      await page.locator(`a[href="/en/${second}"]`).first().click()
+      await page.locator(`main a[href="/id/${second}"]`).first().click()
       await page.waitForURL(`**/${second}`)
       await page.waitForTimeout(1200)
       await page.goBack()
@@ -379,7 +381,7 @@ test.describe('a reader moving through the site', () => {
      * is exactly why it is written now: 16a adds that listener, and this is
      * what stops it from claiming a hash press.
      */
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(1500)
 
     await page.evaluate(() => {
@@ -405,7 +407,9 @@ test.describe('a reader moving through the site', () => {
      * actually reach at whichever width the test is running.
      */
     await page
-      .locator('a[href="#work"]:visible, a[href="#contact"]:visible')
+      .locator(
+        'a[href="#unit"]:visible, a[href="#work"]:visible, a[href="#contact"]:visible'
+      )
       .first()
       .click()
     await page.waitForTimeout(2200)
@@ -434,7 +438,7 @@ test.describe('the pinned passage never takes the page away', () => {
   const PASSAGE = '[data-epic="arth-passage"]'
 
   test('the pin releases and the footer is reachable', async ({ page }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(SETTLED)
 
     const spacers = await page.locator('.pin-spacer').count()
@@ -472,7 +476,7 @@ test.describe('the pinned passage never takes the page away', () => {
      * The proof that it is not hijacking, and the only one that counts. A
      * reader who never touches a wheel or a trackpad has to be able to leave.
      */
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(SETTLED)
 
     /*
@@ -537,7 +541,7 @@ test.describe('the pinned passage never takes the page away', () => {
      */
     const plain = await browser.newContext()
     const plainPage = await plain.newPage()
-    await plainPage.goto('/en')
+    await plainPage.goto('/id')
     await plainPage.waitForTimeout(SETTLED)
     const animatedHeight = await plainPage.evaluate(
       () => document.documentElement.scrollHeight
@@ -546,7 +550,7 @@ test.describe('the pinned passage never takes the page away', () => {
 
     const quiet = await browser.newContext({ reducedMotion: 'reduce' })
     const quietPage = await quiet.newPage()
-    await quietPage.goto('/en')
+    await quietPage.goto('/id')
     await quietPage.waitForTimeout(SETTLED)
     const quietHeight = await quietPage.evaluate(
       () => document.documentElement.scrollHeight

@@ -17,7 +17,8 @@ import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
 import { guessedDestination } from '@/lib/i18n/guessed-paths'
-import { routing } from '@/lib/i18n/routing'
+import { publicLocaleRedirect } from '@/lib/i18n/public-locale-redirect'
+import { isLocale, routing } from '@/lib/i18n/routing'
 import {
   type DocumentMediaType,
   HTML_FORMAT_OVERRIDE_PARAM,
@@ -35,6 +36,7 @@ import {
 import {
   brandedStatusDocument,
   GONE_STATUS,
+  isAwaitingContentPath,
   isGonePath,
   isUnknownSingleSegment,
   NOT_FOUND_STATUS,
@@ -99,6 +101,29 @@ export function isLocalizable(pathname: string): boolean {
 export const MACHINE_PATHS = new Set([MARKDOWN_HANDLER_PATH])
 
 export const FILE_EXTENSION = /\/[^/]+\.[^/]+$/
+
+/** The cookie Next.js sets when `draftMode().enable()` runs. */
+export const DRAFT_MODE_COOKIE = '__prerender_bypass'
+
+/**
+ * Canonical destination for fixed pages that used to share the generic CMS
+ * route. Keeping this at the request boundary makes the legacy URL a genuine
+ * HTTP 308 instead of a streamed client redirect from a Cache Component.
+ *
+ * Cost accepted: every fixed-page promotion needs one explicit entry here;
+ * the focused unit tests below make that small duplication visible.
+ */
+export function fixedPageDestination(pathname: string): string | null {
+  const segments = pathname.split('/').filter(Boolean)
+  if (segments.length !== 3) return null
+
+  const [locale, route, slug] = segments
+  if (!isLocale(locale) || route !== 'halaman' || slug !== 'kebijakan') {
+    return null
+  }
+
+  return `/${locale}/kebijakan`
+}
 // Proxy response headers are applied to the rendered response. Include the
 // router cache keys that Next emits so adding Accept cannot replace them.
 const NEXT_DOCUMENT_VARY =
@@ -202,6 +227,26 @@ export function proxy(request: NextRequest) {
     }
   }
 
+  // English remains a supported Sanity field/preview locale, but the public
+  // site has not approved English for Arthur's pages yet (K2). Their `/en`
+  // address answers 307 to the Indonesian twin; draft mode is exempt so
+  // Presentation can still preview the English fields.
+  const indonesianPath = request.cookies.has(DRAFT_MODE_COOKIE)
+    ? null
+    : publicLocaleRedirect(request.nextUrl.pathname)
+  if (indonesianPath) {
+    const destination = request.nextUrl.clone()
+    destination.pathname = indonesianPath
+    return NextResponse.redirect(destination, 307)
+  }
+
+  const fixedPage = fixedPageDestination(request.nextUrl.pathname)
+  if (fixedPage) {
+    const destination = request.nextUrl.clone()
+    destination.pathname = fixedPage
+    return NextResponse.redirect(destination, 308)
+  }
+
   /*
    * A URL the reader guessed from a nav label, sent where it belongs.
    *
@@ -254,6 +299,21 @@ export function proxy(request: NextRequest) {
   }
 
   if (isUnknownSingleSegment(documentPath)) {
+    return brandedStatusResponse(NOT_FOUND_STATUS, documentPath)
+  }
+
+  /*
+   * A fixed page whose content is not published yet answers a real 404
+   * (owner decision P4; the list and its reasoning are in
+   * `lib/seo/awaiting-content.ts`). Sanity draft mode passes through so
+   * Presentation can preview the draft. The cookie is only a hint here: the
+   * page itself still checks `draftMode()`, so a forged cookie reaches the
+   * same empty page the 404 replaced, never a draft.
+   */
+  if (
+    isAwaitingContentPath(documentPath) &&
+    !request.cookies.has(DRAFT_MODE_COOKIE)
+  ) {
     return brandedStatusResponse(NOT_FOUND_STATUS, documentPath)
   }
 
@@ -320,7 +380,7 @@ export function proxy(request: NextRequest) {
   // otherwise try to prefix it.
   const i18nResponse = handleI18nRouting(request)
 
-  // A locale redirect (`/` -> `/en`, or an unprefixed path being prefixed) is
+  // A locale redirect (`/` -> `/id`, or an unprefixed path being prefixed) is
   // not a page document. Attaching content-negotiation Vary to it would tell
   // caches to key a 307 on Accept, splitting the cache for no benefit — the
   // negotiation happens again on the followed URL anyway.

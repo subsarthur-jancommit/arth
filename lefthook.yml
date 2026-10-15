@@ -21,10 +21,12 @@ pre-commit:
     typecheck:
       glob: '*.{ts,tsx}'
       # TS7 native (single `typescript@^7` package; Next 16.3 shells out to
-      # the TS CLI itself, so no classic JS-API copy is needed). Incremental
-      # is on: typescript is the only writer of tsconfig.tsbuildinfo, and the
-      # warm cache is ~4x faster.
-      run: bun node_modules/typescript/bin/tsc --noEmit
+      # the TS CLI itself, so no classic JS-API copy is needed). The global
+      # Sanity TypeGen query registry can change without invalidating TS7's
+      # incremental cache; a warm cache then turns every query result into
+      # unknown. A full pass costs local speed, but it prevents commits that
+      # only pass because they read a stale registry.
+      run: bun node_modules/typescript/bin/tsc --noEmit --incremental false
       stage_fixed: false
 
 # Build stays CI-only (too slow for a local pre-push gate). The unit suite is

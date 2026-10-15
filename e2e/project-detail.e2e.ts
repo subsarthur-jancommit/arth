@@ -40,7 +40,7 @@ async function publishedSlugs(request: {
 }): Promise<string[]> {
   const xml = await (await request.get('/sitemap.xml')).text()
   return (
-    [...xml.matchAll(/<loc>[^<]*\/en\/work\/([^<]+)<\/loc>/g)]
+    [...xml.matchAll(/<loc>[^<]*\/id\/work\/([^<]+)<\/loc>/g)]
       .map((match) => match[1])
       .filter((slug): slug is string => slug !== undefined)
       // `/work/discipline/<value>` is a catalogue view sharing the prefix, not
@@ -142,8 +142,10 @@ test.describe('project detail', () => {
      * `/en/en/work/foo`. That matches the CMS catch-all rather than the work
      * route, so every card in the grid led to a not-found page — served with
      * a 200 status, so nothing anywhere reported a problem.
+     *
+     * On the catalogue since F3-01 took the work grid off the home page.
      */
-    await page.goto('/en')
+    await page.goto('/id/work')
     const hrefs = await page
       .locator('a[href*="/work/"]')
       .evaluateAll((links) =>
@@ -206,7 +208,7 @@ test.describe('project detail', () => {
     ).toEqual([])
   })
 
-  test('the sitemap lists every project once per locale', async ({
+  test('the sitemap lists approved Indonesian projects only', async ({
     request,
   }) => {
     const slugs = await publishedSlugs(request)
@@ -215,11 +217,13 @@ test.describe('project detail', () => {
     const xml = await (await request.get('/sitemap.xml')).text()
 
     for (const slug of slugs) {
-      for (const locale of ['en', 'id']) {
-        expect(xml, `sitemap is missing /${locale}/work/${slug}`).toContain(
-          `/${locale}/work/${slug}</loc>`
-        )
-      }
+      expect(xml, `sitemap is missing /id/work/${slug}`).toContain(
+        `/id/work/${slug}</loc>`
+      )
+      expect(
+        xml,
+        `unapproved English project /en/work/${slug} is listed`
+      ).not.toContain(`/en/work/${slug}</loc>`)
     }
   })
 })

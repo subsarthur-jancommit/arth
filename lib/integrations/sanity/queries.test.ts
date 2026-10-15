@@ -7,7 +7,7 @@
  *
  *  - the fallback locale is written as a literal (typegen cannot follow a
  *    variable), duplicating `lib/i18n/routing.ts`. Add a locale, forget these,
- *    and that language serves English forever with no error anywhere.
+ *    and that language serves the wrong fallback forever with no error.
  *  - reverting to dynamic property access (`field[$locale]`) still works at
  *    runtime but makes typegen infer an array where a string comes back, so
  *    every consumer is written against a shape that never occurs.
@@ -18,18 +18,45 @@ import { describe, expect, it } from 'bun:test'
 import { routing } from '@/lib/i18n/routing'
 
 import {
+  contactPagePreviewQuery,
+  contactPageQuery,
+  chapterPageQuery,
+  chapterPagePreviewQuery,
   featuredProjectsQuery,
+  faqsForPathQuery,
+  howWeWorkPreviewQuery,
+  howWeWorkQuery,
+  offerPagePreviewQuery,
+  offerPageQuery,
+  pagePreviewQuery,
+  pageQuery,
   projectQuery,
   projectsQuery,
-  studioSettingsQuery,
+  sequencesPreviewQuery,
+  sequencesQuery,
+  sidePagePreviewQuery,
+  sidePageQuery,
+  siteSettingsQuery,
+  unitPageQuery,
 } from './queries'
 
 /** Every query that projects a localized field. */
 const LOCALIZED_QUERIES = {
+  contactPagePreviewQuery,
+  contactPageQuery,
+  chapterPageQuery,
+  howWeWorkQuery,
+  howWeWorkPreviewQuery,
+  offerPageQuery,
+  offerPagePreviewQuery,
+  pageQuery,
+  pagePreviewQuery,
   projectsQuery,
   featuredProjectsQuery,
   projectQuery,
-  studioSettingsQuery,
+  sequencesPreviewQuery,
+  sequencesQuery,
+  siteSettingsQuery,
 } as const
 
 describe('localized queries', () => {
@@ -71,5 +98,281 @@ describe('localized queries', () => {
         `${name} references a parameter no caller passes`
       ).not.toContain('$defaultLocale')
     }
+  })
+})
+
+describe('fixed-page migration', () => {
+  it('prefers two-language fields while leaving old pages readable', () => {
+    for (const query of [pageQuery, pagePreviewQuery]) {
+      expect(query).toContain('judul[_key == $locale]')
+      expect(query).toContain('isi[_key == $locale]')
+      expect(query).toMatch(/\btitle\b/)
+      expect(query).toMatch(/\bcontent\b/)
+      expect(query).toContain('pt::text')
+    }
+  })
+
+  it('does not make an editorial link a page requirement', () => {
+    expect(pageQuery).not.toContain('\n    link')
+  })
+
+  it('keeps editorial review out of public while allowing draft preview', () => {
+    expect(pageQuery).toContain('statusTinjauan == "disetujui"')
+    expect(pagePreviewQuery).not.toContain('statusTinjauan')
+
+    for (const query of [pageQuery, pagePreviewQuery]) {
+      expect(query).not.toContain('jejakSumber')
+      expect(query).not.toContain('ditulisOleh')
+      expect(query).not.toContain('tanggalDisetujui')
+    }
+  })
+})
+
+describe('sequence and FAQ queries', () => {
+  it('keeps editorial review out of public while allowing draft preview', () => {
+    expect(sequencesQuery).toContain('statusTinjauan == "disetujui"')
+    expect(sequencesQuery).toContain('unit->statusTinjauan == "disetujui"')
+    expect(sequencesQuery).toContain(
+      '@->bab->sisi->unit->statusTinjauan == "disetujui"'
+    )
+    expect(sequencesPreviewQuery).not.toContain('statusTinjauan')
+
+    for (const query of [sequencesQuery, sequencesPreviewQuery]) {
+      expect(query).toContain('_type == "sequence"')
+      expect(query).toContain('"keterangan"')
+      expect(query).toContain('"offerCount": count(offer)')
+      expect(query).not.toContain('...')
+      expect(query).not.toContain('jejakSumber')
+      expect(query).not.toContain('ditulisOleh')
+    }
+  })
+
+  it('limits FAQ lookup to its explicit path', () => {
+    expect(faqsForPathQuery).toContain('$path in halaman')
+  })
+})
+
+describe('how we work queries', () => {
+  it('keeps editorial review out of public while allowing draft preview', () => {
+    expect(howWeWorkQuery).toContain('statusTinjauan == "disetujui"')
+    expect(howWeWorkPreviewQuery).not.toContain('statusTinjauan')
+
+    for (const query of [howWeWorkQuery, howWeWorkPreviewQuery]) {
+      expect(query).not.toContain('jejakSumber')
+      expect(query).not.toContain('ditulisOleh')
+    }
+  })
+})
+
+describe('offer query', () => {
+  it('keeps an offer under its addressed chapter, side, and unit', () => {
+    expect(offerPageQuery).toContain('_type == "offer"')
+    expect(offerPageQuery).toContain('slug.current == $chapter')
+    expect(offerPageQuery).toContain('kunci == $side')
+    expect(offerPageQuery).toContain('kunci == $unit')
+    expect(offerPageQuery).toContain('bab._ref in')
+    expect(offerPageQuery).toContain('sisi._ref in')
+    expect(offerPageQuery).toContain('unit._ref in')
+  })
+
+  it('does not project fields from the Internal Studio group', () => {
+    for (const field of [
+      'idKatalog',
+      'jejakSumber',
+      'ditulisOleh',
+      'tanggalDisetujui',
+      // The offer model is an internal template key (R1 pattern approach).
+      'model',
+    ]) {
+      expect(offerPageQuery).not.toContain(field)
+      expect(offerPagePreviewQuery).not.toContain(field)
+    }
+    expect(offerPageQuery).toContain('statusTinjauan == "disetujui"')
+    expect(offerPagePreviewQuery).not.toContain('statusTinjauan')
+  })
+
+  it('uses the side first step as the offer fallback', () => {
+    for (const query of [offerPageQuery, offerPagePreviewQuery]) {
+      expect(query).toContain('bab->sisi->langkahPertama.label')
+      expect(query).toContain('bab->sisi->langkahPertama.sesudahnya')
+    }
+  })
+
+  it('only resolves a fully approved bridge target on the public route', () => {
+    expect(offerPageQuery).toContain(
+      'jembatan.offer->statusTinjauan == "disetujui"'
+    )
+    expect(offerPageQuery).toContain(
+      'jembatan.offer->bab->statusTinjauan == "disetujui"'
+    )
+    expect(offerPagePreviewQuery).not.toContain('statusTinjauan')
+  })
+})
+
+describe('chapter query', () => {
+  it('keeps a chapter under its addressed side and unit', () => {
+    expect(chapterPageQuery).toContain('_type == "bab"')
+    expect(chapterPageQuery).toContain('sisi->kunci == $side')
+    expect(chapterPageQuery).toContain('sisi->unit->kunci == $unit')
+  })
+
+  it('lists only approved chapters belonging to a side', () => {
+    expect(sidePageQuery).toContain('_type == "bab"')
+    expect(sidePageQuery).toContain('sisi._ref == ^._id')
+    expect(sidePageQuery).toContain('statusTinjauan == "disetujui"')
+  })
+
+  it('lists only approved sides belonging to a unit', () => {
+    expect(unitPageQuery).toContain('_type == "side"')
+    expect(unitPageQuery).toContain('unit._ref == ^._id')
+    expect(unitPageQuery).toContain('statusTinjauan == "disetujui"')
+  })
+
+  it('selects only fields that are safe to render', () => {
+    // Internal editorial fields arrive in F2-07. Listing the public shape now
+    // keeps that later boundary additive instead of trying to contain `...`.
+    expect(chapterPageQuery).not.toContain('...')
+  })
+
+  it('lists only approved offer cards belonging to the chapter', () => {
+    expect(chapterPageQuery).toContain('_type == "offer"')
+    expect(chapterPageQuery).toContain('bab._ref == ^._id')
+    expect(chapterPageQuery).toContain('statusTinjauan == "disetujui"')
+    expect(chapterPageQuery).toContain('order(urutan asc)')
+  })
+
+  it('projects card fields without exposing internal editorial fields', () => {
+    for (const field of ['untukSiapa', 'jenis', 'pasar', 'dampak']) {
+      expect(chapterPageQuery).toContain(field)
+    }
+
+    for (const field of [
+      'idKatalog',
+      'jejakSumber',
+      'ditulisOleh',
+      'tanggalDisetujui',
+      // The offer model is an internal template key (R1 pattern approach).
+      'model',
+    ]) {
+      expect(chapterPageQuery).not.toContain(field)
+    }
+  })
+
+  it('only resolves published bridge targets on the public route', () => {
+    expect(chapterPageQuery).toContain('offer->statusTinjauan == "disetujui"')
+    expect(chapterPagePreviewQuery).not.toContain(
+      'offer->statusTinjauan == "disetujui"'
+    )
+  })
+})
+
+describe('network side query', () => {
+  it('selects the public network terms without Internal Studio fields', () => {
+    for (const field of [
+      'jaringan.caraKerja',
+      'jaringan.asalKomisi',
+      'jaringan.yangTidakAda',
+      'jaringan.syarat',
+      'jaringan.ajakanDaftar',
+    ]) {
+      expect(sidePageQuery).toContain(field)
+    }
+
+    expect(sidePageQuery).not.toContain('jejakSumber')
+    expect(sidePageQuery).not.toContain('ditulisOleh')
+  })
+})
+
+describe('site settings cutover', () => {
+  it('reads only approved Arthur settings on the public path', () => {
+    expect(siteSettingsQuery).toContain(
+      '_type == "siteSettings" && statusTinjauan == "disetujui"'
+    )
+    expect(siteSettingsQuery).not.toContain('_type == "studioSettings"')
+  })
+
+  it('projects the Arthur editorial and contact fields explicitly', () => {
+    expect(siteSettingsQuery).toContain('heroJudul')
+    expect(siteSettingsQuery).not.toContain('headline[_key == $locale]')
+    expect(siteSettingsQuery).toContain('"email": kanal.email')
+    expect(siteSettingsQuery).toContain('"socials": akunSosial')
+    expect(siteSettingsQuery).toContain(
+      'coalesce(alamat[_key == $locale][0].value'
+    )
+    expect(siteSettingsQuery).toContain('pernyataanPemilik')
+    expect(siteSettingsQuery).not.toContain('statement[_key == $locale]')
+    expect(siteSettingsQuery).toContain('"situasi": situasi[]')
+    expect(siteSettingsQuery).toContain(
+      '"teks": coalesce(teks[_key == $locale]'
+    )
+    expect(siteSettingsQuery).toContain('"ajakan": {')
+    expect(siteSettingsQuery).toContain(
+      '"rangkaianPilihan": rangkaianPilihan->{ _id }'
+    )
+  })
+
+  it('keeps the contact page public and draft paths separate', () => {
+    expect(contactPageQuery).toContain(
+      '_type == "siteSettings" && statusTinjauan == "disetujui"'
+    )
+    expect(contactPagePreviewQuery).not.toContain('statusTinjauan')
+
+    for (const query of [contactPageQuery, contactPagePreviewQuery]) {
+      expect(query).toContain('pernyataanPemilik')
+      expect(query).toContain('kanal.whatsapp')
+      expect(query).toContain('kanal.waktuBalas')
+      expect(query).toContain('"regions": wilayah[]')
+      expect(query).not.toContain('jejakSumber')
+      expect(query).not.toContain('ditulisOleh')
+    }
+  })
+})
+
+/**
+ * The pattern approach (docs/R1-PENDEKATAN-POLA-OFFER.md, section 3): a
+ * situation lists every published offer, and only an offer with its own
+ * page (or the situation's entry offer) has a route. Every link to an offer
+ * reads the same flag, so no list, bridge or unit card points at a 404.
+ */
+describe('offer routes follow the pattern approach', () => {
+  // Decision K-B (16 October 2026): an entry offer has no page of its own
+  // until its page blocks are written; only halamanSendiri opens a route.
+  const OWN_PAGE = 'halamanSendiri == true &&'
+  const FLAG = '"punyaHalaman": coalesce(halamanSendiri, false)'
+
+  it('serves an offer page only for an offer with its own page', () => {
+    expect(offerPageQuery).toContain(OWN_PAGE)
+    expect(offerPagePreviewQuery).toContain(OWN_PAGE)
+  })
+
+  it('never lets the entry flag open a route or a link on its own (K-B)', () => {
+    for (const query of [
+      offerPageQuery,
+      offerPagePreviewQuery,
+      chapterPageQuery,
+      chapterPagePreviewQuery,
+      unitPageQuery,
+    ]) {
+      expect(query).not.toContain('pintuMasuk == true)')
+      expect(query).not.toContain('|| coalesce(pintuMasuk')
+    }
+  })
+
+  it('tells every card, bridge and unit example whether that page exists', () => {
+    expect(chapterPageQuery).toContain(FLAG)
+    expect(chapterPagePreviewQuery).toContain(FLAG)
+    expect(offerPageQuery).toContain(FLAG)
+    expect(unitPageQuery).toContain(FLAG)
+  })
+
+  it('lists every published offer of a situation, with no upper bound', () => {
+    expect(sidePageQuery).not.toContain('<= 7')
+    expect(sidePagePreviewQuery).not.toContain('<= 7')
+    expect(chapterPageQuery).toContain('"syarat"')
+  })
+
+  it('reads the two packages on the offer page', () => {
+    expect(offerPageQuery).toContain('"tingkat": tingkat[]')
+    expect(offerPagePreviewQuery).toContain('"tingkat": tingkat[]')
   })
 })

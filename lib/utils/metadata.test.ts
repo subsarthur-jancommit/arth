@@ -36,7 +36,7 @@ function canonicalOf(metadata: ReturnType<typeof generatePageMetadata>) {
   return canonical
 }
 
-const PATHS = ['/', '/studio', '/work/mural-panas-sore']
+const PATHS = ['/', '/cara-kerja', '/work/mural-panas-sore']
 
 describe('generatePageMetadata', () => {
   it('resolves og:url to the same page as the canonical', () => {
@@ -70,17 +70,16 @@ describe('generatePageMetadata', () => {
     // `/studio` and `/llms.txt` carry no prefix and have no language
     // alternative to declare — the fallback is correct there, and only there.
     expect(openGraphOf(generatePageMetadata({ url: '/studio' })).locale).toBe(
-      'en_US'
+      'id_ID'
     )
   })
 
-  it('declares hreflang for both locales on a localized path', () => {
-    const languages = generatePageMetadata({ url: '/id/studio' }).alternates
+  it('declares hreflang only for approved translations on a localized path', () => {
+    const languages = generatePageMetadata({ url: '/id/cara-kerja' }).alternates
       ?.languages
     expect(languages).toMatchObject({
-      'en-US': '/en/studio',
-      'id-ID': '/id/studio',
-      'x-default': '/en/studio',
+      'id-ID': '/id/cara-kerja',
+      'x-default': '/id/cara-kerja',
     })
   })
 })

@@ -5,14 +5,10 @@ import { useLocale, useTranslations } from 'next-intl'
 import type { MouseEvent } from 'react'
 
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
-import {
-  LOCALE_LABELS,
-  LOCALE_TAGS,
-  type Locale,
-  routing,
-} from '@/lib/i18n/routing'
+import { LOCALE_LABELS, LOCALE_TAGS, type Locale } from '@/lib/i18n/routing'
 import { announceNavigation } from '@/lib/motion/navigation-signal'
 
+import { localesForLanguageSwitcher } from './locales'
 import { sectionInView } from './section'
 
 import s from './language-switcher.module.css'
@@ -24,7 +20,12 @@ import s from './language-switcher.module.css'
 const SECTIONS = 'main [data-region][id], main section[id]'
 
 /**
- * LanguageSwitcher — two languages, so two links.
+ * LanguageSwitcher — one link per approved public language. On an approved
+ * page it disappears while only one language is public, because a switcher
+ * without a choice is noise and would advertise an unavailable destination.
+ * On an unpublished locale's preview or old deep link, the one approved
+ * language remains visible as an exit; `locales.ts` owns that asymmetry and
+ * records its cost.
  *
  * Provenance: original work for this project. No third-party code copied.
  *
@@ -61,13 +62,15 @@ const SECTIONS = 'main [data-region][id], main section[id]'
  *
  * ## Accessibility
  *
- * - `aria-current="true"` marks the active language, so it is announced
- *   rather than only shown as a different weight.
+ * - `aria-current="true"` marks the active language when it is one of the
+ *   published choices, so it is announced rather than only shown as a
+ *   different weight. An unpublished preview has no current item in this
+ *   list; its only link is the approved destination.
  * - `hrefLang` states each link's destination language, which is what tells a
  *   screen reader to switch pronunciation and a crawler to pair the two.
- * - The active language stays a link rather than becoming inert text: the
- *   list keeps a stable shape, and re-selecting the current language is
- *   harmless.
+ * - With multiple published languages, the active language stays a link
+ *   rather than becoming inert text: the list keeps a stable shape, and
+ *   re-selecting the current language is harmless.
  * - `lang` on each label makes the language *name* read in its own language —
  *   "Bahasa Indonesia" should not be pronounced with English phonemes.
  */
@@ -82,6 +85,9 @@ export function LanguageSwitcher({
   const active = useLocale()
   const t = useTranslations('language')
   const router = useRouter()
+  const visibleLocales = localesForLanguageSwitcher(active)
+
+  if (visibleLocales.length === 0) return null
 
   /**
    * Carries the section being read across the switch. A modified click (a new
@@ -119,7 +125,7 @@ export function LanguageSwitcher({
       data-epic="locale-sheet"
     >
       <ul className={s.list}>
-        {routing.locales.map((locale) => (
+        {visibleLocales.map((locale) => (
           <li key={locale}>
             <Link
               href={pathname}

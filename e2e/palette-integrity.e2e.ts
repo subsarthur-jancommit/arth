@@ -20,7 +20,7 @@ import { FEATURED_WORK } from './fixtures'
  * says it is?** It did not:
  *
  *   light  /en/journal   paper #f4f3ef (244) painted as 232.7   -11.1
- *   dark   /en/studio    ink   #110f0d  (17) painted as  21.6    +4.5
+ *   dark   /en/cara-kerja    ink   #110f0d  (17) painted as  21.6    +4.5
  *
  * The cause was `vault/magic/noise-texture`, whose filter chain produced a
  * mid-grey #4d4d4d veil rather than zero-mean grain, so every ground on the
@@ -109,8 +109,7 @@ const SCROLL = 1600
 const ROUTES = [
   { path: '/en/journal', theme: 'light' },
   { path: '/id/journal', theme: 'light' },
-  { path: '/en/studio', theme: 'dark' },
-  { path: '/en/konstruksi', theme: 'dark' },
+  { path: '/id/konstruksi', theme: 'light' },
   { path: `/en/work/${FEATURED_WORK}`, theme: 'dark' },
 ] as const
 

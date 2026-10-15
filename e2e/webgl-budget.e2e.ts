@@ -63,7 +63,7 @@ async function loadHomeWithoutMotion(browser: Browser) {
     }
   })
 
-  await page.goto('/en', { waitUntil: 'networkidle' })
+  await page.goto('/id', { waitUntil: 'networkidle' })
   // Give any post-hydration import() time to fire, so a lazy load that should
   // not have happened still shows up here.
   await page.waitForTimeout(1500)

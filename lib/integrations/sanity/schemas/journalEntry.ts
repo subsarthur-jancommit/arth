@@ -85,11 +85,32 @@ export const journalEntry = defineType({
     }),
 
     defineField({
-      name: 'practice',
+      name: 'unit',
       title: 'Unit',
       type: 'string',
       description:
-        'Which unit this belongs under. Optional — an entry may belong to none.',
+        'Kunci unit Arthur. Dokumen lama tetap dibaca dari practice sampai migrasi §6 selesai.',
+      options: {
+        list: UNITS.map((value) => ({
+          title: UNIT_STUDIO_TITLES[value],
+          value,
+        })),
+        layout: 'radio',
+      },
+    }),
+    defineField({
+      name: 'practice',
+      title: 'Unit lama (arsip)',
+      type: 'string',
+      description:
+        'Baca-saja sampai nilai lama dipindahkan ke unit melalui rencana §6 yang disetujui.',
+      readOnly: true,
+      hidden: ({ value }) => value === undefined,
+      initialValue: undefined,
+      deprecated: {
+        reason:
+          'Gunakan Unit. Nilai lama dipertahankan sementara migrasi data selesai.',
+      },
       options: {
         /*
          * From the same constant the routes, the footer index and the studio

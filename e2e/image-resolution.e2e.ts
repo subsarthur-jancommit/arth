@@ -38,7 +38,7 @@ const MIN_RATIO = 0.95
  * (`project-gallery`, `stripSizing`) — a different claim from the grid's, and
  * one nothing measured until it was added here.
  */
-const ROUTES = ['/en', `/en/work/${FEATURED_WORK}`, `/en/work/${RUN_WORK}`]
+const ROUTES = ['/id', `/en/work/${FEATURED_WORK}`, `/en/work/${RUN_WORK}`]
 
 test.describe('images are not upscaled', () => {
   for (const route of ROUTES) {

@@ -4,7 +4,9 @@ import { defineRouting } from 'next-intl/routing'
  * Locale routing — the single source of truth for which locales exist.
  *
  * `localePrefix: 'always'` is deliberate, not the default taken by accident.
- * Both locales carry a path prefix (`/en`, `/id`) and the root redirects.
+ * Both locale segments remain understood for Sanity preview, but public
+ * English URLs redirect to Indonesian until English copy is approved. The
+ * root redirects to `/id` and browser language negotiation is off.
  *
  * The alternative — root serving the default locale, prefix only for the
  * other — gives the home page two valid URLs. `lib/seo/alternates.ts` is
@@ -29,12 +31,16 @@ import { defineRouting } from 'next-intl/routing'
  */
 export const routing = defineRouting({
   locales: ['en', 'id'],
-  defaultLocale: 'en',
+  defaultLocale: 'id',
   localePrefix: 'always',
+  localeDetection: false,
   alternateLinks: false,
 })
 
 export type Locale = (typeof routing.locales)[number]
+
+/** Public locales with approved visitor-facing translations. */
+export const PUBLISHED_LOCALES = ['id'] as const satisfies readonly Locale[]
 
 /**
  * Narrowing guard for a value arriving from a URL segment.

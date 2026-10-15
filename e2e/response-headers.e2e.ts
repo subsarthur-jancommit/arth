@@ -25,8 +25,8 @@ function cacheControl(headers: Record<string, string>): string {
 test.describe('response headers', () => {
   test('statically prerendered pages are cacheable', async ({ request }) => {
     const paths = [
-      '/en',
       '/id',
+      `/id/${UNITS[0]}`,
       /*
        * The unit pages. `/en/work` and `/id/work` are **not** here any
        * more, and that is a deliberate move rather than an omission.
@@ -43,7 +43,7 @@ test.describe('response headers', () => {
        * instead, below and in `e2e/catalogue-layout.e2e.ts`: the catalogue
        * must render in full, server-side, filtered or not.
        */
-      ...UNITS.map((unit) => `/en/${unit}`),
+      ...UNITS.map((unit) => `/id/${unit}`),
     ]
 
     for (const path of paths) {
@@ -88,7 +88,7 @@ test.describe('response headers', () => {
     // than hardcoded, so the test cannot pass against a slug that no longer
     // exists.
     const sitemap = await (await request.get('/sitemap.xml')).text()
-    const path = sitemap.match(/<loc>[^<]*?(\/en\/work\/[^<]+)<\/loc>/)?.[1]
+    const path = sitemap.match(/<loc>[^<]*?(\/id\/work\/[^<]+)<\/loc>/)?.[1]
     test.skip(!path, 'no published project in the sitemap to check')
 
     const response = await request.get(path ?? '')
@@ -102,7 +102,7 @@ test.describe('response headers', () => {
   test('content-hashed build assets are immutable', async ({ request }) => {
     // Discover a real asset rather than hardcoding a hash that changes on
     // every build.
-    const html = await (await request.get('/en')).text()
+    const html = await (await request.get('/id')).text()
     const asset = html.match(/\/_next\/static\/chunks\/[\w.-]+\.js/)?.[0]
     expect(asset, 'no hashed chunk found in the page').toBeTruthy()
 
@@ -127,7 +127,7 @@ test.describe('response headers', () => {
   }) => {
     // `proxy.ts` negotiates Markdown for page documents. A cache that ignores
     // this would serve Markdown to a browser.
-    const response = await request.get('/en')
+    const response = await request.get('/id')
     expect((response.headers().vary ?? '').toLowerCase()).toContain('accept')
   })
 
@@ -153,8 +153,8 @@ test.describe('response headers', () => {
     request,
   }) => {
     const paths = [
-      '/en',
       '/id',
+      '/id/kontak',
       '/en/work',
       '/sitemap.xml',
       '/robots.txt',
@@ -191,7 +191,7 @@ test.describe('response headers', () => {
      * different question from whether the shell does, and this is the only
      * place that can ask it.
      */
-    for (const path of ['/en', '/id', '/en/work', '/id/studio']) {
+    for (const path of ['/id', '/id/konstruksi', '/en/work', '/id/kontak']) {
       const html = await (await request.get(path)).text()
       expect(html, `${path} must carry meta robots`).toMatch(
         /<meta name="robots" content="[^"]*noindex/

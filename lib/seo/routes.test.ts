@@ -11,13 +11,54 @@
 
 import { describe, expect, it } from 'bun:test'
 
+import { SIDES, sideTemplate, UNITS } from '@/lib/content/units'
+import { PUBLISHED_LOCALES } from '@/lib/i18n/routing'
+
 import {
   buildRoutesFromDocuments,
+  routableContentQuery,
   STATIC_ROUTE_TEMPLATES,
   STATIC_ROUTES,
 } from './routes'
 
+describe('the static route catalogue', () => {
+  it('advertises only approved public locales', () => {
+    expect(PUBLISHED_LOCALES).toEqual(['id'])
+    expect(STATIC_ROUTES.every((route) => route.locale === 'id')).toBe(true)
+    expect(STATIC_ROUTES.some((route) => route.path === '/en/cara-kerja')).toBe(
+      false
+    )
+  })
+
+  it('keeps the catalogue and journal pages out of machine route listings', () => {
+    expect(STATIC_ROUTE_TEMPLATES.some((route) => route.path === '/work')).toBe(
+      false
+    )
+    expect(
+      STATIC_ROUTE_TEMPLATES.some((route) => route.path === '/journal')
+    ).toBe(false)
+  })
+
+  it('advertises every valid unit-side pair exactly once', () => {
+    const expected: string[] = UNITS.flatMap((unit) =>
+      SIDES[unit].map((side) => sideTemplate(unit, side))
+    )
+    const advertised = STATIC_ROUTE_TEMPLATES.filter((route) =>
+      expected.includes(route.path)
+    ).map((route) => route.path)
+
+    expect(advertised).toEqual(expected)
+    expect(new Set(advertised).size).toBe(UNITS.length * 2)
+  })
+})
+
 describe('buildRoutesFromDocuments', () => {
+  it('asks Sanity only for approved, indexable fixed pages', () => {
+    expect(routableContentQuery).toContain('statusTinjauan == "disetujui"')
+    expect(routableContentQuery).toContain('metadata.noIndex != true')
+    expect(routableContentQuery).toContain('judul[_key == "id"]')
+  })
+
   it('skips a single malformed document without dropping the valid ones', () => {
     const docs = [
       {
@@ -46,7 +87,7 @@ describe('buildRoutesFromDocuments', () => {
 
     expect(routes).toHaveLength(2)
     expect(routes.map((route) => route.path).sort()).toEqual(
-      ['/about', '/work/hello-world'].sort()
+      ['/halaman/about', '/work/hello-world'].sort()
     )
   })
 
@@ -84,35 +125,19 @@ describe('buildRoutesFromDocuments', () => {
     expect(buildRoutesFromDocuments('not an array')).toEqual([])
   })
 
-  it('drops a document slugged `studio` — the studio page owns that path', () => {
-    /*
-     * The reason changed in Tahap 38, so the comment does too.
-     *
-     * `/studio` used to be Sanity Studio's base path, excluded by
-     * `RESERVED_PATHS` because it sits outside the catch-all and is never
-     * advertised. It is now the **public studio page**, so it is excluded by
-     * `staticPaths` instead: `STATIC_ROUTE_TEMPLATES` carries the template,
-     * and a CMS document may not shadow a route the site already serves.
-     * Same outcome, different guard — and asserting the outcome without the
-     * reason is how a test survives the removal of the thing it tested.
-     */
+  it('namespaces an ordinary fixed page even when its slug matches a static route', () => {
     const docs = [
       {
         _type: 'page',
-        title: 'Studio',
-        slug: { current: 'studio' },
+        title: 'Cara kami bekerja',
+        slug: { current: 'cara-kerja' },
         _updatedAt: '2026-01-01T00:00:00.000Z',
       },
     ]
 
-    expect(
-      STATIC_ROUTE_TEMPLATES.some((route) => route.path === '/studio')
-    ).toBe(true)
-    // Advertised per locale, never as the bare template.
-    expect(STATIC_ROUTES.some((route) => route.path === '/studio')).toBe(false)
-    expect(
-      buildRoutesFromDocuments(docs).some((route) => route.path === '/studio')
-    ).toBe(false)
+    expect(buildRoutesFromDocuments(docs).map((route) => route.path)).toEqual([
+      '/halaman/cara-kerja',
+    ])
   })
 
   it('drops a document slugged `cms` — Sanity Studio owns that path', () => {
@@ -177,7 +202,7 @@ describe('buildRoutesFromDocuments', () => {
     expect(routes.some((route) => route.path === '/work')).toBe(false)
   })
 
-  it('lists a `home` page at /home — `/` stays developer-owned', () => {
+  it('lists a home page under /halaman — `/` stays developer-owned', () => {
     const docs = [
       {
         _type: 'page',
@@ -188,7 +213,20 @@ describe('buildRoutesFromDocuments', () => {
     ]
 
     const routes = buildRoutesFromDocuments(docs)
-    expect(routes.map((route) => route.path)).toEqual(['/home'])
+    expect(routes.map((route) => route.path)).toEqual(['/halaman/home'])
+  })
+
+  it('keeps the policy document out of machine listings during legal review', () => {
+    const routes = buildRoutesFromDocuments([
+      {
+        _type: 'page',
+        title: 'Kebijakan Arthur',
+        slug: { current: 'kebijakan' },
+        _updatedAt: '2026-10-15T00:00:00.000Z',
+      },
+    ])
+
+    expect(routes).toEqual([])
   })
 
   it('omits CMS documents whose slugs cannot form canonical internal routes', () => {
@@ -245,7 +283,7 @@ describe('buildRoutesFromDocuments', () => {
     )
 
     expect(routes.map((route) => route.path)).toEqual(
-      safeSlugs.map((slug) => `/${slug}`)
+      safeSlugs.map((slug) => `/halaman/${slug}`)
     )
   })
 })
@@ -284,7 +322,7 @@ describe('buildRoutesFromDocuments — project documents', () => {
     ])
 
     expect(routes.map((route) => route.path).sort()).toEqual([
-      '/about',
+      '/halaman/about',
       '/work/about',
     ])
   })

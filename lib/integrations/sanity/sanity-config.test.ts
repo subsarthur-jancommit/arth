@@ -34,7 +34,17 @@ describe('sanity.config.ts locale wiring', () => {
 
     // Every page is served under a locale prefix. A route without `:locale`
     // never matches, and Presentation quietly loses its document mapping.
-    for (const route of ['/:locale/:slug', '/:locale/work/:slug']) {
+    for (const route of [
+      '/:locale/halaman/:slug',
+      '/:locale/kebijakan',
+      '/:locale/work/:slug',
+      '/:locale/kontak',
+      '/:locale/satu-klien-tiga-unit',
+      '/:locale/:unit',
+      '/:locale/:unit/:side',
+      '/:locale/:unit/:side/:chapter',
+      '/:locale/:unit/:side/:chapter/:offer',
+    ]) {
       expect(source, `missing Presentation route ${route}`).toContain(
         `route: '${route}'`
       )
@@ -78,5 +88,58 @@ describe('sanity.config.ts locale wiring', () => {
     // A field typed `internationalizedArrayText` when only 'string' is
     // registered disappears from the Studio without an error.
     expect(source).toContain("fieldTypes: ['string', 'text', 'richText']")
+  })
+})
+
+describe('sanity.config.ts singleton structure', () => {
+  it('opens one fixed site settings document and removes it from generic lists', async () => {
+    const source = await readConfig()
+
+    expect(source).toContain("schemaType('siteSettings')")
+    expect(source).toContain("documentId('siteSettings')")
+    expect(source).toContain('S.documentTypeListItems()')
+    expect(source).toContain('MANAGED_TYPES.has')
+    expect(source).toContain('structureTool({ structure })')
+  })
+
+  it('orders Arthur content and exposes the owner review list', async () => {
+    const source = await readConfig()
+
+    for (const type of ['unit', 'side', 'bab', 'offer']) {
+      expect(source).toContain(`S.documentTypeList('${type}')`)
+    }
+
+    expect(source).toContain("title('Perlu Anda')")
+    expect(source).toContain("status: 'perlu-anda'")
+    expect(source).toContain("schemaType('howWeWork')")
+    expect(source).toContain("documentId('howWeWork')")
+  })
+
+  it('replaces direct publishing with Arthur review actions', async () => {
+    const source = await readConfig()
+
+    expect(source).toContain('ApproveArthurDocumentAction')
+    expect(source).toContain('PublishApprovedArthurDocumentAction')
+    expect(source).toContain("action.action !== 'publish'")
+    expect(source).toContain('isArthurContentType(schemaType)')
+  })
+
+  it('maps every routable Arthur document to Presentation', async () => {
+    const source = await readConfig()
+
+    for (const type of [
+      'siteSettings',
+      'howWeWork',
+      'sequence',
+      'unit',
+      'side',
+      'bab',
+      'offer',
+    ]) {
+      expect(source).toContain(`${type}: defineLocations`)
+    }
+
+    expect(source).toContain("href: previewPath('/kontak')")
+    expect(source).toContain("previewPath('/kebijakan')")
   })
 })
