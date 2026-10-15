@@ -2,17 +2,21 @@ import { expect, test } from '@playwright/test'
 
 import { SIDES, sideTemplate, UNITS } from '../lib/content/units'
 import { localizedPath } from '../lib/i18n/paths'
-import { routing } from '../lib/i18n/routing'
+import { PUBLISHED_LOCALES } from '../lib/i18n/routing'
 
 /**
- * The six side pages orient the reader with a buying path, a chapter table,
- * and an ordinary link to the other side. The generic route sweep supplies
- * console and axe coverage; this spec protects that unit-side relationship.
+ * The six side pages orient the reader with a buying path (the network side
+ * with its money flow) and an ordinary link to the other side. The generic
+ * route sweep supplies console and axe coverage; this spec protects that
+ * unit-side relationship.
  *
- * Playwright is not run while the owner has suspended end-to-end checks.
+ * The chapter table is not required here: it renders only once a chapter
+ * has published offers (owner decision P4, R0), and none has yet. Its
+ * behaviour is covered against fixtures in F3-12, once F2-09 exists.
+ * English answers 307 to these pages (K2, R0), so only `/id` is visited.
  */
 test.describe('side pages', () => {
-  for (const locale of routing.locales) {
+  for (const locale of PUBLISHED_LOCALES) {
     for (const unit of UNITS) {
       for (const side of SIDES[unit]) {
         const path = localizedPath(locale, sideTemplate(unit, side))
@@ -28,13 +32,13 @@ test.describe('side pages', () => {
             'the h1 is empty'
           ).toBeGreaterThan(0)
 
+          // The network side has its own template (F3-06): the money flow
+          // takes the buying path's place.
+          const pathEpic =
+            side === 'jaringan' ? 'network-money-flow' : 'side-buying-path'
           await expect(
-            page.locator('[data-epic="side-buying-path"]'),
+            page.locator(`[data-epic="${pathEpic}"]`),
             'the buying path is missing'
-          ).toHaveCount(1)
-          await expect(
-            page.locator('[data-epic="side-chapter-table"]'),
-            'the chapter map is missing'
           ).toHaveCount(1)
 
           const canonical = await page
@@ -62,7 +66,11 @@ test.describe('the side switcher works without JavaScript', () => {
       const secondPath = localizedPath('id', sideTemplate(unit, secondSide))
 
       await page.goto(firstPath)
-      const switcher = page.locator(`main a[href="${secondPath}"]`)
+      // The switcher itself; the page also links the other side at its
+      // foot, which is a second, separate route out.
+      const switcher = page.locator(
+        `[data-epic="side-sheet-swap"] a[href="${secondPath}"]`
+      )
       await expect(
         switcher,
         `${firstPath} has no ordinary link to ${secondPath}`

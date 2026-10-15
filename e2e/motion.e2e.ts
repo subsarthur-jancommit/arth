@@ -6,6 +6,7 @@ import { routing } from '../lib/i18n/routing'
 import { transitionName } from '../lib/motion/transition-name'
 import { axeTags } from './axe-tags'
 import { FEATURED_WORK } from './fixtures'
+import { REMOVED_IN_F3 } from './removed-in-f3'
 
 /**
  * Handles the in-page probes write to and this file reads back.
@@ -203,9 +204,9 @@ test.describe('motion', () => {
   }
 
   test.describe('under prefers-reduced-motion', () => {
-    // /en redirects to /id; keep the English reduced-motion case on a
-    // rendered preview page, not a second visit to the Indonesian home.
-    for (const path of ['/id', '/en/cara-kerja']) {
+    // /en and Arthur's English pages redirect to /id (K2, R0); keep the
+    // English reduced-motion case on a page that is English: the journal.
+    for (const path of ['/id', '/en/journal']) {
       test(`${path} shows every line of the headline`, async ({ browser }) => {
         const { context, page } = await reducedMotionPage(browser, path)
 
@@ -253,6 +254,7 @@ test.describe('motion', () => {
     test('the route-change overlay never becomes visible', async ({
       browser,
     }) => {
+      test.fixme(true, REMOVED_IN_F3.homeWork)
       const { context, page } = await reducedMotionPage(browser, '/id')
       try {
         /*
@@ -427,6 +429,7 @@ test.describe('motion', () => {
   test('the same cover morphs from the home page, far down it', async ({
     page,
   }) => {
+    test.fixme(true, REMOVED_IN_F3.homeWork)
     /*
      * The case the catalogue test could not see, and the reason Tahap 15b
      * found a defect at all.
@@ -674,6 +677,7 @@ test.describe('motion', () => {
   })
 
   test('a practice name morphs into its own page', async ({ page }) => {
+    test.fixme(true, REMOVED_IN_F3.practiceList)
     /*
      * The second pair on the site, added in Tahap 15.
      *
@@ -826,6 +830,7 @@ test.describe('motion', () => {
   test('the route-change overlay covers, then always uncovers', async ({
     page,
   }) => {
+    test.fixme(true, REMOVED_IN_F3.homeWork)
     await installLiveRoot(page)
     await page.goto('/id')
     await page.waitForTimeout(800)
@@ -893,9 +898,9 @@ test.describe('motion', () => {
  */
 const HEADING_ROUTES = [
   '/id',
-  '/id/cara-kerja',
+  '/id/kontak',
   '/en/journal',
-  '/en/cara-kerja',
+  '/id/konstruksi',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
 ]
@@ -976,6 +981,8 @@ test.describe('a split heading keeps its name', () => {
  * itself: it is an index of the step being read, so it has to change.
  */
 test.describe('the studio process is a held index', () => {
+  test.fixme(true, REMOVED_IN_F3.studio)
+
   test('the held index reports the step being read', async ({ page }) => {
     test.setTimeout(120_000)
     await page.setViewportSize({ width: 1280, height: 800 })
@@ -1089,6 +1096,8 @@ test.describe('the studio process is a held index', () => {
  * sequence, which is the only place the question can be answered.
  */
 test.describe('the studio sequence is audited where it happens', () => {
+  test.fixme(true, REMOVED_IN_F3.studio)
+
   for (const route of ['/en/cara-kerja', '/id/cara-kerja']) {
     test(`${route} passes axe with a step receded`, async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 800 })

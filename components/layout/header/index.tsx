@@ -17,6 +17,7 @@ import { getLinkIntent, Link } from '@/components/ui/link'
 import { BRAND_NAME } from '@/lib/brand'
 import { UNITS, unitTemplate } from '@/lib/content/units'
 import { usePathname } from '@/lib/i18n/navigation'
+import { isAwaitingContent } from '@/lib/seo/awaiting-content'
 import { RouteMarker } from '@/vault/motion/route-marker'
 
 import s from './header.module.css'
@@ -125,11 +126,16 @@ const UNIT_LINKS = UNITS.map((unit) => ({
   labelKey: unit,
 }))
 
+/*
+ * A destination whose page is still awaiting published content is left out
+ * (`lib/seo/awaiting-content.ts`): a primary link that lands on a 404 is
+ * worse than one link fewer.
+ */
 const ROUTE_LINKS = [
   ...UNIT_LINKS.map((link) => ({ ...link, kind: 'unit' as const })),
-  { href: '/cara-kerja', labelKey: 'studio', kind: 'nav' as const },
-  { href: '/kontak', labelKey: 'contact', kind: 'nav' as const },
-] as const
+  { href: '/cara-kerja', labelKey: 'studio' as const, kind: 'nav' as const },
+  { href: '/kontak', labelKey: 'contact' as const, kind: 'nav' as const },
+].filter(({ href }) => !isAwaitingContent(href))
 
 /**
  * Whether this browser has the popover API.
@@ -212,16 +218,23 @@ export function Header() {
   )
 
   /*
-   * The route words share one size on a phone, fitted to the longest of them
-   * in this language — `lib/styles/css/global.css` `.nameplate-title`
-   * measured the face's widest glyph run at 0.72em per character, and the
-   * sheet uses the same figure.
+   * The route words share one size on a phone, fitted to the longest *word*
+   * among them in this language — `lib/styles/css/global.css`
+   * `.nameplate-title` measured the face's widest glyph run at 0.72em per
+   * character, and the sheet uses the same figure.
+   *
+   * Fitting to the longest whole label was right for three one-word routes.
+   * With "Cara kami bekerja" (17 characters) in the list it shrank every word
+   * on the sheet from 80px to 28px on a 390px phone (`docs/TINJAUAN-F01-F03.md`
+   * E8.1). A multi-word label wraps instead (`header.module.css`), so no
+   * single word can overflow and the sheet keeps its display size.
    */
   const routeStyle = {
     '--fit-chars': Math.max(
-      ...ROUTE_LINKS.map(
-        ({ labelKey, kind }) =>
-          Array.from(kind === 'unit' ? tUnit(labelKey) : t(labelKey)).length
+      ...ROUTE_LINKS.flatMap(({ labelKey, kind }) =>
+        (kind === 'unit' ? tUnit(labelKey) : t(labelKey))
+          .split(/\s+/)
+          .map((word) => Array.from(word).length)
       )
     ),
   } as CSSProperties

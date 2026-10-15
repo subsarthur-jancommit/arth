@@ -1,11 +1,15 @@
 import cn from 'clsx'
-import { useLocale, useTranslations } from 'next-intl'
+import { useTranslations } from 'next-intl'
 import type { CSSProperties } from 'react'
 
 import { Link } from '@/components/ui/link'
 import { Marquee } from '@/components/ui/marquee'
-import { FALLBACK_CONTACT } from '@/lib/content/home-fallback'
+import {
+  FALLBACK_CONTACT,
+  isPlaceholderEmail,
+} from '@/lib/content/home-fallback'
 import { UNITS, unitTemplate } from '@/lib/content/units'
+import { isAwaitingContent } from '@/lib/seo/awaiting-content'
 import { BuildStamp } from '@/vault/blocks/build-stamp'
 import { readBuild } from '@/vault/blocks/build-stamp/build'
 import { GridToggle } from '@/vault/motion/grid-underlay'
@@ -66,16 +70,25 @@ const YEAR = new Date().getFullYear()
  * what makes wiring the CMS through later one edit instead of three. No
  * social profile is linked until Arthur's official accounts are supplied.
  *
- * They are marked as placeholders in the markup below, for the same reason
- * the home page's statement is: showing scaffolding is fine, showing it
- * unlabelled is not.
+ * Until K5 replaces it, the placeholder is not printed at all (owner decision
+ * P4, R0); the column links to the contact page instead.
  */
-const {
-  name: SITE_NAME,
-  email: EMAIL,
-  address: ADDRESS,
-  socials: SOCIAL,
-} = FALLBACK_CONTACT
+const { name: SITE_NAME, email: EMAIL, socials: SOCIAL } = FALLBACK_CONTACT
+
+/** Whether the only address this footer has is still the placeholder. */
+const CONTACT_IS_PLACEHOLDER = isPlaceholderEmail(EMAIL)
+
+/*
+ * Fixed pages in the index, minus any still awaiting published content
+ * (`lib/seo/awaiting-content.ts`): the footer is on every page, so a link
+ * here to a 404 would be on every page too.
+ */
+const INDEX_PAGES = (
+  [
+    { href: '/cara-kerja', labelKey: 'studio' },
+    { href: '/kebijakan', labelKey: 'policy' },
+  ] as const
+).filter(({ href }) => !isAwaitingContent(href))
 
 /*
  * The address's length, for the stylesheet to fit it to its column
@@ -98,7 +111,6 @@ const BUILD = readBuild({
 
 export function Footer() {
   const t = useTranslations('footer')
-  const locale = useLocale()
   /*
    * Two more namespaces rather than new strings.
    *
@@ -159,25 +171,26 @@ export function Footer() {
       </Marquee>
 
       <div className={s.columns}>
+        {/*
+          Contact. The fallback address is a reserved `.invalid` placeholder
+          until K5 names a real channel, and the owner's decision P4 is that a
+          reader never sees a placeholder or a note written for the editor.
+          So until then this column points to the contact page instead of
+          printing an address nobody answers.
+        */}
         <section className={s.column}>
           <h2 className={cn('caption', s.heading)}>{t('contact')}</h2>
-          <span
-            className={cn('p-big', s.email)}
-            style={EMAIL_STYLE}
-            data-placeholder-note
-          >
-            {EMAIL}
-          </span>
-          <p data-placeholder-note className={cn('caption', s.note)}>
-            {t('contactPlaceholderNote')}
-          </p>
-          <p className={cn('caption', s.note)}>{t('addressHeading')}</p>
-          <p className={cn('caption', s.note)}>
-            {locale === 'id' ? ADDRESS.id : ADDRESS.en}
-          </p>
-          <p data-placeholder-note className={cn('caption', s.note)}>
-            {t('addressPlaceholderNote')}
-          </p>
+          {CONTACT_IS_PLACEHOLDER ? (
+            <ul className={s.list}>
+              <li>
+                <IndexLink href="/kontak">{tNav('contact')}</IndexLink>
+              </li>
+            </ul>
+          ) : (
+            <span className={cn('p-big', s.email)} style={EMAIL_STYLE}>
+              {EMAIL}
+            </span>
+          )}
         </section>
 
         {/* The footer index keeps the three units, work method, and policy
@@ -186,12 +199,11 @@ export function Footer() {
         <section className={s.column}>
           <h2 className={cn('caption', s.heading)}>{t('index')}</h2>
           <ul className={s.list}>
-            <li>
-              <IndexLink href="/cara-kerja">{tNav('studio')}</IndexLink>
-            </li>
-            <li>
-              <IndexLink href="/kebijakan">{tNav('policy')}</IndexLink>
-            </li>
+            {INDEX_PAGES.map(({ href, labelKey }) => (
+              <li key={href}>
+                <IndexLink href={href}>{tNav(labelKey)}</IndexLink>
+              </li>
+            ))}
             {UNITS.map((value) => (
               <li key={value}>
                 <IndexLink href={unitTemplate(value)}>{tWork(value)}</IndexLink>
@@ -200,9 +212,10 @@ export function Footer() {
           </ul>
         </section>
 
-        <section className={s.column}>
-          <h2 className={cn('caption', s.heading)}>{t('elsewhere')}</h2>
-          {SOCIAL.length > 0 ? (
+        {/* Shown only once there is an official account to link (P4). */}
+        {SOCIAL.length > 0 && (
+          <section className={s.column}>
+            <h2 className={cn('caption', s.heading)}>{t('elsewhere')}</h2>
             <ul className={s.list}>
               {SOCIAL.map((item) => (
                 <li key={item.url}>
@@ -212,12 +225,8 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          ) : (
-            <p data-placeholder-note className={cn('caption', s.note)}>
-              {t('elsewherePlaceholderNote')}
-            </p>
-          )}
-        </section>
+          </section>
+        )}
 
         <section className={s.column}>
           <h2 className={cn('caption', s.heading)}>{t('colophon')}</h2>

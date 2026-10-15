@@ -29,6 +29,8 @@ export default async function ContactPage() {
     getTranslations('contactPage'),
   ])
   const statement = content.statement as PortableTextBlock[] | null
+  const hasRealChannel =
+    content.whatsappHref !== null || content.emailHref !== null
 
   return (
     <Wrapper theme="light" lenis={{ anchors: true }}>
@@ -37,14 +39,16 @@ export default async function ContactPage() {
           <p className={cn('caption', s.eyebrow)}>{t('eyebrow')}</p>
           <h1 className={cn('h1', s.title)}>{t('title')}</h1>
           <p className={cn('p-big', s.lead)}>{t('lead')}</p>
-          <Link
-            href="#contact"
-            className={cn('caption', s.heroAction)}
-            data-press="cta"
-            data-intent=""
-          >
-            {t('heroAction')}
-          </Link>
+          {hasRealChannel && (
+            <Link
+              href="#contact"
+              className={cn('caption', s.heroAction)}
+              data-press="cta"
+              data-intent=""
+            >
+              {t('heroAction')}
+            </Link>
+          )}
         </header>
 
         {isDraftMode && (
@@ -53,25 +57,23 @@ export default async function ContactPage() {
           </p>
         )}
 
-        <StudioNote
-          id="pernyataan-pemilik"
-          className={s.ownerStatement}
-          eyebrow={t('ownerEyebrow')}
-          title={statement ? t('ownerTitle') : t('ownerMissingTitle')}
-        >
-          {statement ? (
+        {/* The owner's statement, once there is one (P4: no empty states). */}
+        {statement && (
+          <StudioNote
+            id="pernyataan-pemilik"
+            className={s.ownerStatement}
+            eyebrow={t('ownerEyebrow')}
+            title={t('ownerTitle')}
+          >
             <RichText content={statement} paragraphClassName="p-big" />
-          ) : (
-            <p className="p-big">{t('ownerMissingBody')}</p>
-          )}
-        </StudioNote>
+          </StudioNote>
+        )}
 
         <ContactLedger
           className={s.ledger}
           regions={content.regions}
           email={content.email}
           emailHref={content.emailHref}
-          emailIsPlaceholder={content.emailIsPlaceholder}
           whatsappHref={content.whatsappHref}
           responseTime={content.responseTime}
           address={content.address}
@@ -84,18 +86,11 @@ export default async function ContactPage() {
             regionsLabel: t('regionsLabel'),
             contactEyebrow: t('contactEyebrow'),
             contactReadyTitle: t('contactReadyTitle'),
-            contactHeldTitle: t('contactHeldTitle'),
-            contactHeldBody: t('contactHeldBody'),
             whatsapp: t('whatsapp'),
             email: t('email'),
-            emailDummy: t('emailDummy'),
-            emailDummyNote: t('emailDummyNote'),
             responseTime: t('responseTime'),
-            responseTimeMissing: t('responseTimeMissing'),
             address: t('address'),
-            addressDummyNote: t('addressDummyNote'),
             socials: t('socials'),
-            formNote: t('formNote'),
             copy: t('copy'),
             copied: t('copied'),
             copyFailed: t('copyFailed'),

@@ -178,7 +178,8 @@ test.describe('Markdown content negotiation', () => {
       if (htmlVary.includes(field)) expect(markdownVary).toContain(field)
     }
 
-    expect(body).toContain(`# Home | ${SITE.name}`)
+    // Indonesian is the default since F1-07 (K1); the home is "Beranda".
+    expect(body).toContain(`# Beranda | ${SITE.name}`)
     expect(body).toContain('## When to use')
     expect(body).toContain('## How to use')
   })
@@ -251,7 +252,7 @@ test.describe('Markdown content negotiation', () => {
     // Only approved Indonesian routes have public Markdown mirrors.
     // markdownPathForRoute('/id') is '/id.md'; English previews are not
     // advertised as public documents until their copy is approved.
-    for (const path of ['/id.md', '/id/cara-kerja.md']) {
+    for (const path of ['/id.md', '/id/kontak.md']) {
       const response = await request.get(path)
       expect(response.status(), path).toBe(200)
       expect(response.headers()['content-type'], path).toBe(
@@ -260,7 +261,7 @@ test.describe('Markdown content negotiation', () => {
       expect(await response.text(), path).toContain(`| ${SITE.name}`)
     }
 
-    for (const path of ['/en.md', '/en/cara-kerja.md']) {
+    for (const path of ['/en.md', '/en/kontak.md']) {
       const response = await request.get(path, { maxRedirects: 0 })
       expect(response.status(), `${path} should not publish English copy`).toBe(
         404

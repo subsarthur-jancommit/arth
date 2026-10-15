@@ -48,9 +48,16 @@ type ProgressTextProps = {
    * the dim value at `scrollY 0`, and 89 nodes failed at once.
    *
    * Swept against axe: 0.45 gives 4.21, 0.5 is the first value that passes.
-   * The default is 0.55, one step above that floor so a palette change does
+   * The default was 0.55, one step above that floor so a palette change does
    * not silently cross it. The reveal is gentler than it was, and a legible
    * gentle effect beats an illegible strong one.
+   *
+   * That sweep was on the dark theme, where the studio page lived. F3-02 put
+   * the only remaining use on the light unit page, where ink faded over paper
+   * loses contrast faster: 0.55 measured **4.04:1** in `contrast-situ` on
+   * `/id/konstruksi` (CI run 38668698123). Computed from the palette (ink
+   * #110f0d over paper #f4f3ef): 0.60 gives 4.85, 0.65 gives 5.75 on light and
+   * 7.61 on dark. 0.65 keeps the same one-step margin on the worse theme.
    */
   dimOpacity?: number
   className?: string
@@ -70,7 +77,7 @@ export function ProgressText({
   children,
   start = 'top top',
   end = 'bottom bottom',
-  dimOpacity = 0.55,
+  dimOpacity = 0.65,
   className,
   style,
 }: ProgressTextProps) {

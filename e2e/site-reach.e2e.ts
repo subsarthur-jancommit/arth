@@ -52,7 +52,9 @@ import { FEATURED_WORK } from './fixtures'
  * a guess and it stays inside the requested locale.
  */
 const GUESSED: [typed: string, lands: string][] = [
-  ['/en/contact', '/en/kontak'],
+  // `/en/kontak` itself answers 307 to `/id/kontak` since R0 (K2), so the
+  // single-hop guess is the Indonesian one.
+  ['/id/contact', '/id/kontak'],
   ['/id/karya', '/id/work'],
 ]
 
@@ -91,7 +93,7 @@ test.describe('a URL guessed from a nav label goes somewhere', () => {
     // `/en/work` is the catalogue and `/en/konstruksi` a unit page; a
     // redirect table that caught either would be worse than the 404s it
     // exists to remove.
-    for (const route of ['/en/work', '/id/work', `/en/${UNITS[0]}`]) {
+    for (const route of ['/en/work', '/id/work', `/id/${UNITS[0]}`]) {
       await page.goto(route)
       expect(new URL(page.url()).pathname, `${route} was redirected`).toBe(
         route
@@ -135,8 +137,8 @@ const HUMAN_ROUTES = [
   '/id',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
-  `/en/${UNITS[0]}`,
-  '/en/cara-kerja',
+  `/id/${UNITS[0]}`,
+  '/id/kontak',
   '/en/journal',
   '/en/journal/scope-is-the-deliverable',
 ] as const
@@ -305,7 +307,7 @@ test.describe('every page offers a way onward', () => {
   const CHROME_MACHINE_HREFS =
     /^\/(llms\.txt|sitemap\.xml|robots\.txt|cms|api\/|agent-content)/
 
-  for (const route of ['/id', `/en/work/${FEATURED_WORK}`, '/id/cara-kerja']) {
+  for (const route of ['/id', `/en/work/${FEATURED_WORK}`, '/id/kontak']) {
     test(`${route}: the chrome links to localized pages`, async ({ page }) => {
       await page.goto(route)
       await page.waitForLoadState('networkidle')
@@ -339,8 +341,10 @@ test.describe('every page offers a way onward', () => {
     expect(legacy.status()).toBe(308)
     expect(legacy.headers().location).toBe('/en/cara-kerja')
 
+    // Its destination awaits published content and answers a real 404
+    // (`lib/seo/awaiting-content.ts`); it is still not Sanity Studio.
     const workMethod = await request.get('/en/cara-kerja')
-    expect(workMethod.status()).toBe(200)
+    expect(workMethod.status()).toBe(404)
     expect(await workMethod.text()).not.toContain(
       '<title>Sanity Studio</title>'
     )

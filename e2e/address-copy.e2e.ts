@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { REMOVED_IN_F3 } from './removed-in-f3'
+
 /**
  * Arthur's displayed contact address can be copied as well as opened.
  *
@@ -11,6 +13,8 @@ import { expect, test } from '@playwright/test'
  * rather than present and dead.
  */
 test.describe('the displayed address can be copied', () => {
+  test.fixme(true, REMOVED_IN_F3.copyAddress)
+
   test('pressing copy puts the address on the clipboard and says so', async ({
     context,
     page,

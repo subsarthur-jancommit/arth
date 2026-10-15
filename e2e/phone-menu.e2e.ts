@@ -125,7 +125,7 @@ test.describe('the phone menu', () => {
     const context = await browser.newContext({ javaScriptEnabled: false })
     const page = await context.newPage()
     try {
-      await page.goto('/id/cara-kerja', { waitUntil: 'load' })
+      await page.goto('/id/kontak', { waitUntil: 'load' })
       await openMenu(page)
 
       const menu = menuOf(page)
@@ -143,7 +143,7 @@ test.describe('the phone menu', () => {
       )
 
       await expect(
-        menu.getByRole('link', { name: 'Cara kami bekerja', exact: true }),
+        menu.getByRole('link', { name: 'Kontak', exact: true }),
         'the page the reader is on is not marked'
       ).toHaveAttribute('aria-current', 'page')
 
@@ -384,13 +384,13 @@ test.describe('the phone menu', () => {
      * resolved by id takes the first one in the tree.
      */
     await page.goto('/id', { waitUntil: 'networkidle' })
-    await page.locator('footer a[href="/id/cara-kerja"]').first().click()
-    await expect(page).toHaveURL(/\/id\/cara-kerja$/)
+    await page.locator('footer a[href="/id/konstruksi"]').first().click()
+    await expect(page).toHaveURL(/\/id\/konstruksi$/)
     await page.waitForLoadState('networkidle')
 
     await openMenu(page)
     await expect(
-      menuOf(page).getByRole('link', { name: 'Cara kami bekerja', exact: true })
+      menuOf(page).getByRole('link', { name: 'Konstruksi', exact: true })
     ).toHaveAttribute('aria-current', 'page')
   })
 
@@ -523,7 +523,7 @@ test.describe('the same nav on desktop', () => {
       'Konstruksi',
       'Teknologi',
       'Peekabo',
-      'Cara kami bekerja',
+      // "Cara kami bekerja" returns when its page is published (R0, R5).
       'Kontak',
     ]) {
       await expect(

@@ -1,6 +1,7 @@
 import type { Locator, Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
+import { REMOVED_IN_F3 } from './removed-in-f3'
 import {
   plateSkipReason,
   waitForCanvas,
@@ -158,6 +159,7 @@ async function readSettled(shell: Locator) {
 
 test.describe('material layer', () => {
   test('no plate is ever a blank box', async ({ page }) => {
+    test.fixme(true, REMOVED_IN_F3.plates)
     /*
      * ## What this asserts, and what it deliberately does not
      *
@@ -276,6 +278,7 @@ test.describe('material layer', () => {
   test('COMMIT hands the plate back to the DOM before navigating', async ({
     page,
   }) => {
+    test.fixme(true, REMOVED_IN_F3.plates)
     await showWorkGrid(page)
 
     /*
@@ -337,6 +340,7 @@ test.describe('material layer', () => {
   })
 
   test('the keyboard reaches COMMIT too', async ({ page }) => {
+    test.fixme(true, REMOVED_IN_F3.plates)
     await showWorkGrid(page)
 
     const root = page.locator('[data-material-shell]').first()
@@ -364,6 +368,7 @@ test.describe('material layer', () => {
   })
 
   test('repeated mounts do not grow GPU memory', async ({ page }) => {
+    test.fixme(true, REMOVED_IN_F3.plates)
     /*
      * Eight full navigations of the site's heaviest page, each waiting for
      * the network to go quiet and then 2.5s for the canvas to draw. The

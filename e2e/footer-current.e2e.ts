@@ -6,8 +6,9 @@ import { expect, test } from '@playwright/test'
  * `aria-current="page"`, and marked by more than ink.
  */
 for (const [path, name] of [
-  ['/en/peekabo', 'Peekabo'],
-  ['/en/cara-kerja', 'How we work'],
+  ['/id/peekabo', 'Peekabo'],
+  // The contact column links the contact page until K5 names a channel.
+  ['/id/kontak', 'Kontak'],
   ['/id/konstruksi', 'Konstruksi'],
   ['/id/teknologi', 'Teknologi'],
 ] as const) {

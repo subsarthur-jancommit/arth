@@ -75,6 +75,10 @@ const DELIBERATE = {
   // with one.
   'studio-note:eyebrow': 'omitted on /, with the reason at the call site',
 
+  // Passed once the first commission card opens registration. Until then the
+  // block omits the section rather than showing "not open yet" (P4, R0).
+  'network-side:registration': 'waits for the first commission card',
+
   /*
    * Four props whose only caller was the practice page, retired in F1-03.
    *

@@ -37,7 +37,7 @@ async function expectUnder(page: Page, name: string) {
 test.describe('the route marker stands under the current route', () => {
   test.use({ viewport: { width: 1440, height: 900 } })
 
-  test('under Konstruksi on its unit route, then under Cara kami bekerja', async ({
+  test('under Konstruksi on its unit route, then under Kontak', async ({
     page,
   }) => {
     await page.goto('/id/konstruksi')
@@ -45,10 +45,10 @@ test.describe('the route marker stands under the current route', () => {
 
     await page
       .getByRole('navigation', { name: 'Utama' })
-      .getByRole('link', { name: 'Cara kami bekerja', exact: true })
+      .getByRole('link', { name: 'Kontak', exact: true })
       .click()
-    await expect(page).toHaveURL(/\/id\/cara-kerja$/)
-    await expectUnder(page, 'Cara kami bekerja')
+    await expect(page).toHaveURL(/\/id\/kontak$/)
+    await expectUnder(page, 'Kontak')
   })
 
   test('gone where no route is current', async ({ page }) => {

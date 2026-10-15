@@ -1,5 +1,7 @@
 import { expect, type Page, test } from '@playwright/test'
 
+import { REMOVED_IN_F3 } from './removed-in-f3'
+
 /**
  * A step of the studio's process can be pointed at
  * (`vault/blocks/step-sequence`, `linkSteps`).
@@ -30,6 +32,8 @@ async function copiedLink(page: Page) {
 }
 
 test.describe('a step of the studio process can be pointed at', () => {
+  test.fixme(true, REMOVED_IN_F3.studio)
+
   test('every step carries its id, the same in both languages', async ({
     page,
   }) => {
@@ -67,6 +71,8 @@ test.describe('a step of the studio process can be pointed at', () => {
 })
 
 test.describe('under reduced motion', () => {
+  test.fixme(true, REMOVED_IN_F3.studio)
+
   /*
    * No trigger leads the steps under the preference, so the held counter
    * stays at the first. The copy is read from layout at the press instead,

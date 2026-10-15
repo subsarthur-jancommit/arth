@@ -2,6 +2,7 @@ import type { ConsoleMessage, Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
 import { UNITS } from '../lib/content/units'
+import { REMOVED_IN_F3 } from './removed-in-f3'
 
 declare global {
   /** Overlay states sampled inside the page by the probes below. */
@@ -145,6 +146,7 @@ function collectErrors(page: Page) {
 
 test.describe('a reader moving through the site', () => {
   test('seven hops leave nothing behind', async ({ page }) => {
+    test.fixme(true, REMOVED_IN_F3.practiceList)
     const errors = collectErrors(page)
     const [first, second] = UNITS
 
@@ -170,7 +172,7 @@ test.describe('a reader moving through the site', () => {
     // Hop 2 — a unit to the next unit, through the sibling links the unit
     // page carries. Same component on both ends, which is where a leaked
     // transition name would do the most damage.
-    await page.locator(`a[href="/id/${second}"]`).first().click()
+    await page.locator(`main a[href="/id/${second}"]`).first().click()
     await page.waitForURL(`**/${second}`)
     const hop2 = await resting(page)
     assertOpenedAtTop(hop2, 'hop 2 unit → next unit')
@@ -209,7 +211,7 @@ test.describe('a reader moving through the site', () => {
     // Hop 6 — the same navigation as hop 2, six hops later. If any state
     // leaked along the way, this is where it shows: same assertions, and they
     // have to pass identically.
-    await page.locator(`a[href="/id/${second}"]`).first().click()
+    await page.locator(`main a[href="/id/${second}"]`).first().click()
     await page.waitForURL(`**/${second}`)
     const hop6 = await resting(page)
     assertOpenedAtTop(hop6, 'hop 6 (repeat of hop 2)')
@@ -248,9 +250,9 @@ test.describe('a reader moving through the site', () => {
      */
     const [first, second] = UNITS
 
-    await page.goto(`/en/${first}`)
+    await page.goto(`/id/${first}`)
     await page.waitForTimeout(1500)
-    await page.locator(`a[href="/en/${second}"]`).first().click()
+    await page.locator(`main a[href="/id/${second}"]`).first().click()
     await page.waitForURL(`**/${second}`)
     await page.waitForTimeout(1800)
 
@@ -334,9 +336,9 @@ test.describe('a reader moving through the site', () => {
     const page = await context.newPage()
     try {
       const [first, second] = UNITS
-      await page.goto(`/en/${first}`)
+      await page.goto(`/id/${first}`)
       await page.waitForTimeout(1200)
-      await page.locator(`a[href="/en/${second}"]`).first().click()
+      await page.locator(`main a[href="/id/${second}"]`).first().click()
       await page.waitForURL(`**/${second}`)
       await page.waitForTimeout(1200)
       await page.goBack()
@@ -405,7 +407,9 @@ test.describe('a reader moving through the site', () => {
      * actually reach at whichever width the test is running.
      */
     await page
-      .locator('a[href="#work"]:visible, a[href="#contact"]:visible')
+      .locator(
+        'a[href="#situasi"]:visible, a[href="#work"]:visible, a[href="#contact"]:visible'
+      )
       .first()
       .click()
     await page.waitForTimeout(2200)
@@ -512,6 +516,7 @@ test.describe('the pinned passage never takes the page away', () => {
   })
 
   test('reduced motion adds no empty scroll', async ({ browser }) => {
+    test.fixme(true, REMOVED_IN_F3.passage)
     /*
      * The failure this shape exists to avoid, and the one that would be
      * invisible in review: a pin spacer is created by ScrollTrigger, not by

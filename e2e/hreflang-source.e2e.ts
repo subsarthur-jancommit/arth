@@ -11,7 +11,7 @@ import { expect, test } from '@playwright/test'
  * approved, the head advertises only Indonesian and the Indonesian default.
  */
 test.describe('hreflang comes from the page alone', () => {
-  for (const path of ['/id', '/id/cara-kerja', '/id/journal']) {
+  for (const path of ['/id', '/id/kontak', '/id/journal']) {
     test(`${path} advertises only approved hreflang in the head`, async ({
       request,
     }) => {
@@ -30,16 +30,16 @@ test.describe('hreflang comes from the page alone', () => {
     })
   }
 
-  test('an English preview advertises no public hreflang', async ({
+  // An untranslated Arthur page has no public English address at all: it
+  // answers 307 to its Indonesian twin (K2, R0), so there is no English
+  // document to carry an hreflang. Draft mode keeps the preview reachable.
+  test('an untranslated English page answers with its Indonesian twin', async ({
     request,
   }) => {
-    const response = await request.get('/en/cara-kerja', { maxRedirects: 0 })
-    expect(response.status()).toBe(200)
-    expect(response.headers().link ?? '').not.toContain('hreflang')
-
-    const html = await response.text()
-    expect(html).not.toContain('hrefLang="en-US"')
-    expect(html).not.toContain('hrefLang="id-ID"')
-    expect(html).not.toContain('hrefLang="x-default"')
+    const response = await request.get('/en/kontak', { maxRedirects: 0 })
+    expect(response.status()).toBe(307)
+    expect(
+      new URL(response.headers().location ?? '', 'http://x').pathname
+    ).toBe('/id/kontak')
   })
 })

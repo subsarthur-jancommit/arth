@@ -282,8 +282,8 @@ test.describe('interaction grammar', () => {
      * defect Tahap 50 found on `/cara-kerja`. The lesson was that an unmarked
      * moment is not an absent one.
      */
-    { path: '/en/konstruksi' },
-    { path: '/en/cara-kerja' },
+    { path: '/id/konstruksi' },
+    { path: '/id/kontak' },
     { path: '/en/journal' },
     { path: '/en/journal/scope-is-the-deliverable' },
   ] as const

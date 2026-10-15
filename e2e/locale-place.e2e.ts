@@ -26,6 +26,10 @@ test.describe('unapproved English is not offered as a language choice', () => {
     const response = await page.goto(path)
     expect(response?.status()).toBe(200)
     await expect(page).toHaveURL(new RegExp(`${path}$`))
-    await expect(page.locator('[data-epic="locale-sheet"]')).toHaveCount(0)
+    // An English page keeps one exit to the approved language
+    // (`components/ui/language-switcher/locales.ts`), and no English choice.
+    const sheet = page.locator('[data-epic="locale-sheet"]')
+    await expect(sheet.locator('a')).toHaveCount(1)
+    await expect(sheet.locator('a[hreflang^="en"]')).toHaveCount(0)
   })
 })

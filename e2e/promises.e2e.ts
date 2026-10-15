@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test'
 
-import { routing } from '@/lib/i18n/routing'
-
-/** `/en` redirects to `/id`; an English inner page remains a direct preview. */
-const LOCALE_SURFACES = ['/id', '/en/cara-kerja'] as const
+/**
+ * `/en` and Arthur's untranslated English pages redirect to `/id` (K2, R0); the
+ * journal is English, so it carries the English side of these checks.
+ */
+const LOCALE_SURFACES = ['/id', '/en/journal'] as const
 
 /**
  * The site keeps the promises it makes about itself.
@@ -127,10 +128,10 @@ test.describe('locale parity', () => {
       }
     }
 
-    // English has no approved root landing page, but its direct inner route
-    // remains available for preview. Compare the same page in both locales.
-    const en = await read('/en/cara-kerja')
-    const id = await read('/id/cara-kerja')
+    // Arthur's own pages have no public English address yet (K2, R0). The
+    // journal index exists in both languages, so compare it.
+    const en = await read('/en/journal')
+    const id = await read('/id/journal')
 
     expect(en.meta, 'no meta description on /en').toBeTruthy()
     expect(en.description, 'no Organization description on /en').toBeTruthy()
@@ -150,8 +151,8 @@ test.describe('locale parity', () => {
       const html = await (await request.get(path)).text()
       return html.match(/"@id":"([^"]*#organization)"/)?.[1]
     }
-    const englishId = await organizationId('/en/cara-kerja')
-    const indonesianId = await organizationId('/id/cara-kerja')
+    const englishId = await organizationId('/en/journal')
+    const indonesianId = await organizationId('/id/journal')
     expect(englishId).toBeTruthy()
     expect(englishId).toBe(indonesianId)
   })
@@ -222,58 +223,50 @@ test.describe('the site does not assert what it does not know', () => {
     })
   }
 
-  for (const locale of routing.locales) {
-    test(`${locale} labels a reserved contact address as temporary`, async ({
+  /*
+   * Owner decision P4 (`docs/RENCANA-REVISI-F3.md`), which reverses Tahap 35.
+   *
+   * Tahap 35 required a placeholder to be shown *with a label*. In practice
+   * the labels were notes to the editor — "Ganti sebelum kontak Arthur
+   * diterbitkan", a `NOTE:` prefix — printed three times on every page
+   * (`docs/TINJAUAN-F01-F03.md` E6.5, E7.1). Now a placeholder is not shown at
+   * all: the contact action points to the contact page until K5 names a real
+   * channel, and an empty section is omitted.
+   */
+  const READER_PAGES = [
+    '/id',
+    '/id/konstruksi',
+    '/id/konstruksi/pelaku-proyek',
+    '/id/peekabo/jaringan',
+    '/id/kontak',
+  ] as const
+  const EDITOR_NOTE =
+    /NOTE:|\bdummy\b|\.invalid\b|\.example\b|Contoh No\.|Example Street|Kota Contoh|Ganti sebelum|setelah disusun di Sanity|disetujui untuk tayang|belum diterbitkan|Belum dibuka/i
+
+  for (const path of READER_PAGES) {
+    test(`${path} shows no placeholder and no note for the editor`, async ({
       page,
     }) => {
-      await page.goto(`/${locale}`)
-      const contact = page.locator('#contact')
-      const reservedAddress = contact.getByText(/\.(?:example|invalid)$/i)
+      await page.goto(path)
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
 
-      if ((await reservedAddress.count()) > 0) {
-        await expect(contact.locator('[data-placeholder-note]')).toBeVisible()
-      }
-      await expect(
-        contact.getByText(/Contoh No\. 00|Example Street/i)
-      ).toBeVisible()
-      await expect(
-        contact.locator('[data-placeholder-note]').last()
-      ).toBeVisible()
+      const text = await page.locator('body').innerText()
+      // Anti-vacuum: a page that rendered nothing must not pass.
+      expect(text.length, `${path} rendered almost nothing`).toBeGreaterThan(
+        200
+      )
+      expect(text).not.toMatch(EDITOR_NOTE)
+      await expect(page.locator('[data-placeholder-note]')).toHaveCount(0)
     })
   }
 
-  /*
-   * The defect this was written for: `isPlaceholder` was
-   * `settings === null`, while every field fell back independently. With a
-   * half-filled settings document the flag read false, the note went unshown,
-   * and the fallback paragraphs shipped as if the studio had written them.
-   */
-  // This statement block belongs to the Indonesian home. The English root
-  // redirects there, and the direct English preview above is a different page.
-  test('/id labels fallback prose as fallback', async ({ page }) => {
+  test('the home page action leads to the contact page, not a dead address', async ({
+    page,
+  }) => {
     await page.goto('/id')
-    await page.waitForLoadState('networkidle')
-
-    const shown = await page.evaluate(() => {
-      const note = document.querySelector('[data-placeholder-note]')
-      const statement = document.querySelector('[data-statement]')
-      return {
-        hasNote: note !== null,
-        fromFallback: statement?.getAttribute('data-statement') === 'fallback',
-        foundStatement: statement !== null,
-      }
-    })
-
-    // Anti-vacuum: the statement block must exist for the claim to mean
-    // anything.
-    expect(shown.foundStatement, 'no statement block on the page').toBe(true)
-
-    if (shown.fromFallback) {
-      expect(
-        shown.hasNote,
-        'the page shows fallback prose without saying so'
-      ).toBe(true)
-    }
+    const action = page.locator('#contact')
+    await expect(action.locator('a[href="/id/kontak"]')).toHaveCount(1)
+    await expect(action.locator('a[href^="mailto:"]')).toHaveCount(0)
   })
 
   /*

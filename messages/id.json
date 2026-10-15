@@ -31,9 +31,7 @@
     "heroCta": "Pilih situasi Anda",
     "heroCtaContact": "Hubungi kami",
     "placeholderNote": "Teks sementara. Akan diganti oleh kata-kata studio sendiri begitu CMS-nya terisi.",
-    "contactPlaceholderNote": "Alamat surel ini dummy dan tidak aktif. Ganti sebelum kontak Arthur diterbitkan.",
     "addressHeading": "Alamat",
-    "addressPlaceholderNote": "NOTE: alamat ini hanya contoh dan bukan lokasi nyata atau tempat kunjungan. Ganti sebelum kontak Arthur diterbitkan.",
     "heroIndexLabel": "Unit",
     "practiceEyebrow": "Unit",
     "practiceTitle": "Tiga unit Arthur",
@@ -54,7 +52,8 @@
     "methodFallback": "Lingkup, harga, target, dan laporan disepakati tertulis sebelum kerja dimulai.",
     "actionEyebrow": "Langkah pertama",
     "actionFallback": "Ceritakan masalahnya.",
-    "actionAfterFallback": "Kami tentukan unit mana yang bekerja lebih dulu."
+    "actionAfterFallback": "Kami tentukan unit mana yang bekerja lebih dulu.",
+    "actionLink": "Ke halaman kontak"
   },
   "contactPage": {
     "eyebrow": "Tentang dan kontak",
@@ -63,26 +62,17 @@
     "heroAction": "Lihat status kontak",
     "ownerEyebrow": "Pernyataan pemilik",
     "ownerTitle": "Dari pemilik Arthur.",
-    "ownerMissingTitle": "Pernyataan pemilik belum diterbitkan.",
-    "ownerMissingBody": "Sampai kalimat pemilik disetujui, halaman ini hanya menyebut struktur Arthur, wilayah yang sudah dikonfirmasi, dan status kontak apa adanya.",
     "regionsEyebrow": "Wilayah kerja",
     "regionsTitle": "Tiga wilayah, disebut apa adanya.",
     "regionsIntro": "Arthur bekerja untuk kebutuhan di Subang, Purwakarta, dan Bandung. Daftar ini menyatakan jangkauan kerja, bukan alamat kantor.",
     "regionsLabel": "Wilayah layanan Arthur",
     "contactEyebrow": "Kontak",
     "contactReadyTitle": "Pilih kanal yang Anda gunakan.",
-    "contactHeldTitle": "Kontak belum dibuka.",
-    "contactHeldBody": "Kanal utama dan waktu balas masih menunggu keputusan pemilik. Informasi dummy di bawah hanya menjaga bentuk halaman tetap dapat ditinjau; tidak ada pesan yang akan sampai.",
     "whatsapp": "Kirim lewat WhatsApp",
     "email": "Surel",
-    "emailDummy": "Surel dummy",
-    "emailDummyNote": "NOTE: alamat surel ini tidak aktif dan bukan kanal kontak Arthur. Ganti sebelum halaman kontak diterbitkan.",
     "responseTime": "Waktu balas",
-    "responseTimeMissing": "Belum ada waktu balas yang dijanjikan.",
     "address": "Alamat sementara",
-    "addressDummyNote": "NOTE: alamat ini hanya contoh. Ini bukan lokasi nyata, kantor, atau tempat kunjungan.",
     "socials": "Akun resmi",
-    "formNote": "Formulir belum tersedia. Formulir baru dibangun setelah kanal diputuskan dan tinjauan keamanan selesai.",
     "copy": "Salin alamat",
     "copied": "Disalin",
     "copyFailed": "Tidak bisa menyalin — pilih alamat di atas",
@@ -147,10 +137,6 @@
   },
   "footer": {
     "contact": "Pesanan",
-    "contactPlaceholderNote": "Alamat surel ini dummy dan tidak aktif. Ganti sebelum kontak Arthur diterbitkan.",
-    "addressHeading": "Alamat sementara",
-    "addressPlaceholderNote": "NOTE: alamat ini hanya contoh dan bukan lokasi nyata atau tempat kunjungan.",
-    "elsewherePlaceholderNote": "Akun resmi Arthur akan ditambahkan setelah pemilik menetapkannya.",
     "elsewhere": "Di tempat lain",
     "colophon": "Kolofon",
     "rights": "© {year} {name}.",
@@ -243,8 +229,7 @@
     "bridgeEyebrow": "Jembatan",
     "bridgeTitle": "Bila masalahnya berlanjut ke unit lain.",
     "ctaEyebrow": "Langkah pertama",
-    "ctaLink": "Kirim surel ke Arthur",
-    "dummyContactNote": "NOTE: alamat surel ini dummy dan tidak aktif. Ganti sebelum kontak Arthur diterbitkan.",
+    "ctaLink": "Ke halaman kontak",
     "nextUnit": "Unit berikutnya"
   },
   "side": {
@@ -278,7 +263,6 @@
     "typeLabel": "Jenis pekerjaan",
     "entryLabel": "Pintu masuk",
     "offerCount": "{count} offer",
-    "chaptersEmpty": "Bab akan muncul setelah setidaknya tiga offer di sisi ini disetujui untuk tayang.",
     "firstStepEyebrow": "Langkah pertama",
     "firstStepLink": "Mulai percakapan"
   },
@@ -320,7 +304,6 @@
     "paths": {
       "eyebrow": "Pilih jalur",
       "title": "Tiga cara masuk ke jaringan.",
-      "note": "Rincian tiap jalur terbuka sebagai bab setelah offer dan kartu komisinya disetujui.",
       "chapterLabel": "Bab",
       "open": "Buka jalur",
       "referrer": {
@@ -360,9 +343,7 @@
       "condition": "Syarat pembayaran"
     },
     "registration": {
-      "eyebrow": "Pendaftaran",
-      "status": "Belum dibuka",
-      "note": "Pendaftaran dibuka setelah kartu komisi pertama siap. Sampai saat itu, halaman ini hanya menjelaskan alurnya."
+      "eyebrow": "Pendaftaran"
     }
   },
   "sample": {

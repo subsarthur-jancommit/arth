@@ -166,7 +166,7 @@ const ROUTES: { path: string }[] = [
    * nothing on this route has asked for one yet. When a stage wants it, it
    * adds `three` here and says why.
    */
-  { path: '/en/konstruksi' },
+  { path: '/id/konstruksi' },
   /*
    * The studio page (Tahap 24) opts into `gsap` and nothing else.
    *
@@ -175,7 +175,7 @@ const ROUTES: { path: string }[] = [
    * which is a scroll scrub and therefore needs ScrollTrigger. No three.js:
    * nothing on this route has asked for a scene.
    */
-  { path: '/en/cara-kerja' },
+  { path: '/id/kontak' },
   /*
    * The journal, index and entry. Both opt into `gsap` for one thing only:
    * `TextReveal` on their `h1`, which is the entrance vocabulary every route

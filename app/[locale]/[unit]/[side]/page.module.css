@@ -1,14 +1,21 @@
+/*
+ * The header is fixed, so the page clears it the way `/kontak` does. Without
+ * `--header-height` the side switcher — the first thing on the page — sat
+ * under the header bar: CI run 38673280995 recorded the header intercepting
+ * the press on it.
+ */
 .page {
   display: flex;
   flex-grow: 1;
   flex-direction: column;
   gap: calc(96 / 375 * 100vw);
-  padding: calc(40 / 375 * 100vw) calc(20 / 375 * 100vw) calc(96 / 375 * 100vw);
+  padding: calc(var(--header-height) + 40 / 375 * 100vw) calc(20 / 375 * 100vw)
+    calc(96 / 375 * 100vw);
 
   @media (--desktop) {
     gap: calc(152 / 1440 * 100vw);
-    padding: calc(64 / 1440 * 100vw) calc(64 / 1440 * 100vw)
-      calc(128 / 1440 * 100vw);
+    padding: calc(var(--header-height) + 64 / 1440 * 100vw)
+      calc(64 / 1440 * 100vw) calc(128 / 1440 * 100vw);
   }
 }
 

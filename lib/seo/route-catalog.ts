@@ -10,6 +10,7 @@ import {
 } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import { PUBLISHED_LOCALES, type Locale } from '@/lib/i18n/routing'
+import { isAwaitingContent } from '@/lib/seo/awaiting-content'
 import { type Localized, SITE } from '@/lib/seo/site'
 
 export interface StaticRoute {
@@ -135,63 +136,70 @@ const SIDE_DESCRIPTIONS = {
   },
 } satisfies Record<Side, Localized<string>>
 
-export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = [
-  {
-    path: '/',
-    label: { en: 'Home', id: 'Beranda' },
-    description: SITE.description,
-    changeFrequency: 'daily',
-    priority: 1,
-  },
-  {
-    path: '/cara-kerja',
-    label: { en: 'How we work', id: 'Cara kami bekerja' },
-    description: {
-      en: 'Sample information about how Arthur works, pending owner review.',
-      id: 'Informasi contoh tentang cara Arthur bekerja, menunggu tinjauan pemilik.',
+/*
+ * A fixed page still awaiting published content is not advertised anywhere
+ * (`lib/seo/awaiting-content.ts`): the proxy answers it 404, and a sitemap,
+ * llms.txt or search entry pointing at a 404 is a broken promise.
+ */
+export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = (
+  [
+    {
+      path: '/',
+      label: { en: 'Home', id: 'Beranda' },
+      description: SITE.description,
+      changeFrequency: 'daily',
+      priority: 1,
     },
-    changeFrequency: 'monthly',
-    priority: 0.7,
-  },
-  {
-    path: '/kontak',
-    label: { en: 'About and contact', id: 'Tentang dan kontak' },
-    description: {
-      en: "Arthur's structure, confirmed service area, and current contact status.",
-      id: 'Struktur Arthur, wilayah kerja yang sudah dikonfirmasi, dan status kontaknya saat ini.',
+    {
+      path: '/cara-kerja',
+      label: { en: 'How we work', id: 'Cara kami bekerja' },
+      description: {
+        en: 'Sample information about how Arthur works, pending owner review.',
+        id: 'Informasi contoh tentang cara Arthur bekerja, menunggu tinjauan pemilik.',
+      },
+      changeFrequency: 'monthly',
+      priority: 0.7,
     },
-    changeFrequency: 'monthly',
-    priority: 0.6,
-  },
-  /*
-   * One entry per unit, followed by its two side routes. A sitemap only
-   * advertises the sides now that F1-04 gives each one a page that answers.
-   *
-   * These are not filter permutations of `/work` — they are `○` static pages
-   * with their own `<h1>`, their own description and their own canonical, and
-   * they are the pages that should rank for a unit's own name rather than
-   * the generic index.
-   *
-   * Generated from the same constant the route's `generateStaticParams` uses,
-   * so the sitemap cannot list a view that is not built, or omit one that is.
-   */
-  ...UNITS.map((unit): StaticRoute => ({
-    path: unitTemplate(unit),
-    label: UNIT_LABELS[unit],
-    description: UNIT_DESCRIPTIONS[unit],
-    changeFrequency: 'weekly',
-    priority: 0.7,
-  })),
-  ...UNITS.flatMap((unit) =>
-    SIDES[unit].map((side): StaticRoute => ({
-      path: sideTemplate(unit, side),
-      label: SIDE_LABELS[side],
-      description: SIDE_DESCRIPTIONS[side],
-      changeFrequency: 'weekly',
+    {
+      path: '/kontak',
+      label: { en: 'About and contact', id: 'Tentang dan kontak' },
+      description: {
+        en: "Arthur's structure, confirmed service area, and current contact status.",
+        id: 'Struktur Arthur, wilayah kerja yang sudah dikonfirmasi, dan status kontaknya saat ini.',
+      },
+      changeFrequency: 'monthly',
       priority: 0.6,
-    }))
-  ),
-]
+    },
+    /*
+     * One entry per unit, followed by its two side routes. A sitemap only
+     * advertises the sides now that F1-04 gives each one a page that answers.
+     *
+     * These are not filter permutations of `/work` — they are `○` static pages
+     * with their own `<h1>`, their own description and their own canonical, and
+     * they are the pages that should rank for a unit's own name rather than
+     * the generic index.
+     *
+     * Generated from the same constant the route's `generateStaticParams` uses,
+     * so the sitemap cannot list a view that is not built, or omit one that is.
+     */
+    ...UNITS.map((unit): StaticRoute => ({
+      path: unitTemplate(unit),
+      label: UNIT_LABELS[unit],
+      description: UNIT_DESCRIPTIONS[unit],
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    })),
+    ...UNITS.flatMap((unit) =>
+      SIDES[unit].map((side): StaticRoute => ({
+        path: sideTemplate(unit, side),
+        label: SIDE_LABELS[side],
+        description: SIDE_DESCRIPTIONS[side],
+        changeFrequency: 'weekly',
+        priority: 0.6,
+      }))
+    ),
+  ] satisfies StaticRoute[]
+).filter((route) => !isAwaitingContent(route.path))
 
 /**
  * Every static route with approved visitor-facing copy. English stays out of

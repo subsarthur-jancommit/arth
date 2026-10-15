@@ -21,7 +21,7 @@ for (const [locale, offline, restored] of [
     page,
     context,
   }) => {
-    await page.goto(`/${locale}/cara-kerja`)
+    await page.goto(`/${locale}/journal`)
     await page.waitForLoadState('networkidle')
 
     const notice = page.locator(NOTICE)
@@ -54,7 +54,7 @@ test('the notice is never a stop for the keyboard or the pointer', async ({
   page,
   context,
 }) => {
-  await page.goto('/en/cara-kerja')
+  await page.goto('/en/journal')
   await page.waitForLoadState('networkidle')
   await context.setOffline(true)
 
@@ -75,7 +75,7 @@ test('under reduced motion it neither rises nor fades', async ({
   context,
 }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.goto('/en/cara-kerja')
+  await page.goto('/en/journal')
   await page.waitForLoadState('networkidle')
   await context.setOffline(true)
 
