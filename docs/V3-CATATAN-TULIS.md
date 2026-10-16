@@ -74,3 +74,35 @@ di halaman sisi tampil tanpa tautan sampai offer itu punya halaman sendiri (V4).
 
 Jembatan di bab Konstruksi menunjuk ADM-03, yang masih draf dari W3. Jembatan
 itu baru bermakna setelah ADM-03 juga terbit.
+
+## W5: Peekabo, untuk pemilik usaha dan brand
+
+- **Izin:** "ok tulis: delapan bab Peekabo Pemilik usaha dan offer-nya sesuai
+  docs/V3-SERAH-W5.md, sebagai draf berstatus perlu Anda.", 17 Oktober 2026.
+- **Sumber:** `bun lib/scripts/chapter-wave.ts <master brief> --wave W5 --drafts
+<file> --side-id 05e811a2-2475-468d-958f-c0064923c798`, dari commit 94b742b
+  (PR #30). Sebelum menulis, kode internal bab diperbaiki: offer Peekabo seperti
+  1A-01 tidak membawa kode bab, jadi kodenya kini diambil dari judul bab (MKT,
+  PRD, dan seterusnya). Medan itu tidak tampil di situs.
+- **Ditulis:** 51 draf baru, 8 bab dan 43 offer, semuanya berstatus
+  `perlu-anda`. Operator SaaS niche dan Akademi ditahan utuh dan tidak ditulis,
+  jadi `urutan` bab melompati 3 dan 8. Empat bab membawa jembatan, ke FNB-01,
+  STD-09, TRV-05, dan RIT-02. Sebelum menulis, tidak ada dokumen dengan id itu.
+- **Diperiksa sesudahnya:** panjang setiap medan teks, `urutan`, `pintuMasuk`,
+  `model`, rujukan bab, dan jumlah jembatan di ke-51 draf sama dengan file draf.
+  Jumlah draf naik tepat 8 bab dan 43 offer (dari 35 dan 210 menjadi 43 dan
+  253). Isi terbit tidak berubah: 1 bab dan 11 offer, semuanya Kuliner.
+- **Untuk ditinjau:** tiga dampak kartu Produksi kreatif berasal dari katalog
+  dan masih terdengar seperti hasil yang dipegang audiens: 1B-05 ("membuat
+  orang percaya sebelum membeli"), 1B-03 ("audiens menunggu episode
+  berikutnya"), dan PRD-01 ("menghasilkan stok konten untuk sebulan").
+  Ketiganya tertulis seperti di serah yang disetujui.
+
+### Urutan terbit untuk pemilik
+
+1. Sisi Pemilik usaha (draf W1), karena bab merujuk ke sisi itu.
+2. Kedelapan bab.
+3. Ke-43 offer.
+
+Keempat jembatan menunjuk offer yang masih draf dari W2 dan W4. Jembatan itu
+baru bermakna setelah offer tujuannya terbit.
