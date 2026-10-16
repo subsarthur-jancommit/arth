@@ -159,7 +159,38 @@ baru bermakna setelah offer tujuannya terbit.
 2. Bab Kreator, streamer, dan host.
 3. Keempat offer.
 
-Satu klien tiga unit, Cara kami bekerja, dan Kebijakan
-(`docs/V3-SERAH-W7-HALAMAN.md` bagian 2 sampai 4) belum ditulis; masing-masing
-menunggu "ok tulis" sendiri, dan Kebijakan menunggu tinjauan ahli hukum lebih
-dulu.
+## W7: Satu klien, tiga unit dan Cara kami bekerja
+
+- **Izin:** "ok tulis: dua rangkaian Satu klien, tiga unit dan dua perubahan
+  Cara kami bekerja sesuai docs/V3-SERAH-W7-HALAMAN.md bagian 2 dan 3, sebagai
+  draf berstatus perlu Anda.", 17 Oktober 2026.
+- **Ditulis, rangkaian:** 2 draf baru, `drafts.arthur-rangkaian-kafe-baru` dan
+  `drafts.arthur-rangkaian-studio-siaran`, berstatus `perlu-anda`. Setiap
+  rangkaian punya tiga langkah, Konstruksi, Teknologi, lalu Peekabo, masing-masing
+  merujuk unitnya dan satu offer: FNB-01, KUL-02, 2B-03 untuk Kafe baru, dan
+  STD-09, MED-01, LIV-02 untuk Studio siaran. Rujukan itu lemah selama draf dan
+  menjadi kuat saat terbit. Sebelum menulis, belum ada dokumen rangkaian sama
+  sekali.
+- **Ditulis, Cara kami bekerja:** draf yang sudah ada direvisi di tempat dengan
+  kunci revisi `MTVa8wqBVj3WOA5necBSiC`. Janji kelima "Menjembatani, tidak
+  meminjamkan" ditambahkan di akhir, dan kalimat pengungkapan komisi diganti.
+  Keempat janji lama tidak diubah. Isi lama disimpan sebagai cadangan di luar
+  repositori sebelum ditimpa. Jejak sumber `src-w7-revisi` ditambahkan.
+- **Diperiksa sesudahnya:** situasi, kalimat setiap langkah, keterangan, unit,
+  dan offer di kedua rangkaian sama kata per kata dengan serah. Cara kami
+  bekerja kini punya lima janji dan kalimat komisi yang baru. Jumlah draf bab
+  dan offer tidak berubah (50 dan 298). Isi terbit tidak berubah: 1 bab dan 11
+  offer, semuanya Kuliner; belum ada rangkaian atau Cara kami bekerja yang
+  terbit.
+
+### Urutan terbit untuk pemilik
+
+1. Unit Konstruksi dan Peekabo, yang masih draf, karena setiap langkah merujuk
+   unitnya.
+2. Keenam offer yang dirujuk; hanya KUL-02 yang sudah terbit.
+3. Kedua rangkaian.
+4. Cara kami bekerja, kapan saja; halaman itu tidak merujuk dokumen lain.
+
+Kebijakan (`docs/V3-SERAH-W7-HALAMAN.md` bagian 4) belum ditulis. Halaman itu
+menunggu tinjauan ahli hukum, lalu "ok tulis" sendiri. Rangkaian Villa dan
+Perumahan developer menunggu offer yang masih ditahan.
