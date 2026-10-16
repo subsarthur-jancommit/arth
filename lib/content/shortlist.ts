@@ -1103,6 +1103,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'peekabo',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Agency marketing (MKT)',
     entri: '1A-01',
     pilihan: [
@@ -1141,6 +1142,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'peekabo',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Produksi kreatif (PRD)',
     entri: '1B-04',
     pilihan: [
@@ -1169,6 +1171,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'peekabo',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Agency solusi kreatif (SOL)',
     entri: '1B-01',
     pilihan: [
@@ -1198,6 +1201,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'peekabo',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Operator SaaS niche (OPS)',
     entri: '',
     ditahanBab:
@@ -1223,6 +1227,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'peekabo',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Live commerce untuk brand (LIV)',
     entri: 'LIV-01',
     pilihan: [
@@ -1262,6 +1267,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'peekabo',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Experiential dan event (EVT)',
     entri: '2A-06',
     pilihan: [
@@ -1298,6 +1304,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'peekabo',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Talenta dan kreator untuk brand (TAL)',
     entri: '2A-03',
     pilihan: [
@@ -1328,6 +1335,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'peekabo',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Outsourcing penjualan (SLS)',
     entri: '3A-08',
     pilihan: [
@@ -1350,6 +1358,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'peekabo',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Akademi untuk tim klien (AKD)',
     entri: '',
     ditahanBab:
@@ -1359,6 +1368,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'peekabo',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Ekosistem marketplace dan jaringan komisi (EKO)',
     entri: 'EKO-04',
     pilihan: [
@@ -1406,5 +1416,291 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
     ],
     catatan:
       'Offer yang paling langsung menjawab “mengelola afiliasinya” (TAP, TSP, MCN) tertahan sampai Peekabo terdaftar. Bila Anda lebih suka, bab ini ditahan utuh sampai saat itu.',
+  },
+  {
+    unit: 'teknologi',
+    side: 'A',
+    situation: 'Individu dan pembelajar',
+    entri: 'IND-18',
+    pilihan: [
+      {
+        id: 'IND-18',
+        alasan:
+          'Lingkup terkecil, padanan audit singkat untuk lapis 1: ide dipetakan dalam satu jam',
+      },
+      {
+        id: 'IND-03',
+        alasan: '“ingin membuatnya berjalan”: bot pribadi yang bekerja sendiri',
+      },
+      {
+        id: 'IND-17',
+        alasan: 'Angka hidup sendiri di satu layar (profesional dan kreator)',
+      },
+      {
+        id: 'IND-09',
+        alasan:
+          'Pencari kerja dan kreator: portofolio yang membuka pasar klien',
+      },
+      {
+        id: 'IND-01',
+        alasan:
+          '“rasa ingin tahu”: eksperimen agen AI dan MCP, sisi eksperimental bab ini',
+      },
+      {
+        id: 'IND-16',
+        alasan: 'Mahasiswa: dibimbing sampai demo, tetap mengerjakan sendiri',
+      },
+      {
+        id: 'IND-07',
+        alasan:
+          'Pencari kerja: lowongan dan beasiswa; bertanda †, hanya dari data publik atau API resmi',
+      },
+    ],
+    tahan: [
+      { id: 'IND-04', alasan: 'Menunggu keputusan posisi bot trading' },
+      { id: 'IND-05', alasan: 'Menunggu keputusan posisi bot trading' },
+      {
+        id: 'IND-06',
+        alasan:
+          'Ikut keputusan posisi bot trading: peringatan harga untuk trader, sama seperti KEU-04',
+      },
+    ],
+    catatan:
+      'Pembeli bab ini di katalog menyebut trader mandiri. Sampai posisi bot trading diputuskan, halaman bab tidak menyebut trading, termasuk di daftar pembelinya.',
+  },
+  {
+    unit: 'teknologi',
+    side: 'A',
+    situation: 'Freelancer dan agensi kecil',
+    entri: 'FRL-06',
+    pilihan: [
+      {
+        id: 'FRL-06',
+        alasan:
+          'Lingkup terkecil: biaya dan jadwal penawaran dihitung sebelum Anda menerima proyek besar',
+      },
+      {
+        id: 'FRL-02',
+        alasan: 'Otomatisasi untuk klien tanpa membangun dari awal',
+      },
+      { id: 'FRL-08', alasan: 'Rilis diuji tanpa merekrut penguji' },
+      {
+        id: 'FRL-13',
+        alasan: 'Jasa yang sering diulang dikemas menjadi produk',
+      },
+      {
+        id: 'FRL-01',
+        alasan:
+          '“tangan saya kurang”: kami mengerjakan di belakang layar atas nama Anda',
+      },
+      {
+        id: 'FRL-05',
+        alasan:
+          '“Proyeknya besar”: booking dan checkout dirakit dari modul teruji',
+      },
+      {
+        id: 'FRL-10',
+        alasan:
+          'Klien Anda tetap dijaga setelah serah terima, tanpa Anda menjaga server',
+      },
+    ],
+    tahan: [
+      {
+        id: 'FRL-12',
+        alasan:
+          'Tidak dipilih: pengambilalihan proyek sudah tampil di Software house (SWH-06); satu halaman untuk satu pekerjaan',
+      },
+      {
+        id: 'FRL-03',
+        alasan:
+          'Tidak dipilih: spesialis pembayaran sudah tampil di Software house (SWH-04)',
+      },
+    ],
+    catatan:
+      '“tidak mau menolak klien” dijawab oleh urutan: hitung dulu, kerjakan di belakang layar, lalu jaga setelahnya.',
+  },
+  {
+    unit: 'teknologi',
+    side: 'A',
+    situation: 'Software house dan perusahaan IT',
+    entri: 'SWH-06',
+    pilihan: [
+      {
+        id: 'SWH-06',
+        alasan:
+          'Lingkup terkecil, padanan audit singkat: proyek bermasalah dinilai jujur dulu',
+      },
+      {
+        id: 'SWH-09',
+        alasan: 'Setiap rilis aman dan masalah terdeteksi lebih dulu',
+      },
+      { id: 'SWH-18', alasan: 'Sumber data rapi untuk produk analitik' },
+      {
+        id: 'SWH-05',
+        alasan: 'Satu produk melayani banyak klien dengan merek masing-masing',
+      },
+      {
+        id: 'SWH-02',
+        alasan:
+          '“Tenggat ketat”: kapasitas tambahan saat puncak tanpa merekrut tetap',
+      },
+      {
+        id: 'SWH-01',
+        alasan: '“spesialis sulit dicari”: tim khusus mengikuti ritme Anda',
+      },
+      { id: 'SWH-04', alasan: 'Spesialis pembayaran dan rekonsiliasi' },
+    ],
+    tahan: [
+      {
+        id: 'SWH-10',
+        alasan:
+          'Cadangan: bertanda †, pentest dan kepatuhan PDP serta PSE; pilih bila Anda ingin kepatuhan tampil di bab ini',
+      },
+    ],
+    catatan:
+      'Tim khusus dan pemeliharaan bulanan adalah dua dari lima cara mulai sisi ini; SWH-01 mewakili yang pertama.',
+  },
+  {
+    unit: 'teknologi',
+    side: 'A',
+    situation: 'Startup dan CTO',
+    entri: 'STA-02',
+    pilihan: [
+      {
+        id: 'STA-02',
+        alasan:
+          'Lingkup terkecil: minat diukur sebelum satu baris kode ditulis',
+      },
+      {
+        id: 'STA-03',
+        alasan:
+          '“orang yang terbatas”: keputusan teknologi terarah tanpa merekrut CTO tetap',
+      },
+      { id: 'STA-05', alasan: 'Pengguna mendaftar dan aktif tanpa dibantu' },
+      {
+        id: 'STA-10',
+        alasan:
+          'Pengguna bertanya dalam bahasa sehari-hari, jawaban dari data Anda',
+      },
+      {
+        id: 'STA-01',
+        alasan:
+          '“harus rilis cepat”: MVP dengan lingkup, biaya, dan tenggat terkunci',
+      },
+      {
+        id: 'STA-04',
+        alasan: 'Paket dan tagihan berjalan sejak pengguna pertama',
+      },
+      {
+        id: 'STA-12',
+        alasan:
+          '“uang terbatas”: pemakaian cloud ditinjau sebelum ronde berikutnya',
+      },
+    ],
+    tahan: [
+      {
+        id: 'STA-07',
+        alasan:
+          'Tidak dipilih: spesialis pembayaran sudah tampil di Software house (SWH-04)',
+      },
+      {
+        id: 'STA-11',
+        alasan:
+          'Tidak dipilih: uji beban mirip SWH-08; lebih tepat lewat percakapan',
+      },
+    ],
+  },
+  {
+    unit: 'teknologi',
+    side: 'A',
+    situation: 'Tim IT internal perusahaan',
+    entri: 'TIM-10',
+    pilihan: [
+      {
+        id: 'TIM-10',
+        alasan:
+          '“sistem lama tidak ada yang berani menyentuh”: dipetakan dan ditulis dulu sebelum disentuh',
+      },
+      {
+        id: 'TIM-08',
+        alasan:
+          '“Pekerjaan operasional menumpuk”: laporan rutin terbit sendiri',
+      },
+      { id: 'TIM-03', alasan: 'Masalah terdeteksi sebelum pengguna mengeluh' },
+      {
+        id: 'TIM-05',
+        alasan: 'Data lama pindah utuh dari Excel dan sistem warisan',
+      },
+      {
+        id: 'TIM-09',
+        alasan:
+          'Aplikasi lama diperbarui bertahap tanpa menghentikan operasional',
+      },
+      {
+        id: 'TIM-06',
+        alasan: 'Catatan antarsistem cocok tanpa dicocokkan tangan',
+      },
+      { id: 'TIM-04', alasan: 'Backup terbukti bisa dipulihkan' },
+    ],
+    tahan: [
+      {
+        id: 'TIM-14',
+        alasan:
+          'Tidak dipilih: optimasi database tampil di bab Lapisan data (DAT-03)',
+      },
+      {
+        id: 'TIM-12',
+        alasan:
+          'Tidak dipilih: gudang data tampil di bab Lapisan data (DAT-04)',
+      },
+    ],
+  },
+  {
+    unit: 'teknologi',
+    side: 'A',
+    situation: 'Lapisan data: SQL, realtime, dan graf',
+    entri: 'DAT-03',
+    pilihan: [
+      {
+        id: 'DAT-03',
+        alasan: '“Data kami lambat”: lingkup terkecil, query dan indeks',
+      },
+      {
+        id: 'DAT-09',
+        alasan: '“terlambat”: peristiwa penting sampai seketika',
+      },
+      {
+        id: 'DAT-04',
+        alasan: '“tidak terhubung”: banyak sumber menyatu setiap malam',
+      },
+      {
+        id: 'DAT-08',
+        alasan:
+          'Realtime: penjualan, mesin, atau armada terlihat saat itu juga',
+      },
+      {
+        id: 'DAT-16',
+        alasan: 'Graf: barang dan konten yang sering muncul bersama',
+      },
+      {
+        id: 'DAT-18',
+        alasan:
+          'Graf: satu pemasok terlambat, produk yang terkena langsung tampak',
+      },
+    ],
+    tahan: [
+      {
+        id: 'DAT-02',
+        alasan:
+          'Tidak dipilih: pekerjaannya sama dengan TIM-05 di bab Tim IT internal; satu halaman untuk satu pekerjaan',
+      },
+      {
+        id: 'DAT-17',
+        alasan:
+          'Tidak dipilih: deteksi kecurangan lebih aman dibicarakan langsung',
+      },
+    ],
+    catatan:
+      'Tiga lapis di judul bab masing-masing terwakili: SQL (DAT-03, DAT-04), realtime (DAT-08, DAT-09), graf (DAT-16, DAT-18).',
   },
 ]
