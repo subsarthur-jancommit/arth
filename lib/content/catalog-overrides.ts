@@ -1358,6 +1358,16 @@ export const PEEKABO_OVERRIDES = new Map<string, CatalogOverride>([
     },
   ],
   [
+    '2B-02',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Produk baru diperkenalkan di wilayah sasaran lewat kanal online dan kegiatan lapangan sekaligus.',
+      alasan:
+        '“Dikenal sejak minggu pertama” dipegang audiens, bukan kami (Aturan isi 3); daftar pendek Peekabo Pemilik usaha',
+    },
+  ],
+  [
     '2B-03',
     {
       keputusan: 'ditulis-ulang',

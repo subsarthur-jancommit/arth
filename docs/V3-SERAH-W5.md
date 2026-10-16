@@ -52,7 +52,7 @@ _Untuk UMK, brand_
 ### Kampanye berbatas waktu
 
 **Peluncuran produk atau brand lokal**  
-Produk baru dikenal di wilayah sasaran sejak minggu pertama, lewat online dan lapangan sekaligus.  
+Produk baru diperkenalkan di wilayah sasaran lewat kanal online dan kegiatan lapangan sekaligus.  
 _Untuk brand, UMKM_
 
 **Pembukaan cabang atau gerai**  
