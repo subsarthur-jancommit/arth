@@ -127,6 +127,8 @@ const sideContentSchema = z.object({
             slug: textSchema.nullable(),
             judul: textSchema.nullable(),
             dampak: textSchema.nullable(),
+            // Optional so an older cached response without it still parses.
+            punyaHalaman: z.boolean().nullable().optional(),
           })
           .nullable(),
       })

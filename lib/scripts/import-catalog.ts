@@ -51,6 +51,7 @@ import {
   situationMarkdown,
   situationSlug,
 } from '@/lib/content/situation-pages'
+import type { Side } from '@/lib/content/units'
 
 /** Konstruksi's assembled packages have no type column (glossary, §1). */
 const ASSEMBLED_LABEL = 'Paket yang disusun menurut posisi Anda di proyek'
@@ -356,8 +357,12 @@ export function reviewMarkdown(
   return `${lines.join('\n')}\n`
 }
 
-/** Side keys in the URL, by catalogue side, for the Teknologi unit. */
-const TEKNOLOGI_SIDE_KEYS = { A: 'paham-teknis', B: 'siap-pakai' } as const
+/** Side keys in the URL, by unit and catalogue side (Sisi A, Sisi B). */
+export const CATALOG_SIDE_KEYS = {
+  konstruksi: { A: 'pelaku-proyek', B: 'pemilik-bangunan' },
+  teknologi: { A: 'paham-teknis', B: 'siap-pakai' },
+  peekabo: { A: 'pemilik-usaha', B: 'jaringan' },
+} as const satisfies Record<CatalogUnit, Record<'A' | 'B', Side>>
 
 /**
  * One NDJSON line per draft document: the situation, then its offers in the
@@ -366,9 +371,11 @@ const TEKNOLOGI_SIDE_KEYS = { A: 'paham-teknis', B: 'siap-pakai' } as const
 export function draftDocuments(
   page: SituationPage,
   sideId: string,
-  drafts: OfferDraft[]
+  drafts: OfferDraft[],
+  urutan = 0,
+  handover?: string
 ): string {
-  const sideKey = TEKNOLOGI_SIDE_KEYS[page.side]
+  const sideKey = CATALOG_SIDE_KEYS[page.unit][page.side]
   const items = [
     page.pintuMasuk,
     ...page.kelompok.flatMap((group) => group.items),
@@ -377,7 +384,7 @@ export function draftDocuments(
   const code = items[0]?.idKatalog.split('-')[0] ?? ''
   const parent = babId(page.unit, sideKey, page.slug)
   const docs = [
-    babDraft(page, sideId, sideKey, 0, code),
+    babDraft(page, sideId, sideKey, urutan, code, handover),
     ...items.flatMap((item, index) => {
       const draft = byId.get(item.idKatalog)
       if (!draft) return []
@@ -392,6 +399,7 @@ export function draftDocuments(
             jenis: draft.jenis,
             slug: draft.slug,
             syarat: item.syarat,
+            ditinjau: draft.ditinjau,
           },
           parent,
           index,

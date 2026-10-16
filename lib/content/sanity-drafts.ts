@@ -55,6 +55,8 @@ export type DraftOffer = {
   jenis: string | undefined
   slug: string
   syarat: string | undefined
+  /** True when the row has a handwritten answer in `catalog-overrides.ts`. */
+  ditinjau?: boolean
 }
 
 export function babDraft(
@@ -62,7 +64,8 @@ export function babDraft(
   sideId: string,
   sideKey: string,
   urutan: number,
-  catalogCode: string
+  catalogCode: string,
+  handover = 'docs/R1-SITUASI-TEKNOLOGI.md'
 ) {
   return {
     _id: `drafts.${babId(page.unit, sideKey, page.slug)}`,
@@ -70,10 +73,27 @@ export function babDraft(
     sisi: weakRef(sideId, 'side'),
     nama: line(page.nama),
     slug: { _type: 'slug', current: page.slug },
+    ...(page.pembeli ? { pembeli: line(page.pembeli) } : {}),
     kutipan: text(page.kutipan),
     situasi: text(page.situasi),
     urutan,
     batas: text(page.batas),
+    // The schema keeps this reference weak for good: a bridge may point at
+    // a page that is not published yet, and the reader page skips it.
+    ...(page.jembatan.length > 0
+      ? {
+          jembatan: page.jembatan.map((bridge, index) => ({
+            _key: `jembatan-${index}`,
+            _type: 'object',
+            offer: {
+              _type: 'reference',
+              _ref: offerId(bridge.idKatalog),
+              _weak: true,
+            },
+            kalimat: text(bridge.kalimat),
+          })),
+        }
+      : {}),
     ajakan: {
       label: line(page.ajakan.label),
       sesudahnya: text(page.ajakan.sesudahnya),
@@ -88,11 +108,20 @@ export function babDraft(
     ditulisOleh: 'agen',
     jejakSumber: [
       trace(
-        'Nama, kutipan, situasi',
+        page.salinan ? 'Nama, kutipan' : 'Nama, kutipan, situasi',
         'Master brief, bab di tabel sisi',
         catalogCode
       ),
-      trace('Halaman', 'docs/R1-SITUASI-TEKNOLOGI.md', page.slug),
+      trace('Halaman', handover, page.slug),
+      ...(page.salinan
+        ? [
+            trace(
+              'Situasi, pembeli, batas, jembatan, mesin pencari',
+              'lib/content/situation-overrides.ts',
+              page.salinan
+            ),
+          ]
+        : []),
     ],
   }
 }
@@ -153,11 +182,15 @@ export function offerDraft(
         'Master brief, baris offer',
         offer.idKatalog
       ),
-      trace(
-        'Jawaban tulis tangan',
-        'lib/content/catalog-overrides.ts',
-        offer.idKatalog
-      ),
+      ...(offer.ditinjau
+        ? [
+            trace(
+              'Jawaban tulis tangan',
+              'lib/content/catalog-overrides.ts',
+              offer.idKatalog
+            ),
+          ]
+        : []),
     ],
   }
 }

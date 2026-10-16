@@ -89,8 +89,10 @@ export default async function SidePage({ params }: SidePageProps) {
     const href = chapter.slug
       ? `${sideTemplate(unit, side)}/${chapter.slug}`
       : null
+    // An entry offer without its own page is a card on the chapter page,
+    // not an address of its own; linking it would land on a 404.
     const entryHref =
-      href && chapter.pintuMasuk?.slug
+      href && chapter.pintuMasuk?.slug && chapter.pintuMasuk.punyaHalaman
         ? `${href}/${chapter.pintuMasuk.slug}`
         : null
 

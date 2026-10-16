@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'bun:test'
 
+import type { ShortlistChapter } from './shortlist'
 import {
   deriveSituation,
+  readerName,
+  shortlistSituation,
   type SituationOffer,
   type SituationSource,
   situationMarkdown,
@@ -104,6 +107,136 @@ describe('deriveSituation', () => {
     const markdown = situationMarkdown([page], 'Uji')
     const forBuyer = markdown.replace(/_Internal:.*_/g, '')
     expect(forBuyer).not.toMatch(/[A-Z]{3}-\d{2}/)
+  })
+})
+
+describe('shortlistSituation', () => {
+  const chapter: ShortlistChapter = {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Kuliner dan F&B',
+    entri: 'KUL-02',
+    pilihan: [
+      { id: 'KUL-03', alasan: 'a' },
+      { id: 'KUL-02', alasan: 'b' },
+      { id: 'KUL-01', alasan: 'c' },
+    ],
+    keputusan: 'Disetujui',
+  }
+  const copy = {
+    situasi: 'Pesanan di chat bercampur.',
+    batas: 'Batas bab.',
+    metadata: { judul: 'Judul', deskripsi: 'Deskripsi' },
+  }
+  const page = shortlistSituation(chapter, source, offers, [], copy)
+  const shown = () =>
+    [page.pintuMasuk, ...page.kelompok.flatMap((g) => g.items)].map(
+      (i) => i?.idKatalog
+    )
+
+  it('shows exactly the decided offers, entry first, then in decided order', () => {
+    expect(shown()).toEqual(['KUL-02', 'KUL-03', 'KUL-01'])
+  })
+
+  it('groups by type in the order the shortlist first places each type', () => {
+    expect(page.kelompok.map((g) => g.label)).toEqual([
+      'Angka yang memberi tahu lebih dulu',
+      'Bot yang bekerja sendiri',
+    ])
+  })
+
+  it('is complete when every block has its copy', () => {
+    expect(page.catatan).toEqual([])
+    expect(page.batas).toBe('Batas bab.')
+    expect(page.situasi).toBe('Pesanan di chat bercampur.')
+  })
+
+  it('counts as held only what is not ready, not what was left unpicked', () => {
+    expect(page.ditahan).toBe(1)
+  })
+
+  it('drops an offer that is not ready or not in the chapter, and says so', () => {
+    const odd = shortlistSituation(
+      {
+        ...chapter,
+        pilihan: [
+          ...chapter.pilihan,
+          { id: 'KUL-05', alasan: 'd' },
+          { id: 'FNB-01', alasan: 'e' },
+        ],
+      },
+      source,
+      offers,
+      [],
+      copy
+    )
+    const all = [odd.pintuMasuk, ...odd.kelompok.flatMap((g) => g.items)]
+    expect(all.map((i) => i?.idKatalog)).toEqual(['KUL-02', 'KUL-03', 'KUL-01'])
+    expect(odd.catatan).toContain('KUL-05 belum siap tayang.')
+    expect(odd.catatan).toContain('FNB-01 tidak ada di bab ini.')
+  })
+
+  it('lists every block still missing instead of guessing it', () => {
+    const bare = shortlistSituation(chapter, source, offers, [])
+    expect(bare.catatan).toEqual([
+      'Batas bab ini belum ditulis.',
+      'Situasi bab ini belum ditulis.',
+      'Teks mesin pencari belum ditulis.',
+    ])
+  })
+
+  it('flags a list under three and an entry that is not shown', () => {
+    const thin = shortlistSituation(
+      { ...chapter, entri: 'KUL-08', pilihan: chapter.pilihan.slice(0, 2) },
+      source,
+      offers,
+      [],
+      copy
+    )
+    expect(thin.catatan.join(' ')).toContain('paling sedikit tiga')
+    expect(thin.catatan.join(' ')).toContain('Pintu masuk tidak ada')
+  })
+
+  it('takes the first step of a Konstruksi side from that side', () => {
+    const fnb = shortlistSituation(
+      {
+        ...chapter,
+        unit: 'konstruksi',
+        situation: 'Konstruksi F&B (lapis 3)',
+        entri: 'FNB-01',
+        pilihan: [{ id: 'FNB-01', alasan: 'a' }],
+      },
+      { ...source, unit: 'konstruksi', nama: 'Konstruksi F&B (lapis 3)' },
+      offers,
+      [],
+      { ...copy, slug: 'fnb' }
+    )
+    expect(fnb.nama).toBe('Konstruksi F&B')
+    expect(fnb.slug).toBe('fnb')
+    expect(fnb.ajakan.label).toBe('Ceritakan bangunannya')
+  })
+
+  it('says a chapter held whole gets no page', () => {
+    const held = shortlistSituation(
+      { ...chapter, pilihan: [], ditahanBab: 'Menunggu keputusan.' },
+      source,
+      offers,
+      [],
+      copy
+    )
+    expect(held.catatan[0]).toContain('ditahan utuh')
+    expect(held.catatan.join(' ')).not.toContain('paling sedikit tiga')
+  })
+})
+
+describe('readerName', () => {
+  it('drops the agent labels and keeps the reader words', () => {
+    expect(readerName('Konstruksi F&B (lapis 3)')).toBe('Konstruksi F&B')
+    expect(readerName('Tenaga kerja (modul B)')).toBe('Tenaga kerja')
+    expect(readerName('Nilai tambah lewat mitra (jembatan)')).toBe(
+      'Nilai tambah lewat mitra'
+    )
+    expect(readerName('Kuliner dan F&B')).toBe('Kuliner dan F&B')
   })
 })
 
