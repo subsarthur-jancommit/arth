@@ -46,3 +46,31 @@ di halaman sisi tampil tanpa tautan sampai offer itu punya halaman sendiri (V4).
 1. Sisi Pelaku proyek (draf W1).
 2. Kedua belas bab.
 3. Ke-71 offer.
+
+## W4: Teknologi, siap pakai
+
+- **Izin:** "ok tulis: enam belas bab Teknologi Siap pakai dan offer-nya sesuai
+  docs/V3-SERAH-W4.md, sebagai draf berstatus perlu Anda.", 16 Oktober 2026.
+- **Sumber:** `bun lib/scripts/chapter-wave.ts <master brief> --wave W4 --drafts
+<file> --side-id 6eae7a7f-d2bc-4650-ba1c-0f2834727189`, dari commit d99630c
+  (PR #29). Kuliner tidak ikut; babnya sudah terbit dengan `urutan` 0, dan
+  keenam belas bab ini memakai `urutan` 1 sampai 16.
+- **Ditulis:** 114 draf baru, 16 bab dan 98 offer, semuanya berstatus
+  `perlu-anda`. Bab Konstruksi membawa satu jembatan ke offer ADM-03. `pasar`
+  kosong di semua offer, sama seperti di file draf.
+- **Diperiksa sesudahnya:** panjang setiap medan teks, `urutan`, `pintuMasuk`,
+  `model`, rujukan bab, dan jumlah jembatan di ke-114 draf sama dengan file draf.
+  Jumlah draf naik tepat 16 bab dan 98 offer (dari 19 dan 112 menjadi 35 dan
+  210), jadi tidak ada draf lama yang tertimpa. Isi terbit tidak berubah: 1 bab
+  dan 11 offer, semuanya Kuliner.
+- **Untuk ditinjau:** dampak KON-01 menyebut Subang, Purwakarta, dan Bandung,
+  dan dampak KON-07 menyebut "tiga wilayah". Keduanya tertulis begitu di
+  V3-SERAH-W4.md yang disetujui, padahal wilayah Teknologi belum diputuskan.
+
+### Urutan terbit untuk pemilik
+
+1. Sisi Siap pakai sudah terbit, jadi langsung ke keenam belas bab.
+2. Ke-98 offer.
+
+Jembatan di bab Konstruksi menunjuk ADM-03, yang masih draf dari W3. Jembatan
+itu baru bermakna setelah ADM-03 juga terbit.
