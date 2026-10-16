@@ -181,3 +181,9 @@ Setiap patch hanya menyetel medan di atas, dijaga dengan revisi yang dibaca, dan
 - Beranda: blok “Pilih situasi Anda” dan paragraf berlabel payung di dalam komposisi `main`; grid karya fixture dicabut (keputusan D1).
 - Unit: label “Langkah kerja” untuk daftar langkah, karena paragraf “Cara kami bekerja.” sudah tampil utuh di blok paragraf berlabel.
 - Fallback unit di kode diganti teks siap tayang apa adanya, supaya halaman tetap benar sebelum dokumen terbit.
+
+## Catatan tulis
+
+16 Oktober 2026, atas “ok tulis” pemilik. Sepuluh dokumen ditulis lewat konektor Sanity sebagai draf berstatus `perlu-anda`: enam sisi, tiga unit, dan `siteSettings`. Versi terbit Teknologi dan Siap pakai tidak tersentuh (revisi terbitnya tetap). Cadangan nilai lama untuk setiap medan yang ditimpa disimpan di luar repo sebelum menulis. Pemeriksa grafik isi terhadap isi terbit: 0 error, 1 peringatan (bab Kuliner 11 offer).
+
+Langkah Anda di Studio: tinjau tiap draf, tekan Setujui, lalu Terbitkan. Urutan aman: unit, lalu sisi, lalu pengaturan beranda.
