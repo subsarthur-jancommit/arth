@@ -129,3 +129,37 @@ baru bermakna setelah offer tujuannya terbit.
 1. Sisi Paham teknis (draf W1), karena bab merujuk ke sisi itu.
 2. Keenam bab.
 3. Ke-41 offer.
+
+## W7: Peekabo, untuk jaringan penjual
+
+- **Izin:** "ok tulis: bab Kreator, streamer, dan host dan offer-nya sesuai
+  docs/V3-SERAH-W7.md, serta revisi sisi Jaringan sesuai
+  docs/V3-SERAH-W7-HALAMAN.md bagian 1, sebagai draf berstatus perlu Anda.",
+  17 Oktober 2026.
+- **Sumber bab:** `bun lib/scripts/chapter-wave.ts <master brief> --wave W7
+--drafts <file> --side-id 3222fab5-dc6f-40c5-a96e-5f231bc76e48`, dari commit
+  0ef9412 (PR #32).
+- **Ditulis, bab:** 5 draf baru, 1 bab dan 4 offer, semuanya berstatus
+  `perlu-anda`. Sales lepas (OCS) dan Anggota komunitas (MBR) ditahan utuh dan
+  tidak ditulis. Sebelum menulis, tidak ada dokumen dengan id itu.
+- **Ditulis, sisi:** draf sisi Jaringan (W1) direvisi di tempat: untuk siapa,
+  langkah pertama, cara bergabung, dan blok jaringan kini hanya membuka jalur
+  kreator dan host. Judul tidak diubah. Revisi dijalankan dengan kunci revisi
+  `c9YS92QsSfhgAktxgcEXiz`, dan isi lama disimpan sebagai cadangan di luar
+  repositori sebelum ditimpa. Jejak sumber `src-w7-revisi` ditambahkan.
+- **Diperiksa sesudahnya:** panjang setiap medan teks, `urutan`, `pintuMasuk`,
+  `model`, dan rujukan bab di kelima draf sama dengan file draf. Sisi Jaringan
+  tidak lagi memuat kartu komisi atau jalur rujuk dan anggota. Jumlah draf naik
+  tepat 1 bab dan 4 offer (dari 49 dan 294 menjadi 50 dan 298). Isi terbit
+  tidak berubah: 1 bab dan 11 offer, semuanya Kuliner.
+
+### Urutan terbit untuk pemilik
+
+1. Sisi Jaringan (draf W1 yang sudah direvisi).
+2. Bab Kreator, streamer, dan host.
+3. Keempat offer.
+
+Satu klien tiga unit, Cara kami bekerja, dan Kebijakan
+(`docs/V3-SERAH-W7-HALAMAN.md` bagian 2 sampai 4) belum ditulis; masing-masing
+menunggu "ok tulis" sendiri, dan Kebijakan menunggu tinjauan ahli hukum lebih
+dulu.
