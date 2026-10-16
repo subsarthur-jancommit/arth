@@ -48,13 +48,14 @@ function chapterSection(
     `### ${chapter.situation}`,
     '',
     ...(quote ? [`> ${quote}`, ''] : []),
+    ...(chapter.keputusan ? [`**Keputusan:** ${chapter.keputusan}.`, ''] : []),
     `${chapter.pilihan.length} dari ${inChapter.length} offer. Pintu masuk: **${chapter.entri}**. Aturan: ${findings.length === 0 ? 'lolos' : findings.map((finding) => finding.message).join('; ')}.`,
     '',
     '| # | ID | Judul untuk web | Dampak untuk web | Jenis | † | Alasan | Keputusan Anda |',
     '| --- | --- | --- | --- | --- | --- | --- | --- |',
     ...chapter.pilihan.map((pick, index) => {
       const draft = byId.get(pick.id)
-      return `| ${index + 1} | ${pick.id}${pick.id === chapter.entri ? ' (pintu masuk)' : ''} | ${cell(draft?.judul)} | ${cell(draft?.dampak)} | ${cell(draft?.jenis)} | ${cell(draft?.syarat)} | ${cell(pick.alasan)} | tayang / tahan |`
+      return `| ${index + 1} | ${pick.id}${pick.id === chapter.entri ? ' (pintu masuk)' : ''} | ${cell(draft?.judul)} | ${cell(draft?.dampak)} | ${cell(draft?.jenis)} | ${cell(draft?.syarat)} | ${cell(pick.alasan)} | ${chapter.keputusan ? 'tayang' : 'tayang / tahan'} |`
     }),
     '',
   ]

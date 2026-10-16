@@ -38,6 +38,8 @@ export interface ShortlistChapter {
   tahan?: readonly ShortlistHold[]
   /** What the owner needs to know before deciding this chapter. */
   catatan?: string
+  /** The owner's decision, once given: the date and what was decided. */
+  keputusan?: string
 }
 
 /** The catalogue facts a shortlist check needs about one offer. */
@@ -140,6 +142,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
     unit: 'teknologi',
     side: 'B',
     situation: 'Kuliner dan F&B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     entri: 'KUL-01',
     pilihan: [
       { id: 'KUL-01', alasan: '“Pesanan saya bercampur di chat”' },
@@ -182,6 +185,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
     unit: 'konstruksi',
     side: 'B',
     situation: 'Rumah tinggal dan konsumen akhir (lapis 1)',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     entri: 'RMH-10',
     pilihan: [
       {
@@ -212,6 +216,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
     unit: 'konstruksi',
     side: 'B',
     situation: 'Desain interior: teknis lapangan dan visualisasi (lapis 1)',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     entri: 'ITR-01',
     pilihan: [
       {
@@ -230,6 +235,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
     unit: 'konstruksi',
     side: 'B',
     situation: 'Konstruksi F&B (lapis 3)',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     entri: 'FNB-06',
     pilihan: [
       { id: 'FNB-06', alasan: '“alur dapurnya belum jalan”: lingkup terkecil' },
@@ -248,6 +254,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
     unit: 'konstruksi',
     side: 'B',
     situation: 'Studio streaming dan workshop media (lapis 3)',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     entri: 'STD-03',
     pilihan: [
       { id: 'STD-03', alasan: 'Langkah terkecil: pencahayaan set' },
@@ -269,6 +276,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
     unit: 'konstruksi',
     side: 'B',
     situation: 'Makeover villa, kontrakan, hotel, dan hostel (lapis 3)',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     entri: 'HOS-09',
     pilihan: [
       {
@@ -297,6 +305,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
     unit: 'konstruksi',
     side: 'B',
     situation: 'Membership Care (lapis 4)',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     entri: 'RWT-02',
     pilihan: [
       {
@@ -326,6 +335,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
     unit: 'konstruksi',
     side: 'B',
     situation: 'Nilai tambah lewat mitra (jembatan)',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     entri: 'KOM-01',
     pilihan: [
       {
@@ -352,5 +362,321 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
     ],
     catatan:
       'Bab ini tepat tiga offer. Halaman memuat kalimat wajib pembiayaan dan pengungkapan komisi; mitra tidak disebut namanya. Bila Anda lebih suka menahan bab ini sampai kartu komisi ada, bab tampil sebagai situasi tanpa halaman.',
+  },
+  {
+    unit: 'konstruksi',
+    side: 'A',
+    situation: 'Paket hulu-hilir untuk kontraktor utama',
+    entri: 'HHK-03',
+    pilihan: [
+      {
+        id: 'HHK-03',
+        alasan:
+          'Lingkup terkecil: toilet dan sanitasi sekolah, fungsinya diuji sebelum serah terima',
+      },
+      {
+        id: 'HHK-01',
+        alasan:
+          '“belum punya subkon yang sanggup menangani semuanya”: rehabilitasi ruang kelas',
+      },
+      {
+        id: 'HHK-04',
+        alasan:
+          'Atap, plafon, dan drainase dalam satu lingkup, bukan tiga subkon',
+      },
+      { id: 'HHK-07', alasan: 'Drainase dan saluran' },
+      { id: 'HHK-06', alasan: 'Jalan lingkungan cor beton' },
+      { id: 'HHK-14', alasan: 'Beberapa pekerjaan dalam satu kontrak subkon' },
+      { id: 'HHK-11', alasan: 'Proyek swasta: ruko dan bangunan komersial' },
+    ],
+    tahan: [
+      {
+        id: 'HHK-13',
+        alasan:
+          'Cadangan: bertanda †, kerja sama operasi; pilih bila Anda ingin paket besar tampil',
+      },
+    ],
+    catatan:
+      'Urutan bab di halaman Pelaku proyek mengikuti D2: kontraktor utama lebih dulu, jadi bab ini dibuka pertama.',
+  },
+  {
+    unit: 'konstruksi',
+    side: 'A',
+    situation: 'Administrasi dengan pemerintah (modul A)',
+    entri: 'ADM-01',
+    pilihan: [
+      {
+        id: 'ADM-01',
+        alasan:
+          '“tender terlewat”: paket di tiga wilayah terkumpul setiap minggu',
+      },
+      { id: 'ADM-15', alasan: 'Satu tim dari pemantauan sampai penawaran' },
+      {
+        id: 'ADM-03',
+        alasan: '“Dokumen menumpuk”: kualifikasi lengkap sebelum tenggat',
+      },
+      { id: 'ADM-12', alasan: '“berkas termin selalu terlambat”' },
+      { id: 'ADM-05', alasan: 'Harga penawaran dari volume dan harga pasar' },
+      {
+        id: 'ADM-02',
+        alasan: 'Ikut atau lewati diputuskan dari syarat dan HPS',
+      },
+    ],
+    tahan: [
+      {
+        id: 'ADM-08',
+        alasan:
+          'Tidak dipilih: bertanda †; sertifikasi lebih aman dibicarakan langsung daripada ditayangkan',
+      },
+    ],
+    catatan:
+      'Halaman bab memuat kalimat wajib tender: kami membantu menyiapkan berkas dan memahami aturan, bukan mengatur hasil; nama dan sertifikat tidak dipinjamkan.',
+  },
+  {
+    unit: 'konstruksi',
+    side: 'A',
+    situation: 'Tenaga kerja (modul B)',
+    entri: 'TNK-01',
+    pilihan: [
+      { id: 'TNK-01', alasan: '“Tukang tidak datang tepat waktu”' },
+      {
+        id: 'TNK-03',
+        alasan: '“tidak ada yang mengendalikan mereka di lapangan”',
+      },
+      { id: 'TNK-05', alasan: 'Tim finishing yang terbiasa' },
+      { id: 'TNK-12', alasan: 'Absensi dan upah tukang tertib' },
+      { id: 'TNK-14', alasan: 'Tenggat ketat tanpa merekrut tetap' },
+      {
+        id: 'TNK-06',
+        alasan: 'Pelaksana di lokasi; bertanda †, nama tidak dipinjamkan',
+      },
+    ],
+  },
+  {
+    unit: 'konstruksi',
+    side: 'A',
+    situation: 'Material: harga dan penjadwalan (modul C)',
+    entri: 'MAT-01',
+    pilihan: [
+      {
+        id: 'MAT-01',
+        alasan:
+          '“Harga material bergeser”: harga tiga wilayah sebagai pegangan',
+      },
+      { id: 'MAT-04', alasan: 'Material dengan harga jaringan pemasok' },
+      { id: 'MAT-03', alasan: '“jadwalnya tidak sinkron”: material per tahap' },
+      { id: 'MAT-08', alasan: '“barang telat”: angkutan sampai lokasi' },
+      { id: 'MAT-14', alasan: 'Tiga penawaran dibandingkan sebelum membeli' },
+      { id: 'MAT-10', alasan: 'Material masuk, terpakai, dan sisa tercatat' },
+    ],
+  },
+  {
+    unit: 'konstruksi',
+    side: 'A',
+    situation: 'Modal kerja lewat penjembatanan (modul D)',
+    entri: 'MOD-06',
+    pilihan: [
+      {
+        id: 'MOD-06',
+        alasan: 'Lingkup terkecil: kebutuhan kas dan jadwal termin terproyeksi',
+      },
+      { id: 'MOD-01', alasan: '“material harus dibayar dulu”: tempo material' },
+      {
+        id: 'MOD-04',
+        alasan: '“tagihan termin belum turun”: bertanda †, lewat mitra berizin',
+      },
+      {
+        id: 'MOD-03',
+        alasan: '“Uang muka belum cair”: bertanda †, lewat mitra berizin',
+      },
+      { id: 'MOD-08', alasan: 'Alat dan kendaraan lewat mitra; bertanda †' },
+    ],
+    tahan: [
+      {
+        id: 'MOD-02',
+        alasan: 'Mitra penjamin belum ada (master brief, jalur komisi)',
+      },
+      { id: 'MOD-07', alasan: 'Mitra asuransi belum ada' },
+      { id: 'MOD-05', alasan: 'Cadangan: kerja sama operasi bertanda †' },
+    ],
+    catatan:
+      'Mekanisme modal kerja belum diputuskan; bab ini ditulis sebagai penjembatanan lewat mitra, sesuai saran master brief. Halaman memuat kalimat wajib: kami tidak memberi pinjaman, pembiayaan dan jaminan berjalan lewat mitra berizin, dan komisi mitra diungkapkan.',
+  },
+  {
+    unit: 'konstruksi',
+    side: 'A',
+    situation: 'Alat dan peralatan (modul E)',
+    entri: 'ALT-02',
+    pilihan: [
+      {
+        id: 'ALT-02',
+        alasan:
+          '“Saya butuh alat hanya beberapa hari”: molen, stamper, perancah per hari',
+      },
+      {
+        id: 'ALT-04',
+        alasan: 'Alat dengan operator dan BBM dalam satu harga harian',
+      },
+      { id: 'ALT-03', alasan: 'Alat diantar dan dijemput sesuai jadwal' },
+      { id: 'ALT-05', alasan: 'Alat diperiksa sebelum dipakai' },
+    ],
+    tahan: [
+      {
+        id: 'ALT-01',
+        alasan: 'Mitra sewa alat berat belum ada (master brief, jalur komisi)',
+      },
+      {
+        id: 'ALT-06',
+        alasan:
+          'Tidak dipilih: mengandaikan alat milik sendiri yang belum tercatat',
+      },
+    ],
+    catatan:
+      'Paket alat siap kerja ditulis tanpa alat berat sampai mitra sewa alat berat ada.',
+  },
+  {
+    unit: 'konstruksi',
+    side: 'A',
+    situation: 'Administrasi internal proyek (modul F)',
+    entri: 'PRJ-04',
+    pilihan: [
+      {
+        id: 'PRJ-04',
+        alasan: 'Lingkup terkecil: foto progres 0, 50, dan 100 persen',
+      },
+      { id: 'PRJ-03', alasan: '“Laporan lewat chat”: format pemberi kerja' },
+      { id: 'PRJ-02', alasan: '“kurva S tidak jelas”' },
+      { id: 'PRJ-07', alasan: '“biaya lapangan tidak terpantau”' },
+      { id: 'PRJ-05', alasan: 'Opname volume untuk termin' },
+      {
+        id: 'PRJ-14',
+        alasan: 'Laporan dari ponsel; jembatan ke unit Teknologi',
+      },
+    ],
+  },
+  {
+    unit: 'konstruksi',
+    side: 'A',
+    situation: 'Konsultan pengadaan untuk penyedia barang (modul G)',
+    entri: 'PNY-01',
+    pilihan: [
+      {
+        id: 'PNY-01',
+        alasan: '“bingung mencari barang”: sumber dan harga pembanding',
+      },
+      {
+        id: 'PNY-02',
+        alasan: 'Barang diproduksi lewat mitra sesuai spesifikasi',
+      },
+      { id: 'PNY-07', alasan: '“mengurus TKDN”' },
+      {
+        id: 'PNY-12',
+        alasan: '“margin sehat”: bertanda †, keuntungan wajar dalam HPS',
+      },
+      { id: 'PNY-08', alasan: 'Etalase katalog elektronik terurus' },
+      { id: 'PNY-03', alasan: 'Barang diperiksa sebelum dikirim' },
+    ],
+    catatan:
+      'Konsultan pengadaan hanya melayani paket yang bukan milik Arthur (Konstruksi aturan 3); halaman menyebutnya.',
+  },
+  {
+    unit: 'konstruksi',
+    side: 'A',
+    situation: 'Arthur sebagai penyedia untuk instansi (modul G)',
+    entri: 'GOV-03',
+    pilihan: [
+      { id: 'GOV-03', alasan: 'Lingkup terkecil: papan nama dan signage' },
+      {
+        id: 'GOV-07',
+        alasan: '“barang sesuai spesifikasi”: datang bersama pemasangan',
+      },
+      { id: 'GOV-01', alasan: 'Perabot sekolah' },
+      { id: 'GOV-02', alasan: 'Perabot dan perlengkapan kantor' },
+      { id: 'GOV-06', alasan: 'Dipesan langsung lewat e-purchasing' },
+      { id: 'GOV-08', alasan: 'Klaim garansi ditangani' },
+    ],
+    tahan: [
+      {
+        id: 'GOV-05',
+        alasan: 'Mitra konveksi belum ada (master brief, jalur komisi)',
+      },
+    ],
+  },
+  {
+    unit: 'konstruksi',
+    side: 'A',
+    situation: 'Developer perumahan (modul H)',
+    entri: 'DEV-05',
+    pilihan: [
+      {
+        id: 'DEV-05',
+        alasan:
+          'Lingkup terkecil: daftar periksa tiap unit sebelum serah terima',
+      },
+      { id: 'DEV-02', alasan: '“finishing telat”' },
+      {
+        id: 'DEV-07',
+        alasan: 'Kawasan dirawat sampai diserahkan ke pengelola',
+      },
+      { id: 'DEV-06', alasan: '“komplain menumpuk”' },
+      { id: 'DEV-09', alasan: '“laporan untuk bank belum siap”' },
+      {
+        id: 'DEV-01',
+        alasan: 'Borongan per unit dengan harga yang disepakati',
+      },
+    ],
+  },
+  {
+    unit: 'konstruksi',
+    side: 'A',
+    situation: 'Kontraktor swasta (lapis 2)',
+    entri: 'KSW-01',
+    pilihan: [
+      {
+        id: 'KSW-01',
+        alasan: '“kekurangan tenaga”: tukang dan mandor untuk renovasi',
+      },
+      { id: 'KSW-02', alasan: '“material tepat waktu”' },
+      { id: 'KSW-04', alasan: 'Finishing dan materialnya dalam satu paket' },
+      { id: 'KSW-03', alasan: 'Tempo material lewat mitra' },
+      { id: 'KSW-08', alasan: 'Mutu diawasi sebelum serah terima' },
+      { id: 'KSW-06', alasan: 'RAB dan jadwal untuk penawaran ke klien' },
+    ],
+  },
+  {
+    unit: 'konstruksi',
+    side: 'A',
+    situation: 'Paket rakitan menurut profil pembeli',
+    entri: 'RAK-09',
+    pilihan: [
+      {
+        id: 'RAK-09',
+        alasan: 'Lingkup terkecil: tenaga terkendali dan terbayar tertib',
+      },
+      { id: 'RAK-01', alasan: 'Kontraktor utama dengan tender pertama' },
+      {
+        id: 'RAK-03',
+        alasan:
+          'Termin tertunda karena berkas; contoh kalibrasi yang sudah ditulis',
+      },
+      { id: 'RAK-08', alasan: 'Subkon baru' },
+      { id: 'RAK-10', alasan: 'Harga material yang terus bergeser' },
+      { id: 'RAK-16', alasan: 'Developer menjelang serah terima unit' },
+      { id: 'RAK-12', alasan: 'Penyedia baru di katalog elektronik' },
+    ],
+    tahan: [
+      { id: 'RAK-07', alasan: 'Menunggu keputusan mekanisme modal kerja' },
+      {
+        id: 'RAK-04',
+        alasan:
+          'Tidak dipilih: dampak “tanpa temuan berulang” ada di tangan pemeriksa',
+      },
+      {
+        id: 'RAK-13',
+        alasan: 'Tidak dipilih: dampak “tanpa retur” ada di tangan instansi',
+      },
+    ],
+    catatan:
+      'Tujuh paket mewakili tujuh posisi pembeli; paket lain tetap bisa dirakit lewat percakapan.',
   },
 ]
