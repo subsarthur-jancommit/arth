@@ -93,8 +93,18 @@ describe('shortlist rules', () => {
     )
   })
 
+  it('accepts a held chapter only with an empty list', () => {
+    const held = { ...chapter([]), ditahanBab: 'menunggu keputusan' }
+    expect(checkShortlist(held, offers)).toEqual([])
+    expect(
+      checkShortlist({ ...chapter(['A-01']), ditahanBab: 'x' }, offers)
+    ).toHaveLength(1)
+  })
+
   it('keeps every proposal within three to seven, with its entry in the list', () => {
-    for (const proposal of SHORTLIST_PROPOSALS) {
+    for (const proposal of SHORTLIST_PROPOSALS.filter(
+      (item) => !item.ditahanBab
+    )) {
       const ids = proposal.pilihan.map((pick) => pick.id)
       expect(ids.length).toBeGreaterThanOrEqual(3)
       expect(ids.length).toBeLessThanOrEqual(7)

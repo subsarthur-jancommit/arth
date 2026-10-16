@@ -40,6 +40,13 @@ export interface ShortlistChapter {
   catatan?: string
   /** The owner's decision, once given: the date and what was decided. */
   keputusan?: string
+  /**
+   * Set when the whole chapter is held: every offer waits on a decision, or
+   * the catalogue has fewer than three. The chapter then shows on its side
+   * page as a situation without a page (docs/RENCANA-KONTEKS-V2.md §4.2),
+   * and `pilihan` stays empty.
+   */
+  ditahanBab?: string
 }
 
 /** The catalogue facts a shortlist check needs about one offer. */
@@ -75,6 +82,17 @@ export function checkShortlist(
       .map((offer) => [offer.idKatalog, offer])
   )
   const ids = chapter.pilihan.map((pick) => pick.id)
+
+  if (chapter.ditahanBab) {
+    return ids.length > 0
+      ? [
+          {
+            level: 'error',
+            message: 'bab ditahan tetapi daftarnya berisi offer',
+          },
+        ]
+      : []
+  }
 
   if (
     ids.length < MIN_OFFERS_PER_CHAPTER ||
@@ -141,8 +159,8 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
-    situation: 'Kuliner dan F&B',
     keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
+    situation: 'Kuliner dan F&B',
     entri: 'KUL-01',
     pilihan: [
       { id: 'KUL-01', alasan: '“Pesanan saya bercampur di chat”' },
@@ -694,6 +712,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Ritel, fesyen, dan e-commerce',
     entri: 'RIT-01',
     pilihan: [
@@ -714,6 +733,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Distributor, grosir, dan toko bangunan',
     entri: 'DIS-01',
     pilihan: [
@@ -740,6 +760,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Jasa lokal: salon, bengkel, laundry, kos, dan rental',
     entri: 'JAS-01',
     pilihan: [
@@ -757,6 +778,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Klinik dan kesehatan',
     entri: 'KES-01',
     pilihan: [
@@ -785,6 +807,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Pendidikan dan pelatihan',
     entri: 'EDU-01',
     pilihan: [
@@ -803,6 +826,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Properti, dealer, dan showroom',
     entri: 'PRO-01',
     pilihan: [
@@ -824,6 +848,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Keuangan, trading, dan pembiayaan',
     entri: 'KEU-09',
     pilihan: [
@@ -867,6 +892,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Konstruksi dan kontraktor',
     entri: 'KON-01',
     pilihan: [
@@ -892,6 +918,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Travel, hospitality, dan event',
     entri: 'TRV-04',
     pilihan: [
@@ -915,6 +942,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Media, kreator, dan komunitas',
     entri: 'MED-05',
     pilihan: [
@@ -942,6 +970,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Logistik, armada, dan gudang',
     entri: 'LOG-02',
     pilihan: [
@@ -956,6 +985,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Manufaktur ringan, agro, dan UMKM produksi',
     entri: 'MAN-03',
     pilihan: [
@@ -973,6 +1003,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Instansi, desa, dan organisasi publik',
     entri: 'PUB-10',
     pilihan: [
@@ -997,6 +1028,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Jasa profesional dan agensi',
     entri: 'PRF-01',
     pilihan: [
@@ -1011,6 +1043,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Kebugaran, olahraga, dan rekreasi',
     entri: 'FIT-03',
     pilihan: [
@@ -1034,6 +1067,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Lintas sektor: untuk usaha apa pun',
     entri: 'LIN-17',
     pilihan: [
@@ -1065,5 +1099,312 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
         alasan: 'Tidak dipilih: masih eksperimen menurut katalog',
       },
     ],
+  },
+  {
+    unit: 'peekabo',
+    side: 'A',
+    situation: 'Agency marketing (MKT)',
+    entri: '1A-01',
+    pilihan: [
+      {
+        id: '1A-01',
+        alasan:
+          'Anak tangga 1: sesi strategi sebelum uang iklan keluar (asal A)',
+      },
+      {
+        id: '1A-05',
+        alasan:
+          'Tim Anda memegang akun, kami mengarahkan setiap bulan (asal T)',
+      },
+      {
+        id: '2B-02',
+        alasan:
+          '“yang tahu cuma itu-itu saja”: peluncuran online dan lapangan sekaligus (asal T)',
+      },
+      {
+        id: '3A-02',
+        alasan: 'Kreator yang cocok dengan audiens Anda (asal A)',
+      },
+      {
+        id: '1A-02',
+        alasan: 'Kebocoran anggaran iklan terlihat dalam satu laporan (asal T)',
+      },
+      {
+        id: '2B-03',
+        alasan: 'Pembukaan gerai; jembatan ke rangkaian kafe baru (asal T)',
+      },
+      { id: 'MKT-01', alasan: 'Akun aktif setiap minggu (tercatat di riset)' },
+    ],
+    catatan:
+      'Halaman tidak menjanjikan jangkauan atau penjualan; yang ditulis adalah pekerjaannya (Aturan isi 3).',
+  },
+  {
+    unit: 'peekabo',
+    side: 'A',
+    situation: 'Produksi kreatif (PRD)',
+    entri: '1B-04',
+    pilihan: [
+      {
+        id: '1B-04',
+        alasan: 'Lingkup terkecil: foto produk dan lifestyle (asal A)',
+      },
+      {
+        id: '1B-12',
+        alasan: '“Kontennya harus keluar setiap minggu”: kuota konten bulanan',
+      },
+      {
+        id: '1B-07',
+        alasan: 'Produk yang sulit difoto dijelaskan lewat animasi (asal A)',
+      },
+      { id: '1B-05', alasan: 'Cerita brand dalam film pendek (asal A)' },
+      {
+        id: 'PRD-01',
+        alasan:
+          '“tidak ada yang membuatnya”: satu hari syuting untuk stok sebulan, sesuai header Peekabo',
+      },
+      { id: '1B-09', alasan: 'Semua aset satu kampanye sekaligus (asal T)' },
+      { id: '1B-03', alasan: 'Seri konten berbasis isu (asal T)' },
+    ],
+  },
+  {
+    unit: 'peekabo',
+    side: 'A',
+    situation: 'Agency solusi kreatif (SOL)',
+    entri: '1B-01',
+    pilihan: [
+      {
+        id: '1B-01',
+        alasan:
+          '“Saya tidak tahu harus bilang apa”: workshop isu dan framing (asal A)',
+      },
+      { id: 'SOL-12', alasan: 'Arah kreatif dijaga setiap bulan' },
+      {
+        id: '2A-01',
+        alasan:
+          'Konsep kampanye lapangan disepakati sebelum anggaran keluar (asal A)',
+      },
+      { id: '1B-02', alasan: 'Naskah dan hook video pendek (asal T)' },
+      {
+        id: 'SOL-04',
+        alasan:
+          '“supaya orang peduli”: satu kalimat posisi dan tiga pesan inti',
+      },
+      {
+        id: 'SOL-02',
+        alasan: 'Bahasa dan alasan beli audiens dari mulut mereka sendiri',
+      },
+    ],
+  },
+  {
+    unit: 'peekabo',
+    side: 'A',
+    situation: 'Operator SaaS niche (OPS)',
+    entri: '',
+    ditahanBab:
+      'Kelima belas offer bab ini menunggu keputusan SaaS pertama dan niche pertama (master brief, keputusan per unit Agency).',
+    pilihan: [],
+    tahan: [
+      {
+        id: 'OPS-01',
+        alasan: 'Menunggu keputusan SaaS pertama dan niche pertama',
+      },
+      {
+        id: 'OPS-04',
+        alasan:
+          'Menunggu keputusan SaaS pertama; contoh kalibrasi sudah ditulis',
+      },
+      {
+        id: 'OPS-09',
+        alasan: 'Menunggu keputusan SaaS pertama; nama alat belum boleh tampil',
+      },
+      { id: 'OPS-14', alasan: 'Menunggu keputusan SaaS pertama' },
+    ],
+  },
+  {
+    unit: 'peekabo',
+    side: 'A',
+    situation: 'Live commerce untuk brand (LIV)',
+    entri: 'LIV-01',
+    pilihan: [
+      {
+        id: 'LIV-01',
+        alasan:
+          '“tidak sanggup siaran setiap hari”: coba live per jam tanpa kontrak panjang',
+      },
+      { id: 'LIV-02', alasan: 'Siaran rutin dengan jadwal tetap' },
+      {
+        id: 'LIV-05',
+        alasan:
+          '“tidak punya host”: sudut siaran di lokasi Anda; jembatan ke studio Konstruksi',
+      },
+      { id: 'LIV-06', alasan: 'Host Anda sendiri dilatih dari rekaman' },
+      { id: 'LIV-09', alasan: 'Siaran khusus di momen besar' },
+      {
+        id: 'LIV-04',
+        alasan: 'Biaya dasar lebih rendah, sisanya dari penjualan selama live',
+      },
+    ],
+    tahan: [
+      {
+        id: 'LIV-07',
+        alasan:
+          'Ditahan: nilainya adalah status program partner platform yang belum terdaftar',
+      },
+      {
+        id: '3A-05',
+        alasan:
+          'Cadangan: bertanda †, operasi live lengkap; pilih bila Anda ingin paket penuh tampil',
+      },
+    ],
+    catatan:
+      'Urutan bab TAL, KRE, dan LIV menunggu keputusan industri keempat dan kelima; daftar ini tidak bergantung padanya.',
+  },
+  {
+    unit: 'peekabo',
+    side: 'A',
+    situation: 'Experiential dan event (EVT)',
+    entri: '2A-06',
+    pilihan: [
+      {
+        id: '2B-01',
+        alasan:
+          '“Saya ingin warga datang”: event hunting kota, bertanda † (asal A)',
+      },
+      {
+        id: '2B-05',
+        alasan: 'Produk dibawa ke banyak titik dalam satu rute (asal T)',
+      },
+      {
+        id: '2B-06',
+        alasan: '“lalu bercerita”: temu pelanggan dan komunitas (asal T)',
+      },
+      {
+        id: '2A-06',
+        alasan: 'Lingkup terkecil: booth dan sampling di lokasi mitra',
+      },
+      {
+        id: '2A-07',
+        alasan: 'Perlengkapan, izin lokasi, dan alur peserta; bertanda †',
+      },
+    ],
+    tahan: [
+      {
+        id: '2B-08',
+        alasan:
+          'Tidak dipilih: data peserta dibagikan ke sponsor; lebih aman lewat percakapan (UU PDP)',
+      },
+    ],
+  },
+  {
+    unit: 'peekabo',
+    side: 'A',
+    situation: 'Talenta dan kreator untuk brand (TAL)',
+    entri: '2A-03',
+    pilihan: [
+      {
+        id: '2A-03',
+        alasan:
+          '“orang yang bisa membawakan produk saya”: promotor dan host terlatih (asal A)',
+      },
+      {
+        id: '3A-06',
+        alasan: 'Video ulasan dari banyak kreator, dibayar per video',
+      },
+      {
+        id: '3A-01',
+        alasan:
+          '“bukan sekadar pengikut banyak”: kreator yang kami kelola, bertanda † (asal A)',
+      },
+      {
+        id: '3A-04',
+        alasan:
+          'Sales atau influencer yang sudah disaring; bertanda † (asal A)',
+      },
+      { id: '3A-11', alasan: 'Satu wajah yang dikenal warga' },
+    ],
+    catatan:
+      'Bentuk hubungan kerja talenta belum diputuskan (keputusan lintas unit 3); halaman memakai rumusan aman “bentuk hubungan kerja disepakati tertulis”.',
+  },
+  {
+    unit: 'peekabo',
+    side: 'A',
+    situation: 'Outsourcing penjualan (SLS)',
+    entri: '3A-08',
+    pilihan: [
+      {
+        id: '3A-08',
+        alasan: 'Lingkup terkecil: chat dijawab dan ditutup menjadi pesanan',
+      },
+      {
+        id: '2A-02',
+        alasan:
+          '“tidak ada yang menindaklanjuti”: tim sales lapangan, bertanda † (asal A)',
+      },
+      {
+        id: '3A-03',
+        alasan: 'Penjualan dijalankan atas nama Anda; bertanda † (asal A)',
+      },
+    ],
+    catatan: 'Bab ini tepat tiga offer, semuanya yang ada di katalog.',
+  },
+  {
+    unit: 'peekabo',
+    side: 'A',
+    situation: 'Akademi untuk tim klien (AKD)',
+    entri: '',
+    ditahanBab:
+      'Katalog hanya memuat dua offer (1A-04, 1A-07), kurang dari tiga. Keduanya tetap bisa ditawarkan lewat percakapan sampai ada offer ketiga.',
+    pilihan: [],
+  },
+  {
+    unit: 'peekabo',
+    side: 'A',
+    situation: 'Ekosistem marketplace dan jaringan komisi (EKO)',
+    entri: 'EKO-04',
+    pilihan: [
+      {
+        id: 'EKO-04',
+        alasan:
+          'Lingkup terkecil: margin dan komisi afiliasi dihitung ulang setiap biaya platform berubah',
+      },
+      {
+        id: '3B-04',
+        alasan:
+          'SaaS dan vendor yang tepat lewat kami, komisi diungkapkan (asal T)',
+      },
+      {
+        id: '3C-06',
+        alasan: '“dijualkan banyak orang”: etalase dan siaran komunitas seller',
+      },
+      {
+        id: '3C-09',
+        alasan: 'Anggota komunitas membuat konten untuk brand; bertanda †',
+      },
+    ],
+    tahan: [
+      {
+        id: 'EKO-01',
+        alasan: 'Ditahan: status program partner platform belum terdaftar',
+      },
+      {
+        id: 'EKO-02',
+        alasan: 'Ditahan: status program partner platform belum terdaftar',
+      },
+      {
+        id: 'EKO-03',
+        alasan: 'Ditahan: status program partner platform belum terdaftar',
+      },
+      {
+        id: '3B-06',
+        alasan: 'Ditahan: status program partner platform belum terdaftar',
+      },
+      { id: 'EKO-05', alasan: 'Ditahan: offer ‡, menunggu pilihan sub-agen' },
+      {
+        id: 'EKO-06',
+        alasan: 'Mitra asuransi belum ada (master brief, jalur komisi)',
+      },
+    ],
+    catatan:
+      'Offer yang paling langsung menjawab “mengelola afiliasinya” (TAP, TSP, MCN) tertahan sampai Peekabo terdaftar. Bila Anda lebih suka, bab ini ditahan utuh sampai saat itu.',
   },
 ]

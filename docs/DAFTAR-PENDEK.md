@@ -41,16 +41,18 @@ Catatan: Bab ini sudah tayang dengan 11 offer. Keempat offer yang tidak dipilih 
 
 > “Saya bergantung pada marketplace, stok saya tidak sinkron, dan pelanggan datang sekali lalu hilang.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 6 dari 11 offer. Pintu masuk: **RIT-01**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                      | Dampak untuk web                                                                                | Jenis                                  | †   | Alasan                                                     | Keputusan Anda |
 | --- | -------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------- | -------------------------------------- | --- | ---------------------------------------------------------- | -------------- |
-| 1   | RIT-01 (pintu masuk) | Bot sinkron stok lintas marketplace  | Stok di semua kanal berasal dari satu sumber, sehingga barang yang habis tidak tampil tersedia. | Bot yang bekerja sendiri               |     | “stok saya tidak sinkron”                                  | tayang / tahan |
-| 2   | RIT-08               | Kasir terhubung toko online          | Penjualan toko dan online tercatat di satu tempat dan stok saling menyesuaikan                  | Alur kerja yang berjalan tanpa dikejar |     | Toko fisik dan online tercatat di satu tempat              | tayang / tahan |
-| 3   | RIT-03               | Buka toko brand sendiri              | Toko online milik brand sendiri, dengan data pembeli yang menjadi milik brand.                  | Kanal pendapatan baru                  |     | “Saya bergantung pada marketplace”: toko brand sendiri     | tayang / tahan |
-| 4   | RIT-10               | Rekomendasi produk dari pola belanja | Pembeli melihat produk yang sering dibeli bersama, dari pola belanja di toko Anda.              | Angka yang memberi tahu lebih dulu     |     | Produk yang sering dibeli bersama                          | tayang / tahan |
-| 5   | RIT-09               | Buka program membership dan poin     | Program poin dan hadiah berjalan untuk pelanggan Anda, dan data belanjanya terkumpul.           | Kanal pendapatan baru                  |     | “pelanggan datang sekali lalu hilang”: poin dan membership | tayang / tahan |
-| 6   | RIT-02               | Bot balas chat dan tutup penjualan   | Pertanyaan harga, stok, dan ongkir dijawab seketika dan pesanan ditutup di dalam percakapan     | Bot yang bekerja sendiri               |     | Pertanyaan harga dan ongkir dijawab seketika               | tayang / tahan |
+| 1   | RIT-01 (pintu masuk) | Bot sinkron stok lintas marketplace  | Stok di semua kanal berasal dari satu sumber, sehingga barang yang habis tidak tampil tersedia. | Bot yang bekerja sendiri               |     | “stok saya tidak sinkron”                                  | tayang         |
+| 2   | RIT-08               | Kasir terhubung toko online          | Penjualan toko dan online tercatat di satu tempat dan stok saling menyesuaikan                  | Alur kerja yang berjalan tanpa dikejar |     | Toko fisik dan online tercatat di satu tempat              | tayang         |
+| 3   | RIT-03               | Buka toko brand sendiri              | Toko online milik brand sendiri, dengan data pembeli yang menjadi milik brand.                  | Kanal pendapatan baru                  |     | “Saya bergantung pada marketplace”: toko brand sendiri     | tayang         |
+| 4   | RIT-10               | Rekomendasi produk dari pola belanja | Pembeli melihat produk yang sering dibeli bersama, dari pola belanja di toko Anda.              | Angka yang memberi tahu lebih dulu     |     | Produk yang sering dibeli bersama                          | tayang         |
+| 5   | RIT-09               | Buka program membership dan poin     | Program poin dan hadiah berjalan untuk pelanggan Anda, dan data belanjanya terkumpul.           | Kanal pendapatan baru                  |     | “pelanggan datang sekali lalu hilang”: poin dan membership | tayang         |
+| 6   | RIT-02               | Bot balas chat dan tutup penjualan   | Pertanyaan harga, stok, dan ongkir dijawab seketika dan pesanan ditutup di dalam percakapan     | Bot yang bekerja sendiri               |     | Pertanyaan harga dan ongkir dijawab seketika               | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -68,16 +70,18 @@ Catatan: Bab ini sudah tayang dengan 11 offer. Keempat offer yang tidak dipilih 
 
 > “Pesanan sales masuk lewat chat, stok selisih, piutang telat, dan harga pemasok naik tanpa kabar.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 6 dari 11 offer. Pintu masuk: **DIS-01**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                                | Dampak untuk web                                                                 | Jenis                                  | †                                      | Alasan                                                                              | Keputusan Anda |
 | --- | -------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------- | -------------- |
-| 1   | DIS-01 (pintu masuk) | Bot pesanan sales lapangan                     | Pesanan sales masuk langsung ke gudang tanpa lewat chat dan tanpa salah ketik    | Bot yang bekerja sendiri               |                                        | “Pesanan sales masuk lewat chat”                                                    | tayang / tahan |
-| 2   | DIS-09               | Stok opname dengan barcode                     | Stok fisik dan catatan dicocokkan berkala, dan selisihnya tercatat.              | Alur kerja yang berjalan tanpa dikejar |                                        | “stok selisih”: opname dengan barcode                                               | tayang / tahan |
-| 3   | DIS-05               | Buka portal pemesanan grosir                   | Pembeli grosir memesan sendiri dengan harga sesuai levelnya, tanpa telepon       | Kanal pendapatan baru                  |                                        | Pembeli grosir memesan sendiri sesuai levelnya                                      | tayang / tahan |
-| 4   | DIS-10               | Dasbor sales dan stok yang diperbarui seketika | Penjualan per sales dan stok yang menipis terlihat seketika                      | Angka yang memberi tahu lebih dulu     |                                        | Penjualan per sales dan stok menipis terlihat                                       | tayang / tahan |
-| 5   | DIS-04               | Bot penagihan piutang                          | Piutang jatuh tempo diingatkan bertahap lewat WhatsApp sehingga kas lebih lancar | Bot yang bekerja sendiri               |                                        | “piutang telat”: pengingat bertahap lewat WhatsApp                                  | tayang / tahan |
-| 6   | DIS-08               | Bot pantau harga pemasok                       | Kenaikan harga pemasok di sumber publik terdeteksi dan dilaporkan lebih dulu.    | Bot yang bekerja sendiri               | Harga jual tetap Anda yang menentukan. | “harga pemasok naik tanpa kabar”: bertanda †, harga jual tetap Anda yang menentukan | tayang / tahan |
+| 1   | DIS-01 (pintu masuk) | Bot pesanan sales lapangan                     | Pesanan sales masuk langsung ke gudang tanpa lewat chat dan tanpa salah ketik    | Bot yang bekerja sendiri               |                                        | “Pesanan sales masuk lewat chat”                                                    | tayang         |
+| 2   | DIS-09               | Stok opname dengan barcode                     | Stok fisik dan catatan dicocokkan berkala, dan selisihnya tercatat.              | Alur kerja yang berjalan tanpa dikejar |                                        | “stok selisih”: opname dengan barcode                                               | tayang         |
+| 3   | DIS-05               | Buka portal pemesanan grosir                   | Pembeli grosir memesan sendiri dengan harga sesuai levelnya, tanpa telepon       | Kanal pendapatan baru                  |                                        | Pembeli grosir memesan sendiri sesuai levelnya                                      | tayang         |
+| 4   | DIS-10               | Dasbor sales dan stok yang diperbarui seketika | Penjualan per sales dan stok yang menipis terlihat seketika                      | Angka yang memberi tahu lebih dulu     |                                        | Penjualan per sales dan stok menipis terlihat                                       | tayang         |
+| 5   | DIS-04               | Bot penagihan piutang                          | Piutang jatuh tempo diingatkan bertahap lewat WhatsApp sehingga kas lebih lancar | Bot yang bekerja sendiri               |                                        | “piutang telat”: pengingat bertahap lewat WhatsApp                                  | tayang         |
+| 6   | DIS-08               | Bot pantau harga pemasok                       | Kenaikan harga pemasok di sumber publik terdeteksi dan dilaporkan lebih dulu.    | Bot yang bekerja sendiri               | Harga jual tetap Anda yang menentukan. | “harga pemasok naik tanpa kabar”: bertanda †, harga jual tetap Anda yang menentukan | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -97,16 +101,18 @@ Catatan: Dampak DIS-04 di katalog (“kas lebih lancar”) ditulis ulang di hala
 
 > “Jadwal bentrok, pelanggan lupa datang, tagihan kos menunggak, dan mesin harus dijaga terus.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 6 dari 10 offer. Pintu masuk: **JAS-01**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                                     | Dampak untuk web                                                                  | Jenis                                  | †   | Alasan                                               | Keputusan Anda |
 | --- | -------------------- | --------------------------------------------------- | --------------------------------------------------------------------------------- | -------------------------------------- | --- | ---------------------------------------------------- | -------------- |
-| 1   | JAS-01 (pintu masuk) | Bot booking dan pengingat                           | Pelanggan memesan jadwal lewat bot dan menerima pengingat sebelum datang.         | Bot yang bekerja sendiri               |     | “Jadwal bentrok, pelanggan lupa datang”              | tayang / tahan |
-| 2   | JAS-06               | Workflow tagihan kos bulanan                        | Tagihan, pengingat, dan bukti bayar berjalan sendiri dan tunggakan terlihat jelas | Alur kerja yang berjalan tanpa dikejar |     | “tagihan kos menunggak”                              | tayang / tahan |
-| 3   | JAS-04               | Buka mesin laundry koin dengan QRIS                 | Mesin laundry koin menyala setelah pembayaran QRIS, tanpa penjaga.                | Kanal pendapatan baru                  |     | “mesin harus dijaga terus”: laundry koin dengan QRIS | tayang / tahan |
-| 4   | JAS-10               | Dasbor mesin dan pendapatan per unit                | Status dan pendapatan tiap mesin terlihat seketika                                | Angka yang memberi tahu lebih dulu     |     | Status dan pendapatan tiap mesin                     | tayang / tahan |
-| 5   | JAS-02               | Workflow estimasi, persetujuan, pengerjaan, selesai | Pelanggan menyetujui biaya lewat ponsel dan mendapat kabar di tiap tahap          | Alur kerja yang berjalan tanpa dikejar |     | Bengkel: biaya disetujui lewat ponsel                | tayang / tahan |
-| 6   | JAS-03               | Bot pengingat servis berkala                        | Pelanggan menerima pengingat saat servis berkalanya jatuh tempo.                  | Bot yang bekerja sendiri               |     | Pengingat servis berkala                             | tayang / tahan |
+| 1   | JAS-01 (pintu masuk) | Bot booking dan pengingat                           | Pelanggan memesan jadwal lewat bot dan menerima pengingat sebelum datang.         | Bot yang bekerja sendiri               |     | “Jadwal bentrok, pelanggan lupa datang”              | tayang         |
+| 2   | JAS-06               | Workflow tagihan kos bulanan                        | Tagihan, pengingat, dan bukti bayar berjalan sendiri dan tunggakan terlihat jelas | Alur kerja yang berjalan tanpa dikejar |     | “tagihan kos menunggak”                              | tayang         |
+| 3   | JAS-04               | Buka mesin laundry koin dengan QRIS                 | Mesin laundry koin menyala setelah pembayaran QRIS, tanpa penjaga.                | Kanal pendapatan baru                  |     | “mesin harus dijaga terus”: laundry koin dengan QRIS | tayang         |
+| 4   | JAS-10               | Dasbor mesin dan pendapatan per unit                | Status dan pendapatan tiap mesin terlihat seketika                                | Angka yang memberi tahu lebih dulu     |     | Status dan pendapatan tiap mesin                     | tayang         |
+| 5   | JAS-02               | Workflow estimasi, persetujuan, pengerjaan, selesai | Pelanggan menyetujui biaya lewat ponsel dan mendapat kabar di tiap tahap          | Alur kerja yang berjalan tanpa dikejar |     | Bengkel: biaya disetujui lewat ponsel                | tayang         |
+| 6   | JAS-03               | Bot pengingat servis berkala                        | Pelanggan menerima pengingat saat servis berkalanya jatuh tempo.                  | Bot yang bekerja sendiri               |     | Pengingat servis berkala                             | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -123,16 +129,18 @@ Catatan: Dampak DIS-04 di katalog (“kas lebih lancar”) ditulis ulang di hala
 
 > “Telepon janji temu menumpuk, data pasien diketik berulang, dan pasien lupa kontrol.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 6 dari 11 offer. Pintu masuk: **KES-01**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                                   | Dampak untuk web                                                        | Jenis                                  | †                                                                           | Alasan                                                            | Keputusan Anda |
 | --- | -------------------- | ------------------------------------------------- | ----------------------------------------------------------------------- | -------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------- | -------------- |
-| 1   | KES-01 (pintu masuk) | Bot janji temu                                    | Pasien membuat janji sendiri lewat bot, tanpa menunggu telepon dijawab. | Bot yang bekerja sendiri               | Data pasien dijaga sebagai data pribadi yang sensitif, sesuai UU PDP.       | “Telepon janji temu menumpuk”: bertanda †, data pasien dijaga     | tayang / tahan |
-| 2   | KES-04               | Workflow pendaftaran, pemeriksaan, dan pembayaran | Data pasien tidak diketik ulang di setiap meja                          | Alur kerja yang berjalan tanpa dikejar | Data pasien dijaga sebagai data pribadi yang sensitif, sesuai UU PDP.       | “data pasien diketik berulang”: bertanda †                        | tayang / tahan |
-| 3   | KES-08               | Buka membership perawatan                         | Paket perawatan berlangganan dengan pengingat sesi                      | Kanal pendapatan baru                  |                                                                             | Paket perawatan berlangganan                                      | tayang / tahan |
-| 4   | KES-03               | Antrean pasien yang terlihat langsung             | Pasien tahu giliran dari ponsel dan ruang tunggu lebih tenang           | Angka yang memberi tahu lebih dulu     |                                                                             | Pasien tahu gilirannya dari ponsel                                | tayang / tahan |
-| 5   | KES-02               | Bot pengingat kontrol dan obat                    | Pasien menerima pengingat jadwal kontrol dan obat.                      | Bot yang bekerja sendiri               | Pengingat hanya untuk pasien yang setuju; data pasien dijaga sesuai UU PDP. | “pasien lupa kontrol”: bertanda †, hanya untuk pasien yang setuju | tayang / tahan |
-| 6   | KES-06               | Bot stok dan kedaluwarsa obat                     | Obat menipis atau mendekati kedaluwarsa diperingatkan dan dipesan ulang | Bot yang bekerja sendiri               |                                                                             | Apotek: obat menipis dan kedaluwarsa                              | tayang / tahan |
+| 1   | KES-01 (pintu masuk) | Bot janji temu                                    | Pasien membuat janji sendiri lewat bot, tanpa menunggu telepon dijawab. | Bot yang bekerja sendiri               | Data pasien dijaga sebagai data pribadi yang sensitif, sesuai UU PDP.       | “Telepon janji temu menumpuk”: bertanda †, data pasien dijaga     | tayang         |
+| 2   | KES-04               | Workflow pendaftaran, pemeriksaan, dan pembayaran | Data pasien tidak diketik ulang di setiap meja                          | Alur kerja yang berjalan tanpa dikejar | Data pasien dijaga sebagai data pribadi yang sensitif, sesuai UU PDP.       | “data pasien diketik berulang”: bertanda †                        | tayang         |
+| 3   | KES-08               | Buka membership perawatan                         | Paket perawatan berlangganan dengan pengingat sesi                      | Kanal pendapatan baru                  |                                                                             | Paket perawatan berlangganan                                      | tayang         |
+| 4   | KES-03               | Antrean pasien yang terlihat langsung             | Pasien tahu giliran dari ponsel dan ruang tunggu lebih tenang           | Angka yang memberi tahu lebih dulu     |                                                                             | Pasien tahu gilirannya dari ponsel                                | tayang         |
+| 5   | KES-02               | Bot pengingat kontrol dan obat                    | Pasien menerima pengingat jadwal kontrol dan obat.                      | Bot yang bekerja sendiri               | Pengingat hanya untuk pasien yang setuju; data pasien dijaga sesuai UU PDP. | “pasien lupa kontrol”: bertanda †, hanya untuk pasien yang setuju | tayang         |
+| 6   | KES-06               | Bot stok dan kedaluwarsa obat                     | Obat menipis atau mendekati kedaluwarsa diperingatkan dan dipesan ulang | Bot yang bekerja sendiri               |                                                                             | Apotek: obat menipis dan kedaluwarsa                              | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -150,16 +158,18 @@ Catatan: Dampak DIS-04 di katalog (“kas lebih lancar”) ditulis ulang di hala
 
 > “SPP menunggak, pendaftaran masih kertas, dan pendapatan hanya dari kelas tatap muka.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 6 dari 11 offer. Pintu masuk: **EDU-01**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                       | Dampak untuk web                                                       | Jenis                                  | †   | Alasan                                                              | Keputusan Anda |
 | --- | -------------------- | ------------------------------------- | ---------------------------------------------------------------------- | -------------------------------------- | --- | ------------------------------------------------------------------- | -------------- |
-| 1   | EDU-01 (pintu masuk) | Bot pengingat SPP dan tagihan         | Orang tua menerima tagihan dan kode bayar SPP tanpa datang ke sekolah. | Bot yang bekerja sendiri               |     | “SPP menunggak”                                                     | tayang / tahan |
-| 2   | EDU-02               | Workflow pendaftaran siswa baru       | Formulir, berkas, pembayaran, dan pengumuman berjalan online           | Alur kerja yang berjalan tanpa dikejar |     | “pendaftaran masih kertas”                                          | tayang / tahan |
-| 3   | EDU-03               | Buka kelas berlangganan online        | Kelas online berlangganan dibuka di samping kelas tatap muka.          | Kanal pendapatan baru                  |     | “pendapatan hanya dari kelas tatap muka”: kelas berlangganan online | tayang / tahan |
-| 4   | EDU-06               | Portal orang tua: kehadiran dan nilai | Orang tua melihat kehadiran dan nilai anak seketika lewat portal.      | Angka yang memberi tahu lebih dulu     |     | Kehadiran dan nilai untuk orang tua                                 | tayang / tahan |
-| 5   | EDU-09               | Otomasi rekap nilai dan rapor         | Rapor tersusun dari nilai harian tanpa disalin ulang                   | Alur kerja yang berjalan tanpa dikejar |     | Rapor dari nilai harian                                             | tayang / tahan |
-| 6   | EDU-05               | Buka toko bank soal dan modul digital | Modul dijual berulang tanpa stok                                       | Kanal pendapatan baru                  |     | Modul digital dijual berulang                                       | tayang / tahan |
+| 1   | EDU-01 (pintu masuk) | Bot pengingat SPP dan tagihan         | Orang tua menerima tagihan dan kode bayar SPP tanpa datang ke sekolah. | Bot yang bekerja sendiri               |     | “SPP menunggak”                                                     | tayang         |
+| 2   | EDU-02               | Workflow pendaftaran siswa baru       | Formulir, berkas, pembayaran, dan pengumuman berjalan online           | Alur kerja yang berjalan tanpa dikejar |     | “pendaftaran masih kertas”                                          | tayang         |
+| 3   | EDU-03               | Buka kelas berlangganan online        | Kelas online berlangganan dibuka di samping kelas tatap muka.          | Kanal pendapatan baru                  |     | “pendapatan hanya dari kelas tatap muka”: kelas berlangganan online | tayang         |
+| 4   | EDU-06               | Portal orang tua: kehadiran dan nilai | Orang tua melihat kehadiran dan nilai anak seketika lewat portal.      | Angka yang memberi tahu lebih dulu     |     | Kehadiran dan nilai untuk orang tua                                 | tayang         |
+| 5   | EDU-09               | Otomasi rekap nilai dan rapor         | Rapor tersusun dari nilai harian tanpa disalin ulang                   | Alur kerja yang berjalan tanpa dikejar |     | Rapor dari nilai harian                                             | tayang         |
+| 6   | EDU-05               | Buka toko bank soal dan modul digital | Modul dijual berulang tanpa stok                                       | Kanal pendapatan baru                  |     | Modul digital dijual berulang                                       | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -177,16 +187,18 @@ Catatan: Dampak DIS-04 di katalog (“kas lebih lancar”) ditulis ulang di hala
 
 > “Prospek tercecer, pengajuan leasing tidak terpantau, dan pelanggan lama tak pernah dihubungi lagi.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 6 dari 11 offer. Pintu masuk: **PRO-01**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                             | Dampak untuk web                                                                                               | Jenis                                  | †                                                               | Alasan                                                                                       | Keputusan Anda |
 | --- | -------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------- |
-| 1   | PRO-01 (pintu masuk) | Bot penjawab calon pembeli 24 jam           | Pertanyaan unit dijawab seketika dan survei langsung terjadwal                                                 | Bot yang bekerja sendiri               |                                                                 | “Prospek tercecer”: dijawab seketika dan survei terjadwal                                    | tayang / tahan |
-| 2   | PRO-02               | Workflow prospek, survei, booking, KPR      | Prospek tidak terlewat dan berkas KPR terkumpul bertahap                                                       | Alur kerja yang berjalan tanpa dikejar |                                                                 | Prospek sampai berkas KPR                                                                    | tayang / tahan |
-| 3   | PRO-10               | Dasbor funnel penjualan                     | Tahap prospek dan penyebab gagal terlihat                                                                      | Angka yang memberi tahu lebih dulu     |                                                                 | Tahap prospek dan penyebab gagal terlihat                                                    | tayang / tahan |
-| 4   | PRO-06               | Kalkulator cicilan dan pengajuan ke leasing | Calon pembeli menghitung cicilan dan mengajukan ke leasing dari situs, dengan status pengajuan yang terpantau. | Alur kerja yang berjalan tanpa dikejar | Persetujuan pembiayaan di tangan perusahaan pembiayaan berizin. | “pengajuan leasing tidak terpantau”: bertanda †, persetujuan di tangan perusahaan pembiayaan | tayang / tahan |
-| 5   | PRO-07               | Bot pengingat servis, pajak, dan asuransi   | Pelanggan lama menerima pengingat servis, pajak, dan asuransi kendaraannya.                                    | Bot yang bekerja sendiri               |                                                                 | “pelanggan lama tak pernah dihubungi lagi”                                                   | tayang / tahan |
-| 6   | PRO-05               | Bot penawaran dan jadwal test drive         | Calon pembeli mendapat penawaran dan jadwal tanpa menunggu sales                                               | Bot yang bekerja sendiri               |                                                                 | Dealer: penawaran dan jadwal test drive                                                      | tayang / tahan |
+| 1   | PRO-01 (pintu masuk) | Bot penjawab calon pembeli 24 jam           | Pertanyaan unit dijawab seketika dan survei langsung terjadwal                                                 | Bot yang bekerja sendiri               |                                                                 | “Prospek tercecer”: dijawab seketika dan survei terjadwal                                    | tayang         |
+| 2   | PRO-02               | Workflow prospek, survei, booking, KPR      | Prospek tidak terlewat dan berkas KPR terkumpul bertahap                                                       | Alur kerja yang berjalan tanpa dikejar |                                                                 | Prospek sampai berkas KPR                                                                    | tayang         |
+| 3   | PRO-10               | Dasbor funnel penjualan                     | Tahap prospek dan penyebab gagal terlihat                                                                      | Angka yang memberi tahu lebih dulu     |                                                                 | Tahap prospek dan penyebab gagal terlihat                                                    | tayang         |
+| 4   | PRO-06               | Kalkulator cicilan dan pengajuan ke leasing | Calon pembeli menghitung cicilan dan mengajukan ke leasing dari situs, dengan status pengajuan yang terpantau. | Alur kerja yang berjalan tanpa dikejar | Persetujuan pembiayaan di tangan perusahaan pembiayaan berizin. | “pengajuan leasing tidak terpantau”: bertanda †, persetujuan di tangan perusahaan pembiayaan | tayang         |
+| 5   | PRO-07               | Bot pengingat servis, pajak, dan asuransi   | Pelanggan lama menerima pengingat servis, pajak, dan asuransi kendaraannya.                                    | Bot yang bekerja sendiri               |                                                                 | “pelanggan lama tak pernah dihubungi lagi”                                                   | tayang         |
+| 6   | PRO-05               | Bot penawaran dan jadwal test drive         | Calon pembeli mendapat penawaran dan jadwal tanpa menunggu sales                                               | Bot yang bekerja sendiri               |                                                                 | Dealer: penawaran dan jadwal test drive                                                      | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -204,16 +216,18 @@ Catatan: Dampak DIS-04 di katalog (“kas lebih lancar”) ditulis ulang di hala
 
 > “Eksekusi strategi saya tidak konsisten, angsuran dikejar manual, dan berkas menumpuk.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 6 dari 13 offer. Pintu masuk: **KEU-09**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                                     | Dampak untuk web                                                                                      | Jenis                                  | †                                                                | Alasan                                                                      | Keputusan Anda |
 | --- | -------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------- | -------------- |
-| 1   | KEU-09 (pintu masuk) | Bot angsuran dan iuran                              | Angsuran dan iuran ditagih dan dicocokkan otomatis                                                    | Bot yang bekerja sendiri               |                                                                  | “angsuran dikejar manual”                                                   | tayang / tahan |
-| 2   | KEU-08               | Workflow pengajuan, survei, pencairan, dan angsuran | Pinjaman anggota berjalan tertib dan tunggakan diingatkan                                             | Alur kerja yang berjalan tanpa dikejar |                                                                  | Koperasi: pengajuan sampai angsuran tertib                                  | tayang / tahan |
-| 3   | KEU-12               | Buka lini pulsa, token listrik, dan tagihan         | Lini pulsa, token listrik, dan tagihan dibuka dari supplier, dengan selisih harga yang Anda tetapkan. | Kanal pendapatan baru                  | Produk yang boleh dijual mengikuti kontrak dengan supplier.      | Konter dan agen: lini pulsa, token, dan tagihan; bertanda †                 | tayang / tahan |
-| 4   | KEU-13               | Deteksi pola transaksi janggal dari graf            | Jaringan akun dan transaksi yang mencurigakan terlihat lebih dini                                     | Angka yang memberi tahu lebih dulu     |                                                                  | Pola transaksi janggal terlihat lebih dini                                  | tayang / tahan |
-| 5   | KEU-10               | Workflow verifikasi berkas dan skoring sederhana    | Berkas pemohon diverifikasi, dan setiap keputusan tercatat.                                           | Alur kerja yang berjalan tanpa dikejar | Keputusan pembiayaan tetap di tangan pemberi pembiayaan berizin. | “berkas menumpuk”: bertanda †, keputusan tetap di tangan pemberi pembiayaan | tayang / tahan |
-| 6   | KEU-11               | Bot pengingat perpanjangan polis                    | Polis yang mendekati jatuh tempo diingatkan kepada agen untuk ditindaklanjuti.                        | Bot yang bekerja sendiri               | Penjualan asuransi tetap oleh agen berlisensi.                   | Agen asuransi: pengingat perpanjangan polis; bertanda †                     | tayang / tahan |
+| 1   | KEU-09 (pintu masuk) | Bot angsuran dan iuran                              | Angsuran dan iuran ditagih dan dicocokkan otomatis                                                    | Bot yang bekerja sendiri               |                                                                  | “angsuran dikejar manual”                                                   | tayang         |
+| 2   | KEU-08               | Workflow pengajuan, survei, pencairan, dan angsuran | Pinjaman anggota berjalan tertib dan tunggakan diingatkan                                             | Alur kerja yang berjalan tanpa dikejar |                                                                  | Koperasi: pengajuan sampai angsuran tertib                                  | tayang         |
+| 3   | KEU-12               | Buka lini pulsa, token listrik, dan tagihan         | Lini pulsa, token listrik, dan tagihan dibuka dari supplier, dengan selisih harga yang Anda tetapkan. | Kanal pendapatan baru                  | Produk yang boleh dijual mengikuti kontrak dengan supplier.      | Konter dan agen: lini pulsa, token, dan tagihan; bertanda †                 | tayang         |
+| 4   | KEU-13               | Deteksi pola transaksi janggal dari graf            | Jaringan akun dan transaksi yang mencurigakan terlihat lebih dini                                     | Angka yang memberi tahu lebih dulu     |                                                                  | Pola transaksi janggal terlihat lebih dini                                  | tayang         |
+| 5   | KEU-10               | Workflow verifikasi berkas dan skoring sederhana    | Berkas pemohon diverifikasi, dan setiap keputusan tercatat.                                           | Alur kerja yang berjalan tanpa dikejar | Keputusan pembiayaan tetap di tangan pemberi pembiayaan berizin. | “berkas menumpuk”: bertanda †, keputusan tetap di tangan pemberi pembiayaan | tayang         |
+| 6   | KEU-11               | Bot pengingat perpanjangan polis                    | Polis yang mendekati jatuh tempo diingatkan kepada agen untuk ditindaklanjuti.                        | Bot yang bekerja sendiri               | Penjualan asuransi tetap oleh agen berlisensi.                   | Agen asuransi: pengingat perpanjangan polis; bertanda †                     | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -235,16 +249,18 @@ Catatan: Klausa pertama kutipan bab (“Eksekusi strategi saya tidak konsisten�
 
 > “Tender terlewat, dokumen tidak siap, laporan lapangan lewat chat, harga material naik-turun, dan termin lambat cair.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 6 dari 13 offer. Pintu masuk: **KON-01**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                     | Dampak untuk web                                                                          | Jenis                                  | †                                                                            | Alasan                                                     | Keputusan Anda |
 | --- | -------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------- | -------------- |
-| 1   | KON-01 (pintu masuk) | Bot pemantau tender regional        | Paket baru di Subang, Purwakarta, dan Bandung yang sesuai kualifikasi dikirim setiap hari | Bot yang bekerja sendiri               | Dari situs pengadaan publik; kami membantu menyiapkan, bukan mengatur hasil. | “Tender terlewat”: bertanda †, dari situs pengadaan publik | tayang / tahan |
-| 2   | KON-02               | Workflow penyusunan penawaran       | Dokumen kualifikasi, teknis, dan harga tersusun dari data perusahaan                      | Alur kerja yang berjalan tanpa dikejar |                                                                              | “dokumen tidak siap”                                       | tayang / tahan |
-| 3   | KON-06               | Dasbor arus kas dan kurva S terkini | Selisih rencana dan realisasi terlihat seketika                                           | Angka yang memberi tahu lebih dulu     |                                                                              | Selisih rencana dan realisasi terlihat                     | tayang / tahan |
-| 4   | KON-04               | Laporan lapangan mode offline       | Progres, foto, dan absensi terkirim walau tanpa sinyal                                    | Alur kerja yang berjalan tanpa dikejar |                                                                              | “laporan lapangan lewat chat”: terkirim walau tanpa sinyal | tayang / tahan |
-| 5   | KON-07               | Bot pantau harga material regional  | Perubahan harga material di tiga wilayah dikabarkan dan RAB diperbarui                    | Bot yang bekerja sendiri               |                                                                              | “harga material naik-turun”                                | tayang / tahan |
-| 6   | KON-05               | Workflow penagihan termin           | Berkas termin terkumpul otomatis dari laporan lapangan                                    | Alur kerja yang berjalan tanpa dikejar |                                                                              | “termin lambat cair”: berkas termin dari laporan lapangan  | tayang / tahan |
+| 1   | KON-01 (pintu masuk) | Bot pemantau tender regional        | Paket baru di Subang, Purwakarta, dan Bandung yang sesuai kualifikasi dikirim setiap hari | Bot yang bekerja sendiri               | Dari situs pengadaan publik; kami membantu menyiapkan, bukan mengatur hasil. | “Tender terlewat”: bertanda †, dari situs pengadaan publik | tayang         |
+| 2   | KON-02               | Workflow penyusunan penawaran       | Dokumen kualifikasi, teknis, dan harga tersusun dari data perusahaan                      | Alur kerja yang berjalan tanpa dikejar |                                                                              | “dokumen tidak siap”                                       | tayang         |
+| 3   | KON-06               | Dasbor arus kas dan kurva S terkini | Selisih rencana dan realisasi terlihat seketika                                           | Angka yang memberi tahu lebih dulu     |                                                                              | Selisih rencana dan realisasi terlihat                     | tayang         |
+| 4   | KON-04               | Laporan lapangan mode offline       | Progres, foto, dan absensi terkirim walau tanpa sinyal                                    | Alur kerja yang berjalan tanpa dikejar |                                                                              | “laporan lapangan lewat chat”: terkirim walau tanpa sinyal | tayang         |
+| 5   | KON-07               | Bot pantau harga material regional  | Perubahan harga material di tiga wilayah dikabarkan dan RAB diperbarui                    | Bot yang bekerja sendiri               |                                                                              | “harga material naik-turun”                                | tayang         |
+| 6   | KON-05               | Workflow penagihan termin           | Berkas termin terkumpul otomatis dari laporan lapangan                                    | Alur kerja yang berjalan tanpa dikejar |                                                                              | “termin lambat cair”: berkas termin dari laporan lapangan  | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -266,16 +282,18 @@ Catatan: Bab ini berpasangan dengan Konstruksi Pelaku proyek (ADM-01 dengan KON-
 
 > “Booking bentrok, DP dikejar manual, dan tiket event dijual manual.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 6 dari 10 offer. Pintu masuk: **TRV-04**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                       | Dampak untuk web                                                                               | Jenis                                  | †                                                           | Alasan                                                        | Keputusan Anda |
 | --- | -------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------- | -------------- |
-| 1   | TRV-04 (pintu masuk) | Sinkron ketersediaan lintas kanal     | Kamar tidak dobel pesan di banyak platform                                                     | Alur kerja yang berjalan tanpa dikejar | Lewat sambungan resmi setiap platform.                      | “Booking bentrok”: bertanda †, lewat sambungan resmi platform | tayang / tahan |
-| 2   | TRV-05               | Buka tiket event dengan QR            | Tiket event dijual online, dipindai di pintu, dan penjualannya terlihat seketika.              | Kanal pendapatan baru                  |                                                             | “tiket event dijual manual”                                   | tayang / tahan |
-| 3   | TRV-07               | Bot check-in dan informasi peserta    | Peserta terverifikasi dan pertanyaannya dijawab di WhatsApp                                    | Bot yang bekerja sendiri               |                                                             | Peserta event terverifikasi di WhatsApp                       | tayang / tahan |
-| 4   | TRV-03               | Workflow booking, DP, dan check-in    | Tamu memesan, membayar DP, dan check-in mandiri tanpa resepsionis                              | Alur kerja yang berjalan tanpa dikejar |                                                             | “DP dikejar manual”: booking, DP, dan check-in                | tayang / tahan |
-| 5   | TRV-01               | Buka lini agen tiket dan hotel online | Tiket, hotel, dan paket dari supplier ditawarkan lewat situs Anda, dengan komisi atau markup.  | Kanal pendapatan baru                  | Produk yang boleh dijual mengikuti kontrak dengan supplier. | Biro perjalanan: tiket dan hotel dari supplier; bertanda †    | tayang / tahan |
-| 6   | TRV-09               | Bot peringatan harga musim ramai      | Hari libur dan lonjakan permintaan diperingatkan lebih dulu, supaya harga bisa Anda sesuaikan. | Bot yang bekerja sendiri               |                                                             | Musim ramai diperingatkan lebih dulu                          | tayang / tahan |
+| 1   | TRV-04 (pintu masuk) | Sinkron ketersediaan lintas kanal     | Kamar tidak dobel pesan di banyak platform                                                     | Alur kerja yang berjalan tanpa dikejar | Lewat sambungan resmi setiap platform.                      | “Booking bentrok”: bertanda †, lewat sambungan resmi platform | tayang         |
+| 2   | TRV-05               | Buka tiket event dengan QR            | Tiket event dijual online, dipindai di pintu, dan penjualannya terlihat seketika.              | Kanal pendapatan baru                  |                                                             | “tiket event dijual manual”                                   | tayang         |
+| 3   | TRV-07               | Bot check-in dan informasi peserta    | Peserta terverifikasi dan pertanyaannya dijawab di WhatsApp                                    | Bot yang bekerja sendiri               |                                                             | Peserta event terverifikasi di WhatsApp                       | tayang         |
+| 4   | TRV-03               | Workflow booking, DP, dan check-in    | Tamu memesan, membayar DP, dan check-in mandiri tanpa resepsionis                              | Alur kerja yang berjalan tanpa dikejar |                                                             | “DP dikejar manual”: booking, DP, dan check-in                | tayang         |
+| 5   | TRV-01               | Buka lini agen tiket dan hotel online | Tiket, hotel, dan paket dari supplier ditawarkan lewat situs Anda, dengan komisi atau markup.  | Kanal pendapatan baru                  | Produk yang boleh dijual mengikuti kontrak dengan supplier. | Biro perjalanan: tiket dan hotel dari supplier; bertanda †    | tayang         |
+| 6   | TRV-09               | Bot peringatan harga musim ramai      | Hari libur dan lonjakan permintaan diperingatkan lebih dulu, supaya harga bisa Anda sesuaikan. | Bot yang bekerja sendiri               |                                                             | Musim ramai diperingatkan lebih dulu                          | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -292,16 +310,18 @@ Catatan: Bab ini berpasangan dengan Konstruksi Pelaku proyek (ADM-01 dengan KON-
 
 > “Audiens saya besar tetapi pendapatan tipis, dan konten serta komunitas dikelola manual.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 6 dari 12 offer. Pintu masuk: **MED-05**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                            | Dampak untuk web                                               | Jenis                                  | †   | Alasan                                                | Keputusan Anda |
 | --- | -------------------- | ------------------------------------------ | -------------------------------------------------------------- | -------------------------------------- | --- | ----------------------------------------------------- | -------------- |
-| 1   | MED-05 (pintu masuk) | Bot komunitas Telegram atau Discord        | Sambutan anggota, aturan, dan iuran berjalan otomatis          | Bot yang bekerja sendiri               |     | “komunitas dikelola manual”                           | tayang / tahan |
-| 2   | MED-03               | Buka toko produk digital                   | Template, preset, dan ebook dijual berulang tanpa stok         | Kanal pendapatan baru                  |     | “pendapatan tipis”: toko produk digital               | tayang / tahan |
-| 3   | MED-06               | Workflow produksi konten                   | Brief, produksi, persetujuan, dan jadwal posting terkoordinasi | Alur kerja yang berjalan tanpa dikejar |     | “konten dikelola manual”: brief sampai jadwal posting | tayang / tahan |
-| 4   | MED-01               | Overlay donasi dan alert langsung di layar | Donasi, follow, dan pesan tampil di layar siaran seketika      | Angka yang memberi tahu lebih dulu     |     | Donasi dan alert di layar; jembatan ke studio siaran  | tayang / tahan |
-| 5   | MED-04               | Buka membership penggemar                  | Membership penggemar dengan konten eksklusif, ditagih bulanan. | Kanal pendapatan baru                  |     | Membership penggemar                                  | tayang / tahan |
-| 6   | MED-07               | Otomasi klip dan jadwal siaran             | Cuplikan siaran dipotong dan dijadwalkan ke banyak platform    | Alur kerja yang berjalan tanpa dikejar |     | Cuplikan siaran ke banyak platform                    | tayang / tahan |
+| 1   | MED-05 (pintu masuk) | Bot komunitas Telegram atau Discord        | Sambutan anggota, aturan, dan iuran berjalan otomatis          | Bot yang bekerja sendiri               |     | “komunitas dikelola manual”                           | tayang         |
+| 2   | MED-03               | Buka toko produk digital                   | Template, preset, dan ebook dijual berulang tanpa stok         | Kanal pendapatan baru                  |     | “pendapatan tipis”: toko produk digital               | tayang         |
+| 3   | MED-06               | Workflow produksi konten                   | Brief, produksi, persetujuan, dan jadwal posting terkoordinasi | Alur kerja yang berjalan tanpa dikejar |     | “konten dikelola manual”: brief sampai jadwal posting | tayang         |
+| 4   | MED-01               | Overlay donasi dan alert langsung di layar | Donasi, follow, dan pesan tampil di layar siaran seketika      | Angka yang memberi tahu lebih dulu     |     | Donasi dan alert di layar; jembatan ke studio siaran  | tayang         |
+| 5   | MED-04               | Buka membership penggemar                  | Membership penggemar dengan konten eksklusif, ditagih bulanan. | Kanal pendapatan baru                  |     | Membership penggemar                                  | tayang         |
+| 6   | MED-07               | Otomasi klip dan jadwal siaran             | Cuplikan siaran dipotong dan dijadwalkan ke banyak platform    | Alur kerja yang berjalan tanpa dikejar |     | Cuplikan siaran ke banyak platform                    | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -320,16 +340,18 @@ Catatan: Bab ini berpasangan dengan Konstruksi Pelaku proyek (ADM-01 dengan KON-
 
 > “Pelanggan bertanya ‘paketku di mana’, rute boros, dan klaim kerusakan tanpa bukti.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 6 dari 10 offer. Pintu masuk: **LOG-02**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                         | Dampak untuk web                                                                          | Jenis                                  | †   | Alasan                                      | Keputusan Anda |
 | --- | -------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------- | -------------------------------------- | --- | ------------------------------------------- | -------------- |
-| 1   | LOG-02 (pintu masuk) | Bot status kiriman ke pelanggan         | Pelanggan diberi kabar di setiap tahap pengiriman.                                        | Bot yang bekerja sendiri               |     | “Pelanggan bertanya paketku di mana”        | tayang / tahan |
-| 2   | LOG-03               | Workflow bukti serah terima digital     | Foto, tanda tangan, dan lokasi serah terima tercatat sebagai bukti.                       | Alur kerja yang berjalan tanpa dikejar |     | “klaim kerusakan tanpa bukti”               | tayang / tahan |
-| 3   | LOG-04               | Optimasi rute dan muatan                | Rute dan muatan barang disusun lebih efisien.                                             | Angka yang memberi tahu lebih dulu     |     | “rute boros”                                | tayang / tahan |
-| 4   | LOG-08               | Buka agregator multi-kurir untuk seller | Seller memilih kurir termurah lewat agregator Anda, dan Anda menetapkan selisih tarifnya. | Kanal pendapatan baru                  |     | Agregator multi-kurir untuk seller          | tayang / tahan |
-| 5   | LOG-01               | Pelacakan armada langsung               | Posisi kendaraan dan estimasi tiba terlihat seketika                                      | Angka yang memberi tahu lebih dulu     |     | Posisi kendaraan terlihat seketika          | tayang / tahan |
-| 6   | LOG-05               | Bot jadwal servis dan pajak kendaraan   | Servis dan dokumen kendaraan tidak terlewat                                               | Bot yang bekerja sendiri               |     | Servis dan dokumen kendaraan tidak terlewat | tayang / tahan |
+| 1   | LOG-02 (pintu masuk) | Bot status kiriman ke pelanggan         | Pelanggan diberi kabar di setiap tahap pengiriman.                                        | Bot yang bekerja sendiri               |     | “Pelanggan bertanya paketku di mana”        | tayang         |
+| 2   | LOG-03               | Workflow bukti serah terima digital     | Foto, tanda tangan, dan lokasi serah terima tercatat sebagai bukti.                       | Alur kerja yang berjalan tanpa dikejar |     | “klaim kerusakan tanpa bukti”               | tayang         |
+| 3   | LOG-04               | Optimasi rute dan muatan                | Rute dan muatan barang disusun lebih efisien.                                             | Angka yang memberi tahu lebih dulu     |     | “rute boros”                                | tayang         |
+| 4   | LOG-08               | Buka agregator multi-kurir untuk seller | Seller memilih kurir termurah lewat agregator Anda, dan Anda menetapkan selisih tarifnya. | Kanal pendapatan baru                  |     | Agregator multi-kurir untuk seller          | tayang         |
+| 5   | LOG-01               | Pelacakan armada langsung               | Posisi kendaraan dan estimasi tiba terlihat seketika                                      | Angka yang memberi tahu lebih dulu     |     | Posisi kendaraan terlihat seketika          | tayang         |
+| 6   | LOG-05               | Bot jadwal servis dan pajak kendaraan   | Servis dan dokumen kendaraan tidak terlewat                                               | Bot yang bekerja sendiri               |     | Servis dan dokumen kendaraan tidak terlewat | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -346,16 +368,18 @@ Catatan: Bab ini berpasangan dengan Konstruksi Pelaku proyek (ADM-01 dengan KON-
 
 > “Biaya pokok tidak diketahui, mesin berhenti mendadak, dan hasil tani lewat banyak perantara.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 6 dari 10 offer. Pintu masuk: **MAN-03**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                                 | Dampak untuk web                                                           | Jenis                                  | †   | Alasan                                                | Keputusan Anda |
 | --- | -------------------- | ----------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------- | --- | ----------------------------------------------------- | -------------- |
-| 1   | MAN-03 (pintu masuk) | Bot pencatat panen lewat WhatsApp               | Hasil panen dan biaya tercatat dari foto atau suara tanpa buku             | Bot yang bekerja sendiri               |     | Lingkup terkecil: panen dan biaya tercatat tanpa buku | tayang / tahan |
-| 2   | MAN-01               | Workflow bahan, produksi, dan pemeriksaan mutu  | Biaya pokok dan mutu tiap batch terkontrol                                 | Alur kerja yang berjalan tanpa dikejar |     | “Biaya pokok tidak diketahui”                         | tayang / tahan |
-| 3   | MAN-05               | Buka marketplace hasil tani langsung ke pembeli | Hasil tani dijual tanpa perantara berlapis                                 | Kanal pendapatan baru                  |     | “hasil tani lewat banyak perantara”                   | tayang / tahan |
-| 4   | MAN-09               | Prediksi kebutuhan bahan                        | Kebutuhan bahan diperkirakan dari pola penjualan, sebagai dasar pembelian. | Angka yang memberi tahu lebih dulu     |     | Kebutuhan bahan dari pola penjualan                   | tayang / tahan |
-| 5   | MAN-02               | Sensor mesin dan peringatan                     | Mesin bermasalah terdeteksi sebelum berhenti                               | Bot yang bekerja sendiri               |     | “mesin berhenti mendadak”                             | tayang / tahan |
-| 6   | MAN-07               | Workflow perawatan mesin berkala                | Jadwal perawatan tidak terlewat                                            | Alur kerja yang berjalan tanpa dikejar |     | Perawatan mesin berkala                               | tayang / tahan |
+| 1   | MAN-03 (pintu masuk) | Bot pencatat panen lewat WhatsApp               | Hasil panen dan biaya tercatat dari foto atau suara tanpa buku             | Bot yang bekerja sendiri               |     | Lingkup terkecil: panen dan biaya tercatat tanpa buku | tayang         |
+| 2   | MAN-01               | Workflow bahan, produksi, dan pemeriksaan mutu  | Biaya pokok dan mutu tiap batch terkontrol                                 | Alur kerja yang berjalan tanpa dikejar |     | “Biaya pokok tidak diketahui”                         | tayang         |
+| 3   | MAN-05               | Buka marketplace hasil tani langsung ke pembeli | Hasil tani dijual tanpa perantara berlapis                                 | Kanal pendapatan baru                  |     | “hasil tani lewat banyak perantara”                   | tayang         |
+| 4   | MAN-09               | Prediksi kebutuhan bahan                        | Kebutuhan bahan diperkirakan dari pola penjualan, sebagai dasar pembelian. | Angka yang memberi tahu lebih dulu     |     | Kebutuhan bahan dari pola penjualan                   | tayang         |
+| 5   | MAN-02               | Sensor mesin dan peringatan                     | Mesin bermasalah terdeteksi sebelum berhenti                               | Bot yang bekerja sendiri               |     | “mesin berhenti mendadak”                             | tayang         |
+| 6   | MAN-07               | Workflow perawatan mesin berkala                | Jadwal perawatan tidak terlewat                                            | Alur kerja yang berjalan tanpa dikejar |     | Perawatan mesin berkala                               | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -372,17 +396,19 @@ Catatan: Bab ini berpasangan dengan Konstruksi Pelaku proyek (ADM-01 dengan KON-
 
 > “Warga harus datang untuk urusan sederhana, surat menumpuk, dan laporan wajib disusun manual.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 7 dari 11 offer. Pintu masuk: **PUB-10**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                    | Dampak untuk web                                                | Jenis                                  | †                                                    | Alasan                                                        | Keputusan Anda |
 | --- | -------------------- | ---------------------------------- | --------------------------------------------------------------- | -------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------- | -------------- |
-| 1   | PUB-10 (pintu masuk) | Bot informasi layanan publik       | Syarat dan alur layanan dijawab kapan pun                       | Bot yang bekerja sendiri               |                                                      | Lingkup terkecil: syarat dan alur layanan dijawab kapan pun   | tayang / tahan |
-| 2   | PUB-01               | Layanan surat menyurat online      | Warga mengurus surat tanpa datang dan kantor lebih ringan       | Alur kerja yang berjalan tanpa dikejar |                                                      | “Warga harus datang untuk urusan sederhana”                   | tayang / tahan |
-| 3   | PUB-05               | Buka donasi transparan dengan QRIS | Donasi masuk online dengan laporan penggunaan yang terbuka      | Kanal pendapatan baru                  |                                                      | Yayasan dan rumah ibadah: donasi dengan laporan terbuka       | tayang / tahan |
-| 4   | PUB-04               | Dasbor aduan dan layanan terkini   | Pimpinan melihat beban kerja dan waktu penyelesaian             | Angka yang memberi tahu lebih dulu     |                                                      | Beban kerja dan waktu penyelesaian terlihat                   | tayang / tahan |
-| 5   | PUB-03               | Workflow disposisi dan persetujuan | Surat bergerak antarpejabat dengan jejak yang jelas             | Alur kerja yang berjalan tanpa dikejar |                                                      | “surat menumpuk”: disposisi dengan jejak                      | tayang / tahan |
-| 6   | PUB-08               | Pelaporan berkala otomatis         | Laporan wajib tersusun dari data layanan                        | Alur kerja yang berjalan tanpa dikejar | Hanya lewat kerja sama atau jalur resmi instansinya. | “laporan wajib disusun manual”: bertanda †, lewat jalur resmi | tayang / tahan |
-| 7   | PUB-02               | Bot pengaduan warga                | Aduan masuk lewat WhatsApp dan langsung dialokasikan ke petugas | Bot yang bekerja sendiri               |                                                      | Aduan warga lewat WhatsApp                                    | tayang / tahan |
+| 1   | PUB-10 (pintu masuk) | Bot informasi layanan publik       | Syarat dan alur layanan dijawab kapan pun                       | Bot yang bekerja sendiri               |                                                      | Lingkup terkecil: syarat dan alur layanan dijawab kapan pun   | tayang         |
+| 2   | PUB-01               | Layanan surat menyurat online      | Warga mengurus surat tanpa datang dan kantor lebih ringan       | Alur kerja yang berjalan tanpa dikejar |                                                      | “Warga harus datang untuk urusan sederhana”                   | tayang         |
+| 3   | PUB-05               | Buka donasi transparan dengan QRIS | Donasi masuk online dengan laporan penggunaan yang terbuka      | Kanal pendapatan baru                  |                                                      | Yayasan dan rumah ibadah: donasi dengan laporan terbuka       | tayang         |
+| 4   | PUB-04               | Dasbor aduan dan layanan terkini   | Pimpinan melihat beban kerja dan waktu penyelesaian             | Angka yang memberi tahu lebih dulu     |                                                      | Beban kerja dan waktu penyelesaian terlihat                   | tayang         |
+| 5   | PUB-03               | Workflow disposisi dan persetujuan | Surat bergerak antarpejabat dengan jejak yang jelas             | Alur kerja yang berjalan tanpa dikejar |                                                      | “surat menumpuk”: disposisi dengan jejak                      | tayang         |
+| 6   | PUB-08               | Pelaporan berkala otomatis         | Laporan wajib tersusun dari data layanan                        | Alur kerja yang berjalan tanpa dikejar | Hanya lewat kerja sama atau jalur resmi instansinya. | “laporan wajib disusun manual”: bertanda †, lewat jalur resmi | tayang         |
+| 7   | PUB-02               | Bot pengaduan warga                | Aduan masuk lewat WhatsApp dan langsung dialokasikan ke petugas | Bot yang bekerja sendiri               |                                                      | Aduan warga lewat WhatsApp                                    | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -399,16 +425,18 @@ Catatan: Bab ini berpasangan dengan Konstruksi Pelaku proyek (ADM-01 dengan KON-
 
 > “Prospek tidak ditindaklanjuti, laporan klien disusun manual, dan tenggat klien terlewat.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 6 dari 11 offer. Pintu masuk: **PRF-01**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                            | Dampak untuk web                                           | Jenis                                  | †   | Alasan                              | Keputusan Anda |
 | --- | -------------------- | ------------------------------------------ | ---------------------------------------------------------- | -------------------------------------- | --- | ----------------------------------- | -------------- |
-| 1   | PRF-01 (pintu masuk) | Bot kualifikasi lead                       | Prospek disaring dan dijadwalkan demo tanpa admin          | Bot yang bekerja sendiri               |     | “Prospek tidak ditindaklanjuti”     | tayang / tahan |
-| 2   | PRF-03               | Laporan bulanan klien otomatis             | Laporan kinerja terbit sendiri dari data kanal             | Alur kerja yang berjalan tanpa dikejar |     | “laporan klien disusun manual”      | tayang / tahan |
-| 3   | PRF-10               | Buka jasa berulang menjadi paket langganan | Jasa yang berulang dikemas menjadi paket bulanan           | Kanal pendapatan baru                  |     | Jasa berulang menjadi paket bulanan | tayang / tahan |
-| 4   | PRF-05               | Bot pengingat tenggat klien                | Tenggat pajak, izin, dan kontrak klien tidak terlewat      | Bot yang bekerja sendiri               |     | “tenggat klien terlewat”            | tayang / tahan |
-| 5   | PRF-06               | Timesheet dan penagihan otomatis           | Jam kerja menjadi faktur tanpa rekap manual                | Alur kerja yang berjalan tanpa dikejar |     | Jam kerja menjadi faktur            | tayang / tahan |
-| 6   | PRF-02               | Workflow onboarding klien                  | Kontrak, brief, akses, dan tagihan awal berjalan berurutan | Alur kerja yang berjalan tanpa dikejar |     | Onboarding klien berurutan          | tayang / tahan |
+| 1   | PRF-01 (pintu masuk) | Bot kualifikasi lead                       | Prospek disaring dan dijadwalkan demo tanpa admin          | Bot yang bekerja sendiri               |     | “Prospek tidak ditindaklanjuti”     | tayang         |
+| 2   | PRF-03               | Laporan bulanan klien otomatis             | Laporan kinerja terbit sendiri dari data kanal             | Alur kerja yang berjalan tanpa dikejar |     | “laporan klien disusun manual”      | tayang         |
+| 3   | PRF-10               | Buka jasa berulang menjadi paket langganan | Jasa yang berulang dikemas menjadi paket bulanan           | Kanal pendapatan baru                  |     | Jasa berulang menjadi paket bulanan | tayang         |
+| 4   | PRF-05               | Bot pengingat tenggat klien                | Tenggat pajak, izin, dan kontrak klien tidak terlewat      | Bot yang bekerja sendiri               |     | “tenggat klien terlewat”            | tayang         |
+| 5   | PRF-06               | Timesheet dan penagihan otomatis           | Jam kerja menjadi faktur tanpa rekap manual                | Alur kerja yang berjalan tanpa dikejar |     | Jam kerja menjadi faktur            | tayang         |
+| 6   | PRF-02               | Workflow onboarding klien                  | Kontrak, brief, akses, dan tagihan awal berjalan berurutan | Alur kerja yang berjalan tanpa dikejar |     | Onboarding klien berurutan          | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -426,16 +454,18 @@ Catatan: Bab ini berpasangan dengan Konstruksi Pelaku proyek (ADM-01 dengan KON-
 
 > “Jadwal lapangan bentrok, iuran anggota menunggak, dan lampu serta loker harus dijaga orang.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 6 dari 10 offer. Pintu masuk: **FIT-03**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                                  | Dampak untuk web                                                                   | Jenis                                  | †   | Alasan                                             | Keputusan Anda |
 | --- | -------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------- | -------------------------------------- | --- | -------------------------------------------------- | -------------- |
-| 1   | FIT-03 (pintu masuk) | Bot pengingat iuran dan kelas                    | Anggota diingatkan membayar dan jadwal kelas, dan anggota yang tak aktif dihubungi | Bot yang bekerja sendiri               |     | “iuran anggota menunggak”                          | tayang / tahan |
-| 2   | FIT-01               | Workflow pemesanan lapangan dengan DP            | Jadwal lapangan terisi tanpa telepon dan DP masuk otomatis                         | Alur kerja yang berjalan tanpa dikejar |     | “Jadwal lapangan bentrok”: pemesanan dengan DP     | tayang / tahan |
-| 3   | FIT-02               | Buka lampu dan listrik lapangan berbayar per jam | Lampu menyala setelah pembayaran dan mati sendiri saat waktu habis                 | Kanal pendapatan baru                  |     | “lampu harus dijaga orang”: lampu berbayar per jam | tayang / tahan |
-| 4   | FIT-07               | Klasemen dan skor langsung                       | Penonton melihat skor dan klasemen langsung di ponsel                              | Angka yang memberi tahu lebih dulu     |     | Skor dan klasemen langsung                         | tayang / tahan |
-| 5   | FIT-10               | Buka tiket masuk dan loker bayar QRIS            | Tiket dan loker dibayar dengan QRIS dan terpantau                                  | Kanal pendapatan baru                  |     | “loker harus dijaga orang”: tiket dan loker QRIS   | tayang / tahan |
-| 6   | FIT-04               | Buka membership dan paket kelas                  | Keanggotaan dan paket sesi dibuka dengan tagihan berulang.                         | Kanal pendapatan baru                  |     | Membership dan paket kelas                         | tayang / tahan |
+| 1   | FIT-03 (pintu masuk) | Bot pengingat iuran dan kelas                    | Anggota diingatkan membayar dan jadwal kelas, dan anggota yang tak aktif dihubungi | Bot yang bekerja sendiri               |     | “iuran anggota menunggak”                          | tayang         |
+| 2   | FIT-01               | Workflow pemesanan lapangan dengan DP            | Jadwal lapangan terisi tanpa telepon dan DP masuk otomatis                         | Alur kerja yang berjalan tanpa dikejar |     | “Jadwal lapangan bentrok”: pemesanan dengan DP     | tayang         |
+| 3   | FIT-02               | Buka lampu dan listrik lapangan berbayar per jam | Lampu menyala setelah pembayaran dan mati sendiri saat waktu habis                 | Kanal pendapatan baru                  |     | “lampu harus dijaga orang”: lampu berbayar per jam | tayang         |
+| 4   | FIT-07               | Klasemen dan skor langsung                       | Penonton melihat skor dan klasemen langsung di ponsel                              | Angka yang memberi tahu lebih dulu     |     | Skor dan klasemen langsung                         | tayang         |
+| 5   | FIT-10               | Buka tiket masuk dan loker bayar QRIS            | Tiket dan loker dibayar dengan QRIS dan terpantau                                  | Kanal pendapatan baru                  |     | “loker harus dijaga orang”: tiket dan loker QRIS   | tayang         |
+| 6   | FIT-04               | Buka membership dan paket kelas                  | Keanggotaan dan paket sesi dibuka dengan tagihan berulang.                         | Kanal pendapatan baru                  |     | Membership dan paket kelas                         | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -452,17 +482,19 @@ Catatan: Bab ini berpasangan dengan Konstruksi Pelaku proyek (ADM-01 dengan KON-
 
 > “Pekerjaan berulang menyita waktu tim saya dan pendapatan saya bergantung pada satu sumber.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 7 dari 26 offer. Pintu masuk: **LIN-17**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                                       | Dampak untuk web                                                                                  | Jenis                                  | †   | Alasan                                                                                    | Keputusan Anda |
 | --- | -------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------- | --- | ----------------------------------------------------------------------------------------- | -------------- |
-| 1   | LIN-17 (pintu masuk) | Sesi pemetaan peluang model bisnis baru               | Dari sembilan model dipilih yang cocok dengan aset dan pelanggan Anda, dengan perhitungan terbuka | Kanal pendapatan baru                  |     | “pendapatan saya bergantung pada satu sumber”: sesi pemetaan, titik mulai di master brief | tayang / tahan |
-| 2   | LIN-01               | Bot laporan harian ke pemilik                         | Ringkasan penjualan, kas, dan tugas terkirim setiap pagi                                          | Bot yang bekerja sendiri               |     | Ringkasan penjualan dan kas setiap pagi                                                   | tayang / tahan |
-| 3   | LIN-07               | Workflow persetujuan berjenjang                       | Cuti, klaim, dan pembelian bergerak ke atasan tanpa dikejar                                       | Alur kerja yang berjalan tanpa dikejar |     | “Pekerjaan berulang menyita waktu tim saya”: persetujuan berjenjang                       | tayang / tahan |
-| 4   | LIN-12               | Dasbor pemilik yang diperbarui seketika               | Kas, penjualan, dan operasi terlihat dalam satu layar                                             | Angka yang memberi tahu lebih dulu     |     | Kas, penjualan, dan operasi dalam satu layar                                              | tayang / tahan |
-| 5   | LIN-03               | Bot layanan pelanggan 24 jam                          | Pertanyaan berulang dijawab dari data perusahaan dan sisanya diteruskan ke manusia                | Bot yang bekerja sendiri               |     | Pertanyaan berulang dijawab dari data perusahaan                                          | tayang / tahan |
-| 6   | LIN-08               | Workflow faktur, pembayaran, dan rekonsiliasi         | Uang masuk otomatis cocok dengan catatan                                                          | Alur kerja yang berjalan tanpa dikejar |     | Uang masuk cocok dengan catatan                                                           | tayang / tahan |
-| 7   | LIN-16               | Kanal jualan WhatsApp dengan katalog dan tautan bayar | Jualan di percakapan punya katalog dan pembayaran                                                 | Kanal pendapatan baru                  |     | Jualan di percakapan dengan katalog dan pembayaran                                        | tayang / tahan |
+| 1   | LIN-17 (pintu masuk) | Sesi pemetaan peluang model bisnis baru               | Dari sembilan model dipilih yang cocok dengan aset dan pelanggan Anda, dengan perhitungan terbuka | Kanal pendapatan baru                  |     | “pendapatan saya bergantung pada satu sumber”: sesi pemetaan, titik mulai di master brief | tayang         |
+| 2   | LIN-01               | Bot laporan harian ke pemilik                         | Ringkasan penjualan, kas, dan tugas terkirim setiap pagi                                          | Bot yang bekerja sendiri               |     | Ringkasan penjualan dan kas setiap pagi                                                   | tayang         |
+| 3   | LIN-07               | Workflow persetujuan berjenjang                       | Cuti, klaim, dan pembelian bergerak ke atasan tanpa dikejar                                       | Alur kerja yang berjalan tanpa dikejar |     | “Pekerjaan berulang menyita waktu tim saya”: persetujuan berjenjang                       | tayang         |
+| 4   | LIN-12               | Dasbor pemilik yang diperbarui seketika               | Kas, penjualan, dan operasi terlihat dalam satu layar                                             | Angka yang memberi tahu lebih dulu     |     | Kas, penjualan, dan operasi dalam satu layar                                              | tayang         |
+| 5   | LIN-03               | Bot layanan pelanggan 24 jam                          | Pertanyaan berulang dijawab dari data perusahaan dan sisanya diteruskan ke manusia                | Bot yang bekerja sendiri               |     | Pertanyaan berulang dijawab dari data perusahaan                                          | tayang         |
+| 6   | LIN-08               | Workflow faktur, pembayaran, dan rekonsiliasi         | Uang masuk otomatis cocok dengan catatan                                                          | Alur kerja yang berjalan tanpa dikejar |     | Uang masuk cocok dengan catatan                                                           | tayang         |
+| 7   | LIN-16               | Kanal jualan WhatsApp dengan katalog dan tautan bayar | Jualan di percakapan punya katalog dan pembayaran                                                 | Kanal pendapatan baru                  |     | Jualan di percakapan dengan katalog dan pembayaran                                        | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -1067,3 +1099,290 @@ Catatan: Konsultan pengadaan hanya melayani paket yang bukan milik Arthur (Konst
 </details>
 
 Catatan: Tujuh paket mewakili tujuh posisi pembeli; paket lain tetap bisa dirakit lewat percakapan.
+
+## Peekabo · Pemilik usaha
+
+### Agency marketing (MKT)
+
+> “Produk saya bagus, tapi yang tahu cuma itu-itu saja.”
+
+7 dari 29 offer. Pintu masuk: **1A-01**. Aturan: lolos.
+
+| #   | ID                  | Judul untuk web                                       | Dampak untuk web                                                                                      | Jenis                     | †   | Alasan                                                                           | Keputusan Anda |
+| --- | ------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------- | --- | -------------------------------------------------------------------------------- | -------------- |
+| 1   | 1A-01 (pintu masuk) | Sesi strategi ads: teori dan penerapan pemasarannya   | Anda tahu platform, sasaran, dan pesan mana yang layak dibiayai sebelum uang iklan keluar             | Arah, strategi, dan kelas |     | Anak tangga 1: sesi strategi sebelum uang iklan keluar (asal A)                  | tayang / tahan |
+| 2   | 1A-05               | Pendampingan ads bulanan                              | Tim Anda tetap memegang akun, sementara kami mengarahkan dan memeriksa hasilnya setiap bulan          | Dikelola setiap bulan     |     | Tim Anda memegang akun, kami mengarahkan setiap bulan (asal T)                   | tayang / tahan |
+| 3   | 2B-02               | Peluncuran produk atau brand lokal                    | Produk baru dikenal di wilayah sasaran sejak minggu pertama, lewat online dan lapangan sekaligus      | Kampanye berbatas waktu   |     | “yang tahu cuma itu-itu saja”: peluncuran online dan lapangan sekaligus (asal T) | tayang / tahan |
+| 4   | 3A-02               | Pasokan creator dan influencer untuk kolaborasi brand | Anda mendapat kreator yang cocok dengan audiens Anda tanpa mencari satu per satu                      | Kreator, host, dan sales  |     | Kreator yang cocok dengan audiens Anda (asal A)                                  | tayang / tahan |
+| 5   | 1A-02               | Audit akun iklan dan struktur kampanye                | Kebocoran anggaran, sasaran yang tumpang tindih, dan pelacakan yang putus terlihat dalam satu laporan | Arah, strategi, dan kelas |     | Kebocoran anggaran iklan terlihat dalam satu laporan (asal T)                    | tayang / tahan |
+| 6   | 2B-03               | Pembukaan cabang atau gerai                           | Warga sekitar diundang lebih dulu, sebelum gerai baru dibuka.                                         | Kampanye berbatas waktu   |     | Pembukaan gerai; jembatan ke rangkaian kafe baru (asal T)                        | tayang / tahan |
+| 7   | MKT-01              | Manajemen media sosial                                | Akun aktif dan konsisten setiap minggu tanpa Anda memikirkan apa yang diunggah                        | Dikelola setiap bulan     |     | Akun aktif setiap minggu (tercatat di riset)                                     | tayang / tahan |
+
+<details><summary>Tidak diusulkan</summary>
+
+| ID     | Judul                                                    | Alasan                                                                       |
+| ------ | -------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| 1A-03  | Rencana funnel dan pembagian anggaran                    | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| 1A-06  | Review independen atas kinerja agensi lain               | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| 1A-08  | Pelaksanaan iklan                                        | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| 1A-09  | Pelacakan dan analitik iklan                             | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| 2A-05  | Penjemputan peserta lewat sosial media dan ads           | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| 2A-09  | Laporan dampak: jangkauan, kunjungan, leads              | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| 2B-04  | Kampanye musiman                                         | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| 2B-07  | Kampanye publik: instansi, desa wisata, CSR              | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| 3A-07  | Program seeding: produk ke kreator terpilih              | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| 3A-10  | Kampanye multi-creator                                   | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| MKT-02 | Manajemen toko marketplace                               | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| MKT-03 | SEO berlangganan                                         | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| MKT-04 | Optimasi konversi                                        | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| MKT-05 | Eksekutif pemasaran paruh waktu                          | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| MKT-06 | Sprint pertumbuhan 90 hari                               | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| MKT-07 | Retargeting dan pesan pelanggan lewat WhatsApp dan email | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| MKT-08 | Manajemen reputasi: ulasan dan profil peta               | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| MKT-09 | Kampanye promo marketplace musiman                       | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| MKT-10 | Lead generation berbasis hasil                           | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| MKT-11 | Laporan dan dasbor pemasaran bulanan                     | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| MKT-12 | Paket pemasaran wilayah Subang, Purwakarta, Bandung      | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| MKT-13 | Paket pemasaran per industri klien                       | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+
+</details>
+
+Catatan: Halaman tidak menjanjikan jangkauan atau penjualan; yang ditulis adalah pekerjaannya (Aturan isi 3).
+
+### Produksi kreatif (PRD)
+
+> “Kontennya harus keluar setiap minggu, tapi tidak ada yang membuatnya.”
+
+7 dari 23 offer. Pintu masuk: **1B-04**. Aturan: lolos.
+
+| #   | ID                  | Judul untuk web                                      | Dampak untuk web                                                                                                 | Jenis                 | †   | Alasan                                                                                   | Keputusan Anda |
+| --- | ------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------- | --- | ---------------------------------------------------------------------------------------- | -------------- |
+| 1   | 1B-04 (pintu masuk) | Foto produk dan lifestyle (02.B)                     | Produk tampil layak jual di etalase, iklan, dan katalog                                                          | Konten dan aset jadi  |     | Lingkup terkecil: foto produk dan lifestyle (asal A)                                     | tayang / tahan |
+| 2   | 1B-12               | Produksi berlangganan dengan kuota bulanan           | Kuota konten setiap bulan dengan antrean prioritas, tanpa negosiasi ulang per proyek                             | Dikelola setiap bulan |     | “Kontennya harus keluar setiap minggu”: kuota konten bulanan                             | tayang / tahan |
+| 3   | 1B-07               | Animasi 2D dan mograph (02.C)                        | Produk atau layanan yang sulit difoto dijelaskan lewat animasi singkat                                           | Konten dan aset jadi  |     | Produk yang sulit difoto dijelaskan lewat animasi (asal A)                               | tayang / tahan |
+| 4   | 1B-05               | Cinematic shoot dan brand film (02.B)                | Cerita brand dalam film pendek yang membuat orang percaya sebelum membeli                                        | Konten dan aset jadi  |     | Cerita brand dalam film pendek (asal A)                                                  | tayang / tahan |
+| 5   | PRD-01              | Hari produksi massal: satu hari syuting, banyak aset | Satu hari syuting menghasilkan stok konten untuk sebulan                                                         | Konten dan aset jadi  |     | “tidak ada yang membuatnya”: satu hari syuting untuk stok sebulan, sesuai header Peekabo | tayang / tahan |
+| 6   | 1B-09               | Paket aset per kampanye                              | Semua aset satu kampanye datang sekaligus dalam ukuran setiap platform                                           | Konten dan aset jadi  |     | Semua aset satu kampanye sekaligus (asal T)                                              | tayang / tahan |
+| 7   | 1B-03               | Seri konten berbasis isu                             | Konten yang menunggangi isu yang sedang dibicarakan keluar berseri, sehingga audiens menunggu episode berikutnya | Konten dan aset jadi  |     | Seri konten berbasis isu (asal T)                                                        | tayang / tahan |
+
+<details><summary>Tidak diusulkan</summary>
+
+| ID     | Judul                                             | Alasan                                                                       |
+| ------ | ------------------------------------------------- | ---------------------------------------------------------------------------- |
+| 1B-06  | Dokumentasi event dan lokasi                      | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| 1B-08  | Animasi dan visual 3D (02.C)                      | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| 1B-10  | Varian kreatif untuk uji A/B                      | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| 1B-11  | Perpustakaan aset berlisensi                      | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| 2A-08  | Konten event untuk lapis 1                        | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| PRD-02 | Video produk dan iklan pendek                     | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| PRD-03 | Foto makanan dan minuman                          | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| PRD-04 | Foto dan video properti, interior, dan eksterior  | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| PRD-05 | Produksi podcast dan siaran multi-kamera          | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| PRD-06 | Pasca-produksi white-label untuk agensi lain      | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| PRD-07 | Adaptasi per platform: ukuran, potongan, subtitel | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| PRD-08 | Sistem desain dan template sosial                 | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| PRD-09 | Brand kit dan identitas visual                    | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| PRD-10 | Suara: voice-over, jingle, desain suara           | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| PRD-11 | Konten berbahasa Sunda dan lokal                  | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| PRD-12 | Sewa studio dan kru per hari                      | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+
+</details>
+
+### Agency solusi kreatif (SOL)
+
+> “Saya tidak tahu harus bilang apa supaya orang peduli.”
+
+6 dari 18 offer. Pintu masuk: **1B-01**. Aturan: lolos.
+
+| #   | ID                  | Judul untuk web                                      | Dampak untuk web                                                                   | Jenis                     | †   | Alasan                                                                | Keputusan Anda |
+| --- | ------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------- | --- | --------------------------------------------------------------------- | -------------- |
+| 1   | 1B-01 (pintu masuk) | Workshop isu dan framing video (02.A)                | Anda pulang membawa isu dan sudut cerita yang menaikkan perhatian, siap diproduksi | Arah, strategi, dan kelas |     | “Saya tidak tahu harus bilang apa”: workshop isu dan framing (asal A) | tayang / tahan |
+| 2   | SOL-12              | Creative direction berlangganan                      | Arah kreatif dijaga setiap bulan agar semua konten tetap satu suara                | Dikelola setiap bulan     |     | Arah kreatif dijaga setiap bulan                                      | tayang / tahan |
+| 3   | 2A-01               | Workshop konsep kampanye                             | Konsep kampanye lapangan disepakati sebelum anggaran keluar                        | Arah, strategi, dan kelas |     | Konsep kampanye lapangan disepakati sebelum anggaran keluar (asal A)  | tayang / tahan |
+| 4   | 1B-02               | Naskah dan hook video pendek                         | Detik pertama video menahan jempol orang                                           | Arah, strategi, dan kelas |     | Naskah dan hook video pendek (asal T)                                 | tayang / tahan |
+| 5   | SOL-04              | Workshop positioning dan pesan inti                  | Satu kalimat posisi dan tiga pesan inti yang dipakai seluruh tim                   | Arah, strategi, dan kelas |     | “supaya orang peduli”: satu kalimat posisi dan tiga pesan inti        | tayang / tahan |
+| 6   | SOL-02              | Riset audiens ringan: social listening dan wawancara | Anda tahu bahasa, keluhan, dan alasan beli audiens dari mulut mereka sendiri       | Arah, strategi, dan kelas |     | Bahasa dan alasan beli audiens dari mulut mereka sendiri              | tayang / tahan |
+
+<details><summary>Tidak diusulkan</summary>
+
+| ID     | Judul                                                 | Alasan                                                                       |
+| ------ | ----------------------------------------------------- | ---------------------------------------------------------------------------- |
+| 2A-04  | Desain mekanik partisipasi: aturan, rute, pos, hadiah | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| SOL-01 | Pemetaan isu dan sudut                                | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| SOL-03 | Audit citra brand: persepsi dibanding identitas       | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| SOL-05 | Big idea kampanye                                     | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| SOL-06 | Naming, tagline, dan narasi brand                     | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| SOL-07 | Pilar konten dan kerangka cerita                      | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| SOL-08 | Konsep acara bermerek berseri (branded show)          | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| SOL-09 | Konsep produk atau layanan baru                       | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| SOL-10 | Uji konsep cepat dengan audiens kecil                 | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| SOL-11 | Creative brief dan panduan merek siap eksekusi        | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| SOL-13 | Sprint kreatif lima hari                              | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| SOL-14 | Lisensi kerangka framing isu                          | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+
+</details>
+
+### Operator SaaS niche (OPS)
+
+> “Saya sudah coba aplikasinya, tapi tidak ada yang menjalankan.”
+
+**Bab ditahan utuh.** Kelima belas offer bab ini menunggu keputusan SaaS pertama dan niche pertama (master brief, keputusan per unit Agency). Bab ini tampil di halaman sisi sebagai situasi tanpa halaman, dengan tautan ke Kontak.
+
+0 dari 15 offer. Aturan: lolos.
+
+| #   | ID  | Judul untuk web | Dampak untuk web | Jenis | †   | Alasan | Keputusan Anda |
+| --- | --- | --------------- | ---------------- | ----- | --- | ------ | -------------- |
+
+<details><summary>Tidak diusulkan</summary>
+
+| ID     | Judul                                             | Alasan                                                          |
+| ------ | ------------------------------------------------- | --------------------------------------------------------------- |
+| OPS-01 | Leads dibalas dan ditindaklanjuti lewat WhatsApp  | Menunggu keputusan SaaS pertama dan niche pertama               |
+| OPS-02 | CRM dan funnel bermerek Peekabo untuk UMKM        | Tidak dipilih: jenisnya tidak menjawab kutipan bab ini          |
+| OPS-03 | Pengingat dan pesan untuk pelanggan lama          | Tidak dipilih: jenisnya tidak menjawab kutipan bab ini          |
+| OPS-04 | Permintaan ulasan otomatis setelah transaksi      | Menunggu keputusan SaaS pertama; contoh kalibrasi sudah ditulis |
+| OPS-05 | Program referral dan afiliasi untuk brand klien   | Tidak dipilih: jenisnya tidak menjawab kutipan bab ini          |
+| OPS-06 | Program poin dan membership untuk pelanggan klien | Tidak dipilih: jenisnya tidak menjawab kutipan bab ini          |
+| OPS-07 | Event hunting berbasis aplikasi misi              | Tidak dipilih: jenisnya tidak menjawab kutipan bab ini          |
+| OPS-08 | Siaran live serentak di beberapa platform         | Tidak dipilih: jenisnya tidak menjawab kutipan bab ini          |
+| OPS-09 | Mekari Qontak lewat reseller resmi plus penerapan | Menunggu keputusan SaaS pertama; nama alat belum boleh tampil   |
+| OPS-10 | Toko di beberapa marketplace dari satu dasbor     | Tidak dipilih: jenisnya tidak menjawab kutipan bab ini          |
+| OPS-11 | Paket operator dealer dan showroom                | Tidak dipilih: jenisnya tidak menjawab kutipan bab ini          |
+| OPS-12 | Paket operator properti dan developer             | Tidak dipilih: jenisnya tidak menjawab kutipan bab ini          |
+| OPS-13 | Paket operator klinik, salon, dan bengkel         | Tidak dipilih: jenisnya tidak menjawab kutipan bab ini          |
+| OPS-14 | Paket operator F&B                                | Menunggu keputusan SaaS pertama                                 |
+| OPS-15 | Paket operator kursus dan sekolah                 | Tidak dipilih: jenisnya tidak menjawab kutipan bab ini          |
+
+</details>
+
+### Live commerce untuk brand (LIV)
+
+> “Live itu laku, tapi saya tidak punya host dan tidak sanggup siaran setiap hari.”
+
+6 dari 10 offer. Pintu masuk: **LIV-01**. Aturan: lolos.
+
+| #   | ID                   | Judul untuk web                          | Dampak untuk web                                                                                   | Jenis                     | †   | Alasan                                                                         | Keputusan Anda |
+| --- | -------------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------- | --- | ------------------------------------------------------------------------------ | -------------- |
+| 1   | LIV-01 (pintu masuk) | Live per jam dengan host dan operator    | Anda mencoba live tanpa kontrak panjang, dibayar per jam siaran                                    | Kreator, host, dan sales  |     | “tidak sanggup siaran setiap hari”: coba live per jam tanpa kontrak panjang    | tayang / tahan |
+| 2   | LIV-02               | Paket live bulanan 2, 4, atau 8 jam      | Siaran rutin setiap hari dengan jadwal tetap dan laporan bulanan                                   | Dikelola setiap bulan     |     | Siaran rutin dengan jadwal tetap                                               | tayang / tahan |
+| 3   | LIV-05               | Siapkan studio live di lokasi Anda       | Sudut siaran dengan cahaya, suara, dan latar yang siap dipakai setiap hari                         | Konten dan aset jadi      |     | “tidak punya host”: sudut siaran di lokasi Anda; jembatan ke studio Konstruksi | tayang / tahan |
+| 4   | LIV-06               | Audit live dan coaching host internal    | Host Anda sendiri dinilai dari rekaman, lalu dilatih memperbaiki pembuka, penawaran, dan penutupan | Arah, strategi, dan kelas |     | Host Anda sendiri dilatih dari rekaman                                         | tayang / tahan |
+| 5   | LIV-09               | Live untuk peluncuran dan tanggal kembar | Siaran khusus di momen besar dengan host tambahan, promo, dan iklan siaran                         | Kampanye berbatas waktu   |     | Siaran khusus di momen besar                                                   | tayang / tahan |
+| 6   | LIV-04               | Live dengan bagi hasil penjualan         | Biaya dasar lebih rendah, sisanya dibayar dari penjualan selama live                               | Dikelola setiap bulan     |     | Biaya dasar lebih rendah, sisanya dari penjualan selama live                   | tayang / tahan |
+
+<details><summary>Tidak diusulkan</summary>
+
+| ID     | Judul                                                    | Alasan                                                                               |
+| ------ | -------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| 3A-05  | Operasi live commerce: host, studio, siaran              | Cadangan: bertanda †, operasi live lengkap; pilih bila Anda ingin paket penuh tampil |
+| LIV-03 | Live bergilir sampai 24 jam                              | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab         |
+| LIV-07 | Kampanye kreator afiliasi lewat program partner platform | Ditahan: nilainya adalah status program partner platform yang belum terdaftar        |
+| LIV-08 | Konten pendek dari rekaman live                          | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab         |
+
+</details>
+
+Catatan: Urutan bab TAL, KRE, dan LIV menunggu keputusan industri keempat dan kelima; daftar ini tidak bergantung padanya.
+
+### Experiential dan event (EVT)
+
+> “Saya ingin warga datang, mencoba, lalu bercerita.”
+
+5 dari 8 offer. Pintu masuk: **2A-06**. Aturan: lolos.
+
+| #   | ID                  | Judul untuk web                                 | Dampak untuk web                                                                                      | Jenis                   | †                                                                                       | Alasan                                                             | Keputusan Anda |
+| --- | ------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | -------------- |
+| 1   | 2B-01               | Event hunting kota                              | Warga berburu pos di kota, pos diumumkan lewat media sosial dan ads, dan brand Anda menjadi tujuannya | Kampanye berbatas waktu | Lomba berbasis kemampuan, bukan undian; izin keramaian dan lokasi diurus sebelum acara. | “Saya ingin warga datang”: event hunting kota, bertanda † (asal A) | tayang / tahan |
+| 2   | 2B-05               | Roadshow dan sampling keliling                  | Produk dibawa ke banyak titik dalam satu rute                                                         | Kampanye berbatas waktu |                                                                                         | Produk dibawa ke banyak titik dalam satu rute (asal T)             | tayang / tahan |
+| 3   | 2B-06               | Event komunitas dan temu pelanggan              | Pelanggan bertemu langsung dan merasa menjadi bagian dari brand                                       | Kampanye berbatas waktu |                                                                                         | “lalu bercerita”: temu pelanggan dan komunitas (asal T)            | tayang / tahan |
+| 4   | 2A-06 (pintu masuk) | Aktivasi di lokasi mitra: booth, sampling, demo | Produk dicoba langsung di tempat orang sudah berkumpul                                                | Kampanye berbatas waktu |                                                                                         | Lingkup terkecil: booth dan sampling di lokasi mitra               | tayang / tahan |
+| 5   | 2A-07               | Logistik dan perlengkapan event                 | Perlengkapan, izin lokasi, dan alur peserta diurus oleh tim kami.                                     | Kampanye berbatas waktu | Izin keramaian dan keselamatan peserta dipenuhi sebelum acara.                          | Perlengkapan, izin lokasi, dan alur peserta; bertanda †            | tayang / tahan |
+
+<details><summary>Tidak diusulkan</summary>
+
+| ID    | Judul                                       | Alasan                                                                                 |
+| ----- | ------------------------------------------- | -------------------------------------------------------------------------------------- |
+| 2B-08 | Hunt bersponsor multi-brand                 | Tidak dipilih: data peserta dibagikan ke sponsor; lebih aman lewat percakapan (UU PDP) |
+| 2B-09 | Seri tiga kota: Subang, Purwakarta, Bandung | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab           |
+| 2B-10 | Format event berlisensi untuk kota lain     | Tidak dipilih: jenisnya tidak menjawab kutipan bab ini                                 |
+
+</details>
+
+### Talenta dan kreator untuk brand (TAL)
+
+> “Saya butuh orang yang bisa membawakan produk saya, bukan sekadar pengikut banyak.”
+
+5 dari 5 offer. Pintu masuk: **2A-03**. Aturan: lolos.
+
+| #   | ID                  | Judul untuk web                                      | Dampak untuk web                                                              | Jenis                    | †                                                        | Alasan                                                                         | Keputusan Anda |
+| --- | ------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------ | -------------------------------------------------------- | ------------------------------------------------------------------------------ | -------------- |
+| 1   | 2A-03 (pintu masuk) | Campaign talent: promotor, ambassador, host          | Wajah brand di lapangan yang terlatih membawakan produk Anda                  | Kreator, host, dan sales |                                                          | “orang yang bisa membawakan produk saya”: promotor dan host terlatih (asal A)  | tayang / tahan |
+| 2   | 3A-06               | Pool UGC: video kreator per unit                     | Video ulasan dari banyak kreator, dibayar per video                           | Konten dan aset jadi     |                                                          | Video ulasan dari banyak kreator, dibayar per video                            | tayang / tahan |
+| 3   | 3A-01               | Pengelolaan creator dan streamer untuk framing brand | Kreator yang kami kelola membangun cerita brand Anda secara konsisten         | Kreator, host, dan sales |                                                          | “bukan sekadar pengikut banyak”: kreator yang kami kelola, bertanda † (asal A) | tayang / tahan |
+| 4   | 3A-04               | Rekrutmen dan penempatan sales atau influencer       | Anda mendapat sales atau influencer yang sudah disaring dan siap bekerja      | Kreator, host, dan sales | Bentuk hubungan kerja disepakati tertulis sebelum mulai. | Sales atau influencer yang sudah disaring; bertanda † (asal A)                 | tayang / tahan |
+| 5   | 3A-11               | Kontrak ambassador jangka panjang                    | Satu wajah yang dikenal warga melekat pada brand Anda lewat kontrak eksklusif | Kreator, host, dan sales |                                                          | Satu wajah yang dikenal warga                                                  | tayang / tahan |
+
+Catatan: Bentuk hubungan kerja talenta belum diputuskan (keputusan lintas unit 3); halaman memakai rumusan aman “bentuk hubungan kerja disepakati tertulis”.
+
+### Outsourcing penjualan (SLS)
+
+> “Leads masuk, tapi tidak ada yang menindaklanjuti sampai jadi.”
+
+3 dari 3 offer. Pintu masuk: **3A-08**. Aturan: lolos.
+
+| #   | ID                  | Judul untuk web                                     | Dampak untuk web                                                        | Jenis                    | †                                                        | Alasan                                                                    | Keputusan Anda |
+| --- | ------------------- | --------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------ | -------------------------------------------------------- | ------------------------------------------------------------------------- | -------------- |
+| 1   | 3A-08 (pintu masuk) | Admin chat dan penutupan penjualan lewat percakapan | Chat calon pembeli dijawab dan ditutup menjadi pesanan                  | Kreator, host, dan sales |                                                          | Lingkup terkecil: chat dijawab dan ditutup menjadi pesanan                | tayang / tahan |
+| 2   | 2A-02               | Tim sales lapangan                                  | Tim yang mendatangi calon pembeli di wilayah Anda dengan target harian  | Kreator, host, dan sales | Bentuk hubungan kerja disepakati tertulis sebelum mulai. | “tidak ada yang menindaklanjuti”: tim sales lapangan, bertanda † (asal A) | tayang / tahan |
+| 3   | 3A-03               | Outsourcing sales                                   | Penjualan dijalankan atas nama Anda, dibayar tetap ditambah bonus hasil | Kreator, host, dan sales | Bentuk hubungan kerja disepakati tertulis sebelum mulai. | Penjualan dijalankan atas nama Anda; bertanda † (asal A)                  | tayang / tahan |
+
+Catatan: Bab ini tepat tiga offer, semuanya yang ada di katalog.
+
+### Akademi untuk tim klien (AKD)
+
+> “Saya mau tim saya bisa sendiri, tidak selamanya bergantung pada agensi.”
+
+**Bab ditahan utuh.** Katalog hanya memuat dua offer (1A-04, 1A-07), kurang dari tiga. Keduanya tetap bisa ditawarkan lewat percakapan sampai ada offer ketiga. Bab ini tampil di halaman sisi sebagai situasi tanpa halaman, dengan tautan ke Kontak.
+
+0 dari 2 offer. Aturan: lolos.
+
+| #   | ID  | Judul untuk web | Dampak untuk web | Jenis | †   | Alasan | Keputusan Anda |
+| --- | --- | --------------- | ---------------- | ----- | --- | ------ | -------------- |
+
+<details><summary>Tidak diusulkan</summary>
+
+| ID    | Judul                        | Alasan                                                 |
+| ----- | ---------------------------- | ------------------------------------------------------ |
+| 1A-04 | Workshop ads untuk tim klien | Tidak dipilih: jenisnya tidak menjawab kutipan bab ini |
+| 1A-07 | Playbook ads per industri    | Tidak dipilih: jenisnya tidak menjawab kutipan bab ini |
+
+</details>
+
+### Ekosistem marketplace dan jaringan komisi (EKO)
+
+> “Saya mau produk saya dijualkan banyak orang, tapi tidak tahu cara mengelola afiliasinya.”
+
+4 dari 12 offer. Pintu masuk: **EKO-04**. Aturan: lolos.
+
+| #   | ID                   | Judul untuk web                                    | Dampak untuk web                                                                                            | Jenis                     | †                                                                    | Alasan                                                                                    | Keputusan Anda |
+| --- | -------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | -------------- |
+| 1   | EKO-04 (pintu masuk) | Hitung ulang margin setiap biaya platform berubah  | Harga jual dan komisi afiliasi disesuaikan setiap kali biaya komisi, proses, atau logistik platform berubah | Arah, strategi, dan kelas |                                                                      | Lingkup terkecil: margin dan komisi afiliasi dihitung ulang setiap biaya platform berubah | tayang / tahan |
+| 2   | 3B-04                | Paket referral partner untuk klien                 | Klien mendapat SaaS dan vendor yang tepat lewat kami, lengkap dengan dukungan penerapan                     | Dijualkan oleh jaringan   |                                                                      | SaaS dan vendor yang tepat lewat kami, komisi diungkapkan (asal T)                        | tayang / tahan |
+| 3   | 3C-06                | Komunitas bisnis: seller dan UMKM saling mendukung | Seller masuk etalase dan siaran komunitas yang dibaca anggota setiap minggu                                 | Dijualkan oleh jaringan   |                                                                      | “dijualkan banyak orang”: etalase dan siaran komunitas seller                             | tayang / tahan |
+| 4   | 3C-09                | Bounty komunitas: tantangan konten didanai brand   | Anggota komunitas membuat konten untuk brand, dan karya yang terpilih dibayar.                              | Dijualkan oleh jaringan   | Tantangan berbasis kemampuan dengan kriteria tertulis, bukan undian. | Anggota komunitas membuat konten untuk brand; bertanda †                                  | tayang / tahan |
+
+<details><summary>Tidak diusulkan</summary>
+
+| ID     | Judul                                                                     | Alasan                                                                       |
+| ------ | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| 3B-05  | Co-selling dengan partner                                                 | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| 3B-06  | Program agency atau MCN resmi platform                                    | Ditahan: status program partner platform belum terdaftar                     |
+| 3C-07  | Membership korporat                                                       | Tidak dipilih: jenisnya sudah diwakili offer yang lebih dekat ke kutipan bab |
+| EKO-01 | Kampanye afiliasi atas nama seller lewat TikTok Shop Partner Center (TAP) | Ditahan: status program partner platform belum terdaftar                     |
+| EKO-02 | Pengelolaan toko sebagai TikTok Shop Partner (TSP)                        | Ditahan: status program partner platform belum terdaftar                     |
+| EKO-03 | Kampanye kreator lewat Program MCN Shopee                                 | Ditahan: status program partner platform belum terdaftar                     |
+| EKO-05 | Program komisi untuk produk Anda di jaringan Peekabo                      | Ditahan: offer ‡, menunggu pilihan sub-agen                                  |
+| EKO-06 | Rujukan pembeli ke mitra pembiayaan dan asuransi                          | Mitra asuransi belum ada (master brief, jalur komisi)                        |
+
+</details>
+
+Catatan: Offer yang paling langsung menjawab “mengelola afiliasinya” (TAP, TSP, MCN) tertahan sampai Peekabo terdaftar. Bila Anda lebih suka, bab ini ditahan utuh sampai saat itu.

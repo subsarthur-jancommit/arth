@@ -49,7 +49,13 @@ function chapterSection(
     '',
     ...(quote ? [`> ${quote}`, ''] : []),
     ...(chapter.keputusan ? [`**Keputusan:** ${chapter.keputusan}.`, ''] : []),
-    `${chapter.pilihan.length} dari ${inChapter.length} offer. Pintu masuk: **${chapter.entri}**. Aturan: ${findings.length === 0 ? 'lolos' : findings.map((finding) => finding.message).join('; ')}.`,
+    ...(chapter.ditahanBab
+      ? [
+          `**Bab ditahan utuh.** ${chapter.ditahanBab} Bab ini tampil di halaman sisi sebagai situasi tanpa halaman, dengan tautan ke Kontak.`,
+          '',
+        ]
+      : []),
+    `${chapter.pilihan.length} dari ${inChapter.length} offer. ${chapter.entri ? `Pintu masuk: **${chapter.entri}**.` : ''} Aturan: ${findings.length === 0 ? 'lolos' : findings.map((finding) => finding.message).join('; ')}.`,
     '',
     '| # | ID | Judul untuk web | Dampak untuk web | Jenis | † | Alasan | Keputusan Anda |',
     '| --- | --- | --- | --- | --- | --- | --- | --- |',
