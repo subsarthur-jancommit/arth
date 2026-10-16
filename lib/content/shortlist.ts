@@ -366,6 +366,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'konstruksi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Paket hulu-hilir untuk kontraktor utama',
     entri: 'HHK-03',
     pilihan: [
@@ -402,6 +403,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'konstruksi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Administrasi dengan pemerintah (modul A)',
     entri: 'ADM-01',
     pilihan: [
@@ -435,6 +437,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'konstruksi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Tenaga kerja (modul B)',
     entri: 'TNK-01',
     pilihan: [
@@ -455,6 +458,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'konstruksi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Material: harga dan penjadwalan (modul C)',
     entri: 'MAT-01',
     pilihan: [
@@ -473,6 +477,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'konstruksi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Modal kerja lewat penjembatanan (modul D)',
     entri: 'MOD-06',
     pilihan: [
@@ -505,6 +510,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'konstruksi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Alat dan peralatan (modul E)',
     entri: 'ALT-02',
     pilihan: [
@@ -537,6 +543,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'konstruksi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Administrasi internal proyek (modul F)',
     entri: 'PRJ-04',
     pilihan: [
@@ -557,6 +564,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'konstruksi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Konsultan pengadaan untuk penyedia barang (modul G)',
     entri: 'PNY-01',
     pilihan: [
@@ -582,6 +590,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'konstruksi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Arthur sebagai penyedia untuk instansi (modul G)',
     entri: 'GOV-03',
     pilihan: [
@@ -605,6 +614,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'konstruksi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Developer perumahan (modul H)',
     entri: 'DEV-05',
     pilihan: [
@@ -629,6 +639,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'konstruksi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Kontraktor swasta (lapis 2)',
     entri: 'KSW-01',
     pilihan: [
@@ -646,6 +657,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'konstruksi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Paket rakitan menurut profil pembeli',
     entri: 'RAK-09',
     pilihan: [
@@ -678,5 +690,380 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
     ],
     catatan:
       'Tujuh paket mewakili tujuh posisi pembeli; paket lain tetap bisa dirakit lewat percakapan.',
+  },
+  {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Ritel, fesyen, dan e-commerce',
+    entri: 'RIT-01',
+    pilihan: [
+      { id: 'RIT-01', alasan: '“stok saya tidak sinkron”' },
+      { id: 'RIT-08', alasan: 'Toko fisik dan online tercatat di satu tempat' },
+      {
+        id: 'RIT-03',
+        alasan: '“Saya bergantung pada marketplace”: toko brand sendiri',
+      },
+      { id: 'RIT-10', alasan: 'Produk yang sering dibeli bersama' },
+      {
+        id: 'RIT-09',
+        alasan: '“pelanggan datang sekali lalu hilang”: poin dan membership',
+      },
+      { id: 'RIT-02', alasan: 'Pertanyaan harga dan ongkir dijawab seketika' },
+    ],
+  },
+  {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Distributor, grosir, dan toko bangunan',
+    entri: 'DIS-01',
+    pilihan: [
+      { id: 'DIS-01', alasan: '“Pesanan sales masuk lewat chat”' },
+      { id: 'DIS-09', alasan: '“stok selisih”: opname dengan barcode' },
+      {
+        id: 'DIS-05',
+        alasan: 'Pembeli grosir memesan sendiri sesuai levelnya',
+      },
+      { id: 'DIS-10', alasan: 'Penjualan per sales dan stok menipis terlihat' },
+      {
+        id: 'DIS-04',
+        alasan: '“piutang telat”: pengingat bertahap lewat WhatsApp',
+      },
+      {
+        id: 'DIS-08',
+        alasan:
+          '“harga pemasok naik tanpa kabar”: bertanda †, harga jual tetap Anda yang menentukan',
+      },
+    ],
+    catatan:
+      'Dampak DIS-04 di katalog (“kas lebih lancar”) ditulis ulang di halaman sebagai pekerjaannya: pengingat piutang terkirim bertahap.',
+  },
+  {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Jasa lokal: salon, bengkel, laundry, kos, dan rental',
+    entri: 'JAS-01',
+    pilihan: [
+      { id: 'JAS-01', alasan: '“Jadwal bentrok, pelanggan lupa datang”' },
+      { id: 'JAS-06', alasan: '“tagihan kos menunggak”' },
+      {
+        id: 'JAS-04',
+        alasan: '“mesin harus dijaga terus”: laundry koin dengan QRIS',
+      },
+      { id: 'JAS-10', alasan: 'Status dan pendapatan tiap mesin' },
+      { id: 'JAS-02', alasan: 'Bengkel: biaya disetujui lewat ponsel' },
+      { id: 'JAS-03', alasan: 'Pengingat servis berkala' },
+    ],
+  },
+  {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Klinik dan kesehatan',
+    entri: 'KES-01',
+    pilihan: [
+      {
+        id: 'KES-01',
+        alasan: '“Telepon janji temu menumpuk”: bertanda †, data pasien dijaga',
+      },
+      { id: 'KES-04', alasan: '“data pasien diketik berulang”: bertanda †' },
+      { id: 'KES-08', alasan: 'Paket perawatan berlangganan' },
+      { id: 'KES-03', alasan: 'Pasien tahu gilirannya dari ponsel' },
+      {
+        id: 'KES-02',
+        alasan:
+          '“pasien lupa kontrol”: bertanda †, hanya untuk pasien yang setuju',
+      },
+      { id: 'KES-06', alasan: 'Apotek: obat menipis dan kedaluwarsa' },
+    ],
+    tahan: [
+      {
+        id: 'KES-07',
+        alasan:
+          'Tidak dipilih: layanan medis online bergantung pada izin fasilitas; lebih aman lewat percakapan',
+      },
+    ],
+  },
+  {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Pendidikan dan pelatihan',
+    entri: 'EDU-01',
+    pilihan: [
+      { id: 'EDU-01', alasan: '“SPP menunggak”' },
+      { id: 'EDU-02', alasan: '“pendaftaran masih kertas”' },
+      {
+        id: 'EDU-03',
+        alasan:
+          '“pendapatan hanya dari kelas tatap muka”: kelas berlangganan online',
+      },
+      { id: 'EDU-06', alasan: 'Kehadiran dan nilai untuk orang tua' },
+      { id: 'EDU-09', alasan: 'Rapor dari nilai harian' },
+      { id: 'EDU-05', alasan: 'Modul digital dijual berulang' },
+    ],
+  },
+  {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Properti, dealer, dan showroom',
+    entri: 'PRO-01',
+    pilihan: [
+      {
+        id: 'PRO-01',
+        alasan: '“Prospek tercecer”: dijawab seketika dan survei terjadwal',
+      },
+      { id: 'PRO-02', alasan: 'Prospek sampai berkas KPR' },
+      { id: 'PRO-10', alasan: 'Tahap prospek dan penyebab gagal terlihat' },
+      {
+        id: 'PRO-06',
+        alasan:
+          '“pengajuan leasing tidak terpantau”: bertanda †, persetujuan di tangan perusahaan pembiayaan',
+      },
+      { id: 'PRO-07', alasan: '“pelanggan lama tak pernah dihubungi lagi”' },
+      { id: 'PRO-05', alasan: 'Dealer: penawaran dan jadwal test drive' },
+    ],
+  },
+  {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Keuangan, trading, dan pembiayaan',
+    entri: 'KEU-09',
+    pilihan: [
+      { id: 'KEU-09', alasan: '“angsuran dikejar manual”' },
+      { id: 'KEU-08', alasan: 'Koperasi: pengajuan sampai angsuran tertib' },
+      {
+        id: 'KEU-12',
+        alasan: 'Konter dan agen: lini pulsa, token, dan tagihan; bertanda †',
+      },
+      { id: 'KEU-13', alasan: 'Pola transaksi janggal terlihat lebih dini' },
+      {
+        id: 'KEU-10',
+        alasan:
+          '“berkas menumpuk”: bertanda †, keputusan tetap di tangan pemberi pembiayaan',
+      },
+      {
+        id: 'KEU-11',
+        alasan: 'Agen asuransi: pengingat perpanjangan polis; bertanda †',
+      },
+    ],
+    tahan: [
+      { id: 'KEU-01', alasan: 'Menunggu keputusan posisi bot trading' },
+      { id: 'KEU-02', alasan: 'Menunggu keputusan posisi bot trading' },
+      { id: 'KEU-05', alasan: 'Menunggu keputusan posisi bot trading' },
+      { id: 'KEU-07', alasan: 'Menunggu keputusan posisi bot trading' },
+      { id: 'KEU-06', alasan: 'Ditahan: bot investasi' },
+      {
+        id: 'KEU-03',
+        alasan:
+          'Ikut keputusan posisi bot trading: isinya batas rugi dan ukuran posisi',
+      },
+      {
+        id: 'KEU-04',
+        alasan:
+          'Ikut keputusan posisi bot trading: peringatan harga untuk trader',
+      },
+    ],
+    catatan:
+      'Klausa pertama kutipan bab (“Eksekusi strategi saya tidak konsisten”) tidak dijawab di halaman sampai posisi bot trading diputuskan; saran master brief: hanya lewat percakapan.',
+  },
+  {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Konstruksi dan kontraktor',
+    entri: 'KON-01',
+    pilihan: [
+      {
+        id: 'KON-01',
+        alasan: '“Tender terlewat”: bertanda †, dari situs pengadaan publik',
+      },
+      { id: 'KON-02', alasan: '“dokumen tidak siap”' },
+      { id: 'KON-06', alasan: 'Selisih rencana dan realisasi terlihat' },
+      {
+        id: 'KON-04',
+        alasan: '“laporan lapangan lewat chat”: terkirim walau tanpa sinyal',
+      },
+      { id: 'KON-07', alasan: '“harga material naik-turun”' },
+      {
+        id: 'KON-05',
+        alasan: '“termin lambat cair”: berkas termin dari laporan lapangan',
+      },
+    ],
+    catatan:
+      'Bab ini berpasangan dengan Konstruksi Pelaku proyek (ADM-01 dengan KON-01); jembatannya ditulis di V3.',
+  },
+  {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Travel, hospitality, dan event',
+    entri: 'TRV-04',
+    pilihan: [
+      {
+        id: 'TRV-04',
+        alasan: '“Booking bentrok”: bertanda †, lewat sambungan resmi platform',
+      },
+      { id: 'TRV-05', alasan: '“tiket event dijual manual”' },
+      { id: 'TRV-07', alasan: 'Peserta event terverifikasi di WhatsApp' },
+      {
+        id: 'TRV-03',
+        alasan: '“DP dikejar manual”: booking, DP, dan check-in',
+      },
+      {
+        id: 'TRV-01',
+        alasan: 'Biro perjalanan: tiket dan hotel dari supplier; bertanda †',
+      },
+      { id: 'TRV-09', alasan: 'Musim ramai diperingatkan lebih dulu' },
+    ],
+  },
+  {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Media, kreator, dan komunitas',
+    entri: 'MED-05',
+    pilihan: [
+      { id: 'MED-05', alasan: '“komunitas dikelola manual”' },
+      { id: 'MED-03', alasan: '“pendapatan tipis”: toko produk digital' },
+      {
+        id: 'MED-06',
+        alasan: '“konten dikelola manual”: brief sampai jadwal posting',
+      },
+      {
+        id: 'MED-01',
+        alasan: 'Donasi dan alert di layar; jembatan ke studio siaran',
+      },
+      { id: 'MED-04', alasan: 'Membership penggemar' },
+      { id: 'MED-07', alasan: 'Cuplikan siaran ke banyak platform' },
+    ],
+    tahan: [
+      {
+        id: 'MED-11',
+        alasan:
+          'Tidak dipilih: undian tidak dijual di media afiliasi (aturan Agency); lebih aman tidak ditayangkan',
+      },
+    ],
+  },
+  {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Logistik, armada, dan gudang',
+    entri: 'LOG-02',
+    pilihan: [
+      { id: 'LOG-02', alasan: '“Pelanggan bertanya paketku di mana”' },
+      { id: 'LOG-03', alasan: '“klaim kerusakan tanpa bukti”' },
+      { id: 'LOG-04', alasan: '“rute boros”' },
+      { id: 'LOG-08', alasan: 'Agregator multi-kurir untuk seller' },
+      { id: 'LOG-01', alasan: 'Posisi kendaraan terlihat seketika' },
+      { id: 'LOG-05', alasan: 'Servis dan dokumen kendaraan tidak terlewat' },
+    ],
+  },
+  {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Manufaktur ringan, agro, dan UMKM produksi',
+    entri: 'MAN-03',
+    pilihan: [
+      {
+        id: 'MAN-03',
+        alasan: 'Lingkup terkecil: panen dan biaya tercatat tanpa buku',
+      },
+      { id: 'MAN-01', alasan: '“Biaya pokok tidak diketahui”' },
+      { id: 'MAN-05', alasan: '“hasil tani lewat banyak perantara”' },
+      { id: 'MAN-09', alasan: 'Kebutuhan bahan dari pola penjualan' },
+      { id: 'MAN-02', alasan: '“mesin berhenti mendadak”' },
+      { id: 'MAN-07', alasan: 'Perawatan mesin berkala' },
+    ],
+  },
+  {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Instansi, desa, dan organisasi publik',
+    entri: 'PUB-10',
+    pilihan: [
+      {
+        id: 'PUB-10',
+        alasan: 'Lingkup terkecil: syarat dan alur layanan dijawab kapan pun',
+      },
+      { id: 'PUB-01', alasan: '“Warga harus datang untuk urusan sederhana”' },
+      {
+        id: 'PUB-05',
+        alasan: 'Yayasan dan rumah ibadah: donasi dengan laporan terbuka',
+      },
+      { id: 'PUB-04', alasan: 'Beban kerja dan waktu penyelesaian terlihat' },
+      { id: 'PUB-03', alasan: '“surat menumpuk”: disposisi dengan jejak' },
+      {
+        id: 'PUB-08',
+        alasan: '“laporan wajib disusun manual”: bertanda †, lewat jalur resmi',
+      },
+      { id: 'PUB-02', alasan: 'Aduan warga lewat WhatsApp' },
+    ],
+  },
+  {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Jasa profesional dan agensi',
+    entri: 'PRF-01',
+    pilihan: [
+      { id: 'PRF-01', alasan: '“Prospek tidak ditindaklanjuti”' },
+      { id: 'PRF-03', alasan: '“laporan klien disusun manual”' },
+      { id: 'PRF-10', alasan: 'Jasa berulang menjadi paket bulanan' },
+      { id: 'PRF-05', alasan: '“tenggat klien terlewat”' },
+      { id: 'PRF-06', alasan: 'Jam kerja menjadi faktur' },
+      { id: 'PRF-02', alasan: 'Onboarding klien berurutan' },
+    ],
+  },
+  {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Kebugaran, olahraga, dan rekreasi',
+    entri: 'FIT-03',
+    pilihan: [
+      { id: 'FIT-03', alasan: '“iuran anggota menunggak”' },
+      {
+        id: 'FIT-01',
+        alasan: '“Jadwal lapangan bentrok”: pemesanan dengan DP',
+      },
+      {
+        id: 'FIT-02',
+        alasan: '“lampu harus dijaga orang”: lampu berbayar per jam',
+      },
+      { id: 'FIT-07', alasan: 'Skor dan klasemen langsung' },
+      {
+        id: 'FIT-10',
+        alasan: '“loker harus dijaga orang”: tiket dan loker QRIS',
+      },
+      { id: 'FIT-04', alasan: 'Membership dan paket kelas' },
+    ],
+  },
+  {
+    unit: 'teknologi',
+    side: 'B',
+    situation: 'Lintas sektor: untuk usaha apa pun',
+    entri: 'LIN-17',
+    pilihan: [
+      {
+        id: 'LIN-17',
+        alasan:
+          '“pendapatan saya bergantung pada satu sumber”: sesi pemetaan, titik mulai di master brief',
+      },
+      { id: 'LIN-01', alasan: 'Ringkasan penjualan dan kas setiap pagi' },
+      {
+        id: 'LIN-07',
+        alasan:
+          '“Pekerjaan berulang menyita waktu tim saya”: persetujuan berjenjang',
+      },
+      { id: 'LIN-12', alasan: 'Kas, penjualan, dan operasi dalam satu layar' },
+      {
+        id: 'LIN-03',
+        alasan: 'Pertanyaan berulang dijawab dari data perusahaan',
+      },
+      { id: 'LIN-08', alasan: 'Uang masuk cocok dengan catatan' },
+      {
+        id: 'LIN-16',
+        alasan: 'Jualan di percakapan dengan katalog dan pembayaran',
+      },
+    ],
+    tahan: [
+      {
+        id: 'LIN-21',
+        alasan: 'Tidak dipilih: masih eksperimen menurut katalog',
+      },
+    ],
   },
 ]

@@ -113,14 +113,16 @@ async function main() {
     '',
   ]
 
-  let currentSide = ''
-  for (const chapter of SHORTLIST_PROPOSALS) {
-    const side = `${chapter.unit}|${chapter.side}`
-    if (side !== currentSide) {
-      lines.push(`## ${SIDE_NAMES[side] ?? side}`, '')
-      currentSide = side
+  // One section per side, in the order each side first appears.
+  const bySide = Map.groupBy(
+    SHORTLIST_PROPOSALS,
+    (chapter) => `${chapter.unit}|${chapter.side}`
+  )
+  for (const [side, chapters] of bySide) {
+    lines.push(`## ${SIDE_NAMES[side] ?? side}`, '')
+    for (const chapter of chapters) {
+      lines.push(...chapterSection(chapter, drafts, quoteOf(chapter)))
     }
-    lines.push(...chapterSection(chapter, drafts, quoteOf(chapter)))
   }
 
   console.log(lines.join('\n'))
