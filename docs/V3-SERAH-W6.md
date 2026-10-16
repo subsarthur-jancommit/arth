@@ -160,7 +160,7 @@ _Untuk perusahaan IT_
 ### Alur kerja yang berjalan tanpa dikejar
 
 **Rilis otomatis dan pemantauan**  
-Setiap rilis aman dan masalah terdeteksi sebelum pengguna mengeluh.  
+Setiap rilis melewati uji otomatis, dan pemantauan memberi peringatan saat ada gangguan.  
 _Untuk software house_
 
 ### Angka yang memberi tahu lebih dulu
@@ -178,7 +178,7 @@ _Untuk software house_
 ### Pekerjaan teknis di balik layar
 
 **Kapasitas tambahan saat puncak**  
-Tenggat ketat tetap tercapai tanpa merekrut tenaga tetap.  
+Spesialis tambahan bergabung saat beban puncak, tanpa Anda merekrut tenaga tetap.  
 _Untuk software house_
 
 **Tim khusus di bawah arahan Anda**  
@@ -290,7 +290,7 @@ _Untuk tim keuangan dan IT_
 ### Bot yang bekerja sendiri
 
 **Pemantauan dan peringatan terpusat**  
-Masalah terdeteksi sebelum pengguna mengeluh.  
+Sistem dipantau dari satu tempat, dan peringatan dikirim ke tim Anda saat ambang yang disepakati terlampaui.  
 _Untuk tim IT_
 
 **Bot verifikasi backup dan pemulihan**  

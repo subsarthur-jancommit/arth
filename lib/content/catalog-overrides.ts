@@ -336,6 +336,36 @@ export const TEKNOLOGI_OVERRIDES = new Map<string, CatalogOverride>([
     },
   ],
   [
+    'SWH-02',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Spesialis tambahan bergabung saat beban puncak, tanpa Anda merekrut tenaga tetap.',
+      alasan:
+        '“Tenggat tetap tercapai” tidak sepenuhnya di tangan kami (Aturan isi 3); daftar pendek Teknologi Paham teknis',
+    },
+  ],
+  [
+    'SWH-09',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Setiap rilis melewati uji otomatis, dan pemantauan memberi peringatan saat ada gangguan.',
+      alasan:
+        '“Setiap rilis aman” dan “sebelum pengguna mengeluh” menjanjikan hasil (Aturan isi 3); daftar pendek Teknologi Paham teknis',
+    },
+  ],
+  [
+    'TIM-03',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Sistem dipantau dari satu tempat, dan peringatan dikirim ke tim Anda saat ambang yang disepakati terlampaui.',
+      alasan:
+        '“Sebelum pengguna mengeluh” menjanjikan hasil (Aturan isi 3); daftar pendek Teknologi Paham teknis',
+    },
+  ],
+  [
     'TIM-04',
     {
       keputusan: 'ditulis-ulang',
