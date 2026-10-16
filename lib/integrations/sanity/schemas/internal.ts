@@ -1,5 +1,19 @@
 import { defineArrayMember, defineField } from 'sanity'
-import type { SanityDocument } from 'sanity'
+import type {
+  DocumentRule,
+  SanityDocument,
+  SlugValidationContext,
+} from 'sanity'
+
+import {
+  checkDocument,
+  describeFindings,
+  type StyleDocument,
+  type StyleLevel,
+} from '@/lib/content/style-gate'
+
+import { apiVersion } from '../env'
+import { requireIndonesian } from '../utils/i18n-array'
 
 export const REVIEW_STATUS_VALUES = [
   'usulan',
@@ -67,6 +81,60 @@ export function forbidPlaceholders(
 ): true | string {
   const match = value ? placeholderPath(value as ContentDocument) : undefined
   return match ? `Ganti placeholder di ${match} sebelum menerbitkan.` : true
+}
+
+function styleCheck(level: StyleLevel, verbatimFields: readonly string[]) {
+  return (value: SanityDocument | undefined): true | string => {
+    const findings = checkDocument(
+      value as StyleDocument | undefined,
+      verbatimFields
+    ).filter((finding) => finding.level === level)
+    return findings.length > 0
+      ? `Gerbang gaya: ${describeFindings(findings)}`
+      : true
+  }
+}
+
+/**
+ * Document-level validation every Arthur content type shares: placeholders
+ * and the style gate's errors block publishing; its warnings only flag.
+ *
+ * `verbatimFields` are the fields that hold ready-to-publish text, which the
+ * warnings never judge (Aturan isi 11).
+ */
+export function contentValidation(verbatimFields: readonly string[] = []) {
+  return (Rule: DocumentRule) => [
+    Rule.custom(forbidPlaceholders),
+    Rule.custom(styleCheck('error', verbatimFields)),
+    Rule.custom(styleCheck('warning', verbatimFields)).warning(),
+  ]
+}
+
+/**
+ * A slug only has to be unique among its siblings, because the URL nests it
+ * under its parent: two sides may each have a `kuliner` chapter, and two
+ * chapters may each have a `survei-lapangan` offer. Sanity's default checks
+ * the whole dataset, which would force awkward slugs for no reader benefit.
+ */
+export function uniqueWithinParent(type: string, parentField: string) {
+  return async (slug: string, context: SlugValidationContext) => {
+    const { document, getClient } = context
+    const id = document?._id.replace(/^drafts\./, '') ?? ''
+    const parent = (document?.[parentField] as { _ref?: string } | undefined)
+      ?._ref
+    if (!parent) return true
+
+    const clashes = await getClient({ apiVersion }).fetch<number>(
+      `count(*[
+        _type == $type &&
+        slug.current == $slug &&
+        ${parentField}._ref == $parent &&
+        !(_id in [$id, "drafts." + $id])
+      ])`,
+      { type, slug, parent, id }
+    )
+    return clashes === 0
+  }
 }
 
 /** Fields kept in the Internal Studio group and never selected by page queries. */
@@ -142,3 +210,51 @@ export function internalFields(options: InternalFieldsOptions = {}) {
     ...fields,
   ]
 }
+
+/**
+ * The shape of a ready-to-publish header in the master brief.
+ *
+ * The umbrella header and each unit header open with a title, a line in
+ * italics, and an opening paragraph, then carry paragraphs that each start
+ * with a bold lead: “Kami mengisi celah.”, “Cara kami bekerja.”. Until V2 the
+ * schema had one `pembuka` field for all of it, so the page carried a
+ * paraphrase and the lead paragraphs were lost (docs/RENCANA-KONTEKS-V2.md §0).
+ * These fields hold the header word for word (Aturan isi 11).
+ */
+export const headerPillarsField = () =>
+  defineField({
+    name: 'pilar',
+    title: 'Paragraf header berlabel',
+    description:
+      'Salin dari header siap tayang apa adanya: kalimat tebal sebagai pembuka, lalu isinya. Boleh membuang paragraf utuh, tidak boleh mengubah kata.',
+    type: 'array',
+    of: [
+      defineArrayMember({
+        type: 'object',
+        fields: [
+          defineField({
+            name: 'lead',
+            title: 'Kalimat tebal',
+            type: 'internationalizedArrayString',
+            validation: (Rule) => Rule.required().custom(requireIndonesian),
+          }),
+          defineField({
+            name: 'isi',
+            title: 'Isi paragraf',
+            type: 'internationalizedArrayText',
+            validation: (Rule) => Rule.required().custom(requireIndonesian),
+          }),
+        ],
+        preview: { select: { title: 'lead.0.value', subtitle: 'isi.0.value' } },
+      }),
+    ],
+  })
+
+export const headerSummaryField = () =>
+  defineField({
+    name: 'ringkas',
+    title: 'Versi ringkas satu kalimat',
+    description:
+      'Dari bagian Versi ringkas di master brief, apa adanya. Dipakai di pintu unit dan sebagai deskripsi mesin pencari.',
+    type: 'internationalizedArrayText',
+  })

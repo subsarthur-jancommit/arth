@@ -43,7 +43,7 @@ import '@/lib/styles/css/index.css'
  */
 const APP_NAME = SITE.name
 const APP_DEFAULT_TITLE = SITE.name
-const APP_TITLE_TEMPLATE = `%s — ${SITE.name}`
+const APP_TITLE_TEMPLATE = `%s | ${SITE.name}`
 
 /**
  * The second layer of the placeholder-site noindex, under the

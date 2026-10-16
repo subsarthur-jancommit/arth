@@ -67,8 +67,15 @@
 }
 
 .title,
+.subtitle,
 .copy {
   margin: 0;
+}
+
+.subtitle {
+  max-width: 42ch;
+  font-style: italic;
+  color: var(--text-muted);
 }
 
 .copy {

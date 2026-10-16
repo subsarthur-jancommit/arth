@@ -1,8 +1,14 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+import { VERBATIM_FIELDS } from '@/lib/content/style-gate'
 import { UNIT_STUDIO_TITLES, UNITS } from '@/lib/content/units'
 
-import { forbidPlaceholders, internalFields } from './internal'
+import {
+  contentValidation,
+  headerPillarsField,
+  headerSummaryField,
+  internalFields,
+} from './internal'
 
 /** Arthur-wide copy and contact facts. The Studio Structure fixes this as one document. */
 export const siteSettings = defineType({
@@ -13,7 +19,7 @@ export const siteSettings = defineType({
     { name: 'isi', title: 'Isi', default: true },
     { name: 'internal', title: 'Internal' },
   ],
-  validation: (Rule) => Rule.custom(forbidPlaceholders),
+  validation: contentValidation(VERBATIM_FIELDS.siteSettings),
   fields: [
     defineField({
       name: 'name',
@@ -34,6 +40,14 @@ export const siteSettings = defineType({
       type: 'internationalizedArrayText',
       description: 'Satu kalimat, paling banyak tiga puluh kata.',
     }),
+    defineField({
+      name: 'heroPembuka',
+      title: 'Pembuka payung',
+      type: 'internationalizedArrayText',
+      description: 'Paragraf pembuka Header Arthur siap tayang, apa adanya.',
+    }),
+    headerPillarsField(),
+    headerSummaryField(),
     defineField({
       name: 'pernyataanPemilik',
       title: 'Pernyataan pemilik',
@@ -93,10 +107,19 @@ export const siteSettings = defineType({
             }),
             defineField({
               name: 'bab',
-              title: 'Kunci bab (sementara)',
+              title: 'Kunci bab (lama)',
               type: 'string',
               description:
-                'Slug saja; akan menjadi referensi lemah saat tipe bab tersedia.',
+                'Dipertahankan untuk data lama. Isi Bab tujuan di bawah; medan ini dicabut setelah migrasi V2.',
+            }),
+            defineField({
+              name: 'babTujuan',
+              title: 'Bab tujuan',
+              description:
+                'Situasi ini membuka bab tersebut. Referensi lemah: bab yang belum terbit tidak dijadikan tautan.',
+              type: 'reference',
+              to: [{ type: 'bab' }],
+              weak: true,
             }),
           ],
           preview: {

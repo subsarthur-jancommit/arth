@@ -319,6 +319,13 @@ export const siteSettingsQuery = defineQuery(`
       heroSubjudul[_key == $locale][0].value,
       heroSubjudul[_key == "id"][0].value
     ),
+    "opening": coalesce(heroPembuka[_key == $locale][0].value, heroPembuka[_key == "id"][0].value),
+    "pilar": pilar[]{
+      _key,
+      "lead": coalesce(lead[_key == $locale][0].value, lead[_key == "id"][0].value),
+      "isi": coalesce(isi[_key == $locale][0].value, isi[_key == "id"][0].value)
+    },
+    "ringkas": coalesce(ringkas[_key == $locale][0].value, ringkas[_key == "id"][0].value),
     "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),
     "statement": coalesce(
       pernyataanPemilik[_key == $locale][0].value,
@@ -330,7 +337,14 @@ export const siteSettingsQuery = defineQuery(`
       "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value),
       unit,
       sisi,
-      bab
+      bab,
+      "babTujuan": select(
+        babTujuan->statusTinjauan == "disetujui" => babTujuan->{
+          "slug": slug.current,
+          "sisi": sisi->kunci,
+          "unit": sisi->unit->kunci
+        }
+      )
     },
     "ajakan": {
       "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),
@@ -366,6 +380,13 @@ export const siteSettingsPreviewQuery = defineQuery(`
       heroSubjudul[_key == $locale][0].value,
       heroSubjudul[_key == "id"][0].value
     ),
+    "opening": coalesce(heroPembuka[_key == $locale][0].value, heroPembuka[_key == "id"][0].value),
+    "pilar": pilar[]{
+      _key,
+      "lead": coalesce(lead[_key == $locale][0].value, lead[_key == "id"][0].value),
+      "isi": coalesce(isi[_key == $locale][0].value, isi[_key == "id"][0].value)
+    },
+    "ringkas": coalesce(ringkas[_key == $locale][0].value, ringkas[_key == "id"][0].value),
     "portraitAlt": coalesce(portrait.alt[_key == $locale][0].value, portrait.alt[_key == "id"][0].value),
     "statement": coalesce(
       pernyataanPemilik[_key == $locale][0].value,
@@ -377,7 +398,12 @@ export const siteSettingsPreviewQuery = defineQuery(`
       "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value),
       unit,
       sisi,
-      bab
+      bab,
+      "babTujuan": babTujuan->{
+        "slug": slug.current,
+        "sisi": sisi->kunci,
+        "unit": sisi->unit->kunci
+      }
     },
     "ajakan": {
       "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value),
@@ -439,7 +465,8 @@ const homeUnitFields = `
   kunci,
   "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
   "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
-  "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value)
+  "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),
+  "ringkas": coalesce(ringkas[_key == $locale][0].value, ringkas[_key == "id"][0].value)
 `
 
 /** The three approved Arthur unit doors shown on the public home page. */
@@ -480,6 +507,13 @@ export const unitPageQuery = defineQuery(`
     "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
     "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
     "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),
+    "subjudul": coalesce(subjudul[_key == $locale][0].value, subjudul[_key == "id"][0].value),
+    "pilar": pilar[]{
+      _key,
+      "lead": coalesce(lead[_key == $locale][0].value, lead[_key == "id"][0].value),
+      "isi": coalesce(isi[_key == $locale][0].value, isi[_key == "id"][0].value)
+    },
+    "ringkas": coalesce(ringkas[_key == $locale][0].value, ringkas[_key == "id"][0].value),
     "masalah": masalah[]{
       _key,
       "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
@@ -533,6 +567,13 @@ export const unitPagePreviewQuery = defineQuery(`
     "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
     "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
     "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),
+    "subjudul": coalesce(subjudul[_key == $locale][0].value, subjudul[_key == "id"][0].value),
+    "pilar": pilar[]{
+      _key,
+      "lead": coalesce(lead[_key == $locale][0].value, lead[_key == "id"][0].value),
+      "isi": coalesce(isi[_key == $locale][0].value, isi[_key == "id"][0].value)
+    },
+    "ringkas": coalesce(ringkas[_key == $locale][0].value, ringkas[_key == "id"][0].value),
     "masalah": masalah[]{
       _key,
       "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
@@ -574,8 +615,14 @@ const sideReaderFields = `
     kunci,
     "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
     "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
+    "pembeli": pembeli[]{
+      _key,
+      "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
+    },
     "caraMembeli": caraMembeli[]{
       _key,
+      "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
+      "keterangan": coalesce(keterangan[_key == $locale][0].value, keterangan[_key == "id"][0].value),
       "teks": coalesce(teks[_key == $locale][0].value, teks[_key == "id"][0].value)
     },
     "langkahPertama": {
@@ -745,6 +792,7 @@ const chapterReaderFields = `
     _id,
     "slug": slug.current,
     "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
+    "pembeli": coalesce(pembeli[_key == $locale][0].value, pembeli[_key == "id"][0].value),
     "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),
     "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
     urutan,
@@ -778,6 +826,7 @@ export const chapterPagePreviewQuery = defineQuery(`
     _id,
     "slug": slug.current,
     "nama": coalesce(nama[_key == $locale][0].value, nama[_key == "id"][0].value),
+    "pembeli": coalesce(pembeli[_key == $locale][0].value, pembeli[_key == "id"][0].value),
     "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),
     "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
     urutan,

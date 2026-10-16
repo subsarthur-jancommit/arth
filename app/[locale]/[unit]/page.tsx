@@ -95,6 +95,13 @@ export default async function UnitPage({ params }: UnitPageProps) {
   const name = content?.nama ?? fallback.nama
   const title = content?.judul ?? fallback.judul
   const statement = content?.pembuka ?? fallback.pembuka
+  const subtitle = content?.subjudul ?? null
+  // The header's labelled paragraphs, word for word (Aturan isi 11).
+  const pillars = (content?.pilar ?? []).flatMap((pillar) =>
+    pillar.lead && pillar.isi
+      ? [{ key: pillar._key, lead: pillar.lead, body: pillar.isi }]
+      : []
+  )
   const problems = content?.masalah?.length ? content.masalah : fallback.masalah
   const candidateWorkItems = (content?.caraKerja ?? []).flatMap((item) =>
     item.teks ? [item.teks] : []
@@ -123,9 +130,24 @@ export default async function UnitPage({ params }: UnitPageProps) {
           eyebrow={t('eyebrow')}
           name={name}
           title={title}
+          subtitle={subtitle}
           statement={statement}
           sideCount={t('sideCount', { count: SIDES[unit].length })}
         />
+
+        {pillars.length > 0 ? (
+          <Reveal as="section" className={s.section} perItem>
+            <SectionHeader reveal eyebrow={name} title={t('pillarsTitle')} />
+            <ol className={s.problemList}>
+              {pillars.map((pillar) => (
+                <li key={pillar.key} data-reveal-item className={s.pillar}>
+                  <p className="h3">{pillar.lead}</p>
+                  <p className="p-big">{pillar.body}</p>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+        ) : null}
 
         <SideDoors
           unit={unit}
@@ -258,7 +280,7 @@ export async function generateMetadata({ params }: UnitPageProps) {
 
   return generatePageMetadata({
     title: content?.judul ?? fallback.judul,
-    description: content?.pembuka ?? fallback.pembuka,
+    description: content?.ringkas ?? content?.pembuka ?? fallback.pembuka,
     url: localizedPath(locale, unitTemplate(unit)),
   })
 }

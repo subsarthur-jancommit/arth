@@ -8,7 +8,11 @@ import {
 import { OFFER_MODELS } from '@/lib/content/offer-models'
 
 import { localeValue, requireIndonesian } from '../utils/i18n-array'
-import { forbidPlaceholders, internalFields } from './internal'
+import {
+  contentValidation,
+  internalFields,
+  uniqueWithinParent,
+} from './internal'
 
 const DEFAULT_LOCALE = 'id'
 
@@ -64,7 +68,7 @@ export const offer = defineType({
     { name: 'isi', title: 'Isi', default: true },
     { name: 'internal', title: 'Internal' },
   ],
-  validation: (Rule) => Rule.custom(forbidPlaceholders),
+  validation: contentValidation(),
   fields: [
     defineField({
       name: 'bab',
@@ -82,6 +86,7 @@ export const offer = defineType({
       options: {
         source: (document) => localeValue(document.judul, DEFAULT_LOCALE) ?? '',
         maxLength: 96,
+        isUnique: uniqueWithinParent('offer', 'bab'),
       },
       validation: (Rule) => Rule.required(),
       group: 'isi',

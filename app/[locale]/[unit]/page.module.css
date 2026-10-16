@@ -56,8 +56,27 @@
   }
 }
 
-.problem:last-child {
+.problem:last-child,
+.pillar:last-child {
   border-bottom: 1px solid var(--line);
+}
+
+/* A header paragraph: its bold lead, then the paragraph, stacked. */
+.pillar {
+  display: grid;
+  gap: calc(12 / 375 * 100vw);
+  padding-block: calc(24 / 375 * 100vw);
+  border-top: 1px solid var(--line);
+
+  @media (--desktop) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gutter);
+    padding-block: calc(28 / 1440 * 100vw);
+  }
+}
+
+.pillar p {
+  margin: 0;
 }
 
 .problem p,
