@@ -614,4 +614,163 @@ export const SITUATION_OVERRIDES = new Map<string, SituationOverride>([
       },
     },
   ],
+  // V3 wave W5, Peekabo Sisi A (docs/V3-SERAH-W5.md). Copy from the
+  // chapter, Peta pembeli, and Peekabo aturan main; wilayah from the
+  // Peekabo header and the Sisi A introduction.
+  [
+    'peekabo/A/agency-marketing',
+    {
+      pembeli:
+        'Untuk UMKM, brand lokal, seller marketplace, usaha jasa, dan instansi.',
+      situasi:
+        'Produk Anda bagus, tetapi yang tahu baru itu-itu saja. Platform, sasaran, dan pesan dipilih sebelum uang iklan keluar, lalu akun, peluncuran, dan kreator dijalankan untuk menjangkau orang baru.',
+      batas:
+        'Kami tidak menjanjikan jangkauan atau penjualan. Target, lingkup, dan laporan disepakati tertulis sebelum kerja dimulai, dan iklan mengikuti aturan setiap platform.',
+      jembatan: [
+        {
+          offer: 'FNB-01',
+          kalimat:
+            'Untuk kafe yang belum buka, unit Konstruksi menyiapkan tempatnya sebelum kampanye pembukaan berjalan.',
+        },
+      ],
+      metadata: {
+        judul: 'Agency marketing di Subang, Purwakarta, dan Bandung',
+        deskripsi:
+          'Untuk UMKM, brand lokal, dan seller. Strategi ads sebelum uang iklan keluar, akun dikelola setiap minggu, dan peluncuran online serta lapangan.',
+      },
+    },
+  ],
+  [
+    'peekabo/A/produksi-kreatif',
+    {
+      pembeli:
+        'Untuk brand, UMKM, seller, usaha F&B, developer dan penginapan, kreator, dan agensi lain.',
+      situasi:
+        'Kontennya harus keluar setiap minggu, tetapi tidak ada yang membuatnya. Satu hari syuting dirancang untuk mengisi stok konten sebulan, dan kuota bulanan menjaga konten keluar tanpa negosiasi ulang per proyek.',
+      batas:
+        'Hak pakai setiap aset, jumlah revisi, dan ukuran per platform disepakati tertulis sebelum produksi. Isu yang dipakai dalam konten dipilih dari sudut yang aman bagi brand Anda.',
+      metadata: {
+        judul: 'Produksi foto, video, dan animasi untuk brand',
+        deskripsi:
+          'Untuk brand, UMKM, dan seller di Subang, Purwakarta, dan Bandung. Foto produk, film brand, animasi, dan satu hari syuting untuk stok konten.',
+      },
+    },
+  ],
+  [
+    'peekabo/A/agency-solusi-kreatif',
+    {
+      pembeli:
+        'Untuk pendiri, pemilik usaha, brand, dan agensi yang butuh arah sebelum produksi.',
+      situasi:
+        'Anda tidak tahu harus bilang apa supaya orang peduli. Isu, sudut cerita, dan pesan inti disepakati dalam workshop, lalu arah kreatifnya dijaga setiap bulan.',
+      batas:
+        'Konsep diserahkan sebagai arah tertulis yang siap diproduksi, dan produksinya dapat dipesan terpisah. Kami tidak menjanjikan seberapa jauh konten menyebar.',
+      metadata: {
+        judul: 'Workshop konsep, pesan, dan arah kreatif brand',
+        deskripsi:
+          'Untuk pendiri, pemilik usaha, dan brand. Isu, sudut cerita, dan pesan inti disepakati dalam workshop sebelum produksi, lalu arah kreatif dijaga.',
+      },
+    },
+  ],
+  [
+    'peekabo/A/live-commerce-untuk-brand',
+    {
+      slug: 'live-commerce',
+      pembeli: 'Untuk seller dan brand di TikTok Shop, Shopee, dan Tokopedia.',
+      situasi:
+        'Anda tidak punya host dan tidak sanggup siaran setiap hari. Live dicoba per jam dengan host dan operator kami, lalu dapat naik menjadi siaran rutin dengan jadwal tetap dan laporan bulanan.',
+      batas:
+        'Siaran dan promo mengikuti aturan setiap platform yang berlaku saat dijalankan. Kami tidak menjanjikan angka penjualan; pada bagi hasil, porsinya disepakati tertulis sebelum siaran pertama.',
+      jembatan: [
+        {
+          offer: 'STD-09',
+          kalimat:
+            'Ruangan Anda juga bisa diubah menjadi studio oleh unit Konstruksi, lalu siarannya kami jalankan.',
+        },
+      ],
+      metadata: {
+        judul: 'Live commerce dengan host dan operator',
+        deskripsi:
+          'Untuk seller dan brand di TikTok Shop, Shopee, dan Tokopedia. Coba live per jam dengan host dan operator, lalu siaran rutin dengan jadwal tetap.',
+      },
+    },
+  ],
+  [
+    'peekabo/A/experiential',
+    {
+      slug: 'event',
+      pembeli: 'Untuk brand lokal, merchant, sponsor, dan instansi.',
+      situasi:
+        'Anda ingin warga datang, mencoba, lalu bercerita. Produk dicoba di tempat orang sudah berkumpul, dibawa ke banyak titik, atau menjadi tujuan event hunting kota.',
+      batas:
+        'Izin keramaian, izin lokasi, dan keselamatan peserta dipenuhi sebelum acara, dan lomba berbasis kemampuan dibedakan dari undian. Data peserta tidak dibagikan ke sponsor tanpa persetujuan peserta.',
+      jembatan: [
+        {
+          offer: 'TRV-05',
+          kalimat:
+            'Tiket dan check-in peserta juga bisa berjalan lewat QR yang dipasang unit Teknologi.',
+        },
+      ],
+      metadata: {
+        judul: 'Event dan aktivasi brand di Subang, Purwakarta, Bandung',
+        deskripsi:
+          'Untuk brand lokal, merchant, dan sponsor. Booth dan sampling di lokasi mitra, roadshow keliling, temu pelanggan, dan event hunting kota.',
+      },
+    },
+  ],
+  [
+    'peekabo/A/talenta',
+    {
+      pembeli:
+        'Untuk brand dan usaha yang butuh wajah, suara, dan tangan untuk membawakan produknya.',
+      situasi:
+        'Anda butuh orang yang terlatih membawakan produk Anda. Promotor dan host dilatih membawakan produk Anda, dan kreator yang kami kelola membangun cerita brand secara konsisten.',
+      batas:
+        'Bentuk hubungan kerja setiap talenta dan sales disepakati tertulis sebelum mulai. Konten kreator mengikuti aturan iklan setiap platform, dan kami tidak menjanjikan jumlah penonton.',
+      metadata: {
+        judul: 'Promotor, host, dan kreator untuk brand',
+        deskripsi:
+          'Untuk brand dan usaha di Subang, Purwakarta, dan Bandung. Promotor dan host terlatih, kreator yang dikelola, dan video ulasan dibayar per video.',
+      },
+    },
+  ],
+  [
+    'peekabo/A/outsourcing-penjualan',
+    {
+      pembeli:
+        'Untuk seller, usaha jasa, brand, dan distributor yang punya leads tetapi kekurangan tangan penjual.',
+      situasi:
+        'Leads masuk, tetapi tidak ada yang menindaklanjuti sampai jadi. Chat calon pembeli dijawab dan ditutup menjadi pesanan, dan tim sales lapangan mendatangi calon pembeli dengan target harian.',
+      batas:
+        'Bentuk hubungan kerja sales disepakati tertulis sebelum mulai. Target dan laporan juga disepakati tertulis; angka penjualan tidak dijanjikan.',
+      jembatan: [
+        {
+          offer: 'RIT-02',
+          kalimat:
+            'Di luar jam kerja, bot dari unit Teknologi bisa menjawab chat lebih dulu, lalu admin kami menutup penjualannya.',
+        },
+      ],
+      metadata: {
+        judul: 'Admin chat dan tim sales untuk usaha Anda',
+        deskripsi:
+          'Untuk seller dan usaha jasa yang punya leads. Chat calon pembeli dijawab sampai menjadi pesanan, dan tim sales lapangan bekerja dengan target harian.',
+      },
+    },
+  ],
+  [
+    'peekabo/A/ekosistem-marketplace',
+    {
+      pembeli:
+        'Untuk seller, brand, dan vendor yang ingin produknya dijual banyak orang.',
+      situasi:
+        'Anda ingin produk dijualkan banyak orang, tetapi tidak tahu cara mengelola afiliasinya. Harga jual dan komisi afiliasi dihitung ulang setiap biaya platform berubah, dan produk masuk etalase komunitas seller.',
+      batas:
+        'Jaringan kami dibayar dari penjualan, tanpa biaya masuk, tanpa bonus rekrutmen, dan tanpa janji penghasilan. Bila Anda memakai SaaS atau vendor yang kami rujuk, mitra itu membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Afiliasi dan jaringan komisi untuk seller',
+        deskripsi:
+          'Untuk seller, brand, dan vendor. Harga dan komisi afiliasi dihitung ulang setiap biaya platform berubah, dan produk masuk etalase komunitas.',
+      },
+    },
+  ],
 ])

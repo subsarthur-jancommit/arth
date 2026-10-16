@@ -49,6 +49,19 @@ describe('parseCatalog', () => {
     expect(rows[2]?.title).toBe('Pembacaan otomatis nota, faktur, dan KTP')
     expect(rows[2]?.mark).toBe('†')
   })
+
+  it('drops a Peekabo research service code from the title', () => {
+    const [row] = parseCatalog(
+      `## Produksi kreatif (PRD)
+
+| ID | Offer | Dampak bagi pembeli | Pembeli | Jenis | Masalah | Model | Asal |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1B-04 | **Foto produk dan lifestyle (02.B)** | Produk tampil layak jual | Brand, seller | Aset | Dibeli | K3 | A |
+`,
+      { unit: 'peekabo', side: 'A' }
+    )
+    expect(row?.title).toBe('Foto produk dan lifestyle')
+  })
 })
 
 describe('draftOffer', () => {

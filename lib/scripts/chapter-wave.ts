@@ -95,6 +95,22 @@ export const WAVES = {
       'Kuliner dan F&B sudah terbit dan tidak ditulis ulang di gelombang ini.',
     ],
   },
+  W5: {
+    unit: 'peekabo',
+    side: 'A',
+    judul: 'Peekabo, untuk pemilik usaha dan brand',
+    dasar: [
+      'Nama bab, kutipan: Peekabo Sisi A, judul bab dan “Yang biasa mereka katakan”, apa adanya; kode bab di judul dibuang, karena kode katalog tidak pernah tampil.',
+      'Untuk siapa: baris Pembeli bab itu, ditulis sebagai orang.',
+      'Situasi: kutipan bab dan kolom “Yang mereka cari” di Peta pembeli unit Agency, dijawab dengan dampak offer yang dipilih.',
+      'Kartu pekerjaan: baris offer di daftar pendek yang disetujui; kode layanan riset di judul, seperti 02.B, dibuang.',
+      'Batas: Peekabo Cara kami bekerja (target, lingkup, dan laporan tertulis; jaringan tanpa biaya masuk, bonus rekrutmen, atau janji penghasilan); Peta & aturan main aturan 2 dan 3 (platform), 8 (hubungan kerja), 9 (event dan undian), 10 (data peserta); Aturan isi aturan 3; kalimat komisi di bab yang merujuk SaaS atau vendor.',
+      'Jembatan: tabel Jembatan ke unit konstruksi dan teknologi; tampil setelah halaman tujuannya terbit.',
+      'Langkah pertama: sama dengan langkah pertama halaman sisi Pemilik usaha.',
+      'Mesin pencari: Suara dan gaya, bentuk per blok; wilayah dari header Peekabo dan pengantar Sisi A.',
+      'Operator SaaS niche dan Akademi untuk tim klien ditahan utuh sesuai daftar pendek, jadi tidak punya halaman.',
+    ],
+  },
 } as const satisfies Record<string, Wave>
 
 /**

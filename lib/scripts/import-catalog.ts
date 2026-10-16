@@ -183,6 +183,8 @@ export function parseCatalog(
       title: raw
         .replace(/\*\*/g, '')
         .replace(/[†‡]/g, '')
+        // Peekabo's research service codes, "(02.B)", are never shown.
+        .replace(/\s*\(\d{2}\.[A-Z]\)/g, '')
         .trim(),
       impact: pick(header, cells, 'Dampak', 'Hasil'),
       buyer: pick(header, cells, 'Pembeli', 'Peserta'),
