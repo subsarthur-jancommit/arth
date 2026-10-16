@@ -126,6 +126,22 @@ export const WAVES = {
       'Mesin pencari: Suara dan gaya, bentuk per blok; wilayah tidak disebut karena wilayah Teknologi belum diputuskan.',
     ],
   },
+  W7: {
+    unit: 'peekabo',
+    side: 'B',
+    judul: 'Peekabo, untuk jaringan penjual',
+    dasar: [
+      'Nama bab, kutipan: Peekabo Sisi B, judul bab dan “Yang biasa mereka katakan”, apa adanya; kode bab di judul dibuang.',
+      'Untuk siapa: baris Peserta bab itu, ditulis sebagai orang.',
+      'Situasi: kutipan bab dan kolom “Yang mereka cari” di Peta pembeli unit Agency, dijawab dengan dampak offer yang dipilih; bentuk bayaran ditulis, penghasilan tidak dijanjikan.',
+      'Kartu pekerjaan: baris offer di daftar pendek yang disetujui.',
+      'Batas: Peekabo Peta & aturan main aturan 7 (pajak honor), 8 (hubungan kerja), 14 (kelas bukan syarat bergabung); Cara kami bekerja (tanpa janji penghasilan).',
+      'Jembatan: tidak ada; jembatan KRE-04 ke studio Konstruksi ikut ditahan bersama offer-nya.',
+      'Langkah pertama: Cara bergabung langkah 1, disempitkan ke jalur kreator dan host karena dua jalur lain ditahan; halaman sisi Jaringan diusulkan memakai langkah yang sama (lihat docs/V3-SERAH-W7-HALAMAN.md).',
+      'Mesin pencari: Suara dan gaya, bentuk per blok; wilayah dari header Peekabo.',
+      'Sales lepas (OCS) dan Anggota komunitas belanja (MBR) ditahan utuh sesuai daftar pendek, jadi tidak punya halaman.',
+    ],
+  },
 } as const satisfies Record<string, Wave>
 
 /**

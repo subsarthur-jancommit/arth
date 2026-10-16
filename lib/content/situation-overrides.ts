@@ -870,4 +870,21 @@ export const SITUATION_OVERRIDES = new Map<string, SituationOverride>([
       },
     },
   ],
+  // V3 wave W7, Peekabo Sisi B (docs/V3-SERAH-W7.md). Only the creator
+  // chapter is open; OCS and MBR are held whole by the shortlist.
+  [
+    'peekabo/B/kreator',
+    {
+      pembeli: 'Untuk kreator pemula, streamer, host live, dan calon host.',
+      situasi:
+        'Anda bisa live berjam-jam, tetapi penghasilannya belum menentu. Anda dibayar per jam atau per bulan sebagai host toko brand, dilatih menutup penjualan, dan kontrak brand dicarikan untuk Anda.',
+      batas:
+        'Bentuk kerja dan bayarannya disepakati tertulis sebelum siaran pertama, dan honor dipotong pajak sesuai aturan. Kami tidak menjanjikan penghasilan, dan kelas tidak menjadi syarat atau biaya untuk bergabung.',
+      metadata: {
+        judul: 'Kerja sebagai host live dan kreator untuk brand',
+        deskripsi:
+          'Untuk kreator, streamer, dan host di Subang, Purwakarta, dan Bandung. Dibayar per jam atau per bulan sebagai host toko brand, dengan kontrak tertulis.',
+      },
+    },
+  ],
 ])
