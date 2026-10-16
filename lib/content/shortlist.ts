@@ -1712,6 +1712,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'peekabo',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Sales lepas, makelar, dan calo (Open Commission) (OCS)',
     entri: '',
     ditahanBab:
@@ -1776,6 +1777,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'peekabo',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Anggota komunitas belanja (membership) (MBR)',
     entri: '',
     ditahanBab:
@@ -1827,6 +1829,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'peekabo',
     side: 'B',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Kreator, streamer, dan host (KRE)',
     entri: 'KRE-03',
     pilihan: [

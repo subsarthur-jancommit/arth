@@ -1645,6 +1645,8 @@ Catatan: Tiga lapis di judul bab masing-masing terwakili: SQL (DAT-03, DAT-04), 
 
 > “Saya punya kenalan yang mau beli. Saya mau dapat bagian kalau jadi.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 **Bab ditahan utuh.** Langkah 2 cara bergabung menjanjikan kartu komisi untuk setiap produk: siapa membayar, pemicu, besar, dan kapan cair. Kartunya belum disusun (keputusan 5 di master brief), jadi bab ini ditahan utuh sampai kartu pertama ada. Bab ini tampil di halaman sisi sebagai situasi tanpa halaman, dengan tautan ke Kontak.
 
 0 dari 12 offer. Aturan: lolos.
@@ -1676,6 +1678,8 @@ Catatan: Bila kartu komisi sudah ada, tujuh offer pertama di daftar tahan menjad
 ### Anggota komunitas belanja (membership) (MBR)
 
 > “Kalau saya belanja lewat komunitas, saya dapat apa?”
+
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
 
 **Bab ditahan utuh.** Master brief menulis industri komunitas dan membership dibuka setelah ada audiens yang cukup, dan tiga offer intinya (‡) menunggu pilihan sub-agen. Bab ini ditahan utuh sampai keduanya terjawab. Bab ini tampil di halaman sisi sebagai situasi tanpa halaman, dengan tautan ke Kontak.
 
@@ -1709,14 +1713,16 @@ Catatan: Bila dibuka, lima offer pertama di daftar tahan menjadi daftar pendek b
 
 > “Saya bisa live berjam-jam, tapi penghasilannya belum menentu.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 4 dari 7 offer. Pintu masuk: **KRE-03**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                       | Dampak untuk web                                                                               | Jenis                     | †                                                                         | Alasan                                                                                                                   | Keputusan Anda |
 | --- | -------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------- |
-| 1   | KRE-03 (pintu masuk) | Host untuk toko brand mitra           | Anda dibayar per jam atau per bulan untuk menjadi host toko brand yang kami layani             | Kreator, host, dan sales  | Bentuk kerja disepakati tertulis, dan honor dipotong pajak sesuai aturan. | “penghasilannya belum menentu”: dibayar per jam atau per bulan sebagai host toko brand; bentuk kerja disepakati tertulis | tayang / tahan |
-| 2   | 3A-09                | Akademi talenta: host, kreator, sales | Anda dilatih membawakan produk, membaca penonton, dan menutup penjualan                        | Arah, strategi, dan kelas | Kelas dijual terpisah dan tidak menjadi syarat atau biaya masuk jaringan. | “bisa live berjam-jam”: dilatih membaca penonton dan menutup penjualan; kelas dijual terpisah, bukan syarat bergabung    | tayang / tahan |
-| 3   | KRE-05               | Layanan produksi untuk kreator        | Rekaman Anda diedit menjadi klip, thumbnail, dan jadwal unggah                                 | Konten dan aset jadi      |                                                                           | Rekaman diedit menjadi klip, thumbnail, dan jadwal unggah                                                                | tayang / tahan |
-| 4   | KRE-06               | Manajemen kontrak brand untuk kreator | Kami mencarikan dan mengurus kontrak brand, dengan biaya manajemen dari kontrak yang kami bawa | Kreator, host, dan sales  |                                                                           | Kontrak brand dicarikan dan diurus, biaya manajemen hanya dari kontrak yang kami bawa                                    | tayang / tahan |
+| 1   | KRE-03 (pintu masuk) | Host untuk toko brand mitra           | Anda dibayar per jam atau per bulan untuk menjadi host toko brand yang kami layani             | Kreator, host, dan sales  | Bentuk kerja disepakati tertulis, dan honor dipotong pajak sesuai aturan. | “penghasilannya belum menentu”: dibayar per jam atau per bulan sebagai host toko brand; bentuk kerja disepakati tertulis | tayang         |
+| 2   | 3A-09                | Akademi talenta: host, kreator, sales | Anda dilatih membawakan produk, membaca penonton, dan menutup penjualan                        | Arah, strategi, dan kelas | Kelas dijual terpisah dan tidak menjadi syarat atau biaya masuk jaringan. | “bisa live berjam-jam”: dilatih membaca penonton dan menutup penjualan; kelas dijual terpisah, bukan syarat bergabung    | tayang         |
+| 3   | KRE-05               | Layanan produksi untuk kreator        | Rekaman Anda diedit menjadi klip, thumbnail, dan jadwal unggah                                 | Konten dan aset jadi      |                                                                           | Rekaman diedit menjadi klip, thumbnail, dan jadwal unggah                                                                | tayang         |
+| 4   | KRE-06               | Manajemen kontrak brand untuk kreator | Kami mencarikan dan mengurus kontrak brand, dengan biaya manajemen dari kontrak yang kami bawa | Kreator, host, dan sales  |                                                                           | Kontrak brand dicarikan dan diurus, biaya manajemen hanya dari kontrak yang kami bawa                                    | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
