@@ -106,3 +106,26 @@ itu baru bermakna setelah ADM-03 juga terbit.
 
 Keempat jembatan menunjuk offer yang masih draf dari W2 dan W4. Jembatan itu
 baru bermakna setelah offer tujuannya terbit.
+
+## W6: Teknologi, untuk yang paham teknis
+
+- **Izin:** "ok tulis: enam bab Teknologi Paham teknis dan offer-nya sesuai
+  docs/V3-SERAH-W6.md, sebagai draf berstatus perlu Anda.", 17 Oktober 2026.
+- **Sumber:** `bun lib/scripts/chapter-wave.ts <master brief> --wave W6 --drafts
+<file> --side-id a136c8f3-4663-4160-aebd-eee8b0a87dcb`, dari commit 84f0300
+  (PR #31).
+- **Ditulis:** 47 draf baru, 6 bab dan 41 offer, semuanya berstatus
+  `perlu-anda`. Langkah pertama setiap bab sama dengan halaman sisi Paham
+  teknis. Dampak SWH-02, SWH-09, TIM-03, dan TIM-04 tertulis dalam versi yang
+  sudah ditulis ulang. Tidak ada jembatan. Sebelum menulis, tidak ada dokumen
+  dengan id itu.
+- **Diperiksa sesudahnya:** panjang setiap medan teks, `urutan`, `pintuMasuk`,
+  `model`, dan rujukan bab di ke-47 draf sama dengan file draf. Jumlah draf naik
+  tepat 6 bab dan 41 offer (dari 43 dan 253 menjadi 49 dan 294). Isi terbit
+  tidak berubah: 1 bab dan 11 offer, semuanya Kuliner.
+
+### Urutan terbit untuk pemilik
+
+1. Sisi Paham teknis (draf W1), karena bab merujuk ke sisi itu.
+2. Keenam bab.
+3. Ke-41 offer.
