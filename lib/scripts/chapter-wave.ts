@@ -36,12 +36,14 @@ import { checkText, type StyleFinding } from '@/lib/content/style-gate'
 
 import { draftDocuments, readCatalog } from './import-catalog'
 
-type Wave = {
+export type Wave = {
   unit: CatalogUnit
   side: 'A' | 'B'
   judul: string
   /** Where each block's words come from, for the handover's source trail. */
   dasar: readonly string[]
+  /** Decided chapters this wave leaves alone, already published earlier. */
+  kecuali?: readonly string[]
 }
 
 /** The waves of section 8.4, as they are written. */
@@ -76,6 +78,23 @@ export const WAVES = {
       'Mesin pencari: Suara dan gaya, bentuk per blok; wilayah dari pengantar Sisi A.',
     ],
   },
+  W4: {
+    unit: 'teknologi',
+    side: 'B',
+    judul: 'Teknologi, untuk hasil siap pakai',
+    kecuali: ['Kuliner dan F&B'],
+    dasar: [
+      'Nama bab, kutipan: Teknologi Sisi B, judul bab dan “Yang biasa mereka katakan”, apa adanya.',
+      'Untuk siapa: baris Pembeli bab itu, ditulis sebagai orang; di bab keuangan tanpa pembeli trading, karena posisi bot trading belum diputuskan.',
+      'Situasi: kutipan bab dan kolom “Yang mereka cari” di Peta pembeli unit Teknologi, dijawab dengan dampak offer yang dipilih.',
+      'Kartu pekerjaan: baris offer di daftar pendek yang disetujui; dampak DIS-04 ditulis ulang sebagai pekerjaannya (Aturan isi 3).',
+      'Batas: Teknologi aturan main 3 (kanal dan supplier), 4 (data pribadi dan kesehatan), 5 (layanan pemerintah), 6 (data publik), 7 (pesan hanya dengan izin); Aturan isi aturan 3; kalimat komisi yang sudah disetujui di bab Kuliner (Jalur komisi dua sisi).',
+      'Jembatan: tabel Jembatan ke unit teknologi di Konstruksi; tampil setelah halaman tujuannya terbit.',
+      'Langkah pertama: Teknologi Sisi B Alur kerja langkah 2, sama dengan bab Kuliner yang sudah terbit.',
+      'Mesin pencari: pola judul bab Kuliner; wilayah tidak disebut karena wilayah Teknologi belum diputuskan.',
+      'Kuliner dan F&B sudah terbit dan tidak ditulis ulang di gelombang ini.',
+    ],
+  },
 } as const satisfies Record<string, Wave>
 
 /**
@@ -92,6 +111,7 @@ export function missingChapters(
       chapter.side === wave.side &&
       chapter.keputusan !== undefined &&
       chapter.ditahanBab === undefined &&
+      !wave.kecuali?.includes(chapter.situation) &&
       !sources.some(
         (source) =>
           source.unit === chapter.unit &&
@@ -118,6 +138,7 @@ export function wavePages(
           item.situation === source.nama
       )
       if (!chapter?.keputusan || chapter.ditahanBab) return []
+      if (wave.kecuali?.includes(chapter.situation)) return []
       const key = `${wave.unit}/${wave.side}/${situationSlug(readerName(source.nama))}`
       const page = shortlistSituation(
         chapter,

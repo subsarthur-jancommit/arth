@@ -336,6 +336,16 @@ export const TEKNOLOGI_OVERRIDES = new Map<string, CatalogOverride>([
     },
   ],
   [
+    'DIS-04',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Piutang jatuh tempo diingatkan bertahap lewat WhatsApp kepada pelanggan yang setuju menerimanya.',
+      alasan:
+        'Kas yang lebih lancar ada di tangan pelanggan yang membayar (Aturan isi 3); daftar pendek Teknologi Siap pakai',
+    },
+  ],
+  [
     'DIS-08',
     {
       keputusan: 'rumusan-aman',

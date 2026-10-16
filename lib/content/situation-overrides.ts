@@ -348,4 +348,270 @@ export const SITUATION_OVERRIDES = new Map<string, SituationOverride>([
       },
     },
   ],
+  // V3 wave W4, Teknologi Sisi B (docs/V3-SERAH-W4.md). Copy from the
+  // chapter, Peta pembeli, and Teknologi aturan main; wilayah is not
+  // stated, because the Teknologi region is still undecided.
+  [
+    'teknologi/B/ritel',
+    {
+      pembeli:
+        'Untuk seller marketplace, brand fesyen dan kecantikan, pemilik toko fisik, serta reseller dan dropshipper.',
+      situasi:
+        'Anda bergantung pada marketplace, stok tidak sinkron, dan pelanggan datang sekali lalu hilang. Stok di semua kanal diambil dari satu sumber, dan toko brand sendiri menyimpan data pembeli Anda.',
+      batas:
+        'Sinkron stok dengan marketplace berjalan lewat sambungan resmi setiap platform. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Bot dan workflow untuk ritel, fesyen, dan e-commerce',
+        deskripsi:
+          'Untuk seller marketplace, brand, dan toko fisik. Stok semua kanal dari satu sumber, dan chat pembeli dijawab seketika.',
+      },
+    },
+  ],
+  [
+    'teknologi/B/distributor',
+    {
+      pembeli:
+        'Untuk distributor, grosir, toko bangunan, dan tim sales lapangan.',
+      situasi:
+        'Pesanan sales masuk lewat chat, stok selisih, dan piutang telat. Pesanan sales masuk langsung ke gudang, stok dicocokkan berkala, dan pengingat piutang terkirim bertahap.',
+      batas:
+        'Pesan WhatsApp hanya dikirim kepada pelanggan yang setuju menerimanya. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Bot dan workflow untuk distributor dan grosir',
+        deskripsi:
+          'Untuk distributor, grosir, dan toko bangunan. Pesanan sales masuk langsung ke gudang, stok dicocokkan berkala, dan piutang diingatkan bertahap.',
+      },
+    },
+  ],
+  [
+    'teknologi/B/jasa-lokal',
+    {
+      pembeli:
+        'Untuk salon dan barbershop, bengkel, laundry, pemilik kos dan kontrakan, serta rental PS dan photobox.',
+      situasi:
+        'Jadwal bentrok, pelanggan lupa datang, tagihan kos menunggak, dan mesin harus dijaga terus. Pelanggan memesan jadwal lewat bot, tagihan kos berjalan sendiri, dan mesin laundry menyala setelah bayar QRIS.',
+      batas:
+        'Pesan WhatsApp hanya dikirim kepada pelanggan yang setuju menerimanya. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Bot dan workflow untuk salon, bengkel, laundry, dan kos',
+        deskripsi:
+          'Untuk salon, bengkel, laundry, dan kos. Booking dan pengingat lewat bot, tagihan kos berjalan sendiri, dan mesin laundry menyala dengan QRIS.',
+      },
+    },
+  ],
+  [
+    'teknologi/B/klinik',
+    {
+      pembeli:
+        'Untuk klinik pratama, gigi, dan kecantikan, praktik mandiri, apotek, dan laboratorium.',
+      situasi:
+        'Telepon janji temu menumpuk, data pasien diketik berulang, dan pasien lupa kontrol. Pasien membuat janji lewat bot, datanya tidak diketik ulang di setiap meja, dan pengingat kontrol dikirim kepada pasien yang setuju.',
+      batas:
+        'Data pasien dijaga sebagai data pribadi yang sensitif, sesuai UU PDP, dan pesan hanya dikirim kepada pasien yang setuju menerimanya. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Bot dan workflow untuk klinik dan apotek',
+        deskripsi:
+          'Untuk klinik, praktik mandiri, dan apotek. Janji temu lewat bot, data pasien tidak diketik ulang, dan pengingat kontrol bagi pasien yang setuju.',
+      },
+    },
+  ],
+  [
+    'teknologi/B/pendidikan',
+    {
+      pembeli:
+        'Untuk sekolah swasta, yayasan, pesantren, bimbel dan kursus, serta pengajar mandiri.',
+      situasi:
+        'SPP menunggak, pendaftaran masih kertas, dan pendapatan hanya dari kelas tatap muka. Tagihan SPP terkirim ke orang tua, pendaftaran berjalan online, dan kelas berlangganan dibuka di samping kelas tatap muka.',
+      batas:
+        'Data siswa dan orang tua dijaga sesuai UU PDP; sambungan ke sistem pemerintah hanya lewat jalur resmi. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Bot dan workflow untuk sekolah, bimbel, dan kursus',
+        deskripsi:
+          'Untuk sekolah swasta, pesantren, dan bimbel. Tagihan SPP terkirim sendiri, pendaftaran berjalan online, dan kelas berlangganan dibuka.',
+      },
+    },
+  ],
+  [
+    'teknologi/B/properti',
+    {
+      pembeli:
+        'Untuk agen dan developer properti, dealer dan showroom kendaraan, serta broker.',
+      situasi:
+        'Prospek tercecer, pengajuan leasing tidak terpantau, dan pelanggan lama tak pernah dihubungi lagi. Pertanyaan calon pembeli dijawab seketika, tahap prospek terlihat, dan pelanggan lama menerima pengingat.',
+      batas:
+        'Persetujuan KPR dan leasing tetap di tangan bank dan perusahaan pembiayaan berizin. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Bot dan workflow untuk agen properti dan dealer',
+        deskripsi:
+          'Untuk agen properti, developer, dan dealer kendaraan. Calon pembeli dijawab seketika, prospek terpantau, dan pelanggan lama diingatkan.',
+      },
+    },
+  ],
+  [
+    'teknologi/B/keuangan',
+    {
+      pembeli:
+        'Untuk koperasi dan BMT, pemberi pembiayaan, agen asuransi, pemilik konter dan agen, dan fintech kecil.',
+      situasi:
+        'Angsuran dikejar manual dan berkas menumpuk. Angsuran dan iuran ditagih serta dicocokkan otomatis, dan berkas pemohon diverifikasi dengan setiap keputusan tercatat.',
+      batas:
+        'Keputusan pembiayaan tetap di tangan pemberi pembiayaan berizin, dan asuransi dijual agen berlisensi. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Bot dan workflow untuk koperasi, BMT, dan agen',
+        deskripsi:
+          'Untuk koperasi, BMT, pemberi pembiayaan, dan konter. Angsuran ditagih dan dicocokkan otomatis, dan berkas pemohon diverifikasi tercatat.',
+      },
+    },
+  ],
+  [
+    'teknologi/B/konstruksi',
+    {
+      pembeli:
+        'Untuk kontraktor utama, subkontraktor, developer perumahan, dan penyedia barang untuk pemerintah.',
+      situasi:
+        'Tender terlewat, dokumen tidak siap, laporan lapangan lewat chat, dan termin lambat cair. Paket baru dipantau setiap hari, laporan lapangan terkirim walau tanpa sinyal, dan berkas termin terkumpul dari laporannya.',
+      batas:
+        'Data tender diambil dari situs pengadaan publik; kami membantu menyiapkan, bukan mengatur hasil. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      jembatan: [
+        {
+          offer: 'ADM-03',
+          kalimat:
+            'Dokumen kualifikasi tender juga bisa disiapkan unit Konstruksi, dari data perusahaan yang sama.',
+        },
+      ],
+      metadata: {
+        judul: 'Bot dan workflow untuk kontraktor dan penyedia',
+        deskripsi:
+          'Untuk kontraktor dan penyedia barang. Paket tender dipantau setiap hari, laporan lapangan terkirim tanpa sinyal, dan berkas termin terkumpul.',
+      },
+    },
+  ],
+  [
+    'teknologi/B/travel',
+    {
+      pembeli:
+        'Untuk biro perjalanan, pemilik villa dan hostel, penyelenggara event, dan pengelola desa wisata.',
+      situasi:
+        'Booking bentrok, DP dikejar manual, dan tiket event dijual manual. Ketersediaan kamar sinkron di semua kanal, tamu membayar DP dan check-in mandiri, dan tiket event dijual online dengan QR.',
+      batas:
+        'Sinkron kamar berjalan lewat sambungan resmi setiap platform, dan produk agen mengikuti kontrak dengan supplier. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Bot dan workflow untuk villa, biro perjalanan, dan event',
+        deskripsi:
+          'Untuk villa, hostel, biro perjalanan, dan penyelenggara event. Kamar tidak dobel pesan, DP dan check-in mandiri, dan tiket event dengan QR.',
+      },
+    },
+  ],
+  [
+    'teknologi/B/media',
+    {
+      pembeli:
+        'Untuk streamer, kreator, pengelola komunitas, podcaster, dan media lokal.',
+      situasi:
+        'Audiens Anda besar tetapi pendapatan tipis, dan konten serta komunitas dikelola manual. Komunitas disambut dan ditagih otomatis, produk digital dan membership dijual berulang, dan jadwal konten terkoordinasi.',
+      batas:
+        'Kami membangun kanalnya; pendapatan tetap ditentukan audiens Anda. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Bot dan workflow untuk kreator dan komunitas',
+        deskripsi:
+          'Untuk streamer, kreator, dan pengelola komunitas. Komunitas dikelola bot, produk digital dan membership dijual berulang, dan konten terjadwal.',
+      },
+    },
+  ],
+  [
+    'teknologi/B/logistik',
+    {
+      pembeli:
+        'Untuk ekspedisi lokal, pemilik armada, pengelola gudang, dan agen.',
+      situasi:
+        'Pelanggan bertanya paketnya di mana, rute boros, dan klaim kerusakan tanpa bukti. Pelanggan diberi kabar di setiap tahap, rute disusun lebih efisien, dan serah terima tercatat dengan foto serta tanda tangan.',
+      batas:
+        'Pesan WhatsApp hanya dikirim kepada pelanggan yang setuju menerimanya. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Bot dan workflow untuk ekspedisi dan armada',
+        deskripsi:
+          'Untuk ekspedisi lokal dan pemilik armada. Pelanggan dikabari di setiap tahap, rute lebih efisien, dan serah terima tercatat sebagai bukti.',
+      },
+    },
+  ],
+  [
+    'teknologi/B/manufaktur-ringan',
+    {
+      pembeli:
+        'Untuk home industry, pabrik kecil, petani, peternak dan pembudidaya, serta kelompok tani.',
+      situasi:
+        'Biaya pokok tidak diketahui, mesin berhenti mendadak, dan hasil tani lewat banyak perantara. Panen dan biaya tercatat lewat WhatsApp, biaya pokok tiap batch terkontrol, dan hasil tani dijual langsung ke pembeli.',
+      batas:
+        'Harga jual hasil tani tetap Anda dan pembeli yang menentukan. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Bot dan workflow untuk UMKM produksi dan kelompok tani',
+        deskripsi:
+          'Untuk home industry, pabrik kecil, dan kelompok tani. Panen dan biaya tercatat, biaya pokok terkontrol, dan hasil tani dijual langsung.',
+      },
+    },
+  ],
+  [
+    'teknologi/B/instansi',
+    {
+      pembeli:
+        'Untuk pemerintah desa dan kelurahan, dinas, yayasan dan lembaga sosial, serta rumah ibadah.',
+      situasi:
+        'Warga harus datang untuk urusan sederhana, surat menumpuk, dan laporan wajib disusun manual. Syarat layanan dijawab kapan pun, surat diurus online, dan disposisi bergerak dengan jejak yang jelas.',
+      batas:
+        'Sambungan ke sistem pemerintah hanya lewat kerja sama atau jalur resmi instansinya, dan data warga dijaga sesuai UU PDP. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Bot dan workflow untuk desa, kelurahan, dan dinas',
+        deskripsi:
+          'Untuk pemerintah desa, kelurahan, dinas, dan yayasan. Layanan dijawab kapan pun, surat diurus online, dan disposisi berjejak.',
+      },
+    },
+  ],
+  [
+    'teknologi/B/jasa-profesional',
+    {
+      pembeli:
+        'Untuk konsultan, agensi, kantor akuntan, notaris dan hukum, arsitek, dan perusahaan jasa B2B.',
+      situasi:
+        'Prospek tidak ditindaklanjuti, laporan klien disusun manual, dan tenggat klien terlewat. Prospek disaring dan dijadwalkan bot, laporan bulanan terbit sendiri, dan tenggat klien diingatkan.',
+      batas:
+        'Pesan WhatsApp hanya dikirim kepada pelanggan yang setuju menerimanya. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Bot dan workflow untuk konsultan dan agensi',
+        deskripsi:
+          'Untuk konsultan, agensi, kantor akuntan, dan hukum. Prospek disaring bot, laporan klien terbit sendiri, dan tenggat diingatkan.',
+      },
+    },
+  ],
+  [
+    'teknologi/B/kebugaran',
+    {
+      pembeli:
+        'Untuk pengelola lapangan futsal dan badminton, gym dan studio, penyelenggara liga, komunitas olahraga, pelatih, serta pengelola kolam renang dan wahana.',
+      situasi:
+        'Jadwal lapangan bentrok, iuran anggota menunggak, dan lampu serta loker harus dijaga orang. Lapangan dipesan dengan DP, iuran diingatkan, dan lampu menyala setelah pembayaran.',
+      batas:
+        'Pesan WhatsApp hanya dikirim kepada pelanggan yang setuju menerimanya. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Bot dan workflow untuk lapangan, gym, dan kolam renang',
+        deskripsi:
+          'Untuk pengelola lapangan, gym, studio, dan wahana. Lapangan dipesan dengan DP, iuran diingatkan, dan lampu menyala setelah bayar.',
+      },
+    },
+  ],
+  [
+    'teknologi/B/lintas-sektor',
+    {
+      pembeli:
+        'Untuk pemilik usaha, manajer operasional, admin dan keuangan, tim penjualan, dan pemasaran.',
+      situasi:
+        'Pekerjaan berulang menyita waktu tim Anda, dan pendapatan bergantung pada satu sumber. Laporan, persetujuan, dan rekonsiliasi berjalan sendiri, dan peluang model bisnis baru dipetakan dengan perhitungan terbuka.',
+      batas:
+        'Model bisnis baru dipilih dari aset dan pelanggan yang Anda punya; hasilnya tetap ditentukan pasar. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Bot dan workflow untuk usaha apa pun',
+        deskripsi:
+          'Untuk pemilik usaha, operasional, dan keuangan. Laporan, persetujuan, dan rekonsiliasi berjalan sendiri, dan model bisnis baru dipetakan.',
+      },
+    },
+  ],
 ])
