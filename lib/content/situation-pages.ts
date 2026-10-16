@@ -140,6 +140,12 @@ const SIDE_FIRST_STEP = {
     sesudahnya:
       'Pilih eceran per masalah untuk bagian yang tidak sanggup Anda tangani; paket hulu-hilir dan paket rakitan dapat menyusul.',
   },
+  // Teknologi Sisi A, Lima cara mulai; the side page's langkahPertama.
+  'teknologi/A': {
+    label: 'Mulai dengan audit singkat',
+    sesudahnya:
+      'Kami mencari penyebab masalah sebelum Anda memilih satu layanan, proyek utuh, tim khusus, atau pemeliharaan.',
+  },
   // Peekabo Sisi A, the side page's langkahPertama (Tangga nilai step 1).
   'peekabo/A': {
     label: 'Mulai dari audit atau sesi strategi',

@@ -773,4 +773,101 @@ export const SITUATION_OVERRIDES = new Map<string, SituationOverride>([
       },
     },
   ],
+  // V3 wave W6, Teknologi Sisi A (docs/V3-SERAH-W6.md). Copy from the
+  // chapter, Peta pembeli, and Teknologi aturan main; wilayah is not
+  // stated, because the Teknologi region is still undecided.
+  [
+    'teknologi/A/individu',
+    {
+      pembeli:
+        'Untuk pembelajar, hobbyist, pencari kerja, profesional dan kreator, developer, serta mahasiswa.',
+      situasi:
+        'Anda punya selera atau rasa ingin tahu yang spesifik dan ingin membuatnya berjalan. Ide Anda dipetakan dalam satu jam, lalu bot, dasbor, atau portofolionya dapat dibangun.',
+      batas:
+        'Bot pemantau hanya mengambil data publik atau API resmi yang mengizinkannya. Kode sumber, data, dan dokumentasi diserahkan kepada Anda, sehingga Anda tidak terkunci pada kami.',
+      metadata: {
+        judul: 'Bot, dasbor, dan proyek teknis untuk individu',
+        deskripsi:
+          'Untuk pembelajar, hobbyist, profesional, dan mahasiswa. Ide dipetakan dalam satu jam, lalu bot, dasbor, atau portofolio dibangun.',
+      },
+    },
+  ],
+  [
+    'teknologi/A/freelancer',
+    {
+      pembeli: 'Untuk freelancer, agensi kecil, serta studio web dan desain.',
+      situasi:
+        'Proyeknya besar, tangan Anda kurang, dan Anda tidak mau menolak klien. Biaya dan jadwal penawaran dihitung lebih dulu, proyeknya kami kerjakan atas nama Anda, lalu dijaga setelah serah terima.',
+      batas:
+        'Lingkup tertulis sebelum kerja dimulai; temuan di luar lingkup dicatat, tidak dikerjakan tanpa kesepakatan baru. Kode sumber, data, dan dokumentasi diserahkan kepada Anda, sehingga Anda tidak terkunci pada kami.',
+      metadata: {
+        judul: 'Subkontrak teknis untuk freelancer dan agensi kecil',
+        deskripsi:
+          'Untuk freelancer dan agensi kecil. Biaya dan jadwal penawaran dihitung, proyek dikerjakan di belakang layar, lalu dijaga setelah serah terima.',
+      },
+    },
+  ],
+  [
+    'teknologi/A/software-house',
+    {
+      pembeli: 'Untuk software house, perusahaan IT, dan tim produk.',
+      situasi:
+        'Tenggat Anda ketat dan spesialis sulit dicari. Proyek bermasalah dinilai jujur lebih dulu, lalu spesialis bekerja mengikuti ritme Anda atau menambah kapasitas saat puncak.',
+      batas:
+        'Lingkup tertulis sebelum kerja dimulai; temuan di luar lingkup dicatat, tidak dikerjakan tanpa kesepakatan baru. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Spesialis teknis untuk software house dan perusahaan IT',
+        deskripsi:
+          'Untuk software house dan tim produk. Audit kode dan pengambilalihan proyek, tim khusus mengikuti ritme Anda, dan kapasitas tambahan saat puncak.',
+      },
+    },
+  ],
+  [
+    'teknologi/A/startup',
+    {
+      pembeli:
+        'Untuk founder, startup SaaS, startup B2B, serta startup fintech dan marketplace.',
+      situasi:
+        'Anda harus rilis cepat dengan uang dan orang yang terbatas. Minat diukur sebelum kode ditulis, MVP dibangun dengan biaya dan tenggat terkunci, dan keputusan teknologi diarahkan tanpa CTO tetap.',
+      batas:
+        'Lingkup, biaya, dan tenggat MVP dikunci tertulis sebelum kerja dimulai, dan kode sumber serta akses server diserahkan kepada Anda. Bila Anda membeli layanan pembayaran atau aplikasi jadi lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'MVP, CTO paruh waktu, dan uji minat untuk startup',
+        deskripsi:
+          'Untuk founder dan startup SaaS. Minat diukur sebelum kode ditulis, MVP dengan biaya dan tenggat terkunci, dan CTO paruh waktu.',
+      },
+    },
+  ],
+  [
+    'teknologi/A/tim-it-internal-perusahaan',
+    {
+      slug: 'tim-it',
+      pembeli:
+        'Untuk tim IT, tim data, serta tim keuangan dan IT di perusahaan.',
+      situasi:
+        'Pekerjaan operasional menumpuk dan sistem lama tidak ada yang berani menyentuh. Sistem lama dipetakan dan ditulis lebih dulu, lalu laporan rutin terbit sendiri dan aplikasi diperbarui bertahap.',
+      batas:
+        'Data perusahaan dijaga sesuai UU PDP, dan akses kami dibatasi pada sistem yang disepakati tertulis. Modernisasi berjalan bertahap tanpa menghentikan operasional, dan dokumentasinya diserahkan kepada tim Anda.',
+      metadata: {
+        judul: 'Dokumentasi, migrasi, dan otomasi untuk tim IT',
+        deskripsi:
+          'Untuk tim IT dan tim data di perusahaan. Sistem lama dipetakan dan ditulis, laporan rutin terbit sendiri, dan aplikasi lama diperbarui bertahap.',
+      },
+    },
+  ],
+  [
+    'teknologi/A/lapisan-data',
+    {
+      pembeli: 'Untuk tim produk, tim data, tim IT, dan startup.',
+      situasi:
+        'Data Anda lambat, terlambat, atau tidak terhubung satu sama lain. Query dan indeks dirapikan, peristiwa penting sampai seketika, dan data dari banyak sumber menyatu setiap malam.',
+      batas:
+        'Data pribadi di basis data Anda dijaga sesuai UU PDP. Lingkup tertulis sebelum kerja dimulai; temuan di luar lingkup dicatat, tidak dikerjakan tanpa kesepakatan baru.',
+      metadata: {
+        judul: 'Optimasi SQL, data realtime, dan graf',
+        deskripsi:
+          'Untuk tim produk, data, dan IT. Query dan indeks dirapikan, peristiwa penting sampai seketika, dan data dari banyak sumber menyatu.',
+      },
+    },
+  ],
 ])

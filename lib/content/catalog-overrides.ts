@@ -336,6 +336,16 @@ export const TEKNOLOGI_OVERRIDES = new Map<string, CatalogOverride>([
     },
   ],
   [
+    'TIM-04',
+    {
+      keputusan: 'ditulis-ulang',
+      dampak:
+        'Backup diuji dengan pemulihan berkala, dan hasil ujinya dilaporkan.',
+      alasan:
+        'Gerbang gaya: frasa “bukan sekadar”; pekerjaannya ditulis apa adanya; daftar pendek Teknologi Paham teknis',
+    },
+  ],
+  [
     'DIS-04',
     {
       keputusan: 'ditulis-ulang',
