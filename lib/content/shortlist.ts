@@ -1420,6 +1420,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Individu dan pembelajar',
     entri: 'IND-18',
     pilihan: [
@@ -1471,6 +1472,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Freelancer dan agensi kecil',
     entri: 'FRL-06',
     pilihan: [
@@ -1522,6 +1524,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Software house dan perusahaan IT',
     entri: 'SWH-06',
     pilihan: [
@@ -1563,6 +1566,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Startup dan CTO',
     entri: 'STA-02',
     pilihan: [
@@ -1613,6 +1617,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Tim IT internal perusahaan',
     entri: 'TIM-10',
     pilihan: [
@@ -1658,6 +1663,7 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
   {
     unit: 'teknologi',
     side: 'A',
+    keputusan: 'Disetujui pemilik seperti diusulkan, 16 Oktober 2026',
     situation: 'Lapisan data: SQL, realtime, dan graf',
     entri: 'DAT-03',
     pilihan: [
@@ -1702,5 +1708,164 @@ export const SHORTLIST_PROPOSALS: readonly ShortlistChapter[] = [
     ],
     catatan:
       'Tiga lapis di judul bab masing-masing terwakili: SQL (DAT-03, DAT-04), realtime (DAT-08, DAT-09), graf (DAT-16, DAT-18).',
+  },
+  {
+    unit: 'peekabo',
+    side: 'B',
+    situation: 'Sales lepas, makelar, dan calo (Open Commission) (OCS)',
+    entri: '',
+    ditahanBab:
+      'Langkah 2 cara bergabung menjanjikan kartu komisi untuk setiap produk: siapa membayar, pemicu, besar, dan kapan cair. Kartunya belum disusun (keputusan 5 di master brief), jadi bab ini ditahan utuh sampai kartu pertama ada.',
+    pilihan: [],
+    tahan: [
+      {
+        id: 'OCS-08',
+        alasan:
+          'Siap saat kartu ada: rujukan ke Arthur sendiri, tanpa mitra luar; calon pintu masuk',
+      },
+      {
+        id: 'OCS-01',
+        alasan:
+          'Siap saat kartu ada: properti lewat perantara berizin; bertanda †',
+      },
+      {
+        id: 'OCS-02',
+        alasan: 'Siap saat kartu ada: kendaraan, fee setelah unit diserahkan',
+      },
+      {
+        id: 'OCS-03',
+        alasan:
+          'Siap saat kartu ada: pembiayaan, dari insentif yang sah; bertanda †',
+      },
+      {
+        id: 'OCS-05',
+        alasan:
+          'Siap saat kartu ada: software, komisi berulang selama berlangganan',
+      },
+      {
+        id: 'OCS-09',
+        alasan:
+          'Siap saat kartu ada: kelas menjual, dijual terpisah dan bukan syarat bergabung',
+      },
+      { id: '3B-07', alasan: 'Siap saat kartu ada: dasbor rujukan dan komisi' },
+      {
+        id: 'OCS-04',
+        alasan: 'Mitra asuransi belum ada (master brief, jalur komisi)',
+      },
+      {
+        id: 'OCS-06',
+        alasan: 'Mitra sewa alat berat belum ada (master brief, jalur komisi)',
+      },
+      {
+        id: 'OCS-07',
+        alasan: 'Mitra konveksi belum ada (master brief, jalur komisi)',
+      },
+      {
+        id: '3B-01',
+        alasan: 'Ditahan: offer ‡, menunggu pilihan sub-agen (keputusan 1)',
+      },
+      {
+        id: '3B-03',
+        alasan:
+          'Ditahan: etalase komisi bersinggungan dengan larangan sub-afiliasi platform; ikut keputusan 1 dan 4',
+      },
+    ],
+    catatan:
+      'Bila kartu komisi sudah ada, tujuh offer pertama di daftar tahan menjadi daftar pendek bab ini tanpa usulan ulang. Halaman nanti memuat aturan satu tingkat: tanpa biaya bergabung, tanpa bonus rekrutmen, tanpa janji penghasilan.',
+  },
+  {
+    unit: 'peekabo',
+    side: 'B',
+    situation: 'Anggota komunitas belanja (membership) (MBR)',
+    entri: '',
+    ditahanBab:
+      'Master brief menulis industri komunitas dan membership dibuka setelah ada audiens yang cukup, dan tiga offer intinya (‡) menunggu pilihan sub-agen. Bab ini ditahan utuh sampai keduanya terjawab.',
+    pilihan: [],
+    tahan: [
+      {
+        id: '3C-02',
+        alasan: 'Siap saat dibuka: tingkat dasar, pro, dan mitra (asal T)',
+      },
+      {
+        id: 'MBR-02',
+        alasan:
+          'Siap saat dibuka: iuran tahunan dengan plafon manfaat yang jelas',
+      },
+      {
+        id: '3C-04',
+        alasan:
+          'Siap saat dibuka: patungan harga grosir, mengikuti aturan perlindungan konsumen',
+      },
+      { id: '3C-05', alasan: 'Siap saat dibuka: kelas khusus anggota' },
+      { id: 'MBR-04', alasan: 'Siap saat dibuka: harga anggota untuk UMKM' },
+      {
+        id: '3C-01',
+        alasan: 'Ditahan: offer ‡, menunggu pilihan sub-agen (keputusan 1)',
+      },
+      {
+        id: '3B-02',
+        alasan: 'Ditahan: offer ‡, menunggu pilihan sub-agen (keputusan 1)',
+      },
+      {
+        id: 'MBR-01',
+        alasan: 'Ditahan: offer ‡, menunggu pilihan sub-agen (keputusan 1)',
+      },
+      {
+        id: 'MBR-03',
+        alasan:
+          'Ikut keputusan D5 Membership Care: perawatan properti tertahan di Konstruksi',
+      },
+      {
+        id: '3B-08',
+        alasan:
+          'Ditahan: kode dan tautan bergantung pada status afiliasi platform yang belum terdaftar',
+      },
+    ],
+    catatan:
+      'Bila dibuka, lima offer pertama di daftar tahan menjadi daftar pendek bab ini.',
+  },
+  {
+    unit: 'peekabo',
+    side: 'B',
+    situation: 'Kreator, streamer, dan host (KRE)',
+    entri: 'KRE-03',
+    pilihan: [
+      {
+        id: 'KRE-03',
+        alasan:
+          '“penghasilannya belum menentu”: dibayar per jam atau per bulan sebagai host toko brand; bentuk kerja disepakati tertulis',
+      },
+      {
+        id: '3A-09',
+        alasan:
+          '“bisa live berjam-jam”: dilatih membaca penonton dan menutup penjualan; kelas dijual terpisah, bukan syarat bergabung',
+      },
+      {
+        id: 'KRE-05',
+        alasan: 'Rekaman diedit menjadi klip, thumbnail, dan jadwal unggah',
+      },
+      {
+        id: 'KRE-06',
+        alasan:
+          'Kontrak brand dicarikan dan diurus, biaya manajemen hanya dari kontrak yang kami bawa',
+      },
+    ],
+    tahan: [
+      {
+        id: 'KRE-01',
+        alasan: 'Ditahan: status agency LIVE belum terdaftar (keputusan 4)',
+      },
+      {
+        id: 'KRE-02',
+        alasan: 'Ditahan: status MCN belum terdaftar (keputusan 4)',
+      },
+      {
+        id: 'KRE-04',
+        alasan:
+          'Ditahan: studio siaran Peekabo belum tercatat ada; jembatannya ke studio Konstruksi',
+      },
+    ],
+    catatan:
+      'Industri talenta dibuka lebih dulu menurut master brief. Halaman tidak menjanjikan penghasilan; yang ditulis adalah bentuk bayarannya (per jam, per bulan, dari kontrak).',
   },
 ]

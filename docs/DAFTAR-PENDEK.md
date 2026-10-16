@@ -1413,17 +1413,19 @@ Catatan: Offer yang paling langsung menjawab “mengelola afiliasinya” (TAP, T
 
 > “Saya punya selera atau rasa ingin tahu yang spesifik dan ingin membuatnya berjalan.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 7 dari 18 offer. Pintu masuk: **IND-18**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                                      | Dampak untuk web                                                               | Jenis                              | †                                                          | Alasan                                                                                  | Keputusan Anda |
 | --- | -------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------- | -------------- |
-| 1   | IND-18 (pintu masuk) | Sesi klinik arsitektur satu jam                      | Ide Anda dipetakan: pakai apa, bangun apa, dan apa yang tidak perlu dibangun   | Pekerjaan teknis di balik layar    |                                                            | Lingkup terkecil, padanan audit singkat untuk lapis 1: ide dipetakan dalam satu jam     | tayang / tahan |
-| 2   | IND-03               | Bot Telegram pribadi                                 | Ringkasan harian, pengingat, dan pencatat pengeluaran berjalan sendiri         | Bot yang bekerja sendiri           |                                                            | “ingin membuatnya berjalan”: bot pribadi yang bekerja sendiri                           | tayang / tahan |
-| 3   | IND-17               | Dasbor pribadi untuk keuangan, kebiasaan, dan target | Angka hidup Anda tampil di satu layar dan diperbarui otomatis                  | Angka yang memberi tahu lebih dulu |                                                            | Angka hidup sendiri di satu layar (profesional dan kreator)                             | tayang / tahan |
-| 4   | IND-09               | Portofolio web yang membuka pasar klien              | Calon klien bisa melihat karya Anda dan menghubungi Anda langsung.             | Kanal pendapatan baru              |                                                            | Pencari kerja dan kreator: portofolio yang membuka pasar klien                          | tayang / tahan |
-| 5   | IND-01               | Panduan eksperimen agen AI dan MCP                   | Anda mencoba agen AI dan MCP pada pekerjaan Anda sendiri, dipandu per sesi.    | Pekerjaan teknis di balik layar    |                                                            | “rasa ingin tahu”: eksperimen agen AI dan MCP, sisi eksperimental bab ini               | tayang / tahan |
-| 6   | IND-16               | Pendampingan teknis proyek akhir                     | Anda dibimbing dari rancangan sampai demo dan tetap mengerjakannya sendiri     | Pekerjaan teknis di balik layar    |                                                            | Mahasiswa: dibimbing sampai demo, tetap mengerjakan sendiri                             | tayang / tahan |
-| 7   | IND-07               | Bot pemburu lowongan dan beasiswa                    | Lowongan dan beasiswa yang sesuai kriteria Anda dikirim segera setelah terbit. | Bot yang bekerja sendiri           | Hanya dari data publik atau API resmi yang mengizinkannya. | Pencari kerja: lowongan dan beasiswa; bertanda †, hanya dari data publik atau API resmi | tayang / tahan |
+| 1   | IND-18 (pintu masuk) | Sesi klinik arsitektur satu jam                      | Ide Anda dipetakan: pakai apa, bangun apa, dan apa yang tidak perlu dibangun   | Pekerjaan teknis di balik layar    |                                                            | Lingkup terkecil, padanan audit singkat untuk lapis 1: ide dipetakan dalam satu jam     | tayang         |
+| 2   | IND-03               | Bot Telegram pribadi                                 | Ringkasan harian, pengingat, dan pencatat pengeluaran berjalan sendiri         | Bot yang bekerja sendiri           |                                                            | “ingin membuatnya berjalan”: bot pribadi yang bekerja sendiri                           | tayang         |
+| 3   | IND-17               | Dasbor pribadi untuk keuangan, kebiasaan, dan target | Angka hidup Anda tampil di satu layar dan diperbarui otomatis                  | Angka yang memberi tahu lebih dulu |                                                            | Angka hidup sendiri di satu layar (profesional dan kreator)                             | tayang         |
+| 4   | IND-09               | Portofolio web yang membuka pasar klien              | Calon klien bisa melihat karya Anda dan menghubungi Anda langsung.             | Kanal pendapatan baru              |                                                            | Pencari kerja dan kreator: portofolio yang membuka pasar klien                          | tayang         |
+| 5   | IND-01               | Panduan eksperimen agen AI dan MCP                   | Anda mencoba agen AI dan MCP pada pekerjaan Anda sendiri, dipandu per sesi.    | Pekerjaan teknis di balik layar    |                                                            | “rasa ingin tahu”: eksperimen agen AI dan MCP, sisi eksperimental bab ini               | tayang         |
+| 6   | IND-16               | Pendampingan teknis proyek akhir                     | Anda dibimbing dari rancangan sampai demo dan tetap mengerjakannya sendiri     | Pekerjaan teknis di balik layar    |                                                            | Mahasiswa: dibimbing sampai demo, tetap mengerjakan sendiri                             | tayang         |
+| 7   | IND-07               | Bot pemburu lowongan dan beasiswa                    | Lowongan dan beasiswa yang sesuai kriteria Anda dikirim segera setelah terbit. | Bot yang bekerja sendiri           | Hanya dari data publik atau API resmi yang mengizinkannya. | Pencari kerja: lowongan dan beasiswa; bertanda †, hanya dari data publik atau API resmi | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -1449,17 +1451,19 @@ Catatan: Pembeli bab ini di katalog menyebut trader mandiri. Sampai posisi bot t
 
 > “Proyeknya besar, tangan saya kurang, dan saya tidak mau menolak klien.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 7 dari 18 offer. Pintu masuk: **FRL-06**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                                | Dampak untuk web                                                             | Jenis                                  | †   | Alasan                                                                                   | Keputusan Anda |
 | --- | -------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------- | -------------------------------------- | --- | ---------------------------------------------------------------------------------------- | -------------- |
-| 1   | FRL-06 (pintu masuk) | Estimasi dan lingkup untuk penawaran Anda      | Penawaran Anda punya biaya dan jadwal yang bisa dipertanggungjawabkan        | Pekerjaan teknis di balik layar        |     | Lingkup terkecil: biaya dan jadwal penawaran dihitung sebelum Anda menerima proyek besar | tayang / tahan |
-| 2   | FRL-02               | Modul bot dan workflow siap pasang untuk klien | Anda menawarkan otomatisasi kepada klien tanpa membangunnya dari awal        | Bot yang bekerja sendiri               |     | Otomatisasi untuk klien tanpa membangun dari awal                                        | tayang / tahan |
-| 3   | FRL-08               | QA lepas untuk proyek Anda                     | Rilis Anda diuji tanpa merekrut penguji                                      | Alur kerja yang berjalan tanpa dikejar |     | Rilis diuji tanpa merekrut penguji                                                       | tayang / tahan |
-| 4   | FRL-13               | Ubah jasa berulang menjadi produk              | Proyek yang sering diulang dikemas menjadi paket, template, atau langganan   | Kanal pendapatan baru                  |     | Jasa yang sering diulang dikemas menjadi produk                                          | tayang / tahan |
-| 5   | FRL-01               | Subkontrak di belakang layar                   | Anda menjual proyeknya, dan kami mengerjakannya atas nama Anda.              | Pekerjaan teknis di balik layar        |     | “tangan saya kurang”: kami mengerjakan di belakang layar atas nama Anda                  | tayang / tahan |
-| 6   | FRL-05               | Rapid build dari modul teruji                  | Proyek booking dan checkout klien Anda dirakit dari modul yang sudah teruji. | Pekerjaan teknis di balik layar        |     | “Proyeknya besar”: booking dan checkout dirakit dari modul teruji                        | tayang / tahan |
-| 7   | FRL-10               | Pemeliharaan bulanan atas nama Anda            | Klien Anda mendapat standar layanan tanpa Anda menjaga server                | Pekerjaan teknis di balik layar        |     | Klien Anda tetap dijaga setelah serah terima, tanpa Anda menjaga server                  | tayang / tahan |
+| 1   | FRL-06 (pintu masuk) | Estimasi dan lingkup untuk penawaran Anda      | Penawaran Anda punya biaya dan jadwal yang bisa dipertanggungjawabkan        | Pekerjaan teknis di balik layar        |     | Lingkup terkecil: biaya dan jadwal penawaran dihitung sebelum Anda menerima proyek besar | tayang         |
+| 2   | FRL-02               | Modul bot dan workflow siap pasang untuk klien | Anda menawarkan otomatisasi kepada klien tanpa membangunnya dari awal        | Bot yang bekerja sendiri               |     | Otomatisasi untuk klien tanpa membangun dari awal                                        | tayang         |
+| 3   | FRL-08               | QA lepas untuk proyek Anda                     | Rilis Anda diuji tanpa merekrut penguji                                      | Alur kerja yang berjalan tanpa dikejar |     | Rilis diuji tanpa merekrut penguji                                                       | tayang         |
+| 4   | FRL-13               | Ubah jasa berulang menjadi produk              | Proyek yang sering diulang dikemas menjadi paket, template, atau langganan   | Kanal pendapatan baru                  |     | Jasa yang sering diulang dikemas menjadi produk                                          | tayang         |
+| 5   | FRL-01               | Subkontrak di belakang layar                   | Anda menjual proyeknya, dan kami mengerjakannya atas nama Anda.              | Pekerjaan teknis di balik layar        |     | “tangan saya kurang”: kami mengerjakan di belakang layar atas nama Anda                  | tayang         |
+| 6   | FRL-05               | Rapid build dari modul teruji                  | Proyek booking dan checkout klien Anda dirakit dari modul yang sudah teruji. | Pekerjaan teknis di balik layar        |     | “Proyeknya besar”: booking dan checkout dirakit dari modul teruji                        | tayang         |
+| 7   | FRL-10               | Pemeliharaan bulanan atas nama Anda            | Klien Anda mendapat standar layanan tanpa Anda menjaga server                | Pekerjaan teknis di balik layar        |     | Klien Anda tetap dijaga setelah serah terima, tanpa Anda menjaga server                  | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -1485,17 +1489,19 @@ Catatan: “tidak mau menolak klien” dijawab oleh urutan: hitung dulu, kerjaka
 
 > “Tenggat ketat dan spesialis sulit dicari.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 7 dari 18 offer. Pintu masuk: **SWH-06**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                                           | Dampak untuk web                                                          | Jenis                                  | †   | Alasan                                                                        | Keputusan Anda |
 | --- | -------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------- | --- | ----------------------------------------------------------------------------- | -------------- |
-| 1   | SWH-06 (pintu masuk) | Audit kode dan pengambilalihan proyek                     | Proyek bermasalah dinilai jujur lalu dilanjutkan                          | Pekerjaan teknis di balik layar        |     | Lingkup terkecil, padanan audit singkat: proyek bermasalah dinilai jujur dulu | tayang / tahan |
-| 2   | SWH-09               | Rilis otomatis dan pemantauan                             | Setiap rilis aman dan masalah terdeteksi sebelum pengguna mengeluh        | Alur kerja yang berjalan tanpa dikejar |     | Setiap rilis aman dan masalah terdeteksi lebih dulu                           | tayang / tahan |
-| 3   | SWH-18               | Pipeline data dan gudang data untuk produk analitik       | Produk analitik Anda punya sumber data yang rapi dan cepat                | Angka yang memberi tahu lebih dulu     |     | Sumber data rapi untuk produk analitik                                        | tayang / tahan |
-| 4   | SWH-05               | Arsitektur multi-tenant dan merek putih untuk produk Anda | Satu produk melayani banyak klien dengan merek masing-masing              | Kanal pendapatan baru                  |     | Satu produk melayani banyak klien dengan merek masing-masing                  | tayang / tahan |
-| 5   | SWH-02               | Kapasitas tambahan saat puncak                            | Tenggat ketat tetap tercapai tanpa merekrut tenaga tetap                  | Pekerjaan teknis di balik layar        |     | “Tenggat ketat”: kapasitas tambahan saat puncak tanpa merekrut tetap          | tayang / tahan |
-| 6   | SWH-01               | Tim khusus di bawah arahan Anda                           | Spesialis bekerja mengikuti ritme Anda seolah bagian dari perusahaan Anda | Pekerjaan teknis di balik layar        |     | “spesialis sulit dicari”: tim khusus mengikuti ritme Anda                     | tayang / tahan |
-| 7   | SWH-04               | Spesialis pembayaran dan rekonsiliasi                     | Alur uang produk Anda konsisten dan bisa diaudit                          | Pekerjaan teknis di balik layar        |     | Spesialis pembayaran dan rekonsiliasi                                         | tayang / tahan |
+| 1   | SWH-06 (pintu masuk) | Audit kode dan pengambilalihan proyek                     | Proyek bermasalah dinilai jujur lalu dilanjutkan                          | Pekerjaan teknis di balik layar        |     | Lingkup terkecil, padanan audit singkat: proyek bermasalah dinilai jujur dulu | tayang         |
+| 2   | SWH-09               | Rilis otomatis dan pemantauan                             | Setiap rilis aman dan masalah terdeteksi sebelum pengguna mengeluh        | Alur kerja yang berjalan tanpa dikejar |     | Setiap rilis aman dan masalah terdeteksi lebih dulu                           | tayang         |
+| 3   | SWH-18               | Pipeline data dan gudang data untuk produk analitik       | Produk analitik Anda punya sumber data yang rapi dan cepat                | Angka yang memberi tahu lebih dulu     |     | Sumber data rapi untuk produk analitik                                        | tayang         |
+| 4   | SWH-05               | Arsitektur multi-tenant dan merek putih untuk produk Anda | Satu produk melayani banyak klien dengan merek masing-masing              | Kanal pendapatan baru                  |     | Satu produk melayani banyak klien dengan merek masing-masing                  | tayang         |
+| 5   | SWH-02               | Kapasitas tambahan saat puncak                            | Tenggat ketat tetap tercapai tanpa merekrut tenaga tetap                  | Pekerjaan teknis di balik layar        |     | “Tenggat ketat”: kapasitas tambahan saat puncak tanpa merekrut tetap          | tayang         |
+| 6   | SWH-01               | Tim khusus di bawah arahan Anda                           | Spesialis bekerja mengikuti ritme Anda seolah bagian dari perusahaan Anda | Pekerjaan teknis di balik layar        |     | “spesialis sulit dicari”: tim khusus mengikuti ritme Anda                     | tayang         |
+| 7   | SWH-04               | Spesialis pembayaran dan rekonsiliasi                     | Alur uang produk Anda konsisten dan bisa diaudit                          | Pekerjaan teknis di balik layar        |     | Spesialis pembayaran dan rekonsiliasi                                         | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -1521,17 +1527,19 @@ Catatan: Tim khusus dan pemeliharaan bulanan adalah dua dari lima cara mulai sis
 
 > “Kami harus rilis cepat dengan uang dan orang yang terbatas.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 7 dari 18 offer. Pintu masuk: **STA-02**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                      | Dampak untuk web                                                                   | Jenis                                  | †   | Alasan                                                                      | Keputusan Anda |
 | --- | -------------------- | ------------------------------------ | ---------------------------------------------------------------------------------- | -------------------------------------- | --- | --------------------------------------------------------------------------- | -------------- |
-| 1   | STA-02 (pintu masuk) | Uji minat sebelum membangun          | Halaman tunggu dan pembayaran uji mengukur minat sebelum satu baris kode ditulis   | Kanal pendapatan baru                  |     | Lingkup terkecil: minat diukur sebelum satu baris kode ditulis              | tayang / tahan |
-| 2   | STA-03               | CTO paruh waktu                      | Keputusan teknologi terarah setiap bulan tanpa merekrut CTO tetap                  | Pekerjaan teknis di balik layar        |     | “orang yang terbatas”: keputusan teknologi terarah tanpa merekrut CTO tetap | tayang / tahan |
-| 3   | STA-05               | Pendaftaran dan aktivasi mandiri     | Pengguna mendaftar, mencoba, dan aktif tanpa dibantu                               | Alur kerja yang berjalan tanpa dikejar |     | Pengguna mendaftar dan aktif tanpa dibantu                                  | tayang / tahan |
-| 4   | STA-10               | Agen AI dan pencarian atas data Anda | Pengguna bertanya dalam bahasa sehari-hari dan mendapat jawaban dari data Anda     | Bot yang bekerja sendiri               |     | Pengguna bertanya dalam bahasa sehari-hari, jawaban dari data Anda          | tayang / tahan |
-| 5   | STA-01               | MVP dengan lingkup tetap             | Produk pertama diuji pasar dalam hitungan minggu dengan biaya dan tenggat terkunci | Kanal pendapatan baru                  |     | “harus rilis cepat”: MVP dengan lingkup, biaya, dan tenggat terkunci        | tayang / tahan |
-| 6   | STA-04               | Penagihan langganan siap pakai       | Paket, tagihan, dan pengingat berjalan sendiri sejak pengguna pertama              | Kanal pendapatan baru                  |     | Paket dan tagihan berjalan sejak pengguna pertama                           | tayang / tahan |
-| 7   | STA-12               | Penghematan biaya cloud              | Pemakaian cloud ditinjau dan dirapikan sebelum ronde pendanaan berikutnya.         | Pekerjaan teknis di balik layar        |     | “uang terbatas”: pemakaian cloud ditinjau sebelum ronde berikutnya          | tayang / tahan |
+| 1   | STA-02 (pintu masuk) | Uji minat sebelum membangun          | Halaman tunggu dan pembayaran uji mengukur minat sebelum satu baris kode ditulis   | Kanal pendapatan baru                  |     | Lingkup terkecil: minat diukur sebelum satu baris kode ditulis              | tayang         |
+| 2   | STA-03               | CTO paruh waktu                      | Keputusan teknologi terarah setiap bulan tanpa merekrut CTO tetap                  | Pekerjaan teknis di balik layar        |     | “orang yang terbatas”: keputusan teknologi terarah tanpa merekrut CTO tetap | tayang         |
+| 3   | STA-05               | Pendaftaran dan aktivasi mandiri     | Pengguna mendaftar, mencoba, dan aktif tanpa dibantu                               | Alur kerja yang berjalan tanpa dikejar |     | Pengguna mendaftar dan aktif tanpa dibantu                                  | tayang         |
+| 4   | STA-10               | Agen AI dan pencarian atas data Anda | Pengguna bertanya dalam bahasa sehari-hari dan mendapat jawaban dari data Anda     | Bot yang bekerja sendiri               |     | Pengguna bertanya dalam bahasa sehari-hari, jawaban dari data Anda          | tayang         |
+| 5   | STA-01               | MVP dengan lingkup tetap             | Produk pertama diuji pasar dalam hitungan minggu dengan biaya dan tenggat terkunci | Kanal pendapatan baru                  |     | “harus rilis cepat”: MVP dengan lingkup, biaya, dan tenggat terkunci        | tayang         |
+| 6   | STA-04               | Penagihan langganan siap pakai       | Paket, tagihan, dan pengingat berjalan sendiri sejak pengguna pertama              | Kanal pendapatan baru                  |     | Paket dan tagihan berjalan sejak pengguna pertama                           | tayang         |
+| 7   | STA-12               | Penghematan biaya cloud              | Pemakaian cloud ditinjau dan dirapikan sebelum ronde pendanaan berikutnya.         | Pekerjaan teknis di balik layar        |     | “uang terbatas”: pemakaian cloud ditinjau sebelum ronde berikutnya          | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -1555,17 +1563,19 @@ Catatan: Tim khusus dan pemeliharaan bulanan adalah dua dari lima cara mulai sis
 
 > “Pekerjaan operasional menumpuk dan sistem lama tidak ada yang berani menyentuh.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 7 dari 18 offer. Pintu masuk: **TIM-10**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                            | Dampak untuk web                                           | Jenis                                  | †   | Alasan                                                                                     | Keputusan Anda |
 | --- | -------------------- | ------------------------------------------ | ---------------------------------------------------------- | -------------------------------------- | --- | ------------------------------------------------------------------------------------------ | -------------- |
-| 1   | TIM-10 (pintu masuk) | Dokumentasi ulang sistem tanpa dokumen     | Sistem yang tak ada yang memahaminya dipetakan dan ditulis | Pekerjaan teknis di balik layar        |     | “sistem lama tidak ada yang berani menyentuh”: dipetakan dan ditulis dulu sebelum disentuh | tayang / tahan |
-| 2   | TIM-08               | Otomasi laporan wajib                      | Laporan rutin terbit sendiri dari sumber data              | Alur kerja yang berjalan tanpa dikejar |     | “Pekerjaan operasional menumpuk”: laporan rutin terbit sendiri                             | tayang / tahan |
-| 3   | TIM-03               | Pemantauan dan peringatan terpusat         | Masalah terdeteksi sebelum pengguna mengeluh               | Bot yang bekerja sendiri               |     | Masalah terdeteksi sebelum pengguna mengeluh                                               | tayang / tahan |
-| 4   | TIM-05               | Migrasi data dari Excel dan sistem warisan | Data lama pindah utuh dan bisa dilaporkan                  | Angka yang memberi tahu lebih dulu     |     | Data lama pindah utuh dari Excel dan sistem warisan                                        | tayang / tahan |
-| 5   | TIM-09               | Modernisasi aplikasi warisan bertahap      | Aplikasi lama diperbarui tanpa menghentikan operasional    | Pekerjaan teknis di balik layar        |     | Aplikasi lama diperbarui bertahap tanpa menghentikan operasional                           | tayang / tahan |
-| 6   | TIM-06               | Rekonsiliasi otomatis lintas sistem        | Catatan antarsistem cocok tanpa dicocokkan tangan          | Alur kerja yang berjalan tanpa dikejar |     | Catatan antarsistem cocok tanpa dicocokkan tangan                                          | tayang / tahan |
-| 7   | TIM-04               | Bot verifikasi backup dan pemulihan        | Backup terbukti bisa dipulihkan, bukan sekadar ada         | Bot yang bekerja sendiri               |     | Backup terbukti bisa dipulihkan                                                            | tayang / tahan |
+| 1   | TIM-10 (pintu masuk) | Dokumentasi ulang sistem tanpa dokumen     | Sistem yang tak ada yang memahaminya dipetakan dan ditulis | Pekerjaan teknis di balik layar        |     | “sistem lama tidak ada yang berani menyentuh”: dipetakan dan ditulis dulu sebelum disentuh | tayang         |
+| 2   | TIM-08               | Otomasi laporan wajib                      | Laporan rutin terbit sendiri dari sumber data              | Alur kerja yang berjalan tanpa dikejar |     | “Pekerjaan operasional menumpuk”: laporan rutin terbit sendiri                             | tayang         |
+| 3   | TIM-03               | Pemantauan dan peringatan terpusat         | Masalah terdeteksi sebelum pengguna mengeluh               | Bot yang bekerja sendiri               |     | Masalah terdeteksi sebelum pengguna mengeluh                                               | tayang         |
+| 4   | TIM-05               | Migrasi data dari Excel dan sistem warisan | Data lama pindah utuh dan bisa dilaporkan                  | Angka yang memberi tahu lebih dulu     |     | Data lama pindah utuh dari Excel dan sistem warisan                                        | tayang         |
+| 5   | TIM-09               | Modernisasi aplikasi warisan bertahap      | Aplikasi lama diperbarui tanpa menghentikan operasional    | Pekerjaan teknis di balik layar        |     | Aplikasi lama diperbarui bertahap tanpa menghentikan operasional                           | tayang         |
+| 6   | TIM-06               | Rekonsiliasi otomatis lintas sistem        | Catatan antarsistem cocok tanpa dicocokkan tangan          | Alur kerja yang berjalan tanpa dikejar |     | Catatan antarsistem cocok tanpa dicocokkan tangan                                          | tayang         |
+| 7   | TIM-04               | Bot verifikasi backup dan pemulihan        | Backup terbukti bisa dipulihkan, bukan sekadar ada         | Bot yang bekerja sendiri               |     | Backup terbukti bisa dipulihkan                                                            | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -1589,16 +1599,18 @@ Catatan: Tim khusus dan pemeliharaan bulanan adalah dua dari lima cara mulai sis
 
 > “Data kami lambat, terlambat, atau tidak terhubung satu sama lain.”
 
+**Keputusan:** Disetujui pemilik seperti diusulkan, 16 Oktober 2026.
+
 6 dari 24 offer. Pintu masuk: **DAT-03**. Aturan: lolos.
 
 | #   | ID                   | Judul untuk web                       | Dampak untuk web                                                     | Jenis                              | †   | Alasan                                                            | Keputusan Anda |
 | --- | -------------------- | ------------------------------------- | -------------------------------------------------------------------- | ---------------------------------- | --- | ----------------------------------------------------------------- | -------------- |
-| 1   | DAT-03 (pintu masuk) | Optimasi query dan indeks             | Halaman dan laporan yang lambat menjadi cepat                        | Angka yang memberi tahu lebih dulu |     | “Data kami lambat”: lingkup terkecil, query dan indeks            | tayang / tahan |
-| 2   | DAT-09               | Notifikasi langsung ke pengguna       | Peristiwa penting sampai seketika lewat web, push, atau chat         | Bot yang bekerja sendiri           |     | “terlambat”: peristiwa penting sampai seketika                    | tayang / tahan |
-| 3   | DAT-04               | Gudang data ringan dan ETL terjadwal  | Data dari banyak sumber menyatu setiap malam tanpa dikerjakan tangan | Angka yang memberi tahu lebih dulu |     | “tidak terhubung”: banyak sumber menyatu setiap malam             | tayang / tahan |
-| 4   | DAT-08               | Dasbor realtime                       | Penjualan, mesin, atau armada terlihat saat itu juga.                | Angka yang memberi tahu lebih dulu |     | Realtime: penjualan, mesin, atau armada terlihat saat itu juga    | tayang / tahan |
-| 5   | DAT-16               | Rekomendasi dari graf relasi          | Produk atau konten yang sering muncul bersama tampil relevan         | Angka yang memberi tahu lebih dulu |     | Graf: barang dan konten yang sering muncul bersama                | tayang / tahan |
-| 6   | DAT-18               | Peta rantai pasok dan dampak gangguan | Bila satu pemasok terlambat, produk yang terkena langsung tampak     | Angka yang memberi tahu lebih dulu |     | Graf: satu pemasok terlambat, produk yang terkena langsung tampak | tayang / tahan |
+| 1   | DAT-03 (pintu masuk) | Optimasi query dan indeks             | Halaman dan laporan yang lambat menjadi cepat                        | Angka yang memberi tahu lebih dulu |     | “Data kami lambat”: lingkup terkecil, query dan indeks            | tayang         |
+| 2   | DAT-09               | Notifikasi langsung ke pengguna       | Peristiwa penting sampai seketika lewat web, push, atau chat         | Bot yang bekerja sendiri           |     | “terlambat”: peristiwa penting sampai seketika                    | tayang         |
+| 3   | DAT-04               | Gudang data ringan dan ETL terjadwal  | Data dari banyak sumber menyatu setiap malam tanpa dikerjakan tangan | Angka yang memberi tahu lebih dulu |     | “tidak terhubung”: banyak sumber menyatu setiap malam             | tayang         |
+| 4   | DAT-08               | Dasbor realtime                       | Penjualan, mesin, atau armada terlihat saat itu juga.                | Angka yang memberi tahu lebih dulu |     | Realtime: penjualan, mesin, atau armada terlihat saat itu juga    | tayang         |
+| 5   | DAT-16               | Rekomendasi dari graf relasi          | Produk atau konten yang sering muncul bersama tampil relevan         | Angka yang memberi tahu lebih dulu |     | Graf: barang dan konten yang sering muncul bersama                | tayang         |
+| 6   | DAT-18               | Peta rantai pasok dan dampak gangguan | Bila satu pemasok terlambat, produk yang terkena langsung tampak     | Angka yang memberi tahu lebih dulu |     | Graf: satu pemasok terlambat, produk yang terkena langsung tampak | tayang         |
 
 <details><summary>Tidak diusulkan</summary>
 
@@ -1626,3 +1638,94 @@ Catatan: Tim khusus dan pemeliharaan bulanan adalah dua dari lima cara mulai sis
 </details>
 
 Catatan: Tiga lapis di judul bab masing-masing terwakili: SQL (DAT-03, DAT-04), realtime (DAT-08, DAT-09), graf (DAT-16, DAT-18).
+
+## Peekabo · Jaringan
+
+### Sales lepas, makelar, dan calo (Open Commission) (OCS)
+
+> “Saya punya kenalan yang mau beli. Saya mau dapat bagian kalau jadi.”
+
+**Bab ditahan utuh.** Langkah 2 cara bergabung menjanjikan kartu komisi untuk setiap produk: siapa membayar, pemicu, besar, dan kapan cair. Kartunya belum disusun (keputusan 5 di master brief), jadi bab ini ditahan utuh sampai kartu pertama ada. Bab ini tampil di halaman sisi sebagai situasi tanpa halaman, dengan tautan ke Kontak.
+
+0 dari 12 offer. Aturan: lolos.
+
+| #   | ID  | Judul untuk web | Dampak untuk web | Jenis | †   | Alasan | Keputusan Anda |
+| --- | --- | --------------- | ---------------- | ----- | --- | ------ | -------------- |
+
+<details><summary>Tidak diusulkan</summary>
+
+| ID     | Judul                                                         | Alasan                                                                                              |
+| ------ | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| 3B-01  | Lapisan sub-agen: member mengambil barang dan mendapat komisi | Ditahan: offer ‡, menunggu pilihan sub-agen (keputusan 1)                                           |
+| 3B-03  | Etalase produk komisi terkurasi                               | Ditahan: etalase komisi bersinggungan dengan larangan sub-afiliasi platform; ikut keputusan 1 dan 4 |
+| 3B-07  | Dasbor komisi untuk sub-agen                                  | Siap saat kartu ada: dasbor rujukan dan komisi                                                      |
+| OCS-01 | Komisi referral properti: rumah baru dan rumah bekas          | Siap saat kartu ada: properti lewat perantara berizin; bertanda †                                   |
+| OCS-02 | Komisi referral kendaraan: dealer dan showroom                | Siap saat kartu ada: kendaraan, fee setelah unit diserahkan                                         |
+| OCS-03 | Rujukan pembiayaan kendaraan dan barang                       | Siap saat kartu ada: pembiayaan, dari insentif yang sah; bertanda †                                 |
+| OCS-04 | Rujukan asuransi lewat agen berlisensi                        | Mitra asuransi belum ada (master brief, jalur komisi)                                               |
+| OCS-05 | Referral software dan layanan bisnis                          | Siap saat kartu ada: software, komisi berulang selama berlangganan                                  |
+| OCS-06 | Referral sewa alat berat                                      | Mitra sewa alat berat belum ada (master brief, jalur komisi)                                        |
+| OCS-07 | Referral elektronik bekas dan konveksi                        | Mitra konveksi belum ada (master brief, jalur komisi)                                               |
+| OCS-08 | Referral proyek konstruksi, sistem, dan pemasaran Arthur      | Siap saat kartu ada: rujukan ke Arthur sendiri, tanpa mitra luar; calon pintu masuk                 |
+| OCS-09 | Kelas menjual untuk mitra baru                                | Siap saat kartu ada: kelas menjual, dijual terpisah dan bukan syarat bergabung                      |
+
+</details>
+
+Catatan: Bila kartu komisi sudah ada, tujuh offer pertama di daftar tahan menjadi daftar pendek bab ini tanpa usulan ulang. Halaman nanti memuat aturan satu tingkat: tanpa biaya bergabung, tanpa bonus rekrutmen, tanpa janji penghasilan.
+
+### Anggota komunitas belanja (membership) (MBR)
+
+> “Kalau saya belanja lewat komunitas, saya dapat apa?”
+
+**Bab ditahan utuh.** Master brief menulis industri komunitas dan membership dibuka setelah ada audiens yang cukup, dan tiga offer intinya (‡) menunggu pilihan sub-agen. Bab ini ditahan utuh sampai keduanya terjawab. Bab ini tampil di halaman sisi sebagai situasi tanpa halaman, dengan tautan ke Kontak.
+
+0 dari 12 offer. Aturan: lolos.
+
+| #   | ID  | Judul untuk web | Dampak untuk web | Jenis | †   | Alasan | Keputusan Anda |
+| --- | --- | --------------- | ---------------- | ----- | --- | ------ | -------------- |
+
+<details><summary>Tidak diusulkan</summary>
+
+| ID     | Judul                                          | Alasan                                                                                 |
+| ------ | ---------------------------------------------- | -------------------------------------------------------------------------------------- |
+| 3C-01  | Membership dengan diskon tetap berbasis komisi | Ditahan: offer ‡, menunggu pilihan sub-agen (keputusan 1)                              |
+| 3B-02  | Diskon dari komisi untuk customer dan klien    | Ditahan: offer ‡, menunggu pilihan sub-agen (keputusan 1)                              |
+| 3C-02  | Tingkat membership: dasar, pro, mitra          | Siap saat dibuka: tingkat dasar, pro, dan mitra (asal T)                               |
+| 3C-03  | Hunt Pass: tiket musiman untuk event           | Tidak dipilih: jenisnya tidak menjawab kutipan bab ini                                 |
+| 3C-04  | Patungan: pembelian kolektif anggota           | Siap saat dibuka: patungan harga grosir, mengikuti aturan perlindungan konsumen        |
+| 3C-05  | Kelas dan workshop khusus anggota              | Siap saat dibuka: kelas khusus anggota                                                 |
+| 3C-08  | Merchandise komunitas                          | Tidak dipilih: jenisnya tidak menjawab kutipan bab ini                                 |
+| 3B-08  | Kode promo dan tautan khusus komunitas         | Ditahan: kode dan tautan bergantung pada status afiliasi platform yang belum terdaftar |
+| MBR-01 | Cashback anggota setelah komisi cair           | Ditahan: offer ‡, menunggu pilihan sub-agen (keputusan 1)                              |
+| MBR-02 | Membership tahunan dengan plafon manfaat       | Siap saat dibuka: iuran tahunan dengan plafon manfaat yang jelas                       |
+| MBR-03 | Paket membership dengan layanan Arthur         | Ikut keputusan D5 Membership Care: perawatan properti tertahan di Konstruksi           |
+| MBR-04 | Membership untuk anggota usaha (UMKM)          | Siap saat dibuka: harga anggota untuk UMKM                                             |
+
+</details>
+
+Catatan: Bila dibuka, lima offer pertama di daftar tahan menjadi daftar pendek bab ini.
+
+### Kreator, streamer, dan host (KRE)
+
+> “Saya bisa live berjam-jam, tapi penghasilannya belum menentu.”
+
+4 dari 7 offer. Pintu masuk: **KRE-03**. Aturan: lolos.
+
+| #   | ID                   | Judul untuk web                       | Dampak untuk web                                                                               | Jenis                     | †                                                                         | Alasan                                                                                                                   | Keputusan Anda |
+| --- | -------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------- |
+| 1   | KRE-03 (pintu masuk) | Host untuk toko brand mitra           | Anda dibayar per jam atau per bulan untuk menjadi host toko brand yang kami layani             | Kreator, host, dan sales  | Bentuk kerja disepakati tertulis, dan honor dipotong pajak sesuai aturan. | “penghasilannya belum menentu”: dibayar per jam atau per bulan sebagai host toko brand; bentuk kerja disepakati tertulis | tayang / tahan |
+| 2   | 3A-09                | Akademi talenta: host, kreator, sales | Anda dilatih membawakan produk, membaca penonton, dan menutup penjualan                        | Arah, strategi, dan kelas | Kelas dijual terpisah dan tidak menjadi syarat atau biaya masuk jaringan. | “bisa live berjam-jam”: dilatih membaca penonton dan menutup penjualan; kelas dijual terpisah, bukan syarat bergabung    | tayang / tahan |
+| 3   | KRE-05               | Layanan produksi untuk kreator        | Rekaman Anda diedit menjadi klip, thumbnail, dan jadwal unggah                                 | Konten dan aset jadi      |                                                                           | Rekaman diedit menjadi klip, thumbnail, dan jadwal unggah                                                                | tayang / tahan |
+| 4   | KRE-06               | Manajemen kontrak brand untuk kreator | Kami mencarikan dan mengurus kontrak brand, dengan biaya manajemen dari kontrak yang kami bawa | Kreator, host, dan sales  |                                                                           | Kontrak brand dicarikan dan diurus, biaya manajemen hanya dari kontrak yang kami bawa                                    | tayang / tahan |
+
+<details><summary>Tidak diusulkan</summary>
+
+| ID     | Judul                                          | Alasan                                                                              |
+| ------ | ---------------------------------------------- | ----------------------------------------------------------------------------------- |
+| KRE-01 | Bergabung dengan agency LIVE Peekabo di TikTok | Ditahan: status agency LIVE belum terdaftar (keputusan 4)                           |
+| KRE-02 | Bergabung dengan MCN Shopee Peekabo            | Ditahan: status MCN belum terdaftar (keputusan 4)                                   |
+| KRE-04 | Studio dan alat siaran per jam                 | Ditahan: studio siaran Peekabo belum tercatat ada; jembatannya ke studio Konstruksi |
+
+</details>
+
+Catatan: Industri talenta dibuka lebih dulu menurut master brief. Halaman tidak menjanjikan penghasilan; yang ditulis adalah bentuk bayarannya (per jam, per bulan, dari kontrak).
