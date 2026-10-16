@@ -187,6 +187,32 @@ describe('audienceOf', () => {
   })
 })
 
+describe('the Pelaku proyek market column', () => {
+  const side = [
+    '## Tenaga kerja (modul B)',
+    '',
+    '| ID | Offer | Dampak bagi pembeli | Pembeli | Jenis | Pasar | Modul |',
+    '| --- | --- | --- | --- | --- | --- | --- |',
+    '| TNK-01 | **Tukang harian** | Tukang datang sesuai jadwal | Kontraktor utama | Celah | Keduanya | B |',
+    '| TNK-02 | **Tukang proyek sekolah** | Tukang datang | Kontraktor utama | Celah | Pemerintah | B |',
+  ].join('\n')
+  const [both, government] = parseCatalog(side, {
+    unit: 'konstruksi',
+    side: 'A',
+  })
+
+  it('reads Pasar into the filter value the chapter page uses', () => {
+    expect(both?.market).toBe('keduanya')
+    expect(government?.market).toBe('pemerintah')
+  })
+
+  it('carries it to the draft, and leaves a side without the column alone', () => {
+    expect(both && draftOffer(both, NO_OVERRIDES).pasar).toBe('keduanya')
+    expect(rows[0]?.market).toBeUndefined()
+    expect(rows[0] && 'pasar' in draftOffer(rows[0], NO_OVERRIDES)).toBe(false)
+  })
+})
+
 describe('parseSituations and parseBridges', () => {
   it('reads the buyer line and quote of each chapter', () => {
     const [kuliner] = parseSituations(
@@ -202,6 +228,19 @@ describe('parseSituations and parseBridges', () => {
     expect(kuliner?.nama).toBe('Kuliner dan F&B')
     expect(kuliner?.pembeli).toBe('Warung dan kedai.')
     expect(kuliner?.kutipan).toBe('“Pesanan saya bercampur di chat.”')
+  })
+
+  it('keeps a chapter that has a quote but no buyer line', () => {
+    const [rakitan] = parseSituations(
+      [
+        '## Paket rakitan menurut profil pembeli',
+        '',
+        '**Yang biasa mereka katakan:** “Saya butuh paket yang cocok.”',
+      ].join('\n'),
+      { unit: 'konstruksi', side: 'A' }
+    )
+    expect(rakitan?.nama).toBe('Paket rakitan menurut profil pembeli')
+    expect(rakitan?.pembeli).toBe('')
   })
 
   it('reads one pair per bridge row and skips other tables', () => {

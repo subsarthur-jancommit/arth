@@ -61,6 +61,21 @@ export const WAVES = {
       'Mesin pencari: Suara dan gaya, bentuk per blok; wilayah dari header Konstruksi.',
     ],
   },
+  W3: {
+    unit: 'konstruksi',
+    side: 'A',
+    judul: 'Konstruksi, untuk pelaku proyek',
+    dasar: [
+      'Nama bab, kutipan: Konstruksi Sisi A, judul bab dan “Yang biasa mereka katakan”, apa adanya; label modul dan lapis dibuang (Peta website, Nama bab untuk pembaca).',
+      'Untuk siapa: baris Pembeli bab itu, ditulis sebagai orang; untuk paket rakitan, pembeli paketnya.',
+      'Situasi: kutipan bab dan kolom “Yang mereka cari” di Peta pembeli unit Konstruksi, dijawab dengan dampak offer yang dipilih.',
+      'Kartu pekerjaan: baris offer di daftar pendek yang disetujui, judul, dampak, dan pasar katalog; urutan dan pintu masuk dari keputusan pemilik.',
+      'Batas: Konstruksi aturan main 1 (tenaga ahli dan sertifikat), 2 (tender), 3 (penyedia dan konsultan), 4 (margin dalam HPS), 7 (modal kerja), 9 (keselamatan dan alat), 10 (struktur); Aturan isi aturan 3 dan kalimat wajib tender, pembiayaan, dan komisi.',
+      'Jembatan: tidak ada; halaman tujuan di unit Teknologi belum terbit.',
+      'Langkah pertama: Konstruksi Sisi A Cara membeli, sama dengan langkah pertama halaman sisi.',
+      'Mesin pencari: Suara dan gaya, bentuk per blok; wilayah dari pengantar Sisi A.',
+    ],
+  },
 } as const satisfies Record<string, Wave>
 
 /**

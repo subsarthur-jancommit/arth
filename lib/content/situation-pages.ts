@@ -134,6 +134,12 @@ const SIDE_FIRST_STEP = {
     label: 'Ceritakan bangunannya',
     sesudahnya: 'Kami survei kondisi lapangan sebelum angka apa pun disebut.',
   },
+  // Konstruksi Sisi A, Cara membeli: eceran first; the side's langkahPertama.
+  'konstruksi/A': {
+    label: 'Mulai dari satu celah',
+    sesudahnya:
+      'Pilih eceran per masalah untuk bagian yang tidak sanggup Anda tangani; paket hulu-hilir dan paket rakitan dapat menyusul.',
+  },
 } as const satisfies Partial<
   Record<`${CatalogUnit}/${'A' | 'B'}`, { label: string; sesudahnya: string }>
 >

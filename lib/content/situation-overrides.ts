@@ -152,4 +152,200 @@ export const SITUATION_OVERRIDES = new Map<string, SituationOverride>([
       },
     },
   ],
+  // V3 wave W3, Konstruksi Sisi A (docs/V3-SERAH-W3.md). Copy from the
+  // chapter, Peta pembeli, Cara membeli, and Konstruksi aturan main 1 to 13.
+  [
+    'konstruksi/A/paket-hulu-hilir-untuk-kontraktor-utama',
+    {
+      slug: 'hulu-hilir',
+      pembeli: 'Untuk kontraktor utama proyek pemerintah dan swasta.',
+      situasi:
+        'Paketnya sudah menang, tetapi belum ada subkon yang sanggup memegang semuanya. Satu subkon memegang tenaga, material, alat, dan laporan untuk satu lingkup pekerjaan, dari hulu ke hilir.',
+      batas:
+        'Lingkup dan harga disepakati tertulis sebelum kerja dimulai. Pekerjaan struktur dihitung tenaga ahli berwenang, dan keselamatan kerja serta kelaikan alat dipenuhi di lokasi.',
+      metadata: {
+        judul: 'Subkon hulu-hilir untuk kontraktor utama',
+        deskripsi:
+          'Untuk kontraktor utama di Subang, Purwakarta, dan Bandung. Satu subkon memegang tenaga, material, alat, dan laporan untuk satu lingkup pekerjaan.',
+      },
+    },
+  ],
+  [
+    'konstruksi/A/administrasi-dengan-pemerintah',
+    {
+      slug: 'administrasi-pemerintah',
+      pembeli: 'Untuk kontraktor utama, subkontraktor, dan penyedia barang.',
+      situasi:
+        'Dokumen menumpuk, tender terlewat, dan berkas termin selalu terlambat. Paket dipantau setiap minggu, berkas kualifikasi dan penawaran disiapkan, dan berkas termin dijaga lengkap.',
+      batas:
+        'Kami membantu menyiapkan berkas dan memahami aturan, bukan mengatur hasil tender. Nama dan sertifikat tidak dipinjamkan. Keputusan pemenang dan pencairan termin tetap di tangan pemberi kerja.',
+      metadata: {
+        judul: 'Administrasi tender dan termin untuk kontraktor',
+        deskripsi:
+          'Untuk kontraktor dan penyedia di Subang, Purwakarta, dan Bandung. Paket tender dipantau, berkas kualifikasi disiapkan, dan berkas termin dijaga lengkap.',
+      },
+    },
+  ],
+  [
+    'konstruksi/A/tenaga-kerja',
+    {
+      pembeli:
+        'Untuk kontraktor utama, subkontraktor, dan developer perumahan.',
+      situasi:
+        'Tukang tidak datang tepat waktu dan tidak ada yang mengendalikan mereka di lapangan. Tukang datang sesuai jadwal, mandor mengendalikan mereka setiap hari, dan upahnya tercatat tertib.',
+      batas:
+        'Tenaga ahli bekerja di lapangan proyek Anda; nama dan sertifikatnya tidak dipinjamkan. Lingkup dan harga disepakati tertulis sebelum kerja dimulai.',
+      metadata: {
+        judul: 'Tukang, mandor, dan tim finishing untuk proyek',
+        deskripsi:
+          'Untuk kontraktor dan developer di Subang, Purwakarta, dan Bandung. Tukang datang sesuai jadwal, mandor mengendalikan di lapangan, dan upah tercatat tertib.',
+      },
+    },
+  ],
+  [
+    'konstruksi/A/material',
+    {
+      pembeli:
+        'Untuk kontraktor utama, subkontraktor, developer perumahan, dan penyedia barang.',
+      situasi:
+        'Harga material bergeser, barang telat, dan jadwalnya tidak sinkron dengan pekerjaan. Harga di tiga wilayah dipegang sebagai acuan, dan material dijadwalkan tiba per tahap.',
+      batas:
+        'Harga material tetap ditentukan pemasok; daftar harga kami menjadi pegangan untuk RAB dan negosiasi. Lingkup dan harga disepakati tertulis sebelum kerja dimulai.',
+      metadata: {
+        judul: 'Harga dan jadwal material proyek',
+        deskripsi:
+          'Untuk kontraktor, subkon, dan developer di Subang, Purwakarta, dan Bandung. Harga material tiga wilayah dipegang, dan material tiba per tahap.',
+      },
+    },
+  ],
+  [
+    'konstruksi/A/modal-kerja-lewat-penjembatanan',
+    {
+      slug: 'modal-kerja',
+      pembeli:
+        'Untuk kontraktor utama, subkontraktor, penyedia barang, dan developer perumahan.',
+      situasi:
+        'Uang muka belum cair, material harus dibayar dulu, dan tagihan termin belum turun. Kami tidak memberi pinjaman; kebutuhan kas dipetakan lebih dulu, lalu dijembatani lewat tempo material dan mitra pembiayaan berizin. Bila Anda memakai mitra lewat kami, mitra membayar kami komisi, dan kami menyebutkannya sejak awal.',
+      batas:
+        'Kami tidak memberi pinjaman dan tidak menghimpun dana klien; pembiayaan dan jaminan berjalan lewat mitra berizin. Bila Anda memakai mitra lewat kami, mitra membayar kami komisi. Kami menyebutkannya sejak awal, dan komisi itu dibayar mitra di luar biaya yang Anda bayar kepada kami.',
+      metadata: {
+        judul: 'Modal kerja proyek lewat mitra berizin',
+        deskripsi:
+          'Untuk kontraktor dan subkon. Kas proyek dipetakan, lalu dijembatani lewat tempo material dan mitra berizin. Kami tidak memberi pinjaman.',
+      },
+    },
+  ],
+  [
+    'konstruksi/A/alat',
+    {
+      pembeli:
+        'Untuk kontraktor utama, subkontraktor, dan developer perumahan.',
+      situasi:
+        'Anda butuh alat hanya beberapa hari dan tidak mau membelinya. Peralatan ringan disewakan per hari, diantar ke lokasi, dan diperiksa sebelum dipakai.',
+      batas:
+        'Alat diperiksa kelaikannya sebelum dipakai, dan keselamatan kerja di lokasi dipenuhi. Bab ini mencakup peralatan ringan; alat berat tidak termasuk. Harga harian dan jadwal antar jemput disepakati tertulis sebelum alat dikirim.',
+      metadata: {
+        judul: 'Sewa peralatan ringan per hari untuk proyek',
+        deskripsi:
+          'Untuk kontraktor dan subkon di Subang, Purwakarta, dan Bandung. Molen, stamper, dan perancah per hari, diantar ke lokasi dan diperiksa sebelum dipakai.',
+      },
+    },
+  ],
+  [
+    'konstruksi/A/administrasi-internal-proyek',
+    {
+      slug: 'administrasi-proyek',
+      pembeli:
+        'Untuk kontraktor utama, subkontraktor, developer perumahan, dan penyedia barang.',
+      situasi:
+        'Laporan lewat chat, kurva S tidak jelas, dan biaya lapangan tidak terpantau. Laporan disusun dalam format pemberi kerja, kurva S diperbarui setiap minggu, dan anggaran dibandingkan dengan realisasinya.',
+      batas:
+        'Laporan dan opname disusun dari kondisi lapangan; persetujuan termin tetap di tangan pemberi kerja. Lingkup dan harga disepakati tertulis sebelum kerja dimulai.',
+      metadata: {
+        judul: 'Laporan proyek, kurva S, dan pengendalian biaya',
+        deskripsi:
+          'Untuk kontraktor dan developer di Subang, Purwakarta, dan Bandung. Laporan format pemberi kerja, kurva S mingguan, dan anggaran dibanding realisasi.',
+      },
+    },
+  ],
+  [
+    'konstruksi/A/konsultan-pengadaan-untuk-penyedia-barang',
+    {
+      slug: 'konsultan-pengadaan',
+      pembeli: 'Untuk penyedia barang bagi instansi pemerintah.',
+      situasi:
+        'Anda penyedia, tetapi sulit mencari barang dengan margin sehat dan mengurus TKDN. Sumber barang dan harga pembanding dicari sebelum Anda menawar, dan pengajuan TKDN didampingi.',
+      batas:
+        'Kami menjadi konsultan hanya untuk paket yang bukan milik Arthur, karena peran penyedia dan konsultan tidak dipegang pada paket yang sama. Keuntungan dalam HPS dijaga wajar dan dapat diperiksa auditor. Sertifikat TKDN diterbitkan lembaga berwenang; kami mendampingi pengajuannya.',
+      metadata: {
+        judul: 'Konsultan pengadaan untuk penyedia barang pemerintah',
+        deskripsi:
+          'Untuk penyedia barang di Subang, Purwakarta, dan Bandung. Sumber dan harga pembanding dicari, margin dihitung, dan pengajuan TKDN didampingi.',
+      },
+    },
+  ],
+  [
+    'konstruksi/A/arthur-sebagai-penyedia-untuk-instansi',
+    {
+      slug: 'penyedia-instansi',
+      pembeli: 'Untuk sekolah, dinas, kantor, kelurahan, dan desa.',
+      situasi:
+        'Instansi butuh barang sesuai spesifikasi, tepat waktu, dan dengan dokumen lengkap. Kami menjadi penyedia: barang dibuat menurut spesifikasi, dipasang bila perlu, dan klaim garansinya ditangani.',
+      batas:
+        'Kami menjadi penyedia hanya untuk paket yang tidak kami dampingi sebagai konsultan. Barang dibuat sesuai spesifikasi pengadaan, dan keuntungan dalam HPS dijaga wajar serta dapat diperiksa auditor.',
+      metadata: {
+        judul: 'Pengadaan perabot, papan, dan perlengkapan instansi',
+        deskripsi:
+          'Untuk sekolah, dinas, kelurahan, dan desa di Subang, Purwakarta, dan Bandung. Barang sesuai spesifikasi, bersama pemasangan dan garansi.',
+      },
+    },
+  ],
+  [
+    'konstruksi/A/developer-perumahan',
+    {
+      pembeli: 'Untuk developer perumahan.',
+      situasi:
+        'Unit selesai, tetapi finishing telat, komplain menumpuk, dan laporan untuk bank belum siap. Setiap unit diperiksa sebelum serah terima, komplain pembeli diperbaiki, dan laporan progres per unit disusun untuk bank.',
+      batas:
+        'Laporan progres disusun untuk bank; keputusan pencairan KPR tetap di tangan bank. Lingkup dan harga per unit disepakati tertulis sebelum kerja dimulai.',
+      metadata: {
+        judul: 'Finishing dan serah terima unit untuk developer',
+        deskripsi:
+          'Untuk developer perumahan di Subang, Purwakarta, dan Bandung. Unit diperiksa sebelum serah terima, komplain diperbaiki, laporan progres untuk bank.',
+      },
+    },
+  ],
+  [
+    'konstruksi/A/kontraktor-swasta',
+    {
+      pembeli:
+        'Untuk kontraktor swasta dan kontraktor pemerintah yang juga mengerjakan proyek swasta.',
+      situasi:
+        'Proyek swasta Anda kekurangan tenaga dan material yang datang tepat waktu. Tukang dengan mandor, material per tahap, dan tim finishing tersedia untuk proyek klien Anda.',
+      batas:
+        'Lingkup dan harga disepakati tertulis sebelum kerja dimulai. Tempo material berjalan lewat mitra; kami tidak memberi pinjaman. Bila Anda memakai mitra lewat kami, mitra membayar kami komisi, dan kami menyebutkannya sejak awal.',
+      metadata: {
+        judul: 'Tenaga dan material untuk kontraktor swasta',
+        deskripsi:
+          'Untuk kontraktor swasta di Subang, Purwakarta, dan Bandung. Tukang dengan mandor, material per tahap, dan tim finishing untuk proyek klien Anda.',
+      },
+    },
+  ],
+  [
+    'konstruksi/A/paket-rakitan-menurut-profil-pembeli',
+    {
+      slug: 'paket-rakitan',
+      pembeli:
+        'Untuk kontraktor utama, subkontraktor, developer perumahan, dan penyedia barang, menurut posisinya di proyek.',
+      situasi:
+        'Anda butuh paket yang cocok dengan posisi Anda sekarang, bukan semua layanan. Setiap paket dimulai dari satu posisi dan satu masalah, lalu diisi layanan seminimal mungkin.',
+      batas:
+        'Berkas tender disiapkan, bukan diatur hasilnya, dan nama serta sertifikat tidak dipinjamkan. Lingkup dan harga disepakati tertulis sebelum kerja dimulai.',
+      metadata: {
+        judul: 'Paket layanan konstruksi menurut posisi Anda',
+        deskripsi:
+          'Untuk kontraktor, subkon, developer, dan penyedia di Subang, Purwakarta, dan Bandung. Paket dimulai dari satu masalah dan diisi layanan seminimal mungkin.',
+      },
+    },
+  ],
 ])

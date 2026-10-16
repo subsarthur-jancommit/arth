@@ -57,6 +57,8 @@ export type DraftOffer = {
   syarat: string | undefined
   /** True when the row has a handwritten answer in `catalog-overrides.ts`. */
   ditinjau?: boolean
+  /** Konstruksi Sisi A only: the market filter value. */
+  pasar?: 'pemerintah' | 'swasta' | 'keduanya' | undefined
 }
 
 export function babDraft(
@@ -143,6 +145,7 @@ export function offerDraft(
     untukSiapa: line(offer.untukSiapa),
     jenis: line(offer.jenis ?? ''),
     ...(offer.syarat ? { syarat: text(offer.syarat) } : {}),
+    ...(offer.pasar ? { pasar: offer.pasar } : {}),
     urutan,
     pintuMasuk: entry,
     halamanSendiri: page !== undefined,

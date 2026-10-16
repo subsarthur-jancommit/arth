@@ -87,6 +87,17 @@ export type CatalogRow = {
   buyer: string
   type: string | undefined
   mark: '†' | '‡' | undefined
+  /** Konstruksi Sisi A only: the "Pasar" column. */
+  market?: Market
+}
+
+/** The values of `offer.pasar`, the market filter on the Pelaku proyek side. */
+export type Market = 'pemerintah' | 'swasta' | 'keduanya'
+
+const MARKETS: Readonly<Record<string, Market>> = {
+  Pemerintah: 'pemerintah',
+  Swasta: 'swasta',
+  Keduanya: 'keduanya',
 }
 
 export type OfferDraft = {
@@ -102,6 +113,8 @@ export type OfferDraft = {
   slug: string
   /** A † offer's condition, from the handwritten overrides. */
   syarat: string | undefined
+  /** Konstruksi Sisi A only: which market the offer serves. */
+  pasar?: Market
   lane: 'otomatis' | 'tulis-tangan'
   /** True when an agent answered this row in `catalog-overrides.ts`. */
   ditinjau: boolean
@@ -175,6 +188,9 @@ export function parseCatalog(
       buyer: pick(header, cells, 'Pembeli', 'Peserta'),
       type: type || undefined,
       mark,
+      ...(MARKETS[pick(header, cells, 'Pasar')]
+        ? { market: MARKETS[pick(header, cells, 'Pasar')] }
+        : {}),
     })
   }
 
@@ -193,11 +209,13 @@ export function parseSituations(
     const buyer = /^\*\*(?:Pembeli|Peserta):\*\*\s*(.+)$/.exec(line)
     if (buyer?.[1]) current.pembeli = buyer[1].trim()
     const quote = /^\*\*Yang biasa mereka katakan:\*\*\s*(.+)$/.exec(line)
-    if (quote && current.nama && current.pembeli) {
+    // A chapter without a "Pembeli" line (Konstruksi's assembled packages)
+    // still has a quote; its buyers are then written by hand.
+    if (quote && current.nama) {
       out.push({
         ...place,
         nama: current.nama,
-        pembeli: current.pembeli,
+        pembeli: current.pembeli ?? '',
         kutipan: quote[1]?.trim() ?? '',
       })
     }
@@ -298,6 +316,7 @@ export function draftOffer(
     untukSiapa: audienceOf(row.buyer),
     jenis: row.type ? READER_TYPE.get(row.type) : ASSEMBLED_LABEL,
     slug: slugOf(override?.judul ?? row.title),
+    ...(row.market ? { pasar: row.market } : {}),
     syarat: override?.syarat,
     lane: open.length === 0 ? 'otomatis' : 'tulis-tangan',
     ditinjau: override !== undefined,
@@ -400,6 +419,7 @@ export function draftDocuments(
             slug: draft.slug,
             syarat: item.syarat,
             ditinjau: draft.ditinjau,
+            pasar: draft.pasar,
           },
           parent,
           index,
