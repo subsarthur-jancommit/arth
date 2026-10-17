@@ -183,6 +183,8 @@ export function parseCatalog(
       title: raw
         .replace(/\*\*/g, '')
         .replace(/[†‡]/g, '')
+        // Peekabo's research service codes, "(02.B)", are never shown.
+        .replace(/\s*\(\d{2}\.[A-Z]\)/g, '')
         .trim(),
       impact: pick(header, cells, 'Dampak', 'Hasil'),
       buyer: pick(header, cells, 'Pembeli', 'Peserta'),
@@ -400,7 +402,13 @@ export function draftDocuments(
     ...page.kelompok.flatMap((group) => group.items),
   ].filter((item) => item !== undefined)
   const byId = new Map(drafts.map((draft) => [draft.idKatalog, draft]))
-  const code = items[0]?.idKatalog.split('-')[0] ?? ''
+  // A Peekabo heading names its chapter code, "Agency marketing (MKT)"; its
+  // offer codes, "1A-01", do not. Elsewhere the offer prefix is the code.
+  const first = items[0]?.idKatalog ?? ''
+  const code =
+    /\(([A-Z]{3})\)$/.exec(byId.get(first)?.situation ?? '')?.[1] ??
+    first.split('-')[0] ??
+    ''
   const parent = babId(page.unit, sideKey, page.slug)
   const docs = [
     babDraft(page, sideId, sideKey, urutan, code, handover),

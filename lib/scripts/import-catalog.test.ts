@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'bun:test'
 
+import type { SituationPage } from '@/lib/content/situation-pages'
+
 import {
   audienceOf,
+  draftDocuments,
   draftOffer,
   parseBridges,
   parseCatalog,
@@ -48,6 +51,63 @@ describe('parseCatalog', () => {
   it('strips bold and catalogue marks from the title, and keeps the mark apart', () => {
     expect(rows[2]?.title).toBe('Pembacaan otomatis nota, faktur, dan KTP')
     expect(rows[2]?.mark).toBe('†')
+  })
+
+  it('drops a Peekabo research service code from the title', () => {
+    const [row] = parseCatalog(
+      `## Produksi kreatif (PRD)
+
+| ID | Offer | Dampak bagi pembeli | Pembeli | Jenis | Masalah | Model | Asal |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1B-04 | **Foto produk dan lifestyle (02.B)** | Produk tampil layak jual | Brand, seller | Aset | Dibeli | K3 | A |
+`,
+      { unit: 'peekabo', side: 'A' }
+    )
+    expect(row?.title).toBe('Foto produk dan lifestyle')
+  })
+})
+
+describe('draftDocuments', () => {
+  const [row] = parseCatalog(
+    `## Produksi kreatif (PRD)
+
+| ID | Offer | Dampak bagi pembeli | Pembeli | Jenis | Masalah | Model | Asal |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1B-04 | **Foto produk dan lifestyle** | Produk tampil layak jual | Brand, seller | Aset | Dibeli | K3 | A |
+`,
+    { unit: 'peekabo', side: 'A' }
+  )
+  const draft = draftOffer(row!)
+  const page: SituationPage = {
+    unit: 'peekabo',
+    side: 'A',
+    nama: 'Produksi kreatif',
+    slug: 'produksi-kreatif',
+    kutipan: '“Kontennya harus keluar.”',
+    situasi: 'Situasi.',
+    pintuMasuk: {
+      judul: draft.judul,
+      dampak: draft.dampak,
+      untukSiapa: draft.untukSiapa,
+      syarat: undefined,
+      idKatalog: '1B-04',
+    },
+    kelompok: [],
+    batas: 'Batas.',
+    ajakan: { label: 'Mulai', sesudahnya: 'Sesudahnya.' },
+    metadata: { judul: 'Judul', deskripsi: 'Deskripsi.' },
+    jembatan: [],
+    kandidatJembatan: [],
+    ditahan: 0,
+    catatan: [],
+  }
+
+  it('codes a Peekabo chapter by its heading, not by its first offer', () => {
+    const [bab] = draftDocuments(page, 'side-id', [draft])
+      .trim()
+      .split('\n')
+      .map((line) => JSON.parse(line))
+    expect(bab.idKatalog).toBe('PRD')
   })
 })
 
