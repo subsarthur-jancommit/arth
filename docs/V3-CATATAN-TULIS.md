@@ -213,3 +213,18 @@ baru bermakna setelah offer tujuannya terbit.
 Kebijakan (`docs/V3-SERAH-W7-HALAMAN.md` bagian 4) belum ditulis. Halaman itu
 menunggu tinjauan ahli hukum, lalu "ok tulis" sendiri. Rangkaian Villa dan
 Perumahan developer menunggu offer yang masih ditahan.
+
+## Contoh format di Cara kami bekerja
+
+- **Izin:** "ok tulis: contohFormat Cara kami bekerja Versi A, setujui dan
+  terbitkan.", 17 Oktober 2026.
+- **Ditulis:** `contohFormat` di dokumen `howWeWork` diisi "Setiap pekerjaan
+  dimulai dari satu kesepakatan tertulis. Isinya lingkup, harga, target, bentuk
+  laporan, pemilik hasil kerja, dan komisi dari mitra bila ada." Sumbernya
+  master brief: Cara kami bekerja baris 23, aturan main 2, 4, dan 10, dan baris 142. Jejak sumber `src-contoh-format` ditambahkan, dan dokumen langsung
+  disetujui lalu diterbitkan. Versi terbit sebelumnya disimpan sebagai cadangan
+  di luar repositori.
+- **Diperiksa sesudahnya:** kueri situs atas API publik Sanity mengembalikan
+  semua medan halaman terisi. `/id/cara-kerja` tetap 404 karena rutenya ada di
+  `lib/seo/awaiting-content.ts`. PR yang mengeluarkannya dari daftar itu
+  membuka halaman tersebut.

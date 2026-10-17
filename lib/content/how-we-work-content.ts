@@ -27,7 +27,8 @@ const howWeWorkSourceSchema = z.object({
   pengungkapanKomisi: textSchema,
   yangTidakDijual: textSchema,
   wilayah: z.array(z.object({ _key: z.string(), nama: textSchema })).min(1),
-  contohFormat: textSchema,
+  // Optional in the Studio schema, and the page renders without it.
+  contohFormat: textSchema.nullable(),
   metadata: z
     .object({
       title: z.string().nullable(),

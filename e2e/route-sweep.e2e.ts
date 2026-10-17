@@ -59,14 +59,9 @@ import { axeTags } from './axe-tags'
 /** Path (as it will be requested, e.g. `/pricing`) -> reason it's excluded. */
 const OPT_OUT = new Map<string, string>([
   /*
-   * `/studio` renders nothing: it is a permanent redirect to `/cara-kerja`,
-   * which awaits published content and answers 404 since R0
-   * (`lib/seo/awaiting-content.ts`). The redirect is asserted in
-   * `site-reach.e2e.ts`; the 404 in `awaiting-content.e2e.ts`. Remove these
-   * two when R5 publishes the work-method page.
+   * Empty since R5 published the work-method page: `/studio` used to be
+   * opted out because its redirect target, `/cara-kerja`, answered 404.
    */
-  ['/en/studio', 'redirects to /cara-kerja, which awaits content (R0)'],
-  ['/id/studio', 'redirects to /cara-kerja, which awaits content (R0)'],
 ])
 
 const APP_DIR = join(process.cwd(), 'app')
