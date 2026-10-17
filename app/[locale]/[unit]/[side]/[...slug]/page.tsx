@@ -154,6 +154,14 @@ const chapterReaderSchema = z.object({
   ajakan: z
     .object({ label: z.string().nullable(), sesudahnya: z.string().nullable() })
     .nullable(),
+  metadata: z
+    .object({
+      title: z.string().nullable(),
+      description: z.string().nullable(),
+      noIndex: z.boolean().nullable(),
+    })
+    .nullable()
+    .optional(),
 })
 
 type ChapterReaderData = z.infer<typeof chapterReaderSchema>
@@ -191,6 +199,8 @@ function chapterIsSafe(data: ChapterReaderData): boolean {
     ...(data.jembatan?.map((bridge) => bridge.kalimat) ?? []),
     data.ajakan?.label,
     data.ajakan?.sesudahnya,
+    data.metadata?.title,
+    data.metadata?.description,
   ])
 }
 
@@ -718,12 +728,15 @@ export async function generateMetadata({ params }: ArthurDetailPageProps) {
       return { robots: { index: false } }
     }
     const chapterData = parsed.data
+    const description =
+      chapterData.metadata?.description ??
+      chapterData.situasi ??
+      chapterData.kutipan
     return generatePageMetadata({
-      title: chapterData.nama ?? 'Bab Arthur',
-      ...(chapterData.situasi || chapterData.kutipan
-        ? { description: chapterData.situasi ?? chapterData.kutipan ?? '' }
-        : {}),
+      title: chapterData.metadata?.title ?? chapterData.nama ?? 'Bab Arthur',
+      ...(description ? { description } : {}),
       url: `/${locale}${path}`,
+      noIndex: chapterData.metadata?.noIndex ?? false,
     })
   }
 

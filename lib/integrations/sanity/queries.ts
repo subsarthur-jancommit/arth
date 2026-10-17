@@ -668,7 +668,8 @@ const sideChapterFields = `
     _id,
     "slug": slug.current,
     "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
-    "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value)
+    "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),
+    "punyaHalaman": coalesce(halamanSendiri, false)
   }
 `
 
@@ -692,7 +693,8 @@ const sideChapterPreviewFields = `
     _id,
     "slug": slug.current,
     "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
-    "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value)
+    "dampak": coalesce(dampak[_key == $locale][0].value, dampak[_key == "id"][0].value),
+    "punyaHalaman": coalesce(halamanSendiri, false)
   }
 `
 
@@ -810,6 +812,11 @@ const chapterReaderFields = `
     "ajakan": {
       "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value, sisi->langkahPertama.label[_key == $locale][0].value, sisi->langkahPertama.label[_key == "id"][0].value),
       "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value, sisi->langkahPertama.sesudahnya[_key == $locale][0].value, sisi->langkahPertama.sesudahnya[_key == "id"][0].value)
+    },
+    "metadata": {
+      "title": metadata.title,
+      "description": metadata.description,
+      "noIndex": metadata.noIndex
     }
 `
 
@@ -840,6 +847,11 @@ export const chapterPagePreviewQuery = defineQuery(`
     "ajakan": {
       "label": coalesce(ajakan.label[_key == $locale][0].value, ajakan.label[_key == "id"][0].value, sisi->langkahPertama.label[_key == $locale][0].value, sisi->langkahPertama.label[_key == "id"][0].value),
       "sesudahnya": coalesce(ajakan.sesudahnya[_key == $locale][0].value, ajakan.sesudahnya[_key == "id"][0].value, sisi->langkahPertama.sesudahnya[_key == $locale][0].value, sisi->langkahPertama.sesudahnya[_key == "id"][0].value)
+    },
+    "metadata": {
+      "title": metadata.title,
+      "description": metadata.description,
+      "noIndex": metadata.noIndex
     }
   }
 `)

@@ -10,6 +10,7 @@
  */
 
 import type { CatalogUnit } from './offer-models'
+import type { ShortlistChapter } from './shortlist'
 
 /**
  * Units whose situation pages are derived today. A unit joins this list in
@@ -44,6 +45,12 @@ export type SituationOffer = {
 
 export type SituationOverride = {
   situasi?: string
+  /** The chapter's buyers as people, for `bab.pembeli`. */
+  pembeli?: string
+  /** Limits written for this chapter, replacing the unit default. */
+  batas?: string
+  /** A shorter address than the one derived from the chapter name. */
+  slug?: string
   metadata?: { judul: string; deskripsi: string }
   /** Bridge sentences, keyed by the target offer's catalogue code. */
   jembatan?: { offer: string; kalimat: string }[]
@@ -67,6 +74,7 @@ export type SituationPage = {
   slug: string
   kutipan: string
   situasi: string
+  pembeli?: string
   pintuMasuk: ListItem | undefined
   kelompok: { label: string; items: ListItem[] }[]
   batas: string
@@ -79,6 +87,8 @@ export type SituationPage = {
   ditahan: number
   /** What still needs a person before the page can be published. Internal. */
   catatan: string[]
+  /** The `situation-overrides.ts` key the chapter copy came from. Internal. */
+  salinan?: string
 }
 
 /** Reader type labels in the order a Teknologi page shows them. */
@@ -113,6 +123,64 @@ const FIRST_STEP = {
       'Audit singkat berharga tetap, untuk Anda yang belum yakin penyebab masalahnya. Hasilnya menentukan apakah cukup satu layanan atau proyek utuh.',
   },
 } as const
+
+/**
+ * The first step outside Teknologi, as the side page already states it, so
+ * a chapter and its side never promise two different beginnings.
+ */
+const SIDE_FIRST_STEP = {
+  // Konstruksi Sisi B, Alur kerja steps 1 and 2; the side page's langkahPertama.
+  'konstruksi/B': {
+    label: 'Ceritakan bangunannya',
+    sesudahnya: 'Kami survei kondisi lapangan sebelum angka apa pun disebut.',
+  },
+  // Konstruksi Sisi A, Cara membeli: eceran first; the side's langkahPertama.
+  'konstruksi/A': {
+    label: 'Mulai dari satu celah',
+    sesudahnya:
+      'Pilih eceran per masalah untuk bagian yang tidak sanggup Anda tangani; paket hulu-hilir dan paket rakitan dapat menyusul.',
+  },
+  // Peekabo Sisi B, Cara bergabung step 1 narrowed to the one open route,
+  // creators and hosts; the revised side page carries the same step.
+  'peekabo/B': {
+    label: 'Daftar gratis sebagai kreator atau host',
+    sesudahnya:
+      'Bentuk kerja dan bayarannya, per jam, per bulan, atau dari kontrak brand, disepakati tertulis sebelum kerja dimulai.',
+  },
+  // Teknologi Sisi A, Lima cara mulai; the side page's langkahPertama.
+  'teknologi/A': {
+    label: 'Mulai dengan audit singkat',
+    sesudahnya:
+      'Kami mencari penyebab masalah sebelum Anda memilih satu layanan, proyek utuh, tim khusus, atau pemeliharaan.',
+  },
+  // Peekabo Sisi A, the side page's langkahPertama (Tangga nilai step 1).
+  'peekabo/A': {
+    label: 'Mulai dari audit atau sesi strategi',
+    sesudahnya:
+      'Langkah awal dapat berupa audit, sesi strategi, workshop, atau playbook; produksi, kampanye, tim, talenta, dan jaringan menyusul bila dibutuhkan.',
+  },
+} as const satisfies Partial<
+  Record<`${CatalogUnit}/${'A' | 'B'}`, { label: string; sesudahnya: string }>
+>
+
+function sideFirstStep(unit: CatalogUnit, side: 'A' | 'B') {
+  const key = `${unit}/${side}`
+  return Object.hasOwn(SIDE_FIRST_STEP, key)
+    ? SIDE_FIRST_STEP[key as keyof typeof SIDE_FIRST_STEP]
+    : undefined
+}
+
+/**
+ * The chapter name a reader sees: the master brief's heading without the
+ * agent's labels (Peta website, Nama bab untuk pembaca), and without the
+ * chapter code Peekabo headings end with, since no code is ever shown.
+ */
+export function readerName(nama: string): string {
+  return nama.replace(
+    /\s*\((?:lapis|modul) [^)]*\)|\s*\(jembatan\)|\s*\([A-Z]{3}\)$/g,
+    ''
+  )
+}
 
 /** "Kuliner dan F&B" → "kuliner"; "Jasa lokal: salon, …" → "jasa-lokal". */
 export function situationSlug(nama: string): string {
@@ -251,6 +319,110 @@ export function deriveSituation(
   }
 }
 
+/**
+ * One chapter page from the owner's shortlist (`shortlist.ts`): exactly the
+ * offers decided, with the decided entry first. The rest are grouped by type,
+ * as the chapter template shows them, and the groups follow the order in
+ * which the shortlist first places each type. The page carries no choice of
+ * its own, so it works for every unit. What still needs a person lands in
+ * `catatan` instead of being guessed.
+ */
+export function shortlistSituation(
+  chapter: ShortlistChapter,
+  source: SituationSource,
+  offers: SituationOffer[],
+  bridges: [string, string][],
+  override: SituationOverride = {}
+): SituationPage {
+  const inChapter = offers.filter(
+    (offer) =>
+      offer.unit === chapter.unit &&
+      offer.side === chapter.side &&
+      offer.situation === chapter.situation
+  )
+  const byId = new Map(inChapter.map((offer) => [offer.idKatalog, offer]))
+  const catatan: string[] = []
+  if (chapter.ditahanBab)
+    catatan.push('Bab ditahan utuh; halaman babnya tidak dibuat.')
+
+  const picked = chapter.pilihan.flatMap(({ id }) => {
+    const offer = byId.get(id)
+    if (!offer) {
+      catatan.push(`${id} tidak ada di bab ini.`)
+      return []
+    }
+    if (offer.lane !== 'otomatis') {
+      catatan.push(`${id} belum siap tayang.`)
+      return []
+    }
+    return [offer]
+  })
+  const entry = picked.find((offer) => offer.idKatalog === chapter.entri)
+  const rest = picked.filter((offer) => offer !== entry)
+  // Groups follow the shortlist: a type appears where its first offer was
+  // placed, because the order answers the quote clause by clause.
+  const kelompok = [
+    ...Map.groupBy(rest, (offer) => offer.jenis ?? 'Lainnya'),
+  ].map(([label, items]) => ({ label, items: items.map(item) }))
+
+  const ajakan =
+    sideFirstStep(chapter.unit, chapter.side) ??
+    (chapter.unit === 'teknologi' ? FIRST_STEP[chapter.side] : undefined)
+
+  if (!chapter.ditahanBab && picked.length < 3)
+    catatan.push(
+      `Hanya ${picked.length} pekerjaan siap; halaman bab butuh paling sedikit tiga.`
+    )
+  if (!chapter.ditahanBab && !entry)
+    catatan.push('Pintu masuk tidak ada di antara pekerjaan yang tayang.')
+  if (!override.batas) catatan.push('Batas bab ini belum ditulis.')
+  if (!override.situasi) catatan.push('Situasi bab ini belum ditulis.')
+  if (!override.metadata) catatan.push('Teks mesin pencari belum ditulis.')
+  if (!ajakan) catatan.push('Langkah pertama sisi ini belum ditulis.')
+
+  const metadata = override.metadata ?? metadataOf(source, entry)
+  if (metadata.judul.length > 60)
+    catatan.push('Judul mesin pencari lebih dari 60 karakter.')
+  if (metadata.deskripsi.length > 155)
+    catatan.push('Deskripsi mesin pencari lebih dari 155 karakter.')
+
+  const readyIds = new Set(
+    offers.filter((o) => o.lane === 'otomatis').map((o) => o.idKatalog)
+  )
+  const chapterIds = new Set(picked.map((offer) => offer.idKatalog))
+  const kandidatJembatan = bridges
+    .filter(([a, b]) => chapterIds.has(a) !== chapterIds.has(b))
+    .map(([a, b]) => (chapterIds.has(a) ? b : a))
+    .filter((target) => readyIds.has(target) && !chapterIds.has(target))
+  const jembatan = (override.jembatan ?? [])
+    .slice(0, 2)
+    .map(({ offer, kalimat }) => ({ kalimat, idKatalog: offer }))
+
+  const nama = readerName(source.nama)
+  const salinan = `${chapter.unit}/${chapter.side}/${situationSlug(nama)}`
+  return {
+    unit: chapter.unit,
+    side: chapter.side,
+    nama,
+    slug: override.slug ?? situationSlug(nama),
+    kutipan: source.kutipan,
+    situasi: override.situasi ?? `Untuk ${lowerFirst(source.pembeli)}`,
+    ...(override.pembeli ? { pembeli: override.pembeli } : {}),
+    pintuMasuk: entry ? item(entry) : undefined,
+    kelompok,
+    batas: override.batas ?? '',
+    ajakan: ajakan ?? { label: '', sesudahnya: '' },
+    metadata,
+    jembatan,
+    kandidatJembatan: [...new Set(kandidatJembatan)],
+    // Held means not ready to publish; an offer the owner simply did not
+    // pick is still ready and is not counted here.
+    ditahan: inChapter.filter((offer) => offer.lane !== 'otomatis').length,
+    catatan,
+    ...(Object.keys(override).length > 0 ? { salinan } : {}),
+  }
+}
+
 const line = (entry: ListItem) =>
   `**${entry.judul}**  \n${entry.dampak}  \n_${entry.untukSiapa}_${entry.syarat ? `  \nSyarat: ${entry.syarat}` : ''}`
 
@@ -268,6 +440,7 @@ export function situationMarkdown(
   ]
   for (const page of pages) {
     out.push('', '---', '', `## ${page.nama}`, '', `> ${page.kutipan}`)
+    if (page.pembeli) out.push('', `_${page.pembeli}_`)
     if (page.pintuMasuk)
       out.push('', `**Mulai dari sini.** ${line(page.pintuMasuk)}`)
     for (const group of page.kelompok) {
