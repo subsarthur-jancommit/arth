@@ -6,7 +6,7 @@ import { readerName, situationSlug } from '@/lib/content/situation-pages'
 import { checkText } from '@/lib/content/style-gate'
 import { SIDES } from '@/lib/content/units'
 
-import { missingChapters, WAVES } from './chapter-wave'
+import { missingChapters, type Wave, WAVES } from './chapter-wave'
 import { CATALOG_SIDE_KEYS } from './import-catalog'
 
 /*
@@ -25,13 +25,14 @@ describe('CATALOG_SIDE_KEYS', () => {
   })
 })
 
-for (const [name, wave] of Object.entries(WAVES)) {
+for (const [name, wave] of Object.entries(WAVES) as [string, Wave][]) {
   const chapters = SHORTLIST_PROPOSALS.filter(
     (chapter) =>
       chapter.unit === wave.unit &&
       chapter.side === wave.side &&
       chapter.keputusan !== undefined &&
-      chapter.ditahanBab === undefined
+      chapter.ditahanBab === undefined &&
+      !wave.kecuali?.includes(chapter.situation)
   )
 
   describe(`wave ${name}`, () => {

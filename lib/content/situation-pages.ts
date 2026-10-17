@@ -140,6 +140,25 @@ const SIDE_FIRST_STEP = {
     sesudahnya:
       'Pilih eceran per masalah untuk bagian yang tidak sanggup Anda tangani; paket hulu-hilir dan paket rakitan dapat menyusul.',
   },
+  // Peekabo Sisi B, Cara bergabung step 1 narrowed to the one open route,
+  // creators and hosts; the revised side page carries the same step.
+  'peekabo/B': {
+    label: 'Daftar gratis sebagai kreator atau host',
+    sesudahnya:
+      'Bentuk kerja dan bayarannya, per jam, per bulan, atau dari kontrak brand, disepakati tertulis sebelum kerja dimulai.',
+  },
+  // Teknologi Sisi A, Lima cara mulai; the side page's langkahPertama.
+  'teknologi/A': {
+    label: 'Mulai dengan audit singkat',
+    sesudahnya:
+      'Kami mencari penyebab masalah sebelum Anda memilih satu layanan, proyek utuh, tim khusus, atau pemeliharaan.',
+  },
+  // Peekabo Sisi A, the side page's langkahPertama (Tangga nilai step 1).
+  'peekabo/A': {
+    label: 'Mulai dari audit atau sesi strategi',
+    sesudahnya:
+      'Langkah awal dapat berupa audit, sesi strategi, workshop, atau playbook; produksi, kampanye, tim, talenta, dan jaringan menyusul bila dibutuhkan.',
+  },
 } as const satisfies Partial<
   Record<`${CatalogUnit}/${'A' | 'B'}`, { label: string; sesudahnya: string }>
 >
@@ -153,10 +172,14 @@ function sideFirstStep(unit: CatalogUnit, side: 'A' | 'B') {
 
 /**
  * The chapter name a reader sees: the master brief's heading without the
- * agent's labels (Peta website, Nama bab untuk pembaca).
+ * agent's labels (Peta website, Nama bab untuk pembaca), and without the
+ * chapter code Peekabo headings end with, since no code is ever shown.
  */
 export function readerName(nama: string): string {
-  return nama.replace(/\s*\((?:lapis|modul) [^)]*\)|\s*\(jembatan\)/g, '')
+  return nama.replace(
+    /\s*\((?:lapis|modul) [^)]*\)|\s*\(jembatan\)|\s*\([A-Z]{3}\)$/g,
+    ''
+  )
 }
 
 /** "Kuliner dan F&B" → "kuliner"; "Jasa lokal: salon, …" → "jasa-lokal". */
