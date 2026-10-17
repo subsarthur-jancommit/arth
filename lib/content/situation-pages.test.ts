@@ -238,6 +238,14 @@ describe('readerName', () => {
     )
     expect(readerName('Kuliner dan F&B')).toBe('Kuliner dan F&B')
   })
+
+  it('drops the chapter code a Peekabo heading ends with', () => {
+    expect(readerName('Agency marketing (MKT)')).toBe('Agency marketing')
+    expect(readerName('Live commerce untuk brand (LIV)')).toBe(
+      'Live commerce untuk brand'
+    )
+    expect(readerName('Konstruksi F&B')).toBe('Konstruksi F&B')
+  })
 })
 
 describe('situationSlug', () => {

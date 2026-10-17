@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'bun:test'
 
+import type { SituationPage } from '@/lib/content/situation-pages'
+
 import {
   audienceOf,
+  draftDocuments,
   draftOffer,
   parseBridges,
   parseCatalog,
@@ -48,6 +51,63 @@ describe('parseCatalog', () => {
   it('strips bold and catalogue marks from the title, and keeps the mark apart', () => {
     expect(rows[2]?.title).toBe('Pembacaan otomatis nota, faktur, dan KTP')
     expect(rows[2]?.mark).toBe('†')
+  })
+
+  it('drops a Peekabo research service code from the title', () => {
+    const [row] = parseCatalog(
+      `## Produksi kreatif (PRD)
+
+| ID | Offer | Dampak bagi pembeli | Pembeli | Jenis | Masalah | Model | Asal |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1B-04 | **Foto produk dan lifestyle (02.B)** | Produk tampil layak jual | Brand, seller | Aset | Dibeli | K3 | A |
+`,
+      { unit: 'peekabo', side: 'A' }
+    )
+    expect(row?.title).toBe('Foto produk dan lifestyle')
+  })
+})
+
+describe('draftDocuments', () => {
+  const [row] = parseCatalog(
+    `## Produksi kreatif (PRD)
+
+| ID | Offer | Dampak bagi pembeli | Pembeli | Jenis | Masalah | Model | Asal |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1B-04 | **Foto produk dan lifestyle** | Produk tampil layak jual | Brand, seller | Aset | Dibeli | K3 | A |
+`,
+    { unit: 'peekabo', side: 'A' }
+  )
+  const draft = draftOffer(row!)
+  const page: SituationPage = {
+    unit: 'peekabo',
+    side: 'A',
+    nama: 'Produksi kreatif',
+    slug: 'produksi-kreatif',
+    kutipan: '“Kontennya harus keluar.”',
+    situasi: 'Situasi.',
+    pintuMasuk: {
+      judul: draft.judul,
+      dampak: draft.dampak,
+      untukSiapa: draft.untukSiapa,
+      syarat: undefined,
+      idKatalog: '1B-04',
+    },
+    kelompok: [],
+    batas: 'Batas.',
+    ajakan: { label: 'Mulai', sesudahnya: 'Sesudahnya.' },
+    metadata: { judul: 'Judul', deskripsi: 'Deskripsi.' },
+    jembatan: [],
+    kandidatJembatan: [],
+    ditahan: 0,
+    catatan: [],
+  }
+
+  it('codes a Peekabo chapter by its heading, not by its first offer', () => {
+    const [bab] = draftDocuments(page, 'side-id', [draft])
+      .trim()
+      .split('\n')
+      .map((line) => JSON.parse(line))
+    expect(bab.idKatalog).toBe('PRD')
   })
 })
 
@@ -187,6 +247,32 @@ describe('audienceOf', () => {
   })
 })
 
+describe('the Pelaku proyek market column', () => {
+  const side = [
+    '## Tenaga kerja (modul B)',
+    '',
+    '| ID | Offer | Dampak bagi pembeli | Pembeli | Jenis | Pasar | Modul |',
+    '| --- | --- | --- | --- | --- | --- | --- |',
+    '| TNK-01 | **Tukang harian** | Tukang datang sesuai jadwal | Kontraktor utama | Celah | Keduanya | B |',
+    '| TNK-02 | **Tukang proyek sekolah** | Tukang datang | Kontraktor utama | Celah | Pemerintah | B |',
+  ].join('\n')
+  const [both, government] = parseCatalog(side, {
+    unit: 'konstruksi',
+    side: 'A',
+  })
+
+  it('reads Pasar into the filter value the chapter page uses', () => {
+    expect(both?.market).toBe('keduanya')
+    expect(government?.market).toBe('pemerintah')
+  })
+
+  it('carries it to the draft, and leaves a side without the column alone', () => {
+    expect(both && draftOffer(both, NO_OVERRIDES).pasar).toBe('keduanya')
+    expect(rows[0]?.market).toBeUndefined()
+    expect(rows[0] && 'pasar' in draftOffer(rows[0], NO_OVERRIDES)).toBe(false)
+  })
+})
+
 describe('parseSituations and parseBridges', () => {
   it('reads the buyer line and quote of each chapter', () => {
     const [kuliner] = parseSituations(
@@ -202,6 +288,19 @@ describe('parseSituations and parseBridges', () => {
     expect(kuliner?.nama).toBe('Kuliner dan F&B')
     expect(kuliner?.pembeli).toBe('Warung dan kedai.')
     expect(kuliner?.kutipan).toBe('“Pesanan saya bercampur di chat.”')
+  })
+
+  it('keeps a chapter that has a quote but no buyer line', () => {
+    const [rakitan] = parseSituations(
+      [
+        '## Paket rakitan menurut profil pembeli',
+        '',
+        '**Yang biasa mereka katakan:** “Saya butuh paket yang cocok.”',
+      ].join('\n'),
+      { unit: 'konstruksi', side: 'A' }
+    )
+    expect(rakitan?.nama).toBe('Paket rakitan menurut profil pembeli')
+    expect(rakitan?.pembeli).toBe('')
   })
 
   it('reads one pair per bridge row and skips other tables', () => {

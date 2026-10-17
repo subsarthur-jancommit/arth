@@ -36,12 +36,14 @@ import { checkText, type StyleFinding } from '@/lib/content/style-gate'
 
 import { draftDocuments, readCatalog } from './import-catalog'
 
-type Wave = {
+export type Wave = {
   unit: CatalogUnit
   side: 'A' | 'B'
   judul: string
   /** Where each block's words come from, for the handover's source trail. */
   dasar: readonly string[]
+  /** Decided chapters this wave leaves alone, already published earlier. */
+  kecuali?: readonly string[]
 }
 
 /** The waves of section 8.4, as they are written. */
@@ -61,6 +63,85 @@ export const WAVES = {
       'Mesin pencari: Suara dan gaya, bentuk per blok; wilayah dari header Konstruksi.',
     ],
   },
+  W3: {
+    unit: 'konstruksi',
+    side: 'A',
+    judul: 'Konstruksi, untuk pelaku proyek',
+    dasar: [
+      'Nama bab, kutipan: Konstruksi Sisi A, judul bab dan “Yang biasa mereka katakan”, apa adanya; label modul dan lapis dibuang (Peta website, Nama bab untuk pembaca).',
+      'Untuk siapa: baris Pembeli bab itu, ditulis sebagai orang; untuk paket rakitan, pembeli paketnya.',
+      'Situasi: kutipan bab dan kolom “Yang mereka cari” di Peta pembeli unit Konstruksi, dijawab dengan dampak offer yang dipilih.',
+      'Kartu pekerjaan: baris offer di daftar pendek yang disetujui, judul, dampak, dan pasar katalog; urutan dan pintu masuk dari keputusan pemilik.',
+      'Batas: Konstruksi aturan main 1 (tenaga ahli dan sertifikat), 2 (tender), 3 (penyedia dan konsultan), 4 (margin dalam HPS), 7 (modal kerja), 9 (keselamatan dan alat), 10 (struktur); Aturan isi aturan 3 dan kalimat wajib tender, pembiayaan, dan komisi.',
+      'Jembatan: tidak ada; halaman tujuan di unit Teknologi belum terbit.',
+      'Langkah pertama: Konstruksi Sisi A Cara membeli, sama dengan langkah pertama halaman sisi.',
+      'Mesin pencari: Suara dan gaya, bentuk per blok; wilayah dari pengantar Sisi A.',
+    ],
+  },
+  W4: {
+    unit: 'teknologi',
+    side: 'B',
+    judul: 'Teknologi, untuk hasil siap pakai',
+    kecuali: ['Kuliner dan F&B'],
+    dasar: [
+      'Nama bab, kutipan: Teknologi Sisi B, judul bab dan “Yang biasa mereka katakan”, apa adanya.',
+      'Untuk siapa: baris Pembeli bab itu, ditulis sebagai orang; di bab keuangan tanpa pembeli trading, karena posisi bot trading belum diputuskan.',
+      'Situasi: kutipan bab dan kolom “Yang mereka cari” di Peta pembeli unit Teknologi, dijawab dengan dampak offer yang dipilih.',
+      'Kartu pekerjaan: baris offer di daftar pendek yang disetujui; dampak DIS-04 ditulis ulang sebagai pekerjaannya (Aturan isi 3).',
+      'Batas: Teknologi aturan main 3 (kanal dan supplier), 4 (data pribadi dan kesehatan), 5 (layanan pemerintah), 6 (data publik), 7 (pesan hanya dengan izin); Aturan isi aturan 3; kalimat komisi yang sudah disetujui di bab Kuliner (Jalur komisi dua sisi).',
+      'Jembatan: tabel Jembatan ke unit teknologi di Konstruksi; tampil setelah halaman tujuannya terbit.',
+      'Langkah pertama: Teknologi Sisi B Alur kerja langkah 2, sama dengan bab Kuliner yang sudah terbit.',
+      'Mesin pencari: pola judul bab Kuliner; wilayah tidak disebut karena wilayah Teknologi belum diputuskan.',
+      'Kuliner dan F&B sudah terbit dan tidak ditulis ulang di gelombang ini.',
+    ],
+  },
+  W5: {
+    unit: 'peekabo',
+    side: 'A',
+    judul: 'Peekabo, untuk pemilik usaha dan brand',
+    dasar: [
+      'Nama bab, kutipan: Peekabo Sisi A, judul bab dan “Yang biasa mereka katakan”, apa adanya; kode bab di judul dibuang, karena kode katalog tidak pernah tampil.',
+      'Untuk siapa: baris Pembeli bab itu, ditulis sebagai orang.',
+      'Situasi: kutipan bab dan kolom “Yang mereka cari” di Peta pembeli unit Agency, dijawab dengan dampak offer yang dipilih.',
+      'Kartu pekerjaan: baris offer di daftar pendek yang disetujui; kode layanan riset di judul, seperti 02.B, dibuang.',
+      'Batas: Peekabo Cara kami bekerja (target, lingkup, dan laporan tertulis; jaringan tanpa biaya masuk, bonus rekrutmen, atau janji penghasilan); Peta & aturan main aturan 2 dan 3 (platform), 8 (hubungan kerja), 9 (event dan undian), 10 (data peserta); Aturan isi aturan 3; kalimat komisi di bab yang merujuk SaaS atau vendor.',
+      'Jembatan: tabel Jembatan ke unit konstruksi dan teknologi; tampil setelah halaman tujuannya terbit.',
+      'Langkah pertama: sama dengan langkah pertama halaman sisi Pemilik usaha.',
+      'Mesin pencari: Suara dan gaya, bentuk per blok; wilayah dari header Peekabo dan pengantar Sisi A.',
+      'Operator SaaS niche dan Akademi untuk tim klien ditahan utuh sesuai daftar pendek, jadi tidak punya halaman.',
+    ],
+  },
+  W6: {
+    unit: 'teknologi',
+    side: 'A',
+    judul: 'Teknologi, untuk yang paham teknis',
+    dasar: [
+      'Nama bab, kutipan: Teknologi Sisi A, judul bab dan “Yang biasa mereka katakan”, apa adanya.',
+      'Untuk siapa: baris Pembeli bab itu, ditulis sebagai orang; di bab individu tanpa trader mandiri, karena posisi bot trading belum diputuskan.',
+      'Situasi: kutipan bab dan kolom “Yang mereka cari” di Peta pembeli unit Teknologi, dijawab dengan dampak offer yang dipilih.',
+      'Kartu pekerjaan: baris offer di daftar pendek yang disetujui; dampak TIM-04 ditulis ulang karena memuat frasa yang dilarang gerbang gaya.',
+      'Batas: Teknologi Sisi A Lima cara mulai (lingkup tertulis, kode sumber dan dokumentasi diserahkan); Teknologi aturan main 4 (data pribadi) dan 6 (data publik); Aturan isi aturan 3; kalimat komisi yang sudah disetujui di bab yang menyentuh layanan pembayaran.',
+      'Jembatan: tidak ada; master brief tidak memetakan jembatan untuk offer yang dipilih.',
+      'Langkah pertama: sama dengan langkah pertama halaman sisi Paham teknis.',
+      'Mesin pencari: Suara dan gaya, bentuk per blok; wilayah tidak disebut karena wilayah Teknologi belum diputuskan.',
+    ],
+  },
+  W7: {
+    unit: 'peekabo',
+    side: 'B',
+    judul: 'Peekabo, untuk jaringan penjual',
+    dasar: [
+      'Nama bab, kutipan: Peekabo Sisi B, judul bab dan “Yang biasa mereka katakan”, apa adanya; kode bab di judul dibuang.',
+      'Untuk siapa: baris Peserta bab itu, ditulis sebagai orang.',
+      'Situasi: kutipan bab dan kolom “Yang mereka cari” di Peta pembeli unit Agency, dijawab dengan dampak offer yang dipilih; bentuk bayaran ditulis, penghasilan tidak dijanjikan.',
+      'Kartu pekerjaan: baris offer di daftar pendek yang disetujui.',
+      'Batas: Peekabo Peta & aturan main aturan 7 (pajak honor), 8 (hubungan kerja), 14 (kelas bukan syarat bergabung); Cara kami bekerja (tanpa janji penghasilan).',
+      'Jembatan: tidak ada; jembatan KRE-04 ke studio Konstruksi ikut ditahan bersama offer-nya.',
+      'Langkah pertama: Cara bergabung langkah 1, disempitkan ke jalur kreator dan host karena dua jalur lain ditahan; halaman sisi Jaringan diusulkan memakai langkah yang sama (lihat docs/V3-SERAH-W7-HALAMAN.md).',
+      'Mesin pencari: Suara dan gaya, bentuk per blok; wilayah dari header Peekabo.',
+      'Sales lepas (OCS) dan Anggota komunitas belanja (MBR) ditahan utuh sesuai daftar pendek, jadi tidak punya halaman.',
+    ],
+  },
 } as const satisfies Record<string, Wave>
 
 /**
@@ -77,6 +158,7 @@ export function missingChapters(
       chapter.side === wave.side &&
       chapter.keputusan !== undefined &&
       chapter.ditahanBab === undefined &&
+      !wave.kecuali?.includes(chapter.situation) &&
       !sources.some(
         (source) =>
           source.unit === chapter.unit &&
@@ -103,6 +185,7 @@ export function wavePages(
           item.situation === source.nama
       )
       if (!chapter?.keputusan || chapter.ditahanBab) return []
+      if (wave.kecuali?.includes(chapter.situation)) return []
       const key = `${wave.unit}/${wave.side}/${situationSlug(readerName(source.nama))}`
       const page = shortlistSituation(
         chapter,
