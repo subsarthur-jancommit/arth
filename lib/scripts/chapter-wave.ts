@@ -111,6 +111,37 @@ export const WAVES = {
       'Operator SaaS niche dan Akademi untuk tim klien ditahan utuh sesuai daftar pendek, jadi tidak punya halaman.',
     ],
   },
+  W6: {
+    unit: 'teknologi',
+    side: 'A',
+    judul: 'Teknologi, untuk yang paham teknis',
+    dasar: [
+      'Nama bab, kutipan: Teknologi Sisi A, judul bab dan “Yang biasa mereka katakan”, apa adanya.',
+      'Untuk siapa: baris Pembeli bab itu, ditulis sebagai orang; di bab individu tanpa trader mandiri, karena posisi bot trading belum diputuskan.',
+      'Situasi: kutipan bab dan kolom “Yang mereka cari” di Peta pembeli unit Teknologi, dijawab dengan dampak offer yang dipilih.',
+      'Kartu pekerjaan: baris offer di daftar pendek yang disetujui; dampak TIM-04 ditulis ulang karena memuat frasa yang dilarang gerbang gaya.',
+      'Batas: Teknologi Sisi A Lima cara mulai (lingkup tertulis, kode sumber dan dokumentasi diserahkan); Teknologi aturan main 4 (data pribadi) dan 6 (data publik); Aturan isi aturan 3; kalimat komisi yang sudah disetujui di bab yang menyentuh layanan pembayaran.',
+      'Jembatan: tidak ada; master brief tidak memetakan jembatan untuk offer yang dipilih.',
+      'Langkah pertama: sama dengan langkah pertama halaman sisi Paham teknis.',
+      'Mesin pencari: Suara dan gaya, bentuk per blok; wilayah tidak disebut karena wilayah Teknologi belum diputuskan.',
+    ],
+  },
+  W7: {
+    unit: 'peekabo',
+    side: 'B',
+    judul: 'Peekabo, untuk jaringan penjual',
+    dasar: [
+      'Nama bab, kutipan: Peekabo Sisi B, judul bab dan “Yang biasa mereka katakan”, apa adanya; kode bab di judul dibuang.',
+      'Untuk siapa: baris Peserta bab itu, ditulis sebagai orang.',
+      'Situasi: kutipan bab dan kolom “Yang mereka cari” di Peta pembeli unit Agency, dijawab dengan dampak offer yang dipilih; bentuk bayaran ditulis, penghasilan tidak dijanjikan.',
+      'Kartu pekerjaan: baris offer di daftar pendek yang disetujui.',
+      'Batas: Peekabo Peta & aturan main aturan 7 (pajak honor), 8 (hubungan kerja), 14 (kelas bukan syarat bergabung); Cara kami bekerja (tanpa janji penghasilan).',
+      'Jembatan: tidak ada; jembatan KRE-04 ke studio Konstruksi ikut ditahan bersama offer-nya.',
+      'Langkah pertama: Cara bergabung langkah 1, disempitkan ke jalur kreator dan host karena dua jalur lain ditahan; halaman sisi Jaringan diusulkan memakai langkah yang sama (lihat docs/V3-SERAH-W7-HALAMAN.md).',
+      'Mesin pencari: Suara dan gaya, bentuk per blok; wilayah dari header Peekabo.',
+      'Sales lepas (OCS) dan Anggota komunitas belanja (MBR) ditahan utuh sesuai daftar pendek, jadi tidak punya halaman.',
+    ],
+  },
 } as const satisfies Record<string, Wave>
 
 /**
