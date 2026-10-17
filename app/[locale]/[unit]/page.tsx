@@ -95,13 +95,20 @@ export default async function UnitPage({ params }: UnitPageProps) {
   const name = content?.nama ?? fallback.nama
   const title = content?.judul ?? fallback.judul
   const statement = content?.pembuka ?? fallback.pembuka
-  const subtitle = content?.subjudul ?? null
+  const subtitle = content?.subjudul ?? fallback.subjudul
   // The header's labelled paragraphs, word for word (Aturan isi 11).
-  const pillars = (content?.pilar ?? []).flatMap((pillar) =>
+  const candidatePillars = (content?.pilar ?? []).flatMap((pillar) =>
     pillar.lead && pillar.isi
       ? [{ key: pillar._key, lead: pillar.lead, body: pillar.isi }]
       : []
   )
+  const pillars = candidatePillars.length
+    ? candidatePillars
+    : fallback.pilar.map((pillar) => ({
+        key: pillar._key,
+        lead: pillar.lead,
+        body: pillar.isi,
+      }))
   const problems = content?.masalah?.length ? content.masalah : fallback.masalah
   const candidateWorkItems = (content?.caraKerja ?? []).flatMap((item) =>
     item.teks ? [item.teks] : []
@@ -280,7 +287,7 @@ export async function generateMetadata({ params }: UnitPageProps) {
 
   return generatePageMetadata({
     title: content?.judul ?? fallback.judul,
-    description: content?.ringkas ?? content?.pembuka ?? fallback.pembuka,
+    description: content?.ringkas ?? fallback.ringkas,
     url: localizedPath(locale, unitTemplate(unit)),
   })
 }
