@@ -62,6 +62,67 @@ describe('babDraft', () => {
   })
 })
 
+describe('babDraft for a shortlisted chapter', () => {
+  const bab = babDraft(
+    {
+      ...page,
+      unit: 'konstruksi',
+      slug: 'fnb',
+      pembeli: 'Untuk pemilik kafe dan resto.',
+      jembatan: [{ kalimat: 'Kalimat jembatan.', idKatalog: 'KUL-02' }],
+    },
+    'side-id',
+    'pemilik-bangunan',
+    2,
+    'FNB',
+    'docs/V3-SERAH-W2.md'
+  )
+
+  it('lives under its own unit and side, at its place in the side', () => {
+    expect(bab._id).toBe('drafts.arthur-bab-konstruksi-pemilik-bangunan-fnb')
+    expect(bab.urutan).toBe(2)
+  })
+
+  it('writes the buyers as one reader line', () => {
+    expect('pembeli' in bab && bab.pembeli[0]?.value).toBe(
+      'Untuk pemilik kafe dan resto.'
+    )
+  })
+
+  it('points a bridge at its offer with a reference that stays weak', () => {
+    expect('jembatan' in bab && bab.jembatan[0]?.offer).toEqual({
+      _type: 'reference',
+      _ref: 'arthur-offer-kul-02',
+      _weak: true,
+    })
+  })
+
+  it('traces the page to the handover it was approved from', () => {
+    expect(bab.jejakSumber[1]?.sumber).toBe('docs/V3-SERAH-W2.md')
+  })
+
+  it('traces handwritten chapter copy to the file that holds it', () => {
+    const traced = babDraft(
+      { ...page, salinan: 'konstruksi/B/fnb' },
+      'side-id',
+      'pemilik-bangunan',
+      2,
+      'FNB'
+    ).jejakSumber
+    expect(traced[0]?.blok).toBe('Nama, kutipan')
+    expect(traced[2]).toMatchObject({
+      sumber: 'lib/content/situation-overrides.ts',
+      rujukan: 'konstruksi/B/fnb',
+    })
+  })
+
+  it('leaves both fields out when the chapter has neither', () => {
+    const plain = babDraft(page, 'side-id', 'siap-pakai', 0, 'KUL')
+    expect('pembeli' in plain).toBe(false)
+    expect('jembatan' in plain).toBe(false)
+  })
+})
+
 describe('offerDraft', () => {
   it('keeps the catalogue code in the internal fields only', () => {
     const draft = offerDraft(offer, 'bab-id', 3, false, undefined)
@@ -74,6 +135,19 @@ describe('offerDraft', () => {
       draft.slug,
     ])
     expect(reader).not.toMatch(/[A-Z]{3}-\d{2}/)
+  })
+
+  it('names the handwritten answers file only for a row that has one', () => {
+    const sources = (ditinjau: boolean) =>
+      offerDraft(
+        { ...offer, ditinjau },
+        'b',
+        0,
+        false,
+        undefined
+      ).jejakSumber.map((item) => item.sumber)
+    expect(sources(true)).toContain('lib/content/catalog-overrides.ts')
+    expect(sources(false)).not.toContain('lib/content/catalog-overrides.ts')
   })
 
   it('gives a list-only offer no page blocks', () => {

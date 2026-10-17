@@ -228,6 +228,19 @@ describe('chapter query', () => {
     expect(unitPageQuery).toContain('statusTinjauan == "disetujui"')
   })
 
+  it('tells the side page whether a chapter entry has a page to link to', () => {
+    for (const query of [sidePageQuery, sidePagePreviewQuery]) {
+      expect(query).toContain('"punyaHalaman": coalesce(halamanSendiri, false)')
+    }
+  })
+
+  it('carries the search text the owner approved for a chapter', () => {
+    for (const query of [chapterPageQuery, chapterPagePreviewQuery]) {
+      expect(query).toContain('"title": metadata.title')
+      expect(query).toContain('"description": metadata.description')
+    }
+  })
+
   it('selects only fields that are safe to render', () => {
     // Internal editorial fields arrive in F2-07. Listing the public shape now
     // keeps that later boundary additive instead of trying to contain `...`.
