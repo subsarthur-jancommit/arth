@@ -26,11 +26,7 @@
  * Sanity draft mode is exempt in the proxy, so Presentation can still preview
  * these routes while their documents are drafts.
  */
-export const AWAITING_CONTENT = [
-  '/cara-kerja',
-  '/satu-klien-tiga-unit',
-  '/kebijakan',
-] as const
+export const AWAITING_CONTENT = ['/satu-klien-tiga-unit', '/kebijakan'] as const
 
 /** Whether a locale-free template (`/cara-kerja`) is still awaiting content. */
 export function isAwaitingContent(template: string): boolean {

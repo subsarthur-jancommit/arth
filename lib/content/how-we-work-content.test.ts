@@ -29,6 +29,12 @@ describe('resolveHowWeWorkContent', () => {
     expect(result?.janji).toHaveLength(1)
   })
 
+  it('keeps the page when the optional work-format example is empty', () => {
+    expect(
+      resolveHowWeWorkContent({ ...validContent, contohFormat: null })
+    ).not.toBeNull()
+  })
+
   it('withholds incomplete promises', () => {
     expect(
       resolveHowWeWorkContent({
