@@ -129,3 +129,87 @@ baru bermakna setelah offer tujuannya terbit.
 1. Sisi Paham teknis (draf W1), karena bab merujuk ke sisi itu.
 2. Keenam bab.
 3. Ke-41 offer.
+
+## W7: Peekabo, untuk jaringan penjual
+
+- **Izin:** "ok tulis: bab Kreator, streamer, dan host dan offer-nya sesuai
+  docs/V3-SERAH-W7.md, serta revisi sisi Jaringan sesuai
+  docs/V3-SERAH-W7-HALAMAN.md bagian 1, sebagai draf berstatus perlu Anda.",
+  17 Oktober 2026.
+- **Sumber bab:** `bun lib/scripts/chapter-wave.ts <master brief> --wave W7
+--drafts <file> --side-id 3222fab5-dc6f-40c5-a96e-5f231bc76e48`, dari commit
+  0ef9412 (PR #32).
+- **Ditulis, bab:** 5 draf baru, 1 bab dan 4 offer, semuanya berstatus
+  `perlu-anda`. Sales lepas (OCS) dan Anggota komunitas (MBR) ditahan utuh dan
+  tidak ditulis. Sebelum menulis, tidak ada dokumen dengan id itu.
+- **Ditulis, sisi:** draf sisi Jaringan (W1) direvisi di tempat: untuk siapa,
+  langkah pertama, cara bergabung, dan blok jaringan kini hanya membuka jalur
+  kreator dan host. Judul tidak diubah. Revisi dijalankan dengan kunci revisi
+  `c9YS92QsSfhgAktxgcEXiz`, dan isi lama disimpan sebagai cadangan di luar
+  repositori sebelum ditimpa. Jejak sumber `src-w7-revisi` ditambahkan.
+- **Diperiksa sesudahnya:** panjang setiap medan teks, `urutan`, `pintuMasuk`,
+  `model`, dan rujukan bab di kelima draf sama dengan file draf. Sisi Jaringan
+  tidak lagi memuat kartu komisi atau jalur rujuk dan anggota. Jumlah draf naik
+  tepat 1 bab dan 4 offer (dari 49 dan 294 menjadi 50 dan 298). Isi terbit
+  tidak berubah: 1 bab dan 11 offer, semuanya Kuliner.
+
+### Urutan terbit untuk pemilik
+
+1. Sisi Jaringan (draf W1 yang sudah direvisi).
+2. Bab Kreator, streamer, dan host.
+3. Keempat offer.
+
+## W7: Satu klien, tiga unit dan Cara kami bekerja
+
+- **Izin:** "ok tulis: dua rangkaian Satu klien, tiga unit dan dua perubahan
+  Cara kami bekerja sesuai docs/V3-SERAH-W7-HALAMAN.md bagian 2 dan 3, sebagai
+  draf berstatus perlu Anda.", 17 Oktober 2026.
+- **Ditulis, rangkaian:** 2 draf baru, `drafts.arthur-rangkaian-kafe-baru` dan
+  `drafts.arthur-rangkaian-studio-siaran`, berstatus `perlu-anda`. Setiap
+  rangkaian punya tiga langkah, Konstruksi, Teknologi, lalu Peekabo, masing-masing
+  merujuk unitnya dan satu offer: FNB-01, KUL-02, 2B-03 untuk Kafe baru, dan
+  STD-09, MED-01, LIV-02 untuk Studio siaran. Rujukan itu lemah selama draf dan
+  menjadi kuat saat terbit. Sebelum menulis, belum ada dokumen rangkaian sama
+  sekali.
+- **Ditulis, Cara kami bekerja:** draf yang sudah ada direvisi di tempat dengan
+  kunci revisi `MTVa8wqBVj3WOA5necBSiC`. Janji kelima "Menjembatani, tidak
+  meminjamkan" ditambahkan di akhir, dan kalimat pengungkapan komisi diganti.
+  Keempat janji lama tidak diubah. Isi lama disimpan sebagai cadangan di luar
+  repositori sebelum ditimpa. Jejak sumber `src-w7-revisi` ditambahkan.
+- **Diperiksa sesudahnya:** situasi, kalimat setiap langkah, keterangan, unit,
+  dan offer di kedua rangkaian sama kata per kata dengan serah. Cara kami
+  bekerja kini punya lima janji dan kalimat komisi yang baru. Jumlah draf bab
+  dan offer tidak berubah (50 dan 298). Isi terbit tidak berubah: 1 bab dan 11
+  offer, semuanya Kuliner; belum ada rangkaian atau Cara kami bekerja yang
+  terbit.
+
+### Urutan terbit untuk pemilik
+
+1. Unit Konstruksi dan Peekabo, yang masih draf, karena setiap langkah merujuk
+   unitnya.
+2. Keenam offer yang dirujuk; hanya KUL-02 yang sudah terbit.
+3. Kedua rangkaian.
+4. Cara kami bekerja, kapan saja; halaman itu tidak merujuk dokumen lain.
+
+## Persetujuan dan terbit
+
+- **Izin:** "SETUJUI SEMUA DRAFT LANGSUNG KE SANITY. KEMUDIAN MERGE DAN DEPLOY KE
+  VERCEL", 17 Oktober 2026. Atas pertanyaan sesudahnya, pemilik memilih:
+  keempat offer Kuliner yang ditahan diterbitkan sebagai ditahan, dan kartu yang
+  ditandai untuk ditinjau (KON-01, KON-07, 1B-05, 1B-03, PRD-01) ikut disetujui
+  apa adanya.
+- **Cadangan:** dataset diekspor ke luar repositori sebelum mutasi, 386
+  dokumen termasuk 365 draf.
+- **Ditulis:** 357 draf `perlu-anda` diberi `statusTinjauan: disetujui` dan
+  `tanggalDisetujui: 2026-10-17`, lalu diterbitkan berurutan: 3 unit, 6 sisi,
+  siteSettings, Cara kami bekerja, 50 bab, 294 offer, 2 rangkaian. Draf ditahan
+  KUL-04, KUL-09, KUL-10, dan KUL-11 diterbitkan tanpa diubah, jadi keempatnya
+  turun dari situs.
+- **Diperiksa sesudahnya:** tidak ada draf isi Arthur yang tersisa. Yang terbit:
+  3 unit, 6 sisi, siteSettings, Cara kami bekerja, 51 bab, dan 301 offer
+  berstatus `disetujui`, 4 offer berstatus `ditahan`, dan 2 rangkaian. Rujukan
+  rangkaian ke unit dan offer sudah menjadi rujukan kuat.
+
+Kebijakan (`docs/V3-SERAH-W7-HALAMAN.md` bagian 4) belum ditulis. Halaman itu
+menunggu tinjauan ahli hukum, lalu "ok tulis" sendiri. Rangkaian Villa dan
+Perumahan developer menunggu offer yang masih ditahan.

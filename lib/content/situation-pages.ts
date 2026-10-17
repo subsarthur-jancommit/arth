@@ -140,6 +140,13 @@ const SIDE_FIRST_STEP = {
     sesudahnya:
       'Pilih eceran per masalah untuk bagian yang tidak sanggup Anda tangani; paket hulu-hilir dan paket rakitan dapat menyusul.',
   },
+  // Peekabo Sisi B, Cara bergabung step 1 narrowed to the one open route,
+  // creators and hosts; the revised side page carries the same step.
+  'peekabo/B': {
+    label: 'Daftar gratis sebagai kreator atau host',
+    sesudahnya:
+      'Bentuk kerja dan bayarannya, per jam, per bulan, atau dari kontrak brand, disepakati tertulis sebelum kerja dimulai.',
+  },
   // Teknologi Sisi A, Lima cara mulai; the side page's langkahPertama.
   'teknologi/A': {
     label: 'Mulai dengan audit singkat',
