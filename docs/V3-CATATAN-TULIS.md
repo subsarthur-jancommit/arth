@@ -191,6 +191,25 @@ baru bermakna setelah offer tujuannya terbit.
 3. Kedua rangkaian.
 4. Cara kami bekerja, kapan saja; halaman itu tidak merujuk dokumen lain.
 
+## Persetujuan dan terbit
+
+- **Izin:** "SETUJUI SEMUA DRAFT LANGSUNG KE SANITY. KEMUDIAN MERGE DAN DEPLOY KE
+  VERCEL", 17 Oktober 2026. Atas pertanyaan sesudahnya, pemilik memilih:
+  keempat offer Kuliner yang ditahan diterbitkan sebagai ditahan, dan kartu yang
+  ditandai untuk ditinjau (KON-01, KON-07, 1B-05, 1B-03, PRD-01) ikut disetujui
+  apa adanya.
+- **Cadangan:** dataset diekspor ke luar repositori sebelum mutasi, 386
+  dokumen termasuk 365 draf.
+- **Ditulis:** 357 draf `perlu-anda` diberi `statusTinjauan: disetujui` dan
+  `tanggalDisetujui: 2026-10-17`, lalu diterbitkan berurutan: 3 unit, 6 sisi,
+  siteSettings, Cara kami bekerja, 50 bab, 294 offer, 2 rangkaian. Draf ditahan
+  KUL-04, KUL-09, KUL-10, dan KUL-11 diterbitkan tanpa diubah, jadi keempatnya
+  turun dari situs.
+- **Diperiksa sesudahnya:** tidak ada draf isi Arthur yang tersisa. Yang terbit:
+  3 unit, 6 sisi, siteSettings, Cara kami bekerja, 51 bab, dan 301 offer
+  berstatus `disetujui`, 4 offer berstatus `ditahan`, dan 2 rangkaian. Rujukan
+  rangkaian ke unit dan offer sudah menjadi rujukan kuat.
+
 Kebijakan (`docs/V3-SERAH-W7-HALAMAN.md` bagian 4) belum ditulis. Halaman itu
 menunggu tinjauan ahli hukum, lalu "ok tulis" sendiri. Rangkaian Villa dan
 Perumahan developer menunggu offer yang masih ditahan.
