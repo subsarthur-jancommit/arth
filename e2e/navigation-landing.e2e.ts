@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test'
 
 import { UNITS } from '../lib/content/units'
 import { FEATURED_WORK } from './fixtures'
+import { REMOVED_IN_F3 } from './removed-in-f3'
 
 /**
  * Where a reader lands after pressing a link.
@@ -116,6 +117,7 @@ test.describe('a navigation lands at the top of the page it asked for', () => {
   })
 
   test('home → a project page', async ({ page }) => {
+    test.fixme(true, REMOVED_IN_F3.homeWork)
     const result = await navigate(page, '/id', `/id/work/${FEATURED_WORK}`)
     assertLandedAtTheTop(result, 'home → project')
   })

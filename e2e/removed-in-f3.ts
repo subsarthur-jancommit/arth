@@ -11,10 +11,18 @@
  * failed for another reason stays red.
  *
  * Fase 1 of `docs/RENCANA-KONTEKS-TAYANG.md` restored `main`'s home
- * composition (passage, work grid on the material, practice list), so the
- * marks for those features are gone and their tests run again.
+ * composition and lifted these marks; V1 of `docs/RENCANA-KONTEKS-V2.md`
+ * removed the fixture work grid again (decision D1, its works were never
+ * Arthur's), so the plates, passage, and home-work marks are back. The
+ * practice list stayed, and its tests keep running.
  */
 export const REMOVED_IN_F3 = {
+  plates:
+    'V1 removed the fixture work grid and its WebGL plates from the home page (decision D1, docs/RENCANA-KONTEKS-V2.md); drawing plates return in R4',
+  passage:
+    'V1 removed the pinned passage with the fixture work grid (decision D1); it returns with the drawing plates in R4',
+  homeWork:
+    'V1 removed the fixture work grid from the home page (decision D1), so home links no project; /work still lists them',
   studio:
     'F3-08 replaced the studio process with a Cara kerja page that awaits content and answers 404 since R0 (E3.1); re-tested in R5',
   copyAddress:

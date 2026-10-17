@@ -1,6 +1,6 @@
 import { BRAND_NAME } from '@/lib/brand'
 import { canRenderPublicContent } from '@/lib/content/public-content-guard'
-import type { Unit } from '@/lib/content/units'
+import type { Side, Unit } from '@/lib/content/units'
 import type { Locale } from '@/lib/i18n/routing'
 
 /**
@@ -64,41 +64,41 @@ const FALLBACK_COPY = {
   },
 } as const satisfies Record<Locale, HomeCopy>
 
-export interface HomeUnitFallback {
-  value: Unit
-  label: string
-  title: string
-  intro: string
+export interface HomePillarFallback {
+  key: string
+  lead: string
+  isi: string
 }
 
 /**
- * Exact, ready-to-publish unit headers from the Arthur master brief.
- *
- * These keep an unpublished or disconnected review build truthful. Approved
- * Sanity documents replace them field-for-field as soon as they are published.
+ * The labelled paragraphs of the umbrella header, word for word from the
+ * master brief (Header Arthur). Approved `siteSettings.pilar` replaces them.
  */
-export const HOME_UNIT_FALLBACKS: readonly HomeUnitFallback[] = [
+export const HOME_PILLAR_FALLBACKS: readonly HomePillarFallback[] = [
   {
-    value: 'konstruksi',
-    label: 'Konstruksi',
-    title: 'Isi celahnya. Bangun sampai jadi. Rawat sesudahnya.',
-    intro:
-      'Konstruksi sipil dari hulu ke hilir untuk Subang, Purwakarta, dan Bandung. Proyek tersendat di celah dokumen, tenaga, material, modal, dan laporan; kami bekerja di celah-celah itu.',
+    key: 'pilar-1',
+    lead: 'Kami mengisi celah proyek dan membangun sampai jadi.',
+    isi: 'Unit Konstruksi mengambil bagian proyek yang tidak sempat atau tidak sanggup Anda tangani, dari administrasi dengan pemerintah sampai tenaga, material, alat, dan modal kerja yang dijembatani mitra. Bagi pemilik bangunan, kami membangun dari hulu ke hilir, lalu merawatnya lewat Membership Care.',
   },
   {
-    value: 'teknologi',
-    label: 'Teknologi',
-    title: 'Buka pasar baru. Otomatiskan sisanya.',
-    intro:
-      'Bot dan workflow yang bekerja dua puluh empat jam untuk bisnis Anda, di sektor apa pun. Kami bekerja pada pasar yang belum terbuka dan pekerjaan berulang yang masih dikerjakan tangan manusia.',
+    key: 'pilar-2',
+    lead: 'Kami membuka pasar baru dan mengotomatiskan sisanya.',
+    isi: 'Unit Teknologi membuka kanal pendapatan yang berjalan di samping usaha Anda, lalu memasang bot dan workflow yang menjawab, menagih, dan memantau tanpa menunggu diingatkan.',
   },
   {
-    value: 'peekabo',
-    label: 'Peekabo',
-    title:
-      'Rebut perhatian. Bangun kepercayaan. Biarkan jaringan yang menjual.',
-    intro:
-      'Agency marketshare untuk usaha dan brand, berbasis di Subang, Purwakarta, dan Bandung. Kami bekerja saat terlalu sedikit orang yang tahu, belum cukup orang yang percaya, dan belum ada yang ikut menjualkan.',
+    key: 'pilar-3',
+    lead: 'Kami merebut pasar.',
+    isi: 'Unit Agency, Peekabo, membuat usaha Anda dikenal lewat iklan dan aset yang diproduksi massal, dipercaya lewat kampanye di lapangan, lalu dibeli lewat kreator, host live, sales, dan komunitas yang ikut menjualkan.',
+  },
+  {
+    key: 'pilar-4',
+    lead: 'Satu klien, tiga unit.',
+    isi: 'Kafe yang kami bangun bisa langsung memakai pemesanan dan pembayaran dari meja, lalu dibuka dengan kampanye pembukaan gerai. Studio siaran yang kami bangun bisa langsung dipakai host live. Setiap unit tetap bisa dibeli sendiri.',
+  },
+  {
+    key: 'pilar-5',
+    lead: 'Cara kami bekerja.',
+    isi: 'Lingkup, harga, target, dan laporan disepakati tertulis sebelum kerja dimulai. Tenaga ahli bekerja di lapangan proyek Anda; nama atau sertifikat tidak dipinjamkan. Sistem, data, kode, dan merek tetap milik Anda. Komisi dari mitra kami ungkapkan, dan jaringan penjual kami dibayar dari penjualan yang benar-benar terjadi. Kami tidak menjanjikan keuntungan instan.',
   },
 ] as const
 
@@ -106,28 +106,98 @@ export interface HomeSituationFallback {
   key: string
   text: string
   unit: Unit
-  side: string
+  side: Side
 }
 
-/** The three approved buyer-language entries written to siteSettings. */
+/**
+ * The fourteen situations of the master brief's “Cara memakai” table, the
+ * same list written to `siteSettings.situasi` in W1 (docs/V1-SERAH-W1.md).
+ * Each opens its side page until a chapter is published for it.
+ */
 export const HOME_SITUATION_FALLBACKS: readonly HomeSituationFallback[] = [
   {
-    key: 'situasi-konstruksi',
-    text: 'Proyek macet di celah administrasi, tenaga, material, atau modal.',
+    key: 'kontraktor-hulu-hilir',
+    text: 'Kontraktor utama sudah menang paket, tetapi belum punya subkon yang sanggup dari hulu ke hilir.',
     unit: 'konstruksi',
     side: 'pelaku-proyek',
   },
   {
-    key: 'situasi-teknologi',
-    text: 'Pekerjaan berulang masih dikerjakan tangan.',
+    key: 'subkon-kekurangan',
+    text: 'Subkon kekurangan tenaga, material, alat, atau modal kerja.',
+    unit: 'konstruksi',
+    side: 'pelaku-proyek',
+  },
+  {
+    key: 'penyedia-barang',
+    text: 'Penyedia barang pemerintah bingung soal sumber barang dan margin.',
+    unit: 'konstruksi',
+    side: 'pelaku-proyek',
+  },
+  {
+    key: 'rumah-tanpa-repot',
+    text: 'Pemilik rumah ingin membangun atau merenovasi tanpa repot.',
+    unit: 'konstruksi',
+    side: 'pemilik-bangunan',
+  },
+  {
+    key: 'bangunan-produktif',
+    text: 'Pemilik kafe, studio, atau penginapan ingin bangunannya lebih produktif.',
+    unit: 'konstruksi',
+    side: 'pemilik-bangunan',
+  },
+  {
+    key: 'properti-terjaga',
+    text: 'Pemilik properti ingin nilai bangunannya terjaga.',
+    unit: 'konstruksi',
+    side: 'pemilik-bangunan',
+  },
+  {
+    key: 'pekerjaan-berulang',
+    text: 'Pemilik usaha kewalahan dengan pekerjaan berulang: pesanan, tagihan, laporan.',
     unit: 'teknologi',
     side: 'siap-pakai',
   },
   {
-    key: 'situasi-peekabo',
-    text: 'Pasar belum cukup mengenal, memercayai, dan membeli.',
+    key: 'pendapatan-baru',
+    text: 'Pemilik usaha ingin kanal pendapatan baru di samping usahanya.',
+    unit: 'teknologi',
+    side: 'siap-pakai',
+  },
+  {
+    key: 'titik-teknis',
+    text: 'Developer, agensi, atau tim IT tersendat di titik teknis tertentu.',
+    unit: 'teknologi',
+    side: 'paham-teknis',
+  },
+  {
+    key: 'belum-dikenal',
+    text: 'Usaha belum dikenal, belum dipercaya, atau pembelinya tidak kembali.',
     unit: 'peekabo',
     side: 'pemilik-usaha',
+  },
+  {
+    key: 'leads-tidak-closing',
+    text: 'Leads masuk, tetapi tidak ada yang menindaklanjuti sampai closing.',
+    unit: 'peekabo',
+    side: 'pemilik-usaha',
+  },
+  {
+    key: 'live-afiliasi',
+    text: 'Seller ingin live atau afiliasi di TikTok Shop dan Shopee.',
+    unit: 'peekabo',
+    side: 'pemilik-usaha',
+  },
+  {
+    key: 'hadir-di-warga',
+    text: 'Brand ingin hadir di tengah warga.',
+    unit: 'peekabo',
+    side: 'pemilik-usaha',
+  },
+  {
+    key: 'ikut-menjual',
+    text: 'Seseorang ingin ikut menjual, menjadi anggota komunitas, atau menjadi host.',
+    unit: 'peekabo',
+    side: 'jaringan',
   },
 ] as const
 
