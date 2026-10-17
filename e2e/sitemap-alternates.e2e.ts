@@ -19,15 +19,13 @@ test('the sitemap carries hreflang and honest dates', async ({ request }) => {
 
   expect(xml).toContain('xmlns:xhtml="http://www.w3.org/1999/xhtml"')
 
-  // `/id/cara-kerja` awaits content and is not advertised (R0); the contact
-  // page is the fixed page that is.
-  expect(xml).not.toContain('/id/cara-kerja')
+  // The two published fixed pages, each with its Indonesian alternates.
   const contact = urlBlock(xml, '/id/kontak')
-  for (const [tag, path] of [
-    ['id-ID', '/id/kontak'],
-    ['x-default', '/id/kontak'],
-  ] as const) {
-    expect(contact).toMatch(new RegExp(`hreflang="${tag}" href="[^"]*${path}"`))
+  for (const path of ['/id/kontak', '/id/cara-kerja']) {
+    const block = urlBlock(xml, path)
+    for (const tag of ['id-ID', 'x-default']) {
+      expect(block).toMatch(new RegExp(`hreflang="${tag}" href="[^"]*${path}"`))
+    }
   }
   expect(xml).not.toContain('/en/')
   // A page that lists nothing has no date to claim.

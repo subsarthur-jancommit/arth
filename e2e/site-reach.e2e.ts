@@ -341,10 +341,11 @@ test.describe('every page offers a way onward', () => {
     expect(legacy.status()).toBe(308)
     expect(legacy.headers().location).toBe('/en/cara-kerja')
 
-    // Its destination awaits published content and answers a real 404
-    // (`lib/seo/awaiting-content.ts`); it is still not Sanity Studio.
+    // Its destination is published since R5 and, untranslated, lands on the
+    // Indonesian page (K2); it is still not Sanity Studio.
     const workMethod = await request.get('/en/cara-kerja')
-    expect(workMethod.status()).toBe(404)
+    expect(workMethod.status()).toBe(200)
+    expect(new URL(workMethod.url()).pathname).toBe('/id/cara-kerja')
     expect(await workMethod.text()).not.toContain(
       '<title>Sanity Studio</title>'
     )
