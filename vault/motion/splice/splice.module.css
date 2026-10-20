@@ -50,6 +50,20 @@
 }
 
 /*
+ * Per-item Reveal keeps its container `hidden` and marks each arrived item
+ * instead. Without this override a splice nested in an arrived row would stay
+ * collapsed forever; supporting both modes costs one selector pair and lets
+ * long sequences join at the point each step is actually read.
+ */
+[data-reveal] [data-reveal-item='visible'] .half {
+  transform: none;
+}
+
+[data-reveal] [data-reveal-item='visible'] .plate {
+  opacity: 1;
+}
+
+/*
  * Reduced motion keeps the outcome and drops the beat (MOTION-SPEC §9.4 rule
  * 3): the joint is made at once.
  */

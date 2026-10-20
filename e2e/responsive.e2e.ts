@@ -1,9 +1,7 @@
 import { expect, test } from '@playwright/test'
 
-import { routing } from '../lib/i18n/routing'
-
 /**
- * Layout that fits its column, at every width and in every language.
+ * Layout that fits its column, at every width and on both public and preview pages.
  *
  * ## Why `scrollWidth > clientWidth` is not the test
  *
@@ -17,7 +15,7 @@ import { routing } from '../lib/i18n/routing'
  * supposed to contain it. That is the question a reader answers by looking,
  * expressed in a way a machine can fail on.
  *
- * ## Why both locales, at several widths
+ * ## Why both published and preview copy, at several widths
  *
  * The defect was Indonesian-only. "Commissioned" fits the narrowest supported
  * line; "memperhatikan" does not. English passed at every width the whole
@@ -32,8 +30,10 @@ const WIDTHS = [320, 360, 375, 390, 414, 430, 768]
 const CONTAINED = 'h1, h2, h3, p, figcaption, [data-reveal-item]'
 
 test.describe('no element overflows its container', () => {
-  for (const locale of routing.locales) {
-    test(`/${locale} fits every phone width`, async ({ page }) => {
+  // Arthur's English pages redirect to /id (K2, R0), so both pages measured
+  // here are Indonesian: the home page and a unit page.
+  for (const path of ['/id', '/id/konstruksi']) {
+    test(`${path} fits every phone width`, async ({ page }) => {
       // Seven full navigations of the site's longest page. The default 30s is
       // not enough on a cold CI runner, and it was not enough the first time
       // the runner had real CMS content to load: `page.goto` timed out
@@ -60,7 +60,7 @@ test.describe('no element overflows its container', () => {
          * measuring against a fallback face would report spill that the
          * shipped page does not have, or miss spill that it does.
          */
-        await page.goto(`/${locale}`, { waitUntil: 'load' })
+        await page.goto(path, { waitUntil: 'load' })
         await page.evaluate(() => document.fonts.ready)
 
         const overflowing = await page.evaluate(
@@ -77,10 +77,21 @@ test.describe('no element overflows its container', () => {
 
               // One physical pixel of slack: sub-pixel layout rounding is not
               // a defect, and asserting exact equality makes this flaky.
+              /*
+               * An item of a horizontal run (`vault/motion/horizontal`) sits
+               * off screen by design: the run clips its viewport and its track
+               * brings the next item in as the reader scrolls. Measured against
+               * the screen edge, the second and third unit doors on `/id`
+               * "spilled" 211px and 477px at 320px wide (CI run 38668698123)
+               * while the page itself never scrolled sideways. The run's own
+               * reach is gated in `gallery-run.e2e.ts` ("the track brings the
+               * rest in"); here such an element must still fit its parent.
+               */
+              const inRun = el.closest('[data-run-track]') !== null
               const spill = Math.max(
                 box.right - bounds.right,
                 bounds.left - box.left,
-                box.right - vw
+                inRun ? 0 : box.right - vw
               )
               if (spill > 1) {
                 bad.push(

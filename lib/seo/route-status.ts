@@ -1,6 +1,7 @@
 import { BRAND_NAME } from '@/lib/brand'
 import { UNITS, type Unit } from '@/lib/content/units'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
+import { isAwaitingContent } from '@/lib/seo/awaiting-content'
 
 /**
  * The two honest answers a URL can get before rendering starts: gone, and
@@ -97,6 +98,10 @@ export const LIVE_SEGMENTS: readonly string[] = [
   'halaman',
   'journal',
   'search.json',
+  'cara-kerja',
+  'kebijakan',
+  'kontak',
+  'satu-klien-tiga-unit',
   'studio',
   'work',
 ]
@@ -128,6 +133,23 @@ export function isUnknownSingleSegment(pathname: string): boolean {
   if (!isLocale(maybeLocale)) return false
 
   return !LIVE_SEGMENTS.includes(segment)
+}
+
+/**
+ * Whether `pathname` is `/{locale}/{page}` for a fixed page that is still
+ * awaiting published content (`lib/seo/awaiting-content.ts`).
+ *
+ * Exactly two segments, like {@link isUnknownSingleSegment}: these are
+ * one-segment pages, and anything under them is the router's business.
+ */
+export function isAwaitingContentPath(pathname: string): boolean {
+  const parts = pathname.split('/').filter(Boolean)
+  if (parts.length !== 2) return false
+
+  const [maybeLocale, segment] = parts
+  if (!maybeLocale || !segment || !isLocale(maybeLocale)) return false
+
+  return isAwaitingContent(`/${segment}`)
 }
 
 /** The locale a path announces, and the path with that prefix removed. */
@@ -241,7 +263,7 @@ export function brandedStatusDocument(
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>${escapeHtml(copy.message)} — ${escapeHtml(BRAND_NAME)}</title>
+<title>${escapeHtml(copy.message)} | ${escapeHtml(BRAND_NAME)}</title>
 <style>
 :root { color-scheme: light dark; --bg: #f6f5f3; --fg: #141414; --muted: #141414b3; --line: #14141426; }
 @media (prefers-color-scheme: dark) { :root { --bg: #0f0f0f; --fg: #f6f5f3; --muted: #f6f5f3b3; --line: #f6f5f326; } }

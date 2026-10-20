@@ -45,11 +45,19 @@ import s from './stamp.module.css'
 interface StampProps {
   children: ReactNode
   className?: string | undefined
+  /**
+   * `mount` is the primitive's original behavior. `reveal` keeps the final
+   * mark visible without JavaScript, then strikes it when an enclosing
+   * `Reveal` item enters the viewport.
+   */
+  trigger?: 'mount' | 'reveal' | undefined
 }
 
-export function Stamp({ children, className }: StampProps) {
+export function Stamp({ children, className, trigger = 'mount' }: StampProps) {
   return (
-    <span className={cn(s.stamp, className)}>
+    <span
+      className={cn(s.stamp, trigger === 'reveal' && s.onReveal, className)}
+    >
       <span className={s.ink}>{children}</span>
     </span>
   )

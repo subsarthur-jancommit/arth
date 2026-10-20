@@ -99,6 +99,31 @@
   }
 }
 
+.address {
+  display: flex;
+  flex-direction: column;
+  gap: mobile-vw(8px);
+
+  @media (--desktop) {
+    gap: desktop-vw(8px);
+  }
+}
+
+.addressHeading,
+.addressText {
+  margin: 0;
+}
+
+.addressHeading {
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.addressText {
+  color: var(--color-secondary);
+}
+
 .socialsHeading {
   margin: 0;
   font-weight: 400;

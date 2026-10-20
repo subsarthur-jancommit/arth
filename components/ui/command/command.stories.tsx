@@ -41,9 +41,9 @@ const messages = {
     open: 'Search',
     shortcut: '⌘K',
     label: 'Search the site',
-    placeholder: 'Search work, practices and writing',
+    placeholder: 'Search units, projects and writing',
     empty: 'Nothing matches that.',
-    emptyHint: 'Try a client name, a year, or a practice.',
+    emptyHint: 'Try a unit, a client name, or a year.',
     loading: 'Building the index…',
     failed:
       'Search is unavailable right now. Every page is still reachable from the header and the footer.',
@@ -51,7 +51,7 @@ const messages = {
     close: 'Close search',
     groups: {
       page: 'Pages',
-      practice: 'Practices',
+      unit: 'Units',
       project: 'Work',
       journal: 'Journal',
     },
@@ -70,31 +70,47 @@ const messages = {
  */
 const entries: SearchEntry[] = [
   {
-    id: 'page:/work',
-    kind: 'page',
-    label: 'Work',
-    description:
-      'The full catalogue of completed engagements, with client, year, engagement and scope for each.',
-    href: '/en/work',
-    meta: '/work',
-  },
-  {
-    id: 'page:/studio',
-    kind: 'page',
-    label: 'Studio',
-    description:
-      'How the studio scopes, decides and delivers, the practices it covers, and the colophon for this site.',
-    href: '/en/studio',
-    meta: '/studio',
-  },
-  {
-    id: 'page:/practice/consulting',
+    id: 'unit:konstruksi',
     kind: 'unit',
-    label: 'Consulting',
+    label: 'Konstruksi',
     description:
-      'Consulting engagements — strategy, architecture and the decisions that come before a build.',
-    href: '/en/practice/consulting',
-    meta: '/practice/consulting',
+      'Konstruksi, read from two sides: project leads and building owners.',
+    href: '/en/konstruksi',
+    meta: '/konstruksi',
+  },
+  {
+    id: 'page:/cara-kerja',
+    kind: 'page',
+    label: 'How we work',
+    description:
+      'Sample information about how Arthur works, pending owner review.',
+    href: '/en/cara-kerja',
+    meta: '/cara-kerja',
+  },
+  {
+    id: 'unit:teknologi',
+    kind: 'unit',
+    label: 'Teknologi',
+    description:
+      'Teknologi, read from two sides: ready to use and technically fluent.',
+    href: '/en/teknologi',
+    meta: '/teknologi',
+  },
+  {
+    id: 'unit:peekabo',
+    kind: 'unit',
+    label: 'Peekabo',
+    description: "Peekabo, Arthur's agency, read from two sides.",
+    href: '/en/peekabo',
+    meta: '/peekabo',
+  },
+  {
+    id: 'page:contact',
+    kind: 'page',
+    label: 'Contact',
+    description: '',
+    href: '/en/#contact',
+    meta: null,
   },
   {
     id: 'project:arus-balik',

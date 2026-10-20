@@ -1,139 +1,268 @@
 import cn from 'clsx'
 import { getTranslations } from 'next-intl/server'
+import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { locale as localeRootParam } from 'next/root-params'
-import { ViewTransition } from 'react'
 
 import { Wrapper } from '@/components/layout/wrapper'
 import { Link } from '@/components/ui/link'
-import { SampleContent } from '@/components/ui/sample-content'
 import { SectionHeader } from '@/components/ui/section-header'
-import { ownerPlaceholder } from '@/lib/content/sample-content'
-import { isUnit, UNITS, unitTemplate } from '@/lib/content/units'
+import { unitContent, type UnitContent } from '@/lib/content/arthur-content'
+import { UNIT_FALLBACKS } from '@/lib/content/unit-fallback'
+import {
+  isSideOf,
+  isUnit,
+  SIDES,
+  type Unit,
+  UNITS,
+  unitTemplate,
+} from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
-import { transitionName } from '@/lib/motion/transition-name'
 import { generatePageMetadata } from '@/lib/utils/metadata'
+import { CapabilitySet } from '@/vault/blocks/capability-set'
+import { NextPractice } from '@/vault/blocks/next-practice'
+import { SideDoors, type SideDoor } from '@/vault/blocks/side-doors'
+import { UnitHero } from '@/vault/blocks/unit-hero'
+import { Reveal } from '@/vault/motion/reveal'
 
 import s from './page.module.css'
 
-/**
- * `/[locale]/{unit}` — one page per Arthur unit.
- *
- * ## Why the segment is dynamic and bare
- *
- * A unit is a **top-level** segment: `/konstruksi`, not `/unit/konstruksi`.
- * That is the shape the plan asks for, and it costs something real, recorded
- * here because the cost is easy to forget and hard to debug. A single dynamic
- * segment beats a catch-all in Next's resolution order, so this route matches
- * *every* one-segment path under a locale — which is why the Sanity `page`
- * documents that used to answer at `/about` moved to `/halaman/about`
- * (`app/[locale]/halaman/[slug]/page.tsx` tells that half of the story) and
- * why `lib/content/units.ts` keeps `RESERVED_SLUGS`.
- *
- * ## Why a non-unit value is 404ed twice
- *
- * `notFound()` below is the correct answer and the wrong **status**: under
- * Cache Components a prerendered not-found responds 200, which
- * `e2e/not-found.e2e.ts` documents. A one-segment URL is the depth a crawler
- * is handed in a sitemap, so a 200 there is a lie it acts on. `proxy.ts`
- * answers an unknown single segment with a real 404 before this file is ever
- * reached — `lib/seo/route-status.ts`. This `notFound()` stays as the
- * second line of that defence: it is what answers if the proxy's matcher ever
- * stops covering a path, and it keeps the route honest when read on its own.
- *
- * ## What is on the page, and what is deliberately not
- *
- * The unit's name, and a labelled sample block holding one owner placeholder.
- * Nothing else — and in particular no description of what the unit does.
- * Arthur's units have ready-to-publish headers in the Master Brief, which the
- * content rules require be used **without changing a word**; they are read
- * when the unit content type exists to hold them (F2-02) and the template is
- * built to show them (F3-02). Writing a stand-in sentence here would mean
- * inventing a claim about a business, which is the one thing the rules refuse
- * outright. A placeholder says the same thing honestly.
- *
- * The two sides of each unit are not linked yet either: their pages are F1-04,
- * and a link to a page that does not answer is worse than no link.
- *
- * The other two units **are** linked, and that is not content — it is the
- * only way off this page that is not the browser's back button. A scaffold
- * that is a dead end is a scaffold nobody can walk through, which is also
- * what `e2e/journey.e2e.ts` measures: a reader moving between two pages of
- * the same kind is where a leaked view-transition name does the most damage,
- * and without a sibling link there is no such hop to measure.
- */
 interface UnitPageProps {
   params: Promise<{ unit: string }>
 }
 
-/**
- * The three units, prerendered.
- *
- * Read from `UNITS` rather than written out, which is the whole reason that
- * module exists: a unit added there gets a page, a sitemap entry, a schema
- * option and a filter chip in one edit. `lib/content/units.test.ts` holds the
- * other end — a unit with no label in either language fails there.
- */
+type Offer = NonNullable<UnitContent['contohOffer']>[number]
+
 export function generateStaticParams() {
   return UNITS.map((unit) => ({ unit }))
 }
 
+function nextUnitAfter(unit: Unit): Unit {
+  const index = UNITS.indexOf(unit)
+  return UNITS[(index + 1) % UNITS.length] ?? UNITS[0]
+}
+
+function offerRoute(offer: Offer): string | null {
+  const unit = offer.bab?.side?.unit
+  const side = offer.bab?.side?.kunci
+  const chapter = offer.bab?.slug
+
+  if (
+    !offer.slug ||
+    !unit ||
+    !isUnit(unit) ||
+    !side ||
+    !isSideOf(unit, side) ||
+    !chapter
+  ) {
+    return null
+  }
+
+  // An offer without its own page is read in its situation's list.
+  const situation = `/${unit}/${side}/${chapter}`
+  return offer.punyaHalaman ? `${situation}/${offer.slug}` : situation
+}
+
+function sideDoorsFor(unit: Unit, content: UnitContent | null): SideDoor[] {
+  const fallback = UNIT_FALLBACKS[unit]
+
+  return SIDES[unit].map((side) => {
+    const candidate = content?.sisi?.find((item) => item.kunci === side)
+    const backup = fallback.sisi.find((item) => item.kunci === side)
+
+    return {
+      id: candidate?._id ?? backup?._id ?? side,
+      key: side,
+      name: candidate?.nama ?? backup?.nama ?? side,
+      title: candidate?.judul ?? backup?.judul ?? side,
+    }
+  })
+}
+
 export default async function UnitPage({ params }: UnitPageProps) {
   const { unit } = await params
-
   if (!isUnit(unit)) notFound()
 
-  const [t, tSample] = await Promise.all([
+  const requested = await localeRootParam()
+  const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
+  const { isEnabled } = await draftMode()
+  const [t, content] = await Promise.all([
     getTranslations('unit'),
-    getTranslations('sample'),
+    unitContent(locale, unit, isEnabled),
   ])
+  const fallback = UNIT_FALLBACKS[unit]
+  const name = content?.nama ?? fallback.nama
+  const title = content?.judul ?? fallback.judul
+  const statement = content?.pembuka ?? fallback.pembuka
+  const subtitle = content?.subjudul ?? fallback.subjudul
+  // The header's labelled paragraphs, word for word (Aturan isi 11).
+  const candidatePillars = (content?.pilar ?? []).flatMap((pillar) =>
+    pillar.lead && pillar.isi
+      ? [{ key: pillar._key, lead: pillar.lead, body: pillar.isi }]
+      : []
+  )
+  const pillars = candidatePillars.length
+    ? candidatePillars
+    : fallback.pilar.map((pillar) => ({
+        key: pillar._key,
+        lead: pillar.lead,
+        body: pillar.isi,
+      }))
+  const problems = content?.masalah?.length ? content.masalah : fallback.masalah
+  const candidateWorkItems = (content?.caraKerja ?? []).flatMap((item) =>
+    item.teks ? [item.teks] : []
+  )
+  const workItems = candidateWorkItems.length
+    ? candidateWorkItems
+    : fallback.caraKerja.map((item) => item.teks)
+  const examples = (content?.contohOffer ?? []).flatMap((offer) => {
+    const href = offerRoute(offer)
+    return href && offer.judul ? [{ ...offer, href }] : []
+  })
+  const bridges = (content?.jembatan ?? []).flatMap((bridge) => {
+    const href = bridge.offer ? offerRoute(bridge.offer) : null
+    return href && bridge.kalimat && bridge.offer?.judul
+      ? [{ ...bridge, href, label: bridge.offer.judul }]
+      : []
+  })
+  const action = content?.ajakan ?? fallback.ajakan
+  const nextUnit = nextUnitAfter(unit)
 
   return (
     <Wrapper theme="light">
       <article className={s.page}>
-        {/*
-          The receiving half of the home page's morph.
-        
-          `vault/blocks/practice-list` names the unit's `<h3>` on the home
-          page with the same key, and React pairs `<ViewTransition>` elements
-          by name — so without this the heading the reader pressed would fade
-          out and a different heading would fade in, which is the thing a
-          shared name exists to avoid. `e2e/motion.e2e.ts` asserts the pair.
-        
-          One pair per navigation and no more: nothing else on this page
-          carries a name.
-        */}
-        <ViewTransition
-          name={transitionName(`practice-${unit}`)}
-          share="morph"
-          default="none"
-        >
-          <SectionHeader as="h1" eyebrow={t('eyebrow')} title={t(unit)} />
-        </ViewTransition>
-        <SampleContent
-          label={tSample('label')}
-          note={tSample('unitNote')}
-          className={s.sample}
-        >
-          <p className="p-big">
-            {ownerPlaceholder(t('statementNeed'), t('statementExample'))}
-          </p>
-        </SampleContent>
+        <UnitHero
+          unit={unit}
+          eyebrow={t('eyebrow')}
+          name={name}
+          title={title}
+          subtitle={subtitle}
+          statement={statement}
+          sideCount={t('sideCount', { count: SIDES[unit].length })}
+        />
 
-        <nav aria-label={t('othersLabel')} className={s.others}>
-          {UNITS.filter((other) => other !== unit).map((other) => (
-            <Link
-              key={other}
-              href={unitTemplate(other)}
-              className={cn('caption', s.other)}
-              data-press="chip"
-              data-intent=""
-            >
-              {t(other)}
+        {pillars.length > 0 ? (
+          <Reveal as="section" className={s.section} perItem>
+            <SectionHeader reveal eyebrow={name} title={t('pillarsTitle')} />
+            <ol className={s.problemList}>
+              {pillars.map((pillar) => (
+                <li key={pillar.key} data-reveal-item className={s.pillar}>
+                  <p className="h3">{pillar.lead}</p>
+                  <p className="p-big">{pillar.body}</p>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+        ) : null}
+
+        <SideDoors
+          unit={unit}
+          eyebrow={t('sideEyebrow')}
+          title={t('sideTitle')}
+          linkLabel={t('sideLink')}
+          doors={sideDoorsFor(unit, content)}
+        />
+
+        <Reveal as="section" className={s.section} perItem>
+          <SectionHeader
+            reveal
+            eyebrow={t('problemsEyebrow')}
+            title={t('problemsTitle')}
+          />
+          <ol className={s.problemList}>
+            {problems.map((problem, index) => (
+              <li key={problem._key} data-reveal-item className={s.problem}>
+                <span className="caption">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <p className="h3">{problem.teks}</p>
+              </li>
+            ))}
+          </ol>
+        </Reveal>
+
+        {examples.length > 0 ? (
+          <Reveal as="section" className={s.section} perItem>
+            <SectionHeader
+              reveal
+              eyebrow={t('examplesEyebrow')}
+              title={t('examplesTitle')}
+            />
+            <ul className={s.cardList}>
+              {examples.map((offer) => (
+                <li key={offer._id} data-reveal-item>
+                  <Link href={offer.href} className={s.card} data-intent="">
+                    <span className={cn('caption', s.cardKind)}>
+                      {offer.jenis}
+                    </span>
+                    <span className="h3">{offer.judul}</span>
+                    {offer.untukSiapa ? (
+                      <span className="caption">
+                        {t('forAudience', { audience: offer.untukSiapa })}
+                      </span>
+                    ) : null}
+                    {offer.dampak ? (
+                      <span className="p">{offer.dampak}</span>
+                    ) : null}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        ) : null}
+
+        <CapabilitySet
+          label={t('workEyebrow')}
+          items={workItems}
+          data-epic="unit-method"
+          className={s.work}
+        />
+
+        {bridges.length > 0 ? (
+          <Reveal as="section" className={s.section} perItem>
+            <SectionHeader
+              reveal
+              eyebrow={t('bridgeEyebrow')}
+              title={t('bridgeTitle')}
+            />
+            <ul className={s.bridgeList}>
+              {bridges.map((bridge) => (
+                <li key={bridge._key} data-reveal-item className={s.bridge}>
+                  <p className="p-big">{bridge.kalimat}</p>
+                  <Link href={bridge.href} className="caption" data-intent="">
+                    {bridge.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        ) : null}
+
+        <Reveal as="section" className={s.action}>
+          <p data-reveal-item className="caption">
+            {t('ctaEyebrow')}
+          </p>
+          <h2 data-reveal-item className="h2">
+            {action.label}
+          </h2>
+          <p data-reveal-item className="p-big">
+            {action.sesudahnya}
+          </p>
+          {/* The contact page until K5 names a channel (P4, R0). */}
+          <p data-reveal-item>
+            <Link href="/kontak" className={cn('caption', s.actionLink)}>
+              {t('ctaLink')}
             </Link>
-          ))}
-        </nav>
+          </p>
+        </Reveal>
+
+        <NextPractice
+          href={unitTemplate(nextUnit)}
+          eyebrow={t('nextUnit')}
+          label={t(nextUnit)}
+          className={s.nextUnit}
+        />
       </article>
     </Wrapper>
   )
@@ -143,11 +272,8 @@ export async function generateMetadata({ params }: UnitPageProps) {
   const { unit } = await params
   const requested = await localeRootParam()
   const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
-  const t = await getTranslations('unit')
 
   if (!isUnit(unit)) {
-    // Matches the `notFound()` above: without it the 404 would inherit the
-    // layout's title and announce itself as a page under whatever was typed.
     const tNotFound = await getTranslations('notFound')
     return generatePageMetadata({
       title: tNotFound('title'),
@@ -156,11 +282,12 @@ export async function generateMetadata({ params }: UnitPageProps) {
     })
   }
 
+  const content = await unitContent(locale, unit)
+  const fallback = UNIT_FALLBACKS[unit]
+
   return generatePageMetadata({
-    title: t(unit),
-    description: t('metaDescription'),
-    // Localized, not the bare template: canonical, og:url and og:locale all
-    // come from this one string. See `lib/utils/metadata.ts`.
+    title: content?.judul ?? fallback.judul,
+    description: content?.ringkas ?? fallback.ringkas,
     url: localizedPath(locale, unitTemplate(unit)),
   })
 }

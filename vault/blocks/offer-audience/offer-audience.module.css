@@ -1,0 +1,42 @@
+.section {
+  display: grid;
+  gap: calc(20 / 375 * 100vw);
+}
+
+.label,
+.answer p {
+  margin: 0;
+}
+
+.label {
+  color: var(--text-muted);
+}
+
+.answer {
+  display: flex;
+  gap: calc(12 / 375 * 100vw);
+  align-items: flex-start;
+}
+
+.leader {
+  margin-block-start: 0.25em;
+}
+
+@media (--desktop) {
+  .section {
+    grid-template-columns: 2fr 10fr;
+    gap: calc(16 / 1440 * 100vw);
+  }
+
+  .answer {
+    gap: calc(16 / 1440 * 100vw);
+    max-width: 56rem;
+  }
+}
+
+@media print {
+  .section {
+    grid-template-columns: 1fr 4fr;
+    gap: 12pt;
+  }
+}

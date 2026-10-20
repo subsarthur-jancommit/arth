@@ -4,6 +4,7 @@
  * to host it at https://<project>.sanity.studio.
  */
 
+import { CogIcon } from '@sanity/icons/Cog'
 import { visionTool } from '@sanity/vision'
 import { defineConfig } from 'sanity'
 import { internationalizedArray } from 'sanity-plugin-internationalized-array'
@@ -12,8 +13,14 @@ import {
   defineLocations,
   presentationTool,
 } from 'sanity/presentation'
+import type { StructureResolver } from 'sanity/structure'
 import { structureTool } from 'sanity/structure'
 
+import {
+  ApproveArthurDocumentAction,
+  isArthurContentType,
+  PublishApprovedArthurDocumentAction,
+} from './document-actions'
 import { apiVersion, dataset, previewURL, projectId } from './env'
 import { schema } from './schemas'
 
@@ -32,7 +39,86 @@ import { schema } from './schemas'
  * document, and previewing the source language is the useful default. An
  * editor working in Indonesian can switch locale inside the previewed site.
  */
-const PREVIEW_LOCALE = 'en'
+const PREVIEW_LOCALE = 'id'
+
+// The legacy type stays registered only so existing production content can be
+// recovered during the planned migration. New singleton documents are exposed
+// through fixed entries below, never through a generic create list.
+const SINGLETON_TYPES = new Set(['siteSettings', 'studioSettings', 'howWeWork'])
+const ARTHUR_HIERARCHY_TYPES = new Set(['unit', 'side', 'bab', 'offer'])
+const SUPPORTING_CONTENT_TYPES = new Set(['sequence', 'faq', 'page'])
+const MANAGED_TYPES = new Set([
+  ...SINGLETON_TYPES,
+  ...ARTHUR_HIERARCHY_TYPES,
+  ...SUPPORTING_CONTENT_TYPES,
+])
+
+const structure: StructureResolver = (S) =>
+  S.list()
+    .title('Arthur')
+    .items([
+      S.listItem()
+        .title('Pengaturan situs')
+        .icon(CogIcon)
+        .child(
+          S.document()
+            .schemaType('siteSettings')
+            .documentId('siteSettings')
+            .title('Pengaturan Arthur')
+        ),
+      S.listItem()
+        .title('Cara kami bekerja')
+        .child(
+          S.document()
+            .schemaType('howWeWork')
+            .documentId('howWeWork')
+            .title('Cara kami bekerja')
+        ),
+      S.divider(),
+      S.listItem()
+        .title('Struktur offer')
+        .child(
+          S.list()
+            .title('Struktur offer')
+            .items([
+              S.listItem().title('1. Unit').child(S.documentTypeList('unit')),
+              S.listItem().title('2. Sisi').child(S.documentTypeList('side')),
+              S.listItem().title('3. Bab').child(S.documentTypeList('bab')),
+              S.listItem().title('4. Offer').child(S.documentTypeList('offer')),
+              S.divider(),
+              S.listItem()
+                .title('Perlu Anda')
+                .child(
+                  S.documentList()
+                    .title('Perlu Anda')
+                    .schemaType('offer')
+                    .filter('_type == $type && statusTinjauan == $status')
+                    .params({ type: 'offer', status: 'perlu-anda' })
+                ),
+            ])
+        ),
+      S.listItem()
+        .title('Isi pendukung')
+        .child(
+          S.list()
+            .title('Isi pendukung')
+            .items([
+              S.listItem()
+                .title('Rangkaian tiga unit')
+                .child(S.documentTypeList('sequence')),
+              S.listItem()
+                .title('Tanya jawab')
+                .child(S.documentTypeList('faq')),
+              S.listItem()
+                .title('Halaman tetap')
+                .child(S.documentTypeList('page')),
+            ])
+        ),
+      S.divider(),
+      ...S.documentTypeListItems().filter(
+        (item) => !MANAGED_TYPES.has(item.getId() ?? '')
+      ),
+    ])
 
 function resolveHref(documentType?: string, slug?: string): string | undefined {
   switch (documentType) {
@@ -40,13 +126,18 @@ function resolveHref(documentType?: string, slug?: string): string | undefined {
     // starter page, so a `home` document previews at `/en/home` like any other
     // slug.
     case 'page':
-      return slug ? `/${PREVIEW_LOCALE}/${slug}` : undefined
+      if (slug === 'kebijakan') return previewPath('/kebijakan')
+      return slug ? `/${PREVIEW_LOCALE}/halaman/${slug}` : undefined
     case 'project':
       return slug ? `/${PREVIEW_LOCALE}/work/${slug}` : undefined
     default:
       console.warn('Invalid document type:', documentType)
       return undefined
   }
+}
+
+function previewPath(path: string): string {
+  return `/${PREVIEW_LOCALE}${path}`
 }
 
 /**
@@ -69,6 +160,21 @@ export default projectId && dataset
       projectId,
       dataset,
       schema,
+      document: {
+        actions: (previous, { schemaType }) => {
+          if (!isArthurContentType(schemaType)) return previous
+
+          const withoutPublish = previous.filter(
+            (action) => action.action !== 'publish'
+          )
+
+          return [
+            ...withoutPublish,
+            ApproveArthurDocumentAction,
+            PublishApprovedArthurDocumentAction,
+          ]
+        },
+      },
       plugins: [
         // Presentation tool for visual editing
         presentationTool({
@@ -86,14 +192,42 @@ export default projectId && dataset
                 filter: `_type == "project" && slug.current == $slug`,
               },
               {
-                route: '/:locale/:slug',
+                route: '/:locale/kebijakan',
+                filter: `_type == "page" && slug.current == "kebijakan"`,
+              },
+              {
+                route: '/:locale/halaman/:slug',
                 filter: `_type == "page" && slug.current == $slug`,
+              },
+              {
+                route: '/:locale/satu-klien-tiga-unit',
+                filter: `_type == "sequence"`,
+              },
+              {
+                route: '/:locale/kontak',
+                filter: `_type == "siteSettings"`,
+              },
+              {
+                route: '/:locale/:unit/:side/:chapter/:offer',
+                filter: `_type == "offer" && slug.current == $offer && bab->slug.current == $chapter && bab->sisi->kunci == $side && bab->sisi->unit->kunci == $unit`,
+              },
+              {
+                route: '/:locale/:unit/:side/:chapter',
+                filter: `_type == "bab" && slug.current == $chapter && sisi->kunci == $side && sisi->unit->kunci == $unit`,
+              },
+              {
+                route: '/:locale/:unit/:side',
+                filter: `_type == "side" && kunci == $side && unit->kunci == $unit`,
+              },
+              {
+                route: '/:locale/:unit',
+                filter: `_type == "unit" && kunci == $unit`,
               },
             ]),
             locations: {
               page: defineLocations({
                 select: {
-                  title: 'title',
+                  title: 'coalesce(judul[_key == "id"][0].value, title)',
                   slug: 'slug.current',
                 },
                 resolve: (doc) => ({
@@ -117,6 +251,114 @@ export default projectId && dataset
                       href: resolveHref('project', doc?.slug)!,
                     },
                   ],
+                }),
+              }),
+              siteSettings: defineLocations({
+                select: { documentId: '_id' },
+                resolve: () => ({
+                  locations: [
+                    { title: 'Beranda Arthur', href: previewPath('/') },
+                    {
+                      title: 'Tentang dan kontak',
+                      href: previewPath('/kontak'),
+                    },
+                  ],
+                }),
+              }),
+              howWeWork: defineLocations({
+                select: { documentId: '_id' },
+                resolve: () => ({
+                  locations: [
+                    {
+                      title: 'Cara kami bekerja',
+                      href: previewPath('/cara-kerja'),
+                    },
+                  ],
+                }),
+              }),
+              sequence: defineLocations({
+                select: { documentId: '_id' },
+                resolve: () => ({
+                  locations: [
+                    {
+                      title: 'Satu klien, tiga unit',
+                      href: previewPath('/satu-klien-tiga-unit'),
+                    },
+                  ],
+                }),
+              }),
+              unit: defineLocations({
+                select: { title: 'nama[0].value', unit: 'kunci' },
+                resolve: (doc) => ({
+                  locations: doc?.unit
+                    ? [
+                        {
+                          title: doc.title ?? doc.unit,
+                          href: previewPath(`/${doc.unit}`),
+                        },
+                      ]
+                    : [],
+                }),
+              }),
+              side: defineLocations({
+                select: {
+                  title: 'nama[0].value',
+                  side: 'kunci',
+                  unit: 'unit->kunci',
+                },
+                resolve: (doc) => ({
+                  locations:
+                    doc?.unit && doc.side
+                      ? [
+                          {
+                            title: doc.title ?? doc.side,
+                            href: previewPath(`/${doc.unit}/${doc.side}`),
+                          },
+                        ]
+                      : [],
+                }),
+              }),
+              bab: defineLocations({
+                select: {
+                  title: 'nama[0].value',
+                  chapter: 'slug.current',
+                  side: 'sisi->kunci',
+                  unit: 'sisi->unit->kunci',
+                },
+                resolve: (doc) => ({
+                  locations:
+                    doc?.unit && doc.side && doc.chapter
+                      ? [
+                          {
+                            title: doc.title ?? doc.chapter,
+                            href: previewPath(
+                              `/${doc.unit}/${doc.side}/${doc.chapter}`
+                            ),
+                          },
+                        ]
+                      : [],
+                }),
+              }),
+              offer: defineLocations({
+                select: {
+                  title: 'judul[0].value',
+                  offer: 'slug.current',
+                  chapter: 'bab->slug.current',
+                  side: 'bab->sisi->kunci',
+                  unit: 'bab->sisi->unit->kunci',
+                },
+                resolve: (doc) => ({
+                  locations:
+                    doc?.unit && doc.side && doc.chapter && doc.offer
+                      ? [
+                          {
+                            title: doc.title ?? doc.offer,
+                            href: previewPath(
+                              `/${doc.unit}/${doc.side}/${doc.chapter}/${doc.offer}`
+                            ),
+                          },
+                        ]
+                      : [],
                 }),
               }),
             },
@@ -151,7 +393,7 @@ export default projectId && dataset
           // disappears from the Studio.
           fieldTypes: ['string', 'text', 'richText'],
         }),
-        structureTool(),
+        structureTool({ structure }),
         // Vision is for querying with GROQ from inside the Studio
         // https://www.sanity.io/docs/the-vision-plugin
         visionTool({ defaultApiVersion: apiVersion }),

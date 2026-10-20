@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 import { FEATURED_WORK, RUN_WORK } from './fixtures'
+import { REMOVED_IN_F3 } from './removed-in-f3'
 
 /**
  * Images carry enough real pixels for the density they are displayed at.
@@ -38,11 +39,12 @@ const MIN_RATIO = 0.95
  * (`project-gallery`, `stripSizing`) — a different claim from the grid's, and
  * one nothing measured until it was added here.
  */
-const ROUTES = ['/en', `/en/work/${FEATURED_WORK}`, `/en/work/${RUN_WORK}`]
+const ROUTES = ['/id', `/en/work/${FEATURED_WORK}`, `/en/work/${RUN_WORK}`]
 
 test.describe('images are not upscaled', () => {
   for (const route of ROUTES) {
     test(`${route} delivers enough pixels`, async ({ page }) => {
+      test.fixme(route === '/id', REMOVED_IN_F3.homeWork)
       await page.goto(route, { waitUntil: 'networkidle' })
 
       // Gallery images below the fold are lazy; scroll so they commit to a

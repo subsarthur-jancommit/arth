@@ -108,12 +108,13 @@ interface StepSequenceProps {
    * block takes no arbitrary props. `/work/<slug>` renders inside
    * `vault/blocks/project-spine`, whose rows are anchors — a row pointing at
    * an id nothing carries is the lie Tahap 39 removed from the filter chips.
-   * `/studio` passes it for `linkSteps` below.
+   * Project detail pages pass it for `linkSteps` below.
    */
   id?: string | undefined
   /**
-   * Lets each step be pointed at — the studio's process, after the site
-   * went live (`docs/HANDOFF.md` §4.8, 3.2). Needs `id`.
+   * Lets each step be pointed at — project chapters use this so a copied
+   * address lands on the exact chapter rather than only the whole sequence.
+   * Needs `id`.
    *
    * Each step takes `<id>-<key>` as its own id, the same in both languages
    * because the key is. The step an address arrives at is marked with the

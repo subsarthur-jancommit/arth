@@ -1,7 +1,8 @@
 # Arth — website
 
-The site for **Arth**, a commissioned-artwork studio. Bilingual (English and
-Indonesian), content-managed in Sanity, built on Next.js 16.
+The site for **Arthur**, a parent brand for construction, technology and
+Peekabo. Indonesian is the public default; English routes wait for approval.
+Content-managed in Sanity, built on Next.js 16.
 
 Three documents, three readers — start with the one that matches you:
 
@@ -18,7 +19,7 @@ Three documents, three readers — start with the one that matches you:
 ```bash
 bun install
 cp .env.example .env.local     # then fill in the Sanity values
-bun dev                        # http://localhost:3000 → redirects to /en
+bun dev                        # http://localhost:3000 → redirects to /id
 ```
 
 The site boots with no environment variables at all — every integration

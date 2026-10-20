@@ -52,7 +52,7 @@ for (const [name, device] of TOUCH) {
     test.use(device)
 
     test('has a visible way out and speaks to a finger', async ({ page }) => {
-      await page.goto('/en')
+      await page.goto('/id')
       await page.locator('[data-search-trigger]').first().tap()
       const dialog = page.getByRole('dialog')
       await expect(dialog).toBeVisible()
@@ -118,7 +118,7 @@ test.describe('search palette rail', () => {
   for (const width of [800, 810, 1024, 1440] as const) {
     test(`no path runs into its title at ${width}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 1000 })
-      await page.goto('/en')
+      await page.goto('/id')
       await page.locator('[data-search-trigger]').first().click()
       await expect(page.getByRole('dialog')).toBeVisible()
       // Measured in the face the reader sees. The first version of this
@@ -149,7 +149,7 @@ test.describe('search palette rail', () => {
 
 test.describe('search palette with a mouse', () => {
   test('keeps the keyboard version it was designed with', async ({ page }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     await page.locator('[data-search-trigger]').first().click()
     const dialog = page.getByRole('dialog')
     await expect(dialog).toBeVisible()

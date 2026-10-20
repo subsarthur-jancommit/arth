@@ -412,6 +412,10 @@ export default async function JournalEntryPage({ params }: EntryPageProps) {
                 t('replyBody', { title: entry.title })
               )}
               label={t('replyAction')}
+              isPlaceholder={contact.emailIsPlaceholder}
+              {...(contact.emailIsPlaceholder && {
+                note: t('contactPlaceholderNote'),
+              })}
             />
           }
         />

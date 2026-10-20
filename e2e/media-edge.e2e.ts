@@ -78,8 +78,8 @@ import { expect, test } from '@playwright/test'
  * if a practice URL ever reappears under `/work/`, which is the thing the
  * lookahead was silently protecting.
  */
-const WORK_LOC_ALL = /<loc>[^<]*?(\/en\/work\/[^<]+)<\/loc>/g
-const WORK_LOC = /<loc>[^<]*?(\/en\/work\/[^<]+)<\/loc>/
+const WORK_LOC_ALL = /<loc>[^<]*?(\/id\/work\/[^<]+)<\/loc>/g
+const WORK_LOC = /<loc>[^<]*?(\/id\/work\/[^<]+)<\/loc>/
 
 /**
  * The sitemap must not list a practice under `/work/`.

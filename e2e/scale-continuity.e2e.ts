@@ -69,7 +69,7 @@ interface Sample {
 
 async function sample(page: Page, width: number): Promise<Sample> {
   await page.setViewportSize({ width, height: 900 })
-  await page.goto('/en')
+  await page.goto('/id')
   await page.waitForTimeout(350)
 
   return page.evaluate(() => {

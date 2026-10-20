@@ -87,7 +87,7 @@ test.describe('agent-readable HTML', () => {
      * would say "no h1", which sends you looking at the page component. This
      * one names the actual failure.
      */
-    for (const path of ['/en', '/id']) {
+    for (const path of ['/id']) {
       const html = await (await request.get(path)).text()
 
       expect(
@@ -126,7 +126,7 @@ test.describe('agent-readable HTML', () => {
      *
      * `docs/stages/TAHAP-9.md` §1 carries the measurement.
      */
-    const html = await (await request.get('/en')).text()
+    const html = await (await request.get('/id')).text()
     expect(html).toContain('<h1')
     expect(readableText(html).length).toBeGreaterThanOrEqual(500)
 
@@ -134,7 +134,7 @@ test.describe('agent-readable HTML', () => {
     const page = await context.newPage()
 
     try {
-      const response = await page.goto('/en')
+      const response = await page.goto('/id')
       expect(response?.status()).toBe(200)
 
       // Present *and* exposed. The old test asserted the opposite of the
@@ -157,12 +157,12 @@ test.describe('Markdown content negotiation', () => {
   test('serves the homepage as Markdown with guidance and resource discovery', async ({
     request,
   }) => {
-    // '/en', not '/': with `localePrefix: 'always'` the bare root only ever
+    // '/id', not '/': with `localePrefix: 'always'` the bare root only ever
     // redirects, so negotiation happens on the locale home.
-    const htmlResponse = await request.get('/en', {
+    const htmlResponse = await request.get('/id', {
       headers: { Accept: 'text/html' },
     })
-    const response = await request.get('/en', {
+    const response = await request.get('/id', {
       headers: { Accept: 'text/markdown' },
     })
     const body = await response.text()
@@ -178,7 +178,8 @@ test.describe('Markdown content negotiation', () => {
       if (htmlVary.includes(field)) expect(markdownVary).toContain(field)
     }
 
-    expect(body).toContain(`# Home | ${SITE.name}`)
+    // Indonesian is the default since F1-07 (K1); the home is "Beranda".
+    expect(body).toContain(`# Beranda | ${SITE.name}`)
     expect(body).toContain('## When to use')
     expect(body).toContain('## How to use')
   })
@@ -233,7 +234,7 @@ test.describe('Markdown content negotiation', () => {
   test('HEAD advertises the Markdown representation without sending a body', async ({
     request,
   }) => {
-    const response = await request.head('/en', {
+    const response = await request.head('/id', {
       headers: { Accept: 'text/markdown' },
     })
 
@@ -248,15 +249,23 @@ test.describe('Markdown content negotiation', () => {
   test('supports explicit Markdown aliases without an Accept header', async ({
     request,
   }) => {
-    // Aliases follow the localized routes: markdownPathForRoute('/en') is
-    // '/en.md'. '/index.md' only ever existed for the unprefixed root.
-    for (const path of ['/en.md', '/en/studio.md', '/id.md', '/id/studio.md']) {
+    // Only approved Indonesian routes have public Markdown mirrors.
+    // markdownPathForRoute('/id') is '/id.md'; English previews are not
+    // advertised as public documents until their copy is approved.
+    for (const path of ['/id.md', '/id/kontak.md']) {
       const response = await request.get(path)
       expect(response.status(), path).toBe(200)
       expect(response.headers()['content-type'], path).toBe(
         'text/markdown; charset=utf-8'
       )
       expect(await response.text(), path).toContain(`| ${SITE.name}`)
+    }
+
+    for (const path of ['/en.md', '/en/kontak.md']) {
+      const response = await request.get(path, { maxRedirects: 0 })
+      expect(response.status(), `${path} should not publish English copy`).toBe(
+        404
+      )
     }
   })
 
@@ -336,6 +345,10 @@ test.describe('machine-readable discovery files', () => {
     for (const path of advertised) {
       expect(path).toMatch(/^\/(en|id)(\/|$)/)
     }
+    for (const locale of ['en', 'id']) {
+      expect(advertised).not.toContain(`/${locale}/work`)
+      expect(advertised).not.toContain(`/${locale}/journal`)
+    }
 
     /*
      * The HTML machine view used to be asserted here — `/ai`, removed in
@@ -349,6 +362,14 @@ test.describe('machine-readable discovery files', () => {
     expect(sitemap.status()).toBe(200)
     expect(sitemap.headers()['content-type']).toContain('application/xml')
     expect(sitemapBody).toContain('<urlset')
+    const sitemapPaths = [...sitemapBody.matchAll(/<loc>([^<]+)<\/loc>/g)].map(
+      (match) => new URL(match[1] ?? '').pathname
+    )
+    expect(sitemapPaths.some((path) => path.startsWith('/en/'))).toBe(false)
+    for (const locale of ['en', 'id']) {
+      expect(sitemapPaths).not.toContain(`/${locale}/work`)
+      expect(sitemapPaths).not.toContain(`/${locale}/journal`)
+    }
 
     const robots = await request.get('/robots.txt')
     const robotsBody = await robots.text()

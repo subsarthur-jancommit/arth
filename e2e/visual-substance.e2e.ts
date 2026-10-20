@@ -8,6 +8,7 @@ import { contribution, legibility, tone } from '../lib/styles/scripts/luminance'
 import { material } from '../vault/motion/tokens'
 import { FEATURED_WORK } from './fixtures'
 import { waitForEntrance } from './page-settled'
+import { REMOVED_IN_F3 } from './removed-in-f3'
 import {
   plateSkipReason,
   waitForCanvas,
@@ -55,13 +56,13 @@ declare global {
  */
 
 const GUTTER_ROUTES = [
-  '/en',
+  '/id',
   '/en/journal',
   '/en/journal/scope-is-the-deliverable',
-  '/en/studio',
+  '/id/kontak',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
-  '/id',
+  '/id/konstruksi',
 ]
 
 /*
@@ -76,7 +77,7 @@ const GUTTER_ROUTES = [
  * Adding them would mean lowering this gate's floors to whatever a scaffold
  * happens to measure, which is how a substance gate stops being able to fail.
  * They join when F3-02 builds the unit template and there is substance to
- * measure. Until then `/en/studio`, `/en/work`, `/en/journal` and the home
+ * measure. Until then `/en/cara-kerja`, `/en/work`, `/en/journal` and the home
  * page carry the gate, and that absence is recorded in
  * `docs/PROGRES-ARTHUR.md` rather than left to be noticed.
  */
@@ -204,7 +205,7 @@ const ACCENT_RANGE_MARGIN = 3
  * `[data-accent-region]` again, which the unit template (F3-02) is the first
  * candidate for.
  */
-const ACCENT_ROUTES = ['/en']
+const ACCENT_ROUTES = ['/id']
 
 /**
  * What the accent gate is allowed, and what each of its waits is allowed.
@@ -622,7 +623,7 @@ async function moved(
  */
 async function readyPlate(page: Page) {
   await page.setViewportSize({ width: 1280, height: 800 })
-  await page.goto('/en')
+  await page.goto('/id')
   await page.waitForTimeout(2500)
 
   /*
@@ -721,6 +722,7 @@ test.describe('the material is a material, not a picture', () => {
   )
 
   test('the plate is not frozen', async ({ page }) => {
+    test.fixme(true, REMOVED_IN_F3.plates)
     test.setTimeout(120_000)
     const { region } = await readyPlate(page)
 
@@ -755,6 +757,7 @@ test.describe('the material is a material, not a picture', () => {
   test('scrolling reaches the shader, and the surface settles', async ({
     page,
   }) => {
+    test.fixme(true, REMOVED_IN_F3.plates)
     test.setTimeout(120_000)
 
     /*

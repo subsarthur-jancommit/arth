@@ -6,6 +6,7 @@ import { routing } from '../lib/i18n/routing'
 import { transitionName } from '../lib/motion/transition-name'
 import { axeTags } from './axe-tags'
 import { FEATURED_WORK } from './fixtures'
+import { REMOVED_IN_F3 } from './removed-in-f3'
 
 /**
  * Handles the in-page probes write to and this file reads back.
@@ -152,7 +153,7 @@ async function strandedItems(page: Page) {
 }
 
 test.describe('motion', () => {
-  for (const path of ['/en', '/en/work', `/en/work/${FEATURED_WORK}`]) {
+  for (const path of ['/id', '/en/work', `/en/work/${FEATURED_WORK}`]) {
     test(`${path} strands no content invisible`, async ({ page }) => {
       await installLiveRoot(page)
       await installLiveRoot(page)
@@ -203,11 +204,11 @@ test.describe('motion', () => {
   }
 
   test.describe('under prefers-reduced-motion', () => {
-    for (const locale of routing.locales) {
-      test(`/${locale} shows every line of the headline`, async ({
-        browser,
-      }) => {
-        const { context, page } = await reducedMotionPage(browser, `/${locale}`)
+    // /en and Arthur's English pages redirect to /id (K2, R0); keep the
+    // English reduced-motion case on a page that is English: the journal.
+    for (const path of ['/id', '/en/journal']) {
+      test(`${path} shows every line of the headline`, async ({ browser }) => {
+        const { context, page } = await reducedMotionPage(browser, path)
 
         try {
           const heading = page.locator('h1')
@@ -219,7 +220,7 @@ test.describe('motion', () => {
           const clipped = await clippedOutOfView(page)
           expect(
             clipped,
-            `/${locale}: text parked outside its own mask: ${clipped.join(', ')}`
+            `${path}: text parked outside its own mask: ${clipped.join(', ')}`
           ).toEqual([])
         } finally {
           await context.close()
@@ -253,7 +254,8 @@ test.describe('motion', () => {
     test('the route-change overlay never becomes visible', async ({
       browser,
     }) => {
-      const { context, page } = await reducedMotionPage(browser, '/en')
+      test.fixme(true, REMOVED_IN_F3.homeWork)
+      const { context, page } = await reducedMotionPage(browser, '/id')
       try {
         /*
          * Not "is never rendered", which is what this asserted first and what
@@ -281,7 +283,7 @@ test.describe('motion', () => {
         // And navigation still works without it — the overlay is decoration,
         // never a step in the journey.
         await page
-          .locator(`a[href="/en/work/${FEATURED_WORK}"]`)
+          .locator(`a[href="/id/work/${FEATURED_WORK}"]`)
           .first()
           .click()
         await page.waitForURL(`**/work/${FEATURED_WORK}`)
@@ -427,6 +429,7 @@ test.describe('motion', () => {
   test('the same cover morphs from the home page, far down it', async ({
     page,
   }) => {
+    test.fixme(true, REMOVED_IN_F3.homeWork)
     /*
      * The case the catalogue test could not see, and the reason Tahap 15b
      * found a defect at all.
@@ -448,7 +451,7 @@ test.describe('motion', () => {
      * Same assertion as the catalogue test, from a place where it used to
      * fail.
      */
-    const morph = await captureMorph(page, '/en', `/en/work/${FEATURED_WORK}`)
+    const morph = await captureMorph(page, '/id', `/id/work/${FEATURED_WORK}`)
 
     expect(morph.calls, 'no view transition was started').toBeGreaterThan(0)
 
@@ -689,8 +692,8 @@ test.describe('motion', () => {
      */
     const morph = await captureMorph(
       page,
-      '/en',
-      '/en/konstruksi',
+      '/id',
+      '/id/konstruksi',
       async (p) => {
         // Open the disclosure, then let its panel finish arriving so the link
         // is not still moving when it is clicked.
@@ -826,14 +829,15 @@ test.describe('motion', () => {
   test('the route-change overlay covers, then always uncovers', async ({
     page,
   }) => {
+    test.fixme(true, REMOVED_IN_F3.homeWork)
     await installLiveRoot(page)
-    await page.goto('/en')
+    await page.goto('/id')
     await page.waitForTimeout(800)
 
     const overlay = page.locator(OVERLAY)
     await expect(overlay).toHaveAttribute('data-state', 'idle')
 
-    await page.locator(`a[href="/en/work/${FEATURED_WORK}"]`).first().click()
+    await page.locator(`a[href="/id/work/${FEATURED_WORK}"]`).first().click()
     await page.waitForURL(`**/work/${FEATURED_WORK}`)
 
     // The terminal state is the assertion. Whatever happens in between — a
@@ -892,10 +896,10 @@ test.describe('motion', () => {
  * the route quietly ending up with neither entrance.
  */
 const HEADING_ROUTES = [
-  '/en',
   '/id',
+  '/id/kontak',
   '/en/journal',
-  '/en/studio',
+  '/id/konstruksi',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
 ]
@@ -976,10 +980,12 @@ test.describe('a split heading keeps its name', () => {
  * itself: it is an index of the step being read, so it has to change.
  */
 test.describe('the studio process is a held index', () => {
+  test.fixme(true, REMOVED_IN_F3.studio)
+
   test('the held index reports the step being read', async ({ page }) => {
     test.setTimeout(120_000)
     await page.setViewportSize({ width: 1280, height: 800 })
-    await page.goto('/en/studio')
+    await page.goto('/en/cara-kerja')
     await page.waitForTimeout(2600)
 
     const section = page.locator('[data-step-sequence]')
@@ -1033,7 +1039,7 @@ test.describe('the studio process is a held index', () => {
       }
     }
 
-    console.log(`HELD /en/studio step index held for ${Math.round(held)}px`)
+    console.log(`HELD /en/cara-kerja step index held for ${Math.round(held)}px`)
 
     expect(
       reported.size,
@@ -1045,7 +1051,7 @@ test.describe('the studio process is a held index', () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 })
-    await page.goto('/en/studio')
+    await page.goto('/en/cara-kerja')
     await page.waitForTimeout(2600)
 
     const opacities = await page.evaluate(() => {
@@ -1089,7 +1095,9 @@ test.describe('the studio process is a held index', () => {
  * sequence, which is the only place the question can be answered.
  */
 test.describe('the studio sequence is audited where it happens', () => {
-  for (const route of ['/en/studio', '/id/studio']) {
+  test.fixme(true, REMOVED_IN_F3.studio)
+
+  for (const route of ['/en/cara-kerja', '/id/cara-kerja']) {
     test(`${route} passes axe with a step receded`, async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 800 })
       await page.goto(route)

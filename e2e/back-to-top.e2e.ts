@@ -14,7 +14,7 @@ test.describe('a long page offers a way back up', () => {
   test('offered two screens down, and takes the reader back up', async ({
     page,
   }) => {
-    await page.goto('/en')
+    await page.goto('/id')
     const back = page.locator('[data-epic="back-to-top"]')
     await expect(back, 'offered at the top of the page').toHaveCount(0)
 

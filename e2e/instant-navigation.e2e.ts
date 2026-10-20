@@ -37,7 +37,7 @@ test.describe('instant navigation', () => {
        * A level-1 heading, not a specific string.
        *
        * The homepage headline comes from the CMS now, falling back to
-       * `lib/content/home-fallback.ts` only when `studioSettings` is empty.
+       * `lib/content/home-fallback.ts` only when `siteSettings` is empty.
        * Asserting the fallback text made this test pass or fail on whether
        * the dataset happened to be seeded, which says nothing about instant
        * navigation. What this test is actually for is that the shell paints

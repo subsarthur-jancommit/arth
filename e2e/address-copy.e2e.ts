@@ -1,7 +1,9 @@
 import { expect, test } from '@playwright/test'
 
+import { REMOVED_IN_F3 } from './removed-in-f3'
+
 /**
- * The studio's address can be copied as well as opened.
+ * Arthur's displayed contact address can be copied as well as opened.
  *
  * `vault/blocks/copy-address`. A `mailto:` link does nothing for a reader
  * whose mail lives in a browser tab, and says nothing about having done
@@ -10,18 +12,20 @@ import { expect, test } from '@playwright/test'
  * on the clipboard and says so, and without script the control is absent
  * rather than present and dead.
  */
-test.describe('the studio address can be copied', () => {
+test.describe('the displayed address can be copied', () => {
+  test.fixme(true, REMOVED_IN_F3.copyAddress)
+
   test('pressing copy puts the address on the clipboard and says so', async ({
     context,
     page,
   }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
-    await page.goto('/en')
+    await page.goto('/id')
 
     const contact = page.locator('#contact')
-    await contact.getByRole('button', { name: 'Copy address' }).click()
+    await contact.getByRole('button', { name: 'Salin alamat' }).click()
 
-    await expect(contact.getByRole('status')).toHaveText(/copied/i)
+    await expect(contact.getByRole('status')).toHaveText('Disalin')
 
     const shown = await contact.locator('[data-press="email"]').textContent()
     const copied = await page.evaluate(() => navigator.clipboard.readText())
@@ -37,7 +41,7 @@ test.describe('the studio address can be copied', () => {
     const page = await context.newPage()
 
     try {
-      await page.goto('/en', { waitUntil: 'domcontentloaded' })
+      await page.goto('/id', { waitUntil: 'domcontentloaded' })
 
       const contact = page.locator('#contact')
       await expect(contact.locator('[data-press="email"]')).toBeVisible()

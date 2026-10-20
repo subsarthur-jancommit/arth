@@ -32,24 +32,43 @@ interface EngagementEnquiryProps {
   href: string
   /** Already localized — "Discuss a similar engagement". */
   label: string
+  /** Shown when the destination address is still a reserved dummy value. */
+  note?: string | undefined
+  /** Keep a reserved dummy destination visible for review but never actionable. */
+  isPlaceholder?: boolean | undefined
   className?: string | undefined
 }
 
 export function EngagementEnquiry({
   href,
   label,
+  note,
+  isPlaceholder = false,
   className,
 }: EngagementEnquiryProps) {
   return (
-    <p className={cn(s.enquiry, className)}>
-      <Link
-        href={href}
-        className={cn('p-big', s.link)}
-        data-press="email"
-        data-intent=""
-      >
-        {label}
-      </Link>
-    </p>
+    <div className={cn(s.enquiry, className)}>
+      <p>
+        {isPlaceholder ? (
+          <span className={cn('p-big', s.link)} data-placeholder-note>
+            {label}
+          </span>
+        ) : (
+          <Link
+            href={href}
+            className={cn('p-big', s.link)}
+            data-press="email"
+            data-intent=""
+          >
+            {label}
+          </Link>
+        )}
+      </p>
+      {note && (
+        <p data-placeholder-note className="caption">
+          {note}
+        </p>
+      )}
+    </div>
   )
 }

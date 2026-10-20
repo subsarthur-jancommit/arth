@@ -48,12 +48,10 @@ describe('urlForReference — external scheme allowlist', () => {
 })
 
 describe('urlForReference — internal document resolution', () => {
-  test('a page slug maps to its own path, including `home` → /home', () => {
+  test('a page slug maps under /halaman, including home', () => {
     for (const [slug, expected] of [
-      ['about', '/about'],
-      // `/` is the developer-owned starter page; the catch-all can't match
-      // an empty segment, so `home` must not claim the root.
-      ['home', '/home'],
+      ['about', '/halaman/about'],
+      ['home', '/halaman/home'],
     ] as const) {
       expect(
         urlForReference({
@@ -62,6 +60,15 @@ describe('urlForReference — internal document resolution', () => {
         })
       ).toBe(expected)
     }
+  })
+
+  test('the reviewed policy document uses its fixed public route', () => {
+    expect(
+      urlForReference({
+        linkType: 'internal',
+        internalLink: { _type: 'page', slug: { current: 'kebijakan' } },
+      })
+    ).toBe('/kebijakan')
   })
 
   test('projects resolve under /work', () => {
@@ -108,7 +115,7 @@ describe('urlForReference — internal document resolution', () => {
           linkType: 'internal',
           internalLink: { _type: 'page', slug: { current: slug } },
         })
-      ).toBe(`/${slug}`)
+      ).toBe(`/halaman/${slug}`)
     }
   })
 })
@@ -156,8 +163,8 @@ describe('getLinkAttributes — locale prefixing', () => {
       internalLink: { _type: 'page', slug: { current: 'about' } },
     }
 
-    expect(getLinkAttributes(link, 'id').href).toBe('/id/about')
-    expect(getLinkAttributes(link, 'en').href).toBe('/en/about')
+    expect(getLinkAttributes(link, 'id').href).toBe('/id/halaman/about')
+    expect(getLinkAttributes(link, 'en').href).toBe('/en/halaman/about')
   })
 
   test('leaves an external URL unprefixed', () => {
@@ -178,7 +185,7 @@ describe('getLinkAttributes — locale prefixing', () => {
 
 describe('urlForReference — document type to path', () => {
   const cases = [
-    ['page', 'about', '/about'],
+    ['page', 'about', '/halaman/about'],
 
     ['project', 'panas-sore', '/work/panas-sore'],
   ] as const

@@ -1,319 +1,247 @@
 import cn from 'clsx'
 import { getTranslations } from 'next-intl/server'
+import { draftMode } from 'next/headers'
 import { locale as localeRootParam } from 'next/root-params'
 
 import { Wrapper } from '@/components/layout/wrapper'
-import { SanityImage } from '@/components/ui/sanity-image'
+import { Link } from '@/components/ui/link'
 import { SectionHeader } from '@/components/ui/section-header'
-import { resolveHomeContent } from '@/lib/content/home-fallback'
+import {
+  HOME_PILLAR_FALLBACKS,
+  HOME_SITUATION_FALLBACKS,
+  resolveHomeContent,
+} from '@/lib/content/home-fallback'
+import { canRenderPublicContent } from '@/lib/content/public-content-guard'
+import { UNIT_FALLBACKS } from '@/lib/content/unit-fallback'
 import { latestWriting } from '@/lib/content/unit-writing'
-import { UNITS } from '@/lib/content/units'
-import { isLocale, routing } from '@/lib/i18n/routing'
+import { isSideOf, isUnit, sideTemplate, UNITS } from '@/lib/content/units'
+import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
-import { RichText } from '@/lib/integrations/sanity/components/rich-text'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
 import {
-  featuredProjectsQuery,
-  studioSettingsQuery,
+  homeUnitsPreviewQuery,
+  homeUnitsQuery,
+  siteSettingsPreviewQuery,
+  siteSettingsQuery,
 } from '@/lib/integrations/sanity/queries'
-import { toImageSource } from '@/lib/integrations/sanity/utils/image'
 import { ContactBlock } from '@/vault/blocks/contact-block'
 import { Hero } from '@/vault/blocks/hero'
 import { LatestWriting } from '@/vault/blocks/latest-writing'
-import { Passage } from '@/vault/blocks/passage'
 import { PracticeList } from '@/vault/blocks/practice-list'
-import { ProjectGrid } from '@/vault/blocks/project-grid'
+import { SituationLinks } from '@/vault/blocks/situation-links'
 import { StudioNote } from '@/vault/blocks/studio-note'
+import { Reveal } from '@/vault/motion/reveal'
 
 import s from './page.module.css'
 
-/*
- * Hoisted so the array identity is stable across renders — an inline literal
- * would be a new array every time and would re-run `FlowmapProvider`'s
- * effects on each one.
- */
-const FLOWMAP_SIM: ('fluid' | 'flowmap')[] = ['flowmap']
-
-/*
- * Same `'use cache'` + draftMode shape as `app/[locale]/halaman/[slug]/page.tsx`.
- *
- * The fetch calls `cacheTag()` internally, which under Cache Components is
- * only legal inside a `'use cache'` function. Locale is an argument rather
- * than read inside, so it is part of the cache key: `/en` and `/id` must not
- * share one cached result.
- */
-async function fetchHome(
-  locale: string,
-  perspective: 'published' | 'drafts',
-  stega: boolean
-) {
+async function fetchPublishedHome(locale: Locale) {
   'use cache'
-  const [settings, projects] = await Promise.all([
+
+  const [settings, units] = await Promise.all([
     sanityFetch({
-      query: studioSettingsQuery,
+      query: siteSettingsQuery,
       params: { locale },
-      perspective,
-      stega,
+      perspective: 'published',
+      stega: false,
     }),
     sanityFetch({
-      query: featuredProjectsQuery,
+      query: homeUnitsQuery,
       params: { locale },
-      perspective,
-      stega,
+      perspective: 'published',
+      stega: false,
     }),
   ])
-  return { settings: settings.data, projects: projects.data }
+
+  return { settings: settings.data, units: units.data, isDraftMode: false }
 }
 
-/**
- * Published content only, and deliberately no `draftMode()` on this path.
- *
- * Reading draft mode is a request-time access, which pushes the whole page
- * into a dynamic hole under Cache Components. The reader then gets the
- * `loading.tsx` fallback, and the real content arrives in a streamed chunk
- * that only JavaScript can swap in — so with JS disabled the home page is
- * "Skip to main content / Loading" and nothing else. Measured: `<h1>` present
- * in the DOM but hidden, 28 characters of visible text.
- *
- * That was true before this stage too. Tahap 3's no-JS exit criterion passed
- * only because the dataset was empty; the same code against a seeded dataset
- * shows the identical shell. The bug was invisible for exactly as long as
- * there was nothing to render.
- *
- * The trade this makes: the Presentation tool no longer previews *drafts* of
- * the home page — it still previews published changes live through
- * `SanityLive` tag revalidation. Project and article pages keep their draft
- * path, because they are dynamic (`◐`) by nature and lose nothing. The home
- * page is the one route where being readable without JavaScript matters more
- * than previewing an unpublished headline.
- */
-async function fetchHomeForRequest(locale: string) {
+async function fetchPreviewHome(locale: Locale) {
+  'use cache'
+
+  const [settings, units] = await Promise.all([
+    sanityFetch({
+      query: siteSettingsPreviewQuery,
+      params: { locale },
+      perspective: 'drafts',
+      stega: true,
+    }),
+    sanityFetch({
+      query: homeUnitsPreviewQuery,
+      params: { locale },
+      perspective: 'drafts',
+      stega: true,
+    }),
+  ])
+
+  return { settings: settings.data, units: units.data, isDraftMode: true }
+}
+
+async function fetchHomeForRequest(locale: Locale) {
   // A project without Sanity configured still renders a complete page: every
-  // section falls back to `lib/content/home-fallback.ts`, and the work grid is
-  // simply absent. This is the same path an empty dataset takes.
-  if (!isConfigured('sanity')) return { settings: null, projects: [] }
+  // section falls back to the master brief's ready-to-publish text.
+  if (!isConfigured('sanity')) {
+    return { settings: null, units: [], isDraftMode: false }
+  }
 
-  return fetchHome(locale, 'published', false)
+  const { isEnabled } = await draftMode()
+  return isEnabled ? fetchPreviewHome(locale) : fetchPublishedHome(locale)
 }
 
 /**
- * The home page — one long page, per `docs/ROADMAP.md` §1.2.
+ * The home page: `main`'s composition with Arthur's words.
  *
- * ## Which sections exist is decided here, not in the header
- *
- * The roadmap lists five sections and also states that an empty section is
- * more damaging than a missing one. Both hold at once: Work renders only when
- * there is work, and Process is not built at all because no real content for
- * it exists yet (see `docs/stages/TAHAP-3.md` §1).
- *
- * The nav anchors are therefore derived from what actually rendered and passed
- * up to the header, rather than hardcoded there. An anchor pointing at a
- * section that does not exist is a link that silently does nothing — and with
- * an empty dataset that is exactly what `#work` would be.
- *
- * ## Content precedence
- *
- * The CMS wins field by field; `resolveHomeContent` documents why per-field
- * and not per-document. With the dataset empty today, every string here comes
- * from the fallback — which is placeholder copy, and says so on the page.
+ * Fase 1 kept `main`'s sections; V1 of docs/RENCANA-KONTEKS-V2.md changes
+ * what they carry. The fixture work grid and its passage are gone (decision
+ * D1): its works, clients, and photographs were never Arthur's (Aturan isi
+ * 13). The page now reads as the plan's home: the umbrella header, the three
+ * units, the reader's situation, the umbrella's labelled paragraphs, and the
+ * first step. The drawing plates of R4 bring a pinned passage back.
  */
 export default async function Home() {
   const requested = await localeRootParam()
-  const locale = isLocale(requested) ? requested : routing.defaultLocale
+  const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
 
-  const [{ settings, projects }, t, tWork, latest] = await Promise.all([
+  const [{ settings, units, isDraftMode }, t, latest] = await Promise.all([
     fetchHomeForRequest(locale),
     getTranslations('home'),
-    // The practice labels are already localized for the catalogue's filter
-    // chips. Reading them from there rather than adding a second set keeps
-    // the hero and `/work/practice/<value>` naming the same three things.
-    getTranslations('workIndex'),
     latestWriting(locale),
   ])
 
   const content = resolveHomeContent(locale, settings)
-  const hasWork = projects.length > 0
 
   /*
-   * The passage's reel: the same works the grid below lays out, reduced to
-   * what a preview needs — a cover, a title, one line of facts. Nothing is
-   * written for it. `alt=""` because the reel is `aria-hidden`; the card
-   * that follows carries the work's real description.
+   * Each unit's name and one-line summary, from its approved document when it
+   * passes the public-content guard and from the master brief's ready header
+   * otherwise.
    */
-  const plates = projects.flatMap((project) =>
-    project.cover
-      ? [
-          {
-            id: project._id,
-            title: project.title ?? '',
-            meta:
-              [project.engagement, project.client, project.year]
-                .filter((part) => part !== null && String(part) !== '')
-                .join(' · ') || undefined,
-            /*
-             * `sizes` follows the frame, not the viewport. On a phone the
-             * frame is portrait (4:5, ~81vw wide), so a landscape cover
-             * *covering* it renders ~1.6 frame-heights wide — about 160vw.
-             * Measured: at `100vw` a 390px phone fetched a 390px image and
-             * stretched a landscape work to ~630px.
-             */
-            media: (
-              <SanityImage
-                image={toImageSource(project.cover)}
-                alt=""
-                maxWidth={1100}
-                sizes="(max-width: 799px) 170vw, 60vw"
-              />
-            ),
-          },
-        ]
+  const unitEntries = UNITS.map((value) => {
+    const fallback = UNIT_FALLBACKS[value]
+    const candidate = units.find((unit) => unit.kunci === value)
+    const label = candidate?.nama ?? fallback.nama
+    const intro = candidate?.ringkas ?? fallback.ringkas
+    return canRenderPublicContent(`home unit/${value}`, [label, intro])
+      ? { value, label, intro }
+      : { value, label: fallback.nama, intro: fallback.ringkas }
+  })
+  const unitLabel = (value: string) =>
+    unitEntries.find((unit) => unit.value === value)?.label ?? value
+
+  /*
+   * “Pilih situasi Anda”: each situation opens its chapter once that chapter
+   * is published, and its side page until then (docs/RENCANA-KONTEKS-V2.md
+   * §4.2), so no situation links to a page that is not there.
+   */
+  const sourceSituations =
+    settings?.situasi && settings.situasi.length > 0
+      ? settings.situasi.map((situation) => ({
+          key: situation._key,
+          text: situation.teks,
+          unit: situation.unit,
+          side: situation.sisi,
+          chapter: situation.babTujuan,
+        }))
+      : HOME_SITUATION_FALLBACKS.map((situation) => ({
+          key: situation.key,
+          text: situation.text,
+          unit: situation.unit,
+          side: situation.side,
+          chapter: null,
+        }))
+  const situations = sourceSituations.flatMap((situation) => {
+    const unit = situation.unit ?? undefined
+    const side = situation.side ?? undefined
+    if (!situation.text || !isUnit(unit) || !isSideOf(unit, side)) return []
+    if (
+      !canRenderPublicContent(`home situation/${situation.key}`, [
+        situation.text,
+      ])
+    ) {
+      return []
+    }
+
+    const chapter = situation.chapter
+    const sidePath = sideTemplate(unit, side)
+    const href =
+      chapter?.slug && chapter.unit === unit && chapter.sisi === side
+        ? `${sidePath}/${chapter.slug}`
+        : sidePath
+    return [
+      {
+        key: situation.key,
+        text: situation.text,
+        href,
+        destination: unitLabel(unit),
+      },
+    ]
+  })
+
+  /* The umbrella header's labelled paragraphs, word for word. */
+  const candidatePillars = (settings?.pilar ?? []).flatMap((pillar) =>
+    pillar.lead && pillar.isi
+      ? [{ key: pillar._key, lead: pillar.lead, body: pillar.isi }]
       : []
   )
+  const pillars = (
+    candidatePillars.length
+      ? candidatePillars
+      : HOME_PILLAR_FALLBACKS.map((pillar) => ({
+          key: pillar.key,
+          lead: pillar.lead,
+          body: pillar.isi,
+        }))
+  ).filter((pillar) =>
+    canRenderPublicContent(`home pillar/${pillar.key}`, [
+      pillar.lead,
+      pillar.body,
+    ])
+  )
+  const opening = settings?.opening ?? content.statementFallback[0] ?? null
+
+  const actionLabel = settings?.ajakan?.label ?? t('actionFallback')
+  const actionAfter = settings?.ajakan?.sesudahnya ?? t('actionAfterFallback')
 
   return (
     /*
-     * `webgl` and `gsap` are mounted here, not in the layout.
-     *
-     * This is the only page with a scene (the hero's `SceneShell`) and the
-     * only one running a GSAP timeline (`TextReveal`). Mounting them in the
-     * shared layout made every other route download three.js, R3F and GSAP —
-     * measured at 859KB uncompressed of three alone on `/en/ai`.
-     *
-     * Exactly one root canvas may exist: `lib/features` no longer mounts one,
-     * so this is it. Two would race to claim primary (`lib/webgl/store.ts`).
+     * `webgl` for the hero's SceneShell, `gsap` for its timeline. No
+     * `simTypes`: the flowmap's reader was the work grid's material, removed
+     * here with the grid (`docs/TINJAUAN-F01-F03.md` B5).
      */
-    <Wrapper
-      theme="dark"
-      /*
-       * `anchors` hands same-page hash clicks to Lenis, so a jump to `#work`
-       * is eased rather than teleported — the whole reason a single-page site
-       * carries a smooth-scroll library at all. Lenis reads
-       * `scroll-padding-top` (set globally from `--header-height`), so the
-       * target still clears the fixed header.
-       *
-       * With JavaScript off, Lenis never mounts and the browser's own anchor
-       * handling takes over. Same destination, no easing.
-       */
-      lenis={{ anchors: true }}
-      webgl
-      /*
-       * The velocity field the work grid's material reads
-       * (`vault/webgl/material-image`). Opt-in, because a simulation with no
-       * consumer still costs a GPU pass per frame and a window pointer
-       * listener — `lib/webgl/components/flowmap-provider` defaults to none
-       * for exactly that reason, and had no consumer at all until Tahap 14.
-       */
-      simTypes={FLOWMAP_SIM}
-      gsap
-    >
+    <Wrapper theme="dark" lenis={{ anchors: true }} webgl gsap>
       <Hero
         headline={content.headline}
         subline={content.subline}
         /*
-         * The counterweight this block was built for, and never given —
-         * Tahap 67.
-         *
-         * `vault/blocks/hero` has carried the `index` prop, its markup, its
-         * CSS (`grid-column: 9 / -1`, the four columns a 9em headline leaves
-         * free) and the measurement that justified it since Tahap 12d. Its
-         * own doc describes the result as shipped: *"The text elements sit on
-         * a diagonal: the index in the top right, the headline and its action
-         * at the bottom left."* `lib/content/practices.ts` says the same
-         * thing — *"the hero's right-hand column has been labelled `Unit`
-         * / `Praktik` since Tahap 12d"* — and `home.heroIndexLabel` sits in
-         * both dictionaries.
-         *
-         * None of it reached the screen, because this call never passed the
-         * prop. Measured at 1440×900 before this line: the first screen's
-         * content ran **462→836 of 900**, so the top 51% held nothing but
-         * ground, and the diagonal was a staircase down the left — the exact
-         * composition the prop's own doc records Tahap 12 removing.
-         *
-         * The words are the ones the rest of the page already uses:
-         * `PracticeList` below is built from the same `UNITS` constant
-         * and the same `workIndex.<practice>` labels. Nothing here is copy
-         * invented for the hero.
+         * The hero's counterweight (Tahap 67): the index in the top right,
+         * headline and action bottom left. The labels are the unit list's
+         * own, so the hero names exactly what the page opens below.
          */
         index={{
           label: t('heroIndexLabel'),
-          items: UNITS.map((unit) => tWork(unit)),
+          items: unitEntries.map((unit) => unit.label),
         }}
         action={
-          /* oxlint-disable-next-line react/forbid-elements -- deliberate native
-             anchor, same reasoning as the header nav: a same-page hash must
-             scroll with the browser's own handling so it still works with
-             JavaScript disabled, which is a stated Tahap 3 exit criterion. */
+          /* oxlint-disable-next-line react/forbid-elements -- a same-page jump must keep working when JavaScript is disabled */
           <a
-            href={hasWork ? '#work' : '#contact'}
+            href="#situasi"
             className={cn('cta', s.heroCta)}
-            // Both attributes on one element: this control is its own
-            // acknowledgment (the fill inverts on hover), so INTENT and
-            // COMMIT live in the same place. `MOTION-SPEC.md` §9.
             data-press="cta"
             data-intent=""
           >
-            {hasWork ? t('heroCta') : t('heroCtaContact')}
+            {t('heroCta')}
           </a>
         }
       />
 
       <div className={s.sections}>
-        {hasWork && (
-          <section id="work" className={s.section}>
-            {/*
-              The header reveals on its own, separately from the grid below.
-              Both are `useReveal` containers, so the heading arrives first and
-              the cards stagger after it — the order a reader takes them in.
-              One container around both would have fired them together, and a
-              heading arriving with its own content reads as a page dump
-              rather than as an introduction.
-            */}
-            {/*
-              No eyebrow. "Selected work" over "Recent engagements" said the
-              same thing twice, and `taste-skill` SKILL.md section 4.7 caps
-              eyebrows at one per three sections precisely to stop that
-              rhythm: four sections each wearing a small-caps label is the
-              templated look, not a considered one. The count beside the
-              title carries what the eyebrow was pretending to.
-            */}
-            {/*
-              The work's arrival, choreographed — `arth-passage`, Tahap 49.
-
-              The header is the same one it always was: same title, same
-              count, same component. What changed is that it now arrives
-              through a pinned passage in which the studio's own twelve-column
-              grid sharpens under it.
-
-              **Zero copy was added, and that constraint shaped the block.**
-              This page has no spare words — the statement is in `StudioNote`,
-              the practice names are in `PracticeList` — and inventing some
-              would break the one rule the owner set on content. So the
-              passage is not a new section between the hero and the work; it
-              is how the work gets here.
-
-              `reveal` comes off the header: a container reveal and a scrubbed
-              passage are two entrances competing for the same element, and
-              `MOTION-SPEC.md` §9.4 rule 2 is that a thing arrives once.
-            */}
-            <Passage plates={plates}>
-              <SectionHeader
-                title={t('workTitle')}
-                aside={t('workCount', { count: projects.length })}
-              />
-            </Passage>
-            <ProjectGrid projects={projects} material />
-          </section>
+        {isDraftMode && (
+          <p className={cn('caption', s.previewFlag)} role="status">
+            {t('draftPreview')}
+          </p>
         )}
 
         {/*
-          What the studio takes on, opened one practice at a time.
-
-          The three values come from `lib/content/units.ts` — the same list
-          that drives the schema, the `/{unit}` routes and the catalogue's
-          filter chips — and each panel shows the sentence that catalogue
-          already uses as its masthead. Nothing here is copy invented for this
-          section, which is why it carries no placeholder note: it says what
-          the rest of the site says.
+          The three units, opened one at a time. Each panel links the unit's
+          own page, which is where the sides and their situations begin.
         */}
         <PracticeList
           id="unit"
@@ -321,100 +249,84 @@ export default async function Home() {
           eyebrow={t('practiceEyebrow')}
           title={t('practiceTitle')}
           linkLabel={t('practiceLink')}
-          entries={UNITS.map((unit) => ({
-            value: unit,
-            label: tWork(unit),
-            intro: tWork(`${unit}Intro`),
-          }))}
+          entries={unitEntries}
         />
 
-        <StudioNote
-          id="studio"
+        <SituationLinks
           className={s.section}
-          /*
-           * No eyebrow either. "Studio" duplicated the header's own anchor
-           * label sitting a few hundred pixels above it, and "How we work"
-           * needs no category. Two eyebrows remain on this page — `Unit`
-           * and `Commissions` — because each names something its headline
-           * does not.
-           */
-          title={t('studioTitle')}
-          portrait={settings?.portrait ?? null}
-          {...(settings?.portraitAlt && { portraitAlt: settings.portraitAlt })}
-        >
-          {/*
-            `data-statement` names where this prose came from, and the note
-            below is driven by the same fact rather than by a second one.
-            They were separate until Tahap 35: the note asked "does a
-            `studioSettings` document exist?" while the prose asked "does it
-            have a statement?", and with the fixture document present the
-            answers disagreed — placeholder paragraphs shipped with no label.
-          */}
-          <div
-            className={s.statement}
-            data-statement={content.statement ? 'cms' : 'fallback'}
-          >
-            {content.statement ? (
-              // SAFETY: `statement` is the CMS's Portable Text for this
-              // locale. `resolveHomeContent` widens it to `unknown[]` because
-              // it also accepts the fallback shape; the query types it as
-              // `RichText`, and `RichText` renders nothing for a block it does
-              // not know.
-              <RichText
-                content={content.statement as never}
-                paragraphClassName="p-big"
-              />
-            ) : (
-              content.statementFallback.map((paragraph) => (
-                <p key={paragraph.slice(0, 32)} className="p-big">
-                  {paragraph}
-                </p>
-              ))
-            )}
-          </div>
+          situations={situations}
+          eyebrow={t('situationEyebrow')}
+          title={t('situationTitle')}
+          destinationLabel={t('situationDestination')}
+        />
 
-          {content.fallbacks.statement && (
-            <p data-placeholder-note className={`caption ${s.placeholder}`}>
-              {t('placeholderNote')}
-            </p>
-          )}
+        <StudioNote id="studio" className={s.section} title={t('studioTitle')}>
+          <div className={s.statement} data-statement="header">
+            {opening ? <p className="p-big">{opening}</p> : null}
+            <ol className={s.pillars}>
+              {pillars.map((pillar) => (
+                <li key={pillar.key} className={s.pillar}>
+                  <p className="h3">{pillar.lead}</p>
+                  <p className="p">{pillar.body}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
         </StudioNote>
 
-        {/*
-          What the studio thinks, on the page a client reaches first — round
-          6. The newest journal entry, resolved as `/journal` resolves it, so
-          the two agree on what came last; after how the studio works and
-          before the way to commission it.
-        */}
         {latest && (
           <LatestWriting
             className={s.section}
             eyebrow={t('journalEyebrow')}
             entry={latest}
-            practice={latest.unit ? tWork(latest.unit) : undefined}
+            practice={latest.unit ? unitLabel(latest.unit) : undefined}
             allLabel={t('journalAll')}
             locale={locale}
           />
         )}
 
-        <ContactBlock
-          id="contact"
-          className={s.section}
-          eyebrow={t('contactEyebrow')}
-          title={t('contactTitle')}
-          email={content.email}
-          emailLabel={t('emailLabel', { name: content.name })}
-          socials={content.socials}
-          {...(content.fallbacks.email && {
-            note: t('contactPlaceholderNote'),
-          })}
-          socialsHeading={t('socialsHeading')}
-          copy={{
-            label: t('copyAddress'),
-            copied: t('addressCopied'),
-            failed: t('copyFailed'),
-          }}
-        />
+        {/*
+          The first step. Until K5 names a real channel the fallback address
+          is a reserved `.invalid` placeholder, and P4 is that a reader never
+          sees one, so the action points to the contact page instead.
+        */}
+        {content.fallbacks.email ? (
+          <Reveal as="section" id="contact" className={s.section}>
+            <SectionHeader
+              eyebrow={t('actionEyebrow')}
+              title={`${actionLabel} ${actionAfter}`}
+            />
+            <p data-reveal-item>
+              <Link
+                href="/kontak"
+                className={cn('cta', s.heroCta)}
+                data-press="cta"
+                data-intent=""
+              >
+                {t('actionLink')}
+              </Link>
+            </p>
+          </Reveal>
+        ) : (
+          <ContactBlock
+            id="contact"
+            className={s.section}
+            eyebrow={t('actionEyebrow')}
+            title={`${actionLabel} ${actionAfter}`}
+            email={content.email}
+            address={content.address}
+            addressHeading={t('addressHeading')}
+            addressIsPlaceholder={content.fallbacks.address}
+            emailLabel={t('emailLabel', { name: content.name })}
+            socials={content.socials}
+            socialsHeading={t('socialsHeading')}
+            copy={{
+              label: t('copyAddress'),
+              copied: t('addressCopied'),
+              failed: t('copyFailed'),
+            }}
+          />
+        )}
       </div>
     </Wrapper>
   )

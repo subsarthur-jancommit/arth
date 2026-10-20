@@ -1,50 +1,158 @@
-/*
- * The scaffold's layout, and no more than that.
- *
- * F3-02 builds the unit template; this page exists so the route, its status
- * handling and its sweep coverage can be proved before there is content to
- * show. So the stylesheet stays at the level of "a readable column with the
- * site's own gutters" rather than inventing a composition the template will
- * replace.
- */
 .page {
   display: flex;
   flex-grow: 1;
   flex-direction: column;
-  gap: var(--gap);
-  padding: calc(64 / 375 * 100vw) calc(20 / 375 * 100vw) calc(96 / 375 * 100vw);
+  gap: calc(112 / 375 * 100vw);
+  padding-inline: calc(20 / 375 * 100vw);
+  overflow: clip;
 
   @media (--desktop) {
-    padding: calc(96 / 1440 * 100vw) calc(64 / 1440 * 100vw)
-      calc(128 / 1440 * 100vw);
+    gap: calc(176 / 1440 * 100vw);
+    padding-inline: calc(64 / 1440 * 100vw);
   }
 }
 
-.sample {
-  /* minmax(0, …) rather than a bare width: CLAUDE.md #12's reason applies to
-     a flex item too — long unbroken placeholder text would otherwise push
-     the column wider than its track. */
-  max-width: min(100%, calc(720 / 1440 * 100vw));
-}
-
-/*
- * The way off the page. A row of chips rather than a list, because there are
- * two of them and they are peers — the same shape the project page uses for
- * its related links, so a reader meets one idiom and not two.
- */
-.others {
-  display: flex;
-  flex-wrap: wrap;
-  gap: calc(8 / 375 * 100vw);
+.section {
+  display: grid;
+  gap: calc(36 / 375 * 100vw);
 
   @media (--desktop) {
-    gap: calc(8 / 1440 * 100vw);
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gutter);
   }
 }
 
-.other {
-  padding: 0.5em 1em;
+.section > header {
+  @media (--desktop) {
+    grid-column: 1 / 5;
+  }
+}
+
+.problemList,
+.cardList,
+.bridgeList {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @media (--desktop) {
+    grid-column: 5 / -1;
+  }
+}
+
+.problem {
+  display: grid;
+  grid-template-columns: minmax(0, 3rem) minmax(0, 1fr);
+  gap: calc(16 / 375 * 100vw);
+  align-items: baseline;
+  padding-block: calc(24 / 375 * 100vw);
+  border-top: 1px solid var(--line);
+
+  @media (--desktop) {
+    gap: var(--gutter);
+    padding-block: calc(28 / 1440 * 100vw);
+  }
+}
+
+.problem:last-child,
+.pillar:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+/* A header paragraph: its bold lead, then the paragraph, stacked. */
+.pillar {
+  display: grid;
+  gap: calc(12 / 375 * 100vw);
+  padding-block: calc(24 / 375 * 100vw);
+  border-top: 1px solid var(--line);
+
+  @media (--desktop) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gutter);
+    padding-block: calc(28 / 1440 * 100vw);
+  }
+}
+
+.pillar p {
+  margin: 0;
+}
+
+.problem p,
+.bridge p,
+.action h2,
+.action p {
+  margin: 0;
+}
+
+.cardList {
+  gap: calc(12 / 375 * 100vw);
+
+  @media (--desktop) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gutter);
+  }
+}
+
+.card {
+  display: grid;
+  gap: calc(16 / 375 * 100vw);
+  min-height: calc(280 / 375 * 100vw);
+  padding: calc(20 / 375 * 100vw);
   border: 1px solid var(--line-strong);
-  border-radius: var(--radius-full);
+  color: inherit;
   text-decoration: none;
+
+  @media (--desktop) {
+    min-height: calc(360 / 1440 * 100vw);
+    padding: calc(28 / 1440 * 100vw);
+  }
+}
+
+.cardKind,
+.note {
+  color: var(--text-muted);
+}
+
+.work,
+.nextUnit {
+  margin-inline: calc(-20 / 375 * 100vw);
+
+  @media (--desktop) {
+    margin-inline: calc(-64 / 1440 * 100vw);
+  }
+}
+
+.bridgeList {
+  gap: calc(32 / 375 * 100vw);
+}
+
+.bridge {
+  display: grid;
+  gap: calc(16 / 375 * 100vw);
+  padding-top: calc(24 / 375 * 100vw);
+  border-top: 1px solid var(--line);
+}
+
+.action {
+  display: grid;
+  gap: calc(20 / 375 * 100vw);
+  max-width: 64rem;
+  padding-block: calc(48 / 375 * 100vw);
+  border-block: 1px solid var(--line-strong);
+
+  @media (--desktop) {
+    gap: calc(24 / 1440 * 100vw);
+    padding-block: calc(64 / 1440 * 100vw);
+  }
+}
+
+.actionLink {
+  width: fit-content;
+  color: inherit;
+}
+
+.note {
+  max-width: 52ch;
 }

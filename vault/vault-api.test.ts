@@ -61,6 +61,8 @@ const DELIBERATE = {
   'dot-pattern:cr': 'vendored Magic UI tuning knob, default in use',
   'dot-pattern:cx': 'vendored Magic UI tuning knob, default in use',
   'dot-pattern:cy': 'vendored Magic UI tuning knob, default in use',
+  'dot-pattern:width': 'vendored Magic UI tuning knob, default in use',
+  'dot-pattern:height': 'vendored Magic UI tuning knob, default in use',
   'pixel-image:grid': 'vendored Magic UI tuning knob, default in use',
   'grid-pattern:x': 'vendored Magic UI tuning knob, default in use',
   'grid-pattern:y': 'vendored Magic UI tuning knob, default in use',
@@ -72,6 +74,10 @@ const DELIBERATE = {
   // pixels above it. The prop stays because two other surfaces use the block
   // with one.
   'studio-note:eyebrow': 'omitted on /, with the reason at the call site',
+
+  // Passed once the first commission card opens registration. Until then the
+  // block omits the section rather than showing "not open yet" (P4, R0).
+  'network-side:registration': 'waits for the first commission card',
 
   /*
    * Four props whose only caller was the practice page, retired in F1-03.
@@ -132,6 +138,18 @@ const DELIBERATE = {
   // against the fold; a page that overrode it would be deciding a
   // loading strategy from the outside.
   'project-grid:preloadCount': 'perf default tuned in the block, not per page',
+
+  // F3-01 replaces the legacy studio home with Arthur's umbrella structure.
+  // These capabilities stay in the vault for the routes named below; keeping
+  // the reasons here makes their temporary lack of a caller explicit.
+  'hero:index': 'F3-01 caps the umbrella hero at four text elements',
+  'latest-writing:practice':
+    'the legacy journal promotion left the home in F3-01',
+  'passage:plates': 'the Arthur home passage is now its three unit doors',
+  'studio-note:portrait':
+    'reserved for F3-09 after the owner provides real identity media',
+  'studio-note:portraitAlt':
+    'paired with the F3-09 portrait; no dummy portrait is rendered',
 } satisfies Record<string, string>
 
 /** Directories whose `index.tsx` declares a component this rule governs. */

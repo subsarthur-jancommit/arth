@@ -21,6 +21,7 @@ import {
 import {
   config as proxyConfig,
   FILE_EXTENSION,
+  fixedPageDestination,
   isLocalizable,
   MACHINE_PATHS,
   NON_LOCALIZED_PREFIXES,
@@ -231,5 +232,20 @@ describe('proxy.ts locale wiring', () => {
     const source = await readProxy()
     expect(source).toMatch(/from ['"]next-intl\/middleware['"]/)
     expect(source).toMatch(/\bhandleI18nRouting\s*\(/)
+  })
+})
+
+describe('fixed public page redirects', () => {
+  it('redirects the generic policy alias to its canonical fixed route', () => {
+    expect(fixedPageDestination('/id/halaman/kebijakan')).toBe('/id/kebijakan')
+    expect(fixedPageDestination('/id/halaman/kebijakan/')).toBe('/id/kebijakan')
+    expect(fixedPageDestination('/en/halaman/kebijakan')).toBe('/en/kebijakan')
+  })
+
+  it('does not claim unrelated or malformed paths', () => {
+    expect(fixedPageDestination('/id/kebijakan')).toBeNull()
+    expect(fixedPageDestination('/id/halaman/lain')).toBeNull()
+    expect(fixedPageDestination('/id/halaman/kebijakan/lebih')).toBeNull()
+    expect(fixedPageDestination('/xx/halaman/kebijakan')).toBeNull()
   })
 })

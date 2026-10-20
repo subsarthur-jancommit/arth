@@ -10,12 +10,12 @@ import { expect, test } from '@playwright/test'
  * on production (`CLAUDE.md`, "Melihat hasil"): no CI build has a commit of
  * Vercel's to name. The rules for that half are unit-tested in `build.test.ts`.
  */
-for (const [locale, colophon, builtOn] of [
-  ['en', 'Colophon', 'Built on Satūs'],
-  ['id', 'Kolofon', 'Dibangun di atas Satūs'],
+for (const [path, colophon, builtOn] of [
+  ['/en/journal', 'Colophon', 'Built on Satūs'],
+  ['/id', 'Kolofon', 'Dibangun di atas Satūs'],
 ] as const) {
-  test(`/${locale}: no stamp without a build to name`, async ({ page }) => {
-    await page.goto(`/${locale}`)
+  test(`${path}: no stamp without a build to name`, async ({ page }) => {
+    await page.goto(path)
 
     const column = page
       .locator('footer section')

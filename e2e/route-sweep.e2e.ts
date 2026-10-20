@@ -5,8 +5,10 @@ import AxeBuilder from '@axe-core/playwright'
 import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
-import { UNITS } from '../lib/content/units'
-import { routing } from '../lib/i18n/routing'
+import { SIDES, type Unit, UNITS } from '../lib/content/units'
+import { publicLocaleRedirect } from '../lib/i18n/public-locale-redirect'
+import { PUBLISHED_LOCALES, routing } from '../lib/i18n/routing'
+import { isAwaitingContentPath } from '../lib/seo/route-status'
 import { axeTags } from './axe-tags'
 
 /**
@@ -55,7 +57,12 @@ import { axeTags } from './axe-tags'
  */
 
 /** Path (as it will be requested, e.g. `/pricing`) -> reason it's excluded. */
-const OPT_OUT: Record<string, string> = {}
+const OPT_OUT = new Map<string, string>([
+  /*
+   * Empty since R5 published the work-method page: `/studio` used to be
+   * opted out because its redirect target, `/cara-kerja`, answered 404.
+   */
+])
 
 const APP_DIR = join(process.cwd(), 'app')
 
@@ -77,7 +84,7 @@ function findPageFiles(dir: string, base = dir): string[] {
 }
 
 /**
- * `/[locale]/studio/page.tsx` -> `['/en/studio', '/id/studio']`; returns `[]` for a route
+ * `/[locale]/cara-kerja/page.tsx` -> `['/en/cara-kerja', '/id/cara-kerja']`; returns `[]` for a route
  * with any other dynamic segment.
  *
  * `[locale]` is expanded rather than skipped. Every page in this app now lives
@@ -94,9 +101,13 @@ function findPageFiles(dir: string, base = dir): string[] {
  * segment, so a route that stopped answering would otherwise be invisible
  * here and caught only by `proxy.ts` answering it `404`.
  *
+ * `[side]` is expanded from the unit already present in that path. That
+ * relationship is essential: a Cartesian product would invent twelve URLs
+ * such as `/teknologi/pelaku-proyek` that are intentionally invalid.
+ *
  * Other dynamic segments (`[slug]`, `[...slug]`) are still skipped: they need
  * fixture data to render meaningfully and belong in a dedicated spec —
- * `e2e/unit-page.e2e.ts` is the unit pages' own, beyond this smoke.
+ * `e2e/unit-page.e2e.ts` and `e2e/side-page.e2e.ts` go beyond this smoke.
  */
 function toRoutes(relativePagePath: string): string[] {
   // path.join produces `\` separators on Windows; split on both so the
@@ -106,17 +117,12 @@ function toRoutes(relativePagePath: string): string[] {
     .filter((segment) => segment.length > 0 && segment !== 'page.tsx')
 
   /*
-   * The dynamic segments this sweep knows how to expand, and what into.
-   *
-   * Keyed by the directory name so the table reads as the filesystem does.
-   * Anything dynamic and absent from it is still skipped wholesale.
+   * The dynamic segments this sweep knows how to expand, named exactly as
+   * their directories are. Anything dynamic and absent is skipped wholesale.
    */
-  const EXPANDABLE = {
-    '[locale]': routing.locales,
-    '[unit]': UNITS,
-  } satisfies Record<string, readonly string[]>
+  const EXPANDABLE = new Set(['[locale]', '[unit]', '[side]'])
 
-  const isExpandable = (segment: string) => segment in EXPANDABLE
+  const isExpandable = (segment: string) => EXPANDABLE.has(segment)
 
   if (
     segments.some((segment) => segment.includes('[') && !isExpandable(segment))
@@ -129,33 +135,81 @@ function toRoutes(relativePagePath: string): string[] {
   )
 
   /*
-   * Every combination of the expandable segments, in path order.
-   *
-   * A fold rather than the nested `routing.locales.map` this used to be:
-   * with two expandable segments the old shape would have had to nest, and
-   * with three it would have had to nest again. The fold takes any number,
-   * so `[side]` joining the table in F1-04 is one line there and none here.
+   * Every valid combination of the expandable segments, in path order.
+   * The expansion carries the selected unit so `[side]` can read only that
+   * unit's tuple rather than every side in the site.
    */
+  interface Expansion {
+    path: string
+    unit?: Unit
+  }
+
   return staticSegments
-    .reduce<string[]>(
+    .reduce<Expansion[]>(
       (paths, segment) => {
-        const values: readonly string[] =
-          segment in EXPANDABLE
-            ? EXPANDABLE[segment as keyof typeof EXPANDABLE]
-            : [segment]
-        return paths.flatMap((prefix) =>
-          values.map((value) => `${prefix}/${value}`)
-        )
+        if (segment === '[locale]') {
+          // The English root redirects to /id until its copy is approved.
+          // Its redirect is asserted in default-language.e2e.ts; the route
+          // sweep must not count /en as an independently rendered page.
+          const locales =
+            staticSegments.length === 1 ? PUBLISHED_LOCALES : routing.locales
+          return paths.flatMap((entry) =>
+            locales.map((locale) => ({
+              ...entry,
+              path: `${entry.path}/${locale}`,
+            }))
+          )
+        }
+
+        if (segment === '[unit]') {
+          return paths.flatMap((entry) =>
+            UNITS.map((unit) => ({
+              path: `${entry.path}/${unit}`,
+              unit,
+            }))
+          )
+        }
+
+        if (segment === '[side]') {
+          return paths.flatMap((entry) =>
+            entry.unit === undefined
+              ? []
+              : SIDES[entry.unit].map((side) => ({
+                  ...entry,
+                  path: `${entry.path}/${side}`,
+                }))
+          )
+        }
+
+        return paths.map((entry) => ({
+          ...entry,
+          path: `${entry.path}/${segment}`,
+        }))
       },
-      ['']
+      [{ path: '' }]
     )
-    .map((path) => path || '/')
+    .map(({ path }) => path || '/')
 }
 
 function discoverRoutes(): string[] {
   if (!existsSync(APP_DIR) || !statSync(APP_DIR).isDirectory()) return []
 
-  const routes = findPageFiles(APP_DIR).flatMap(toRoutes)
+  /*
+   * Two kinds of discovered route do not render a page of their own, and the
+   * proxy answers them before rendering (R0):
+   *
+   * - a fixed page awaiting published content answers a real 404
+   *   (`lib/seo/awaiting-content.ts`) — `e2e/awaiting-content.e2e.ts`
+   *   asserts that status instead;
+   * - an untranslated Arthur page under `/en` answers 307 to its `/id` twin
+   *   (K2), which this sweep already renders under its own address.
+   */
+  const routes = findPageFiles(APP_DIR)
+    .flatMap(toRoutes)
+    .filter(
+      (route) =>
+        !isAwaitingContentPath(route) && publicLocaleRedirect(route) === null
+    )
 
   return [...new Set(routes)].sort()
 }
@@ -204,7 +258,7 @@ test.describe('route sweep', () => {
   })
 
   for (const route of discoveredRoutes) {
-    const optOutReason = OPT_OUT[route]
+    const optOutReason = OPT_OUT.get(route)
 
     test(`${route}: renders, has no console errors, passes a11y${
       optOutReason ? ` (opted out: ${optOutReason})` : ''

@@ -4,8 +4,12 @@ import type { CSSProperties } from 'react'
 
 import { Link } from '@/components/ui/link'
 import { Marquee } from '@/components/ui/marquee'
-import { FALLBACK_CONTACT } from '@/lib/content/home-fallback'
+import {
+  FALLBACK_CONTACT,
+  isPlaceholderEmail,
+} from '@/lib/content/home-fallback'
 import { UNITS, unitTemplate } from '@/lib/content/units'
+import { isAwaitingContent } from '@/lib/seo/awaiting-content'
 import { BuildStamp } from '@/vault/blocks/build-stamp'
 import { readBuild } from '@/vault/blocks/build-stamp/build'
 import { GridToggle } from '@/vault/motion/grid-underlay'
@@ -58,18 +62,33 @@ const YEAR = new Date().getFullYear()
 /*
  * One source, not a third copy — Tahap 35.
  *
- * These were literals here: `studio@arth.example` and two bare domains,
- * duplicating `lib/content/home-fallback.ts` exactly. The home page resolves
+ * This used to be a literal here: `studio@arth.example`, duplicating
+ * `lib/content/home-fallback.ts`. The home page resolves
  * the same fields against the CMS; this footer cannot, because it renders
  * inside the client `Wrapper` and has no server data of its own. Sharing the
  * constant is what makes that a *fallback* rather than a second opinion, and
- * what makes wiring the CMS through later one edit instead of three.
+ * what makes wiring the CMS through later one edit instead of three. No
+ * social profile is linked until Arthur's official accounts are supplied.
  *
- * They are marked as placeholders in the markup below, for the same reason
- * the home page's statement is: showing scaffolding is fine, showing it
- * unlabelled is not.
+ * Until K5 replaces it, the placeholder is not printed at all (owner decision
+ * P4, R0); the column links to the contact page instead.
  */
 const { name: SITE_NAME, email: EMAIL, socials: SOCIAL } = FALLBACK_CONTACT
+
+/** Whether the only address this footer has is still the placeholder. */
+const CONTACT_IS_PLACEHOLDER = isPlaceholderEmail(EMAIL)
+
+/*
+ * Fixed pages in the index, minus any still awaiting published content
+ * (`lib/seo/awaiting-content.ts`): the footer is on every page, so a link
+ * here to a 404 would be on every page too.
+ */
+const INDEX_PAGES = (
+  [
+    { href: '/cara-kerja', labelKey: 'studio' },
+    { href: '/kebijakan', labelKey: 'policy' },
+  ] as const
+).filter(({ href }) => !isAwaitingContent(href))
 
 /*
  * The address's length, for the stylesheet to fit it to its column
@@ -102,7 +121,6 @@ export function Footer() {
    */
   const tNav = useTranslations('nav')
   const tWork = useTranslations('workIndex')
-  const tJournal = useTranslations('journal')
   return (
     // No `id="contact"`. The home page's Contact section owns that id, and two
     // elements sharing one is a `duplicate-id` violation — which now fails the
@@ -153,60 +171,39 @@ export function Footer() {
       </Marquee>
 
       <div className={s.columns}>
+        {/*
+          Contact. The fallback address is a reserved `.invalid` placeholder
+          until K5 names a real channel, and the owner's decision P4 is that a
+          reader never sees a placeholder or a note written for the editor.
+          So until then this column points to the contact page instead of
+          printing an address nobody answers.
+        */}
         <section className={s.column}>
           <h2 className={cn('caption', s.heading)}>{t('contact')}</h2>
-          <Link
-            href={`mailto:${EMAIL}`}
-            className={cn('p-big', s.email)}
-            style={EMAIL_STYLE}
-          >
-            {EMAIL}
-          </Link>
+          {CONTACT_IS_PLACEHOLDER ? (
+            <ul className={s.list}>
+              <li>
+                <IndexLink href="/kontak">{tNav('contact')}</IndexLink>
+              </li>
+            </ul>
+          ) : (
+            <span className={cn('p-big', s.email)} style={EMAIL_STYLE}>
+              {EMAIL}
+            </span>
+          )}
         </section>
 
-        {/*
-          Site navigation, and it lives here rather than in the header for a
-          measured reason.
-
-          Tahap 20 counted the onward links on every route: `/en/work` has
-          eleven, a practice page three, and **a project page one** — the next
-          project. The footer carried no navigation at all, on every route,
-          while a project page is the one most likely to be a landing page
-          from a search result or a shared link.
-
-          `components/layout/header` already decided, with a sound argument,
-          not to carry the home page's section anchors on inner routes: they
-          would be links that silently do nothing. That argument is about
-          anchors. Every link below is a **real route**, so it cannot die —
-          which is why this belongs here and the header stays untouched.
-
-          `Portfolio Grid`, the pattern this site follows, puts its primary
-          call to action at "Project Card Hover + Footer Contact". The footer
-          was already the site's second entry point; it simply had nothing to
-          enter.
-        */}
+        {/* The footer index keeps the three units, work method, and policy
+            status reachable everywhere. Catalogue and journal indexes remain
+            addressable but are intentionally not promoted in navigation. */}
         <section className={s.column}>
           <h2 className={cn('caption', s.heading)}>{t('index')}</h2>
           <ul className={s.list}>
-            <li>
-              <IndexLink href="/work">{tNav('work')}</IndexLink>
-            </li>
-            {/*
-              The studio page, which became a real route in Tahap 24.
-
-              It goes here rather than in the header because the header's nav
-              is built from the *sections* the current page rendered — in-page
-              anchors, passed only by the home page — while this column is the
-              site's route index and is on every page. Adding it here makes the
-              studio reachable from anywhere, which is what
-              `e2e/site-reach.e2e.ts` reads.
-            */}
-            <li>
-              <IndexLink href="/studio">{tNav('studio')}</IndexLink>
-            </li>
-            <li>
-              <IndexLink href="/journal">{tJournal('title')}</IndexLink>
-            </li>
+            {INDEX_PAGES.map(({ href, labelKey }) => (
+              <li key={href}>
+                <IndexLink href={href}>{tNav(labelKey)}</IndexLink>
+              </li>
+            ))}
             {UNITS.map((value) => (
               <li key={value}>
                 <IndexLink href={unitTemplate(value)}>{tWork(value)}</IndexLink>
@@ -215,18 +212,21 @@ export function Footer() {
           </ul>
         </section>
 
-        <section className={s.column}>
-          <h2 className={cn('caption', s.heading)}>{t('elsewhere')}</h2>
-          <ul className={s.list}>
-            {SOCIAL.map((item) => (
-              <li key={item.url}>
-                <Link href={item.url} className={cn('caption', s.link)}>
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
+        {/* Shown only once there is an official account to link (P4). */}
+        {SOCIAL.length > 0 && (
+          <section className={s.column}>
+            <h2 className={cn('caption', s.heading)}>{t('elsewhere')}</h2>
+            <ul className={s.list}>
+              {SOCIAL.map((item) => (
+                <li key={item.url}>
+                  <Link href={item.url} className={cn('caption', s.link)}>
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         <section className={s.column}>
           <h2 className={cn('caption', s.heading)}>{t('colophon')}</h2>
@@ -242,7 +242,9 @@ export function Footer() {
         </section>
       </div>
 
-      <p className={cn('caption', s.rights)}>{t('rights', { year: YEAR })}</p>
+      <p className={cn('caption', s.rights)}>
+        {t('rights', { year: YEAR, name: SITE_NAME })}
+      </p>
     </footer>
   )
 }

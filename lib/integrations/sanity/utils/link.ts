@@ -115,12 +115,11 @@ function resolveDocumentUrl(documentType?: string, slug?: string): string {
   if (!slug || !isSafeInternalSlug(slug)) return '#'
 
   switch (documentType) {
-    // Every page slug maps to its own path — including `home` → `/home`.
-    // `/` is the developer-owned starter page (`app/[locale]/page.tsx`) and the
-    // catch-all can't match an empty segment, so claiming `/` for a `home`
-    // document would link to a route that never serves it.
+    // Fixed CMS pages live under /halaman so they cannot collide with the
+    // dynamic unit route. Kebijakan is the one explicit fixed-route contract:
+    // it has its own legal-review gate and redirects the generic form.
     case 'page':
-      return `/${slug}`
+      return slug === 'kebijakan' ? '/kebijakan' : `/halaman/${slug}`
     // Projects get their own namespace rather than sharing the `page`
     // catch-all: slugs are unique per type in Sanity, not across types, so a
     // work called "About" and a page called "About" would otherwise both
@@ -136,7 +135,8 @@ function resolveDocumentUrl(documentType?: string, slug?: string): string {
 /**
  * Link attributes for rendering, with the active locale applied.
  *
- * `urlForReference` deliberately returns a locale-FREE template (`/about`),
+ * `urlForReference` deliberately returns a locale-FREE template
+ * (`/halaman/about`),
  * because that is what a CMS slug is and what route deduplication in
  * `lib/seo/routes.ts` compares. A browser href needs the prefix, so it is
  * applied here — the one place that turns a template into something a reader

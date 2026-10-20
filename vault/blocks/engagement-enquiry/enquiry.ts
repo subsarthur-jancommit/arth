@@ -9,7 +9,7 @@
  * the subject early, and an unencoded line break collapses the brief into one
  * line — the link still opens a mail client, just with a worse letter in it.
  * The address is left as written; it is the studio's own, from
- * `studioSettings` or `FALLBACK_CONTACT`, not reader input.
+ * `siteSettings` or `FALLBACK_CONTACT`, not reader input.
  */
 export function enquiryHref(
   email: string,

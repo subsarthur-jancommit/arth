@@ -140,11 +140,43 @@ export const project = defineType({
     }),
 
     defineField({
-      name: 'practice',
+      name: 'unit',
       title: 'Unit',
       type: 'string',
       description:
-        'Which kind of work this is. Drives the filter on /work and the structured data.',
+        'Kunci unit Arthur. Wajib untuk dokumen baru; dokumen lama tetap dibaca dari practice sampai migrasi §6 yang disetujui selesai.',
+      options: {
+        list: UNITS.map((unit) => ({
+          title: UNIT_STUDIO_TITLES[unit],
+          value: unit,
+        })),
+        layout: 'radio',
+      },
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          if (typeof value === 'string' && value !== '') return true
+
+          // Existing published projects carry the old field until U21's
+          // owner-approved migration. Making them invalid now would block an
+          // editor from correcting an unrelated field before that migration.
+          if (typeof context.document?.practice === 'string') return true
+
+          return 'Pilih satu unit sebelum menerbitkan proyek baru.'
+        }),
+    }),
+    defineField({
+      name: 'practice',
+      title: 'Unit lama (arsip)',
+      type: 'string',
+      description:
+        'Baca-saja sampai nilai lama dipindahkan ke unit melalui rencana §6 yang disetujui.',
+      readOnly: true,
+      hidden: ({ value }) => value === undefined,
+      initialValue: undefined,
+      deprecated: {
+        reason:
+          'Gunakan Unit. Nilai lama dipertahankan sementara migrasi data selesai.',
+      },
       /*
        * A closed list, and deliberately NOT localized.
        *
@@ -174,8 +206,6 @@ export const project = defineType({
         })),
         layout: 'radio',
       },
-      validation: (Rule) => Rule.required(),
-      initialValue: UNITS[0],
     }),
 
     defineField({

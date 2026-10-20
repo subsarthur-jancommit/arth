@@ -18,12 +18,16 @@ Prompting_. Prosedur per PR mengikat di
 
 ## Keputusan pemilik yang berlaku
 
-| Keputusan          | Isi                                                                                                                                                                                      |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| K1, K2             | Bahasa bawaan Indonesia, `/` → `/id`, Inggris menyusul, `/en` tanpa terjemahan 307 → `/id`                                                                                               |
-| K3, K4, K6, K7, K8 | Berlaku sementara pada bawaannya; tidak memblokir                                                                                                                                        |
-| **K5**             | **Belum diputuskan.** Email/alamat contoh hanya dummy; kanal nyata dan waktu balas belum dipilih. F2-01 boleh memakai dummy ber-NOTE; hentikan F3-09/F5-06 bila membutuhkan kanal nyata. |
-| K9                 | Belum diputuskan; jatuh tempo sebelum noindex dilepas di F5-05                                                                                                                           |
+**15 Oktober 2026:** F3-01 sampai F3-11 direvisi (`docs/TINJAUAN-F01-F03.md`,
+`docs/RENCANA-REVISI-F3.md`). P1–P4 memakai usulan bawaan; protokol `ci` dan
+`e2e` berlaku lagi tanpa `[skip ci]`.
+
+| Keputusan          | Isi                                                                                                                                                                                                                         |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| K1, K2             | Bahasa bawaan Indonesia, `/` → `/id`, Inggris menyusul, `/en` tanpa terjemahan 307 → `/id`                                                                                                                                  |
+| K3, K4, K6, K7, K8 | Berlaku sementara pada bawaannya; tidak memblokir                                                                                                                                                                           |
+| **K5**             | **Belum diputuskan.** Email/alamat contoh hanya dummy; kanal nyata dan waktu balas belum dipilih. Struktur F3-09 boleh ditinjau dengan dummy ber-NOTE, tetapi aktivasi kanal dan F5-06 tetap berhenti sampai K5 diputuskan. |
+| K9                 | Belum diputuskan; jatuh tempo sebelum noindex dilepas di F5-05                                                                                                                                                              |
 
 Urutan paket pertama diubah pemilik dari dokumen Tahap 2: **F0-01 lebih dulu,
 baru F0-07**, karena `robots.txt` produksi sedang mengizinkan semua perayap AI
@@ -31,29 +35,48 @@ memanen isi contoh, dan F0-01 memblokir F1-01.
 
 ## Paket
 
-| Paket                                       | PR  | SHA merge | Status           | Dilewati / ditunda                                                                                                                                                                                                                                              |
-| ------------------------------------------- | --- | --------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| F0-01 Noindex selama dummy                  | #12 | `2491472` | **Selesai**      | Pengecualian domain dibangun tapi daftarnya kosong (lihat U3); lokasinya pindah dari `proxy.ts` (U4)                                                                                                                                                            |
-| F0-07 Dokumen repo diselaraskan             | #13 | `45f220b` | **Selesai**      | FORK.md tidak disunting (U1); `ROADMAP.md` dan `docs/stages/` tidak disentuh (U8)                                                                                                                                                                               |
-| F1-01 Merek Arthur dari satu sumber         | #14 | `a052ace` | **Selesai**      | Prosa `SITE` dan `home-fallback` ikut dibereskan di F1-02 (U11)                                                                                                                                                                                                 |
-| F1-02 Tiga unit menggantikan praktik        | #14 | `a052ace` | **Selesai**      | Medan Sanity masih bernama `practice` (U12); `?practice=` → `?unit=` tanpa pengalih (U13)                                                                                                                                                                       |
-| F1-03 Rute unit                             | #14 | `a052ace` | **Selesai**      | Halaman CMS pindah ke `/halaman/<slug>` (U14); tiga gerbang e2e melemah (U15)                                                                                                                                                                                   |
-| F1-04 Rute sisi                             | #16 | —         | **Dalam PR**     | GitHub `ci` dan `e2e` hijau pada head `d89481c`; perlu mutakhir terhadap `main` sesudah PR dokumentasi gerbang dan tinjauan pratinjau pemilik                                                                                                                   |
-| F1-05 Cara kami bekerja menggantikan studio | —   | —         | **Dalam branch** | Commit ada di `codex/f1-08-kamus-gerak`; belum dipisah ke PR paket, jadi `ci`/`e2e` wajib berjalan pada PR tersendiri; isi halaman tetap contoh sampai ditinjau pemilik                                                                                         |
-| F1-06 Navigasi Arthur                       | —   | —         | **Dalam branch** | Commit ada di `codex/f1-08-kamus-gerak`; belum dipisah ke PR paket, jadi `ci`/`e2e` wajib berjalan pada PR tersendiri; `/work` dan `/journal` masih hidup dan belum dipromosikan                                                                                |
-| F1-07 Bahasa bawaan dan segmen URL          | —   | —         | **Dalam branch** | Commit ada di `codex/f1-08-kamus-gerak`; belum dipisah ke PR paket, jadi `ci`/`e2e` wajib berjalan pada PR tersendiri; EN tidak diindeks atau ditawarkan                                                                                                        |
-| F1-08 Kamus gerak dan nama momen            | —   | —         | **Dalam branch** | Commit ada di `codex/f1-08-kamus-gerak`; spesifikasi saja, implementasi tujuh momen tetap untuk F3/F4; checks wajib pada PR paket tersendiri                                                                                                                    |
-| F2-01 Pengaturan situs                      | —   | —         | **Dalam branch** | NOTE: `kontak@arth.invalid` dan alamat contoh hanya dummy; ganti sebelum kontak diterbitkan. Alamat bukan lokasi nyata/kunjungan. K5 belum diputuskan; migrasi Sanity menunggu izin §6; teks beranda lama menunggu F3-01; checks wajib pada PR paket tersendiri |
-| F0-02 Uji terbit menampilkan isi baru       | —   | —         | Belum mulai      | Bergantung F0-06                                                                                                                                                                                                                                                |
-| F0-03 Token produksi hanya Viewer           | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                                                                                                                                                                                                 |
-| F0-04 Token dev dicabut                     | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                                                                                                                                                                                                    |
-| F0-05 Ruleset cabang `main`                 | —   | —         | Menunggu pemilik | Tindakan dasbor. Terakhir diukur `gh api …/rules/branches/main` → `[]`, belum aktif                                                                                                                                                                             |
-| F0-06 Dataset `ci` terpisah                 | —   | —         | Menunggu pemilik | Tindakan dasbor; memblokir F0-02 dan F2-09                                                                                                                                                                                                                      |
+| Paket                                       | PR  | SHA merge | Status           | Dilewati / ditunda                                                                                                                                                                                                                                    |
+| ------------------------------------------- | --- | --------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F0-01 Noindex selama dummy                  | #12 | `2491472` | **Selesai**      | Pengecualian domain dibangun tapi daftarnya kosong (lihat U3); lokasinya pindah dari `proxy.ts` (U4)                                                                                                                                                  |
+| F0-07 Dokumen repo diselaraskan             | #13 | `45f220b` | **Selesai**      | FORK.md tidak disunting (U1); `ROADMAP.md` dan `docs/stages/` tidak disentuh (U8)                                                                                                                                                                     |
+| F1-01 Merek Arthur dari satu sumber         | #14 | `a052ace` | **Selesai**      | Prosa `SITE` dan `home-fallback` ikut dibereskan di F1-02 (U11)                                                                                                                                                                                       |
+| F1-02 Tiga unit menggantikan praktik        | #14 | `a052ace` | **Selesai**      | Medan Sanity masih bernama `practice` (U12); `?practice=` → `?unit=` tanpa pengalih (U13)                                                                                                                                                             |
+| F1-03 Rute unit                             | #14 | `a052ace` | **Selesai**      | Halaman CMS pindah ke `/halaman/<slug>` (U14); tiga gerbang e2e melemah (U15)                                                                                                                                                                         |
+| F1-04 Rute sisi                             | #16 | —         | **Dalam PR**     | E2E lokal tidak dijalankan; deploy dan uji produksi ditunda atas instruksi pemilik                                                                                                                                                                    |
+| F1-05 Cara kami bekerja menggantikan studio | —   | —         | **Dalam branch** | CI dan e2e dilewati atas instruksi pemilik; isi halaman tetap ditandai contoh hingga ditinjau pemilik                                                                                                                                                 |
+| F1-06 Navigasi Arthur                       | —   | —         | **Dalam branch** | CI dan e2e dilewati atas instruksi pemilik; `/work` dan `/journal` tetap hidup tetapi tidak dipromosikan                                                                                                                                              |
+| F1-07 Bahasa bawaan dan segmen URL          | —   | —         | **Dalam branch** | CI dan e2e dilewati; ID tidak menawarkan EN yang belum disetujui, sementara halaman EN lama/pratinjau tetap menyediakan jalan kembali ke ID; usulan perubahan prosedur §3 langkah 9 menunggu pemilik                                                  |
+| F1-08 Kamus gerak dan nama momen            | —   | —         | **Dalam branch** | Dokumentasi spesifikasi saja; implementasi tujuh momen tetap untuk F3/F4; PR ditunda selama e2e dilarang                                                                                                                                              |
+| F2-01 Pengaturan situs                      | —   | —         | **Dalam branch** | Skema production sudah dideploy dan satu `siteSettings` ditulis sebagai draft `perlu-anda`; **NOTE:** `kontak@arth.invalid` dan alamat Contoh tetap dummy, wajib diganti sebelum publikasi kontak (U28)                                               |
+| F2-02 Unit dan sisi                         | —   | —         | **Dalam branch** | Tiga unit dan enam sisi ditulis sebagai draft `perlu-anda`; sisi memakai referensi yang menguat saat unit kelak diterbitkan; delapan `project.practice` lama belum dimigrasikan (U28)                                                                 |
+| F2-03 Bab                                   | —   | —         | **Dalam branch** | Skema `bab`, query pembaca, relasi kuat ke sisi, dan jembatan weak yang ditambahkan bersama target F2-04 tersedia; tidak ada dokumen Sanity yang ditulis                                                                                              |
+| F2-04 Offer                                 | —   | —         | **Dalam branch** | Skema delapan blok, grup Internal yang aman dibaca publik, query dengan allowlist medan, serta jembatan weak tersedia; belum ada impor atau penulisan Sanity                                                                                          |
+| F2-05 Rangkaian, cara kerja, FAQ, dan page  | —   | —         | **Dalam branch** | Satu `howWeWork` ditulis sebagai draft `perlu-anda`; sequence, FAQ, dan page belum ditulis, dan field page lama tetap tersembunyi-baca saja hingga rencana mutasi §6 disetujui (U28)                                                                  |
+| F2-06 Struktur Studio                       | —   | —         | **Dalam branch** | Studio mengurutkan Unit → Sisi → Bab → Offer, menyediakan daftar `Perlu Anda`, dan membuka singleton Cara kami bekerja; tidak ada pengaturan atau isi jarak jauh diubah                                                                               |
+| F2-07 Kendali terbit dan medan internal     | —   | —         | **Dalam branch** | Query Arthur hanya memilih dokumen `disetujui`; medan internal tidak diproyeksikan; aksi Studio memakai administrator sebagai proxy pemilik (U27); tidak ada isi Sanity ditulis dan e2e dilewati atas instruksi pemilik                               |
+| F2-10 Pratinjau di Studio                   | —   | —         | **Dalam branch** | Presentation memetakan Pengaturan situs, Cara kami bekerja, Rangkaian, Unit, Sisi, Bab, dan Offer ke rute nyata; FAQ belum dipetakan karena tidak memiliki halaman mandiri                                                                            |
+| F2-11 Panduan Studio                        | —   | —         | **Dalam branch** | Panduan Studio ditulis ulang untuk Unit → Sisi → Bab → Offer, alur status, urutan terbit, daftar pendek, dummy kontak, dan batas pratinjau; tidak ada isi atau setelan Sanity diubah                                                                  |
+| F3-01 Beranda payung                        | —   | —         | **Direvisi**     | Hero Arthur, tiga pintu unit dari datum, situasi yang menunjuk unit, rangkaian tiga unit, cara kerja, dan ajakan sudah tersusun; jalur publik hanya membaca dokumen disetujui, sedangkan draft `perlu-anda` tampil hanya dalam draft mode (U30)       |
+| F3-02 Template unit                         | —   | —         | **Direvisi**     | Susunan hero, dua pintu sisi, masalah pembeli, offer kondisional, cara kerja, jembatan kondisional, CTA, dan unit berikutnya sudah selesai; copy fallback identik dengan draft awal yang disetujui, dengan Sanity tetap menjadi sumber utama (U31)    |
+| F3-03 Template sisi                         | —   | —         | **Direvisi**     | Jalur pembelian, tabel bab semantik, crosshair/cover-preview, dan pertukaran lembar antarsisi sudah selesai; tabel jujur menampilkan keadaan kosong sampai bab punya tiga sampai tujuh offer yang disetujui (U32)                                     |
+| F3-04 Template bab dan kartu offer          | —   | —         | **Direvisi**     | Kutipan bab, tiga–tujuh kartu offer tanpa foto, batas, jembatan, ajakan, penyaring pasar Konstruksi, serta momen bekisting/FLIP sudah selesai; belum ada dokumen bab/offer untuk menampilkan rute nyata (U33)                                         |
+| F3-05 Template offer                        | —   | —         | **Direvisi**     | Delapan blok offer, langkah tanpa pin, garis lingkup, batas dipaku, langkah pertama, jembatan aman, dan lembar cetak sudah selesai; belum ada dokumen offer untuk menampilkan rute nyata (U34)                                                        |
+| F3-06 Halaman jaringan                      | —   | —         | **Direvisi**     | Tiga jalur, cara kerja, alur uang empat langkah, asal komisi, larangan, syarat, dan gerbang pendaftaran sudah selesai; tautan bab baru muncul setelah 3–7 offer jalurnya disetujui, dan pendaftaran ditahan sampai kartu komisi siap (U35)            |
+| F3-07 Satu klien, tiga unit                 | —   | —         | **Direvisi**     | Situasi, tiga langkah unit, offer per langkah, keterangan kemungkinan, CTA, serta momen `splice` lalu `level` sudah selesai; production belum memiliki dokumen `sequence`, jadi rute publik tetap pada tampilan tidak ditemukan dan noindex (U36)     |
+| F3-08 Cara kami bekerja                     | —   | —         | **Direvisi**     | Template membaca hanya `howWeWork` yang disetujui untuk publik dan membuka draft `perlu-anda` hanya di draft mode; janji dicap satu kali saat dibaca, hak milik/komisi/batas memakai garis tegak, wilayah diukur, tanpa testimoni; e2e dilewati (U29) |
+| F3-09 Tentang dan kontak                    | —   | —         | **Direvisi**     | Rute tetap, pernyataan pemilik bersyarat, tiga wilayah, ledger kontak, navigasi, pencarian, dan Presentation sudah selesai; dummy tetap teks ber-NOTE tanpa aksi dan halaman noindex sampai K5 serta fakta nyata tersedia (U37)                       |
+| F3-10 Kebijakan                             | —   | —         | **Direvisi**     | Rute tetap, jalur draft Presentation, keadaan kosong tanpa contoh hukum, footer, dan metadata `noindex` sudah selesai; production masih nol dokumen `page`, dan gerbang hanya boleh dilepas sesudah tinjauan ahli hukum (U38)                         |
+| F3-11 Penjaga saat render                   | —   | —         | **Direvisi**     | Allowlist query, Zod, placeholder guard, serta metadata tanpa Stega kini mencakup siteSettings, unit, sisi, bab, offer, sequence, howWeWork, kontak, dan Portable Text page; dokumen rusak ditahan seluruhnya (U39)                                   |
+| F3-12 Uji rute dinamis dan ponsel           | —   | —         | **Tertahan**     | Definisi rute dan batas data siap, tetapi bukti runtime bab/offer bergantung F2-09; Playwright lokal dan GitHub Actions tidak boleh dijalankan sampai pemilik mengizinkan kembali (U40)                                                               |
+| R0 Stabilkan F3 sebelum revisi              | #20 | `6730a24` | **Selesai**      | Di-merge ke branch PR #18, bukan `main`. `ci`/`e2e` hijau di `e5c687f` (674 lulus); 62 tes `fixme`/opt-out beralasan menunggu R4–R5 (`e2e/removed-in-f3.ts`). Rencana: `docs/RENCANA-REVISI-F3.md`                                                    |
+| F0-02 Uji terbit menampilkan isi baru       | —   | —         | Belum mulai      | Bergantung F0-06                                                                                                                                                                                                                                      |
+| F0-03 Token produksi hanya Viewer           | —   | —         | Menunggu pemilik | Tindakan dasbor                                                                                                                                                                                                                                       |
+| F0-04 Token dev dicabut                     | —   | —         | Menunggu pemilik | Tindakan dasbor; paling lambat sebelum F5-05                                                                                                                                                                                                          |
+| F0-05 Ruleset cabang `main`                 | —   | —         | Menunggu pemilik | Tindakan dasbor. Terakhir diukur `gh api …/rules/branches/main` → `[]`, belum aktif                                                                                                                                                                   |
+| F0-06 Dataset `ci` terpisah                 | —   | —         | Menunggu pemilik | Tindakan dasbor; memblokir F0-02 dan F2-09                                                                                                                                                                                                            |
 
-F1-05 sampai F2-01 sudah memiliki commit pada cabang lanjutan yang sama, tetapi
-belum memiliki PR per paket. Sebelum dipublikasikan, pisahkan commit tersebut
-satu paket per PR; jangan menganggap checks dari PR lain sebagai validasi untuk
-branch baru. Paket berikutnya lihat Backlog.
+F1-05 sampai F2-01 telah dipisah ke branch paket masing-masing. Checks dari PR
+lain bukan validasi bagi branch baru. Paket selanjutnya lihat Backlog.
 
 **F1-01, F1-02 dan F1-03 berada di satu PR**, dan itu penyimpangan dari "satu
 PR per paket" yang disebut terang-terangan di sini dan di deskripsi PR-nya.
@@ -79,8 +102,8 @@ dengan status-status baru paket ini:
 
 | Diminta                                                   | Jawaban                                   |
 | --------------------------------------------------------- | ----------------------------------------- |
-| `/`                                                       | 307 → `/en` (masih `/en` sampai F1-07)    |
-| `/en`, `/id`                                              | 200                                       |
+| `/`                                                       | 307 → `/en` (diukur sebelum F1-07)        |
+| `/en`, `/id`                                              | 200 (diukur sebelum F1-07)                |
 | `/{en,id}/konstruksi`, `/teknologi`, `/peekabo`           | 200, keenamnya                            |
 | `/en/practice`, `/id/praktik`                             | **410**                                   |
 | `/en/practice/consulting`, `/en/work/practice/commission` | **410**                                   |
@@ -112,9 +135,16 @@ saja.
 
 **U2 — ekspektasi uji asap prosedur diselaraskan dalam PR dokumentasi
 gerbang.** `PROSEDUR-KERJA.md` kini mengharapkan `/` → `/id`, `/en` → `/id`
-(307), dan `/id` 200. `docs/DEPLOYMENT.md` diperbarui dalam PR F1-07 sesuai
-keputusan pemilik. Verifikasi produksi untuk perilaku bahasa dilakukan setelah
-F1-07 masuk `main`; belum dinyatakan lulus di sini.
+(307), dan `/id` 200. `docs/DEPLOYMENT.md` diperbarui dalam F1-07 sesuai
+keputusan pemilik.
+
+F1-07 mengubah bawaan aplikasi ke Indonesia, mematikan deteksi bahasa
+peramban, mengalihkan `/en` ke `/id`, memakai `id` sebagai fallback GROQ,
+tidak menawarkan Inggris dari halaman Indonesia sampai terjemahannya
+disetujui, dan mengeluarkan hanya halaman Indonesia dari sitemap serta
+hreflang. Halaman Inggris lama atau pratinjau tetap menampilkan jalan kembali
+ke Indonesia agar pembaca tidak terperangkap di locale yang belum diterbitkan.
+Pemeriksaan lokal lulus; verifikasi produksi menunggu F1-07 masuk `main`.
 
 **U3 — daftar `INDEXABLE_HOSTS` kosong.** F0-01 membangun mekanisme
 pengecualian domain, tapi daftarnya kosong karena K4 (domain akhir) belum
@@ -259,12 +289,10 @@ isi Arthur, jadi prosanya dibiarkan apa adanya dan medan `practice`-nya diisi
 yang menerbitkan apa. Tabel di `/journal` tetap menampilkan satu baris per
 unit, dengan nol entri masing-masing, yang justru tepat.
 
-**U17 — `areaServed` di `lib/seo/site.ts` masih "Worldwide".** Aturan isi
-dokumen (3) menyebut wilayah yang boleh diklaim: Subang, Purwakarta, dan
-Bandung. "Worldwide" karenanya klaim yang salah hari ini. Tidak diubah di sini
-karena **F2-01** yang memiliki medan wilayah (diedit di Studio lewat
-`siteSettings`), dan memindahkannya sekarang berarti menuliskannya dua kali.
-Seluruh situs `noindex`, jadi tidak ada mesin yang sedang memakainya.
+**U17 — `areaServed` pernah menyebut "Worldwide". Selesai di F2-01.** Aturan
+isi menyebut wilayah yang boleh diklaim: Subang, Purwakarta, dan Bandung.
+`lib/seo/site.ts` kini memakai daftar itu; `siteSettings.wilayah` menjadi tempat
+pemilik menyunting wilayah setelah konten Sanity disiapkan.
 
 **U18 — dua setengah dari kosakata lolos `typecheck` dan hanya CI yang
 menangkapnya.** Dicatat karena F1-04 sampai F1-06 akan mengganti kosakata
@@ -295,3 +323,288 @@ sebuah segmen, dan berkas `loading.tsx` tidak dijaga tipe.** Grep untuk nilai
 lamanya di seluruh `e2e/` sebelum push — empat belas spesifikasi menunjuk rute
 praktik dan tidak satu pun mengimpor modulnya, jadi `tsc` tidak punya apa pun
 untuk dikatakan tentang mereka.
+
+**U19 — migrasi singleton Sanity F2-01 menunggu izin §6.** Query baca-saja
+menemukan satu dokumen lama di dataset `production`: `fixture-studioSettings`.
+Kode kini membaca `siteSettings` lebih dahulu dan tetap membaca tipe lama agar
+konten tidak hilang sementara. Tidak ada mutasi yang dijalankan. Sebelum
+perubahan skema digabung, pemilik perlu meninjau rencana pemetaan
+`headline` → `heroJudul`, `subline` → `heroSubjudul`, `statement` →
+`pernyataanPemilik`, `email` → `kanal.email`, `socials` → `akunSosial`, dan
+menyetujui rencana tulis §6; email lama `.example` tidak dipindahkan sebagai
+alamat sungguhan. Rollback memakai ekspor sebelum mutasi dan memulihkan
+`fixture-studioSettings`. Dummy `kontak@arth.invalid` bukan keputusan K5 dan
+harus diganti sebelum kontak diterbitkan. Pemilik mengizinkan alamat contoh
+`Jl. Contoh No. 00, Kota Contoh, Indonesia` dengan NOTE bahwa itu bukan lokasi
+nyata atau tempat kunjungan; ganti sebelum publikasi. Wilayah layanan yang
+bersumber dari konteks adalah Subang, Purwakarta, dan Bandung.
+
+**U20 — `rangkaianPilihan` sekarang mengarah weak ke `sequence`.** F2-05
+menambahkan relasi ini setelah targetnya tersedia. Kunci `sisi` dan `bab` pada
+`siteSettings.situasi` tetap berupa teks agar data lama tidak berubah tanpa
+rencana mutasi §6; F2-07 akan menetapkan bentuk migrasi dan penjaga terbitnya.
+Wilayah dan situasi tersedia di Studio, tetapi pemakaian halaman lengkap datang
+di F3-01 dan F3-09.
+
+**U21 — F2-02 menunggu mutasi `practice` → `unit` yang disetujui.** Delapan
+dokumen `project` memakai medan lama `practice`; `journalEntry` tercatat nol.
+Skema dan query sementara membaca `unit` lebih dulu lalu `practice`, dan medan
+lama tetap baca-saja supaya halaman tidak kosong saat migrasi belum berjalan.
+Rencana tulis §6 yang diperlukan: ekspor cadangan di luar repo; query jumlah
+dan nilai `practice` sebelum mutasi; patch masing-masing `project` ke `unit`
+dengan nilai sama; pastikan jumlah, slug, dan hasil query katalog sebelum/sesudah
+tetap sama; baru kosongkan medan lama setelah izin penghapusan terpisah. Tidak
+ada mutasi atau penghapusan Sanity dilakukan di branch ini.
+
+**U22 — cache incremental TypeScript tidak aman untuk registry TypeGen
+Sanity.** Setelah skema atau query Sanity berubah, TypeScript 7 dapat memakai
+`tsconfig.tsbuildinfo` lama dan menurunkan semua hasil `defineQuery()` menjadi
+`unknown`, meski pemeriksaan tanpa cache lulus. Ini bukan galat data Sanity;
+hasil sumbernya tetap benar. `check`, `typecheck`, dan hook pre-commit sekarang
+menonaktifkan incremental agar registry selalu dibaca ulang. Biayanya adalah
+pemeriksaan lokal lebih lambat; biayanya lebih kecil daripada false negative
+yang menyamarkan perubahan skema.
+
+**U23 — ekstraksi skema Sanity memakai Node, bukan Bun.** Bun 1.3.5 tetap
+runtime proyek dan menjalankan pemeriksaan, tetapi worker `sanity schema
+extract` menghasilkan `Attempted to assign to readonly property` saat
+dijalankan melalui Bun. CLI yang sama melalui Node 26 mengekstrak 31 tipe,
+termasuk `unit` dan `side`, lalu TypeGen selesai normal. Skrip
+`sanity:extract` dan `sanity:typegen` karena itu memanggil binary Sanity
+dengan Node; biaya keputusan ini adalah satu pengecualian runtime yang dicatat
+terang, bukan skema yang tampak diterapkan tetapi tidak pernah masuk
+`schema.json`.
+
+**U24 — relasi weak dari unit ke offer ditambahkan oleh F2-04.**
+`contohOffer` dan `jembatan.offer` baru didaftarkan sesudah tipe `offer`
+tersedia, sehingga Studio tidak pernah menawarkan target semu. Kedua relasi
+tetap weak karena bukan hubungan induk-anak; biaya pilihan ini adalah query
+halaman hanya boleh merender target yang telah lolos kendali terbit F2-07.
+
+**U25 — jembatan dari bab ke offer ditambahkan oleh F2-04.** `bab.jembatan[]`
+sekarang memuat referensi weak serta satu kalimat, dengan batas dua jembatan.
+Tidak ada dokumen bab yang ditulis atau diubah; referensi baru hanya menjadi
+dapat diedit setelah target `offer` hadir.
+
+**U26 — page lama → halaman dua bahasa menunggu mutasi §6.** F2-05 membaca
+`judul`/`isi` lebih dulu dan jatuh kembali ke `title`/`content`, sementara
+medan lama disembunyikan-baca saja dan `link` tidak lagi diproyeksikan. Rencana
+tulis yang harus ditinjau sebelum mutasi: hitung dokumen `page` yang hanya
+memiliki medan lama; ekspor dataset ke luar repo; dry-run pemetaan
+`title → judul[id]` dan `content → isi[id]`; lakukan patch hanya pada dokumen
+yang belum memiliki nilai baru; lalu bandingkan jumlah sebelum/sesudah dan
+verifikasi query lama maupun baru memberi teks yang sama. Medan lama baru boleh
+dikosongkan setelah izin penghapusan terpisah. Tidak ada jumlah yang diasumsikan
+dan tidak ada mutasi dilakukan di branch ini.
+
+**U27 — pemilik Studio belum dapat dikenali dengan identitas khusus di source
+control.** F2-07 menggunakan peran bawaan Sanity `administrator` sebagai proxy
+pemilik untuk aksi **Setujui** dan **Terbitkan**. Biayanya jelas: administrator
+tambahan di masa depan akan ikut memiliki kuasa itu. Aksi penerbitan standar
+untuk tipe Arthur diganti sehingga draf harus berstatus `disetujui`; query
+pembaca juga hanya mengambil status tersebut dan tidak memproyeksikan
+`idKatalog`, jejak sumber, status, atau data internal lain. Peran dan token
+tetap merupakan setelan dasbor pemilik—perubahan API dengan token yang dapat
+menulis tidak bisa diamankan oleh tombol Studio saja. Tidak ada dokumen,
+token, atau setelan Sanity yang diubah. Pemeriksaan e2e tidak dijalankan atas
+instruksi pemilik; pengujian yang dijalankan hanya schema/typegen, typecheck,
+dan test unit non-e2e.
+
+**U28 — skema production dan isi awal Arthur sudah ditulis, tetapi belum ada
+yang diterbitkan.** Atas izin tertulis pemilik pada 2026-10-12, skema lokal
+dideploy ke dataset `production` sebagai `_.schemas.default`, lalu sebelas
+dokumen dibuat dengan status `perlu-anda`: satu `siteSettings`, tiga `unit`,
+enam `side`, dan satu `howWeWork`. Snapshot raw 38 dokumen sebelum penulisan
+disimpan di luar repo dengan SHA-256
+`F76F18A72C5C2FA0EB45DEF5903C82A65195E0EBD1CC211D837DA2CC07DE6704`.
+Query perspektif published sesudah penulisan tetap menemukan **nol** dokumen
+untuk empat tipe tersebut. Karena unit juga masih draft, enam sisi memakai
+referensi `_strengthenOnPublish`: relasinya lemah sementara dan baru menguat
+ketika unit kelak diterbitkan. Validator menyatakan lima dokumen sasaran lain
+valid; keenam sisi hanya tertahan oleh target unit yang belum published.
+
+**NOTE kontak:** `kontak@arth.invalid` dan `Jl. Contoh No. 00, Kota Contoh,
+Indonesia` sengaja disimpan hanya sebagai dummy draft sesuai izin pemilik.
+Keduanya bukan kanal atau lokasi nyata, dan wajib diganti sebelum halaman
+kontak diterbitkan. Validasi dataset juga menemukan 150 galat format bahasa
+pada tujuh fixture lama (`project` dan `studioSettings`); data lama itu tidak
+termasuk izin tulis ini dan tidak diubah.
+
+**U29 — template Cara kami bekerja selesai di branch, sedangkan isi tetap
+draft.** F3-08 sekarang memakai satu query publik yang tetap mensyaratkan
+`statusTinjauan == "disetujui"` dan query pratinjau terpisah yang hanya dipakai
+dengan perspektif draft. Keduanya memproyeksikan allowlist medan pembaca yang
+sama; status dan medan Internal tidak masuk HTML. Empat janji memakai blok
+`promise-stamp`: setiap baris diamati sendiri, cap memakai timing primitif
+`stamp`, tidak diputar ulang, dan sudah terlihat pada no-JavaScript maupun
+reduced motion. Bagian hak milik, komisi, dan batas memakai `plumb`; wilayah
+memakai `dimension`; tidak ada testimoni. Header memakai kalimat siap tayang
+dari Master Brief tanpa perubahan. `bun run check` lulus 633 uji non-e2e dan
+build produksi menyelesaikan 97/97 halaman. Studio lokal menyatakan origin
+`http://localhost:3000` belum terdaftar di CORS; setelan tidak diubah sesuai
+pagar, sehingga pemeriksaan visual isi draft harus dilakukan lewat Presentation
+yang sudah terhubung atau setelah pemilik menambahkan origin. Tidak ada e2e,
+publish, push, atau perubahan production lain pada paket ini.
+
+**U30 — beranda Arthur tidak lagi mempromosikan fixture studio lama.** F3-01
+mengganti karya pilihan, jurnal, dan istilah Praktik pada beranda dengan urutan
+yang ditetapkan kerangka: hero payung, tiga pintu unit, pilih situasi, satu
+klien–tiga unit, cara kami bekerja, dan ajakan. Hero memuat tiga elemen teks;
+pintu unit memakai `datum` dan lintasan `arth-passage`; setiap situasi tetap
+menamai unit tujuannya tanpa JavaScript, memakai `leader` pada hover/fokus atau
+saat masuk layar sentuh, dan menghilangkan garis di reduced motion. Query
+publik berhenti membaca `studioSettings`; hanya `siteSettings` dan unit
+berstatus `disetujui` yang boleh menang. Query pratinjau terpisah membaca 11
+draft awal melalui perspektif terautentikasi tanpa memproyeksikan status atau
+medan Internal. Sampai pemilik menerbitkan isi, fallback beranda mengambil
+teks siap tayang yang sama dari Master Brief—bukan proyek, klien, atau hasil
+fiktif. Kanal dan alamat tetap dummy berlabel sesuai NOTE U28. E2e tidak
+dijalankan atas instruksi pemilik.
+
+**U31 — template unit sekarang memulai dari masalah pembeli, bukan daftar
+layanan.** F3-02 mengganti scaffold contoh dengan hero unit, dua pintu sisi,
+masalah yang dibaca, cara kerja unit, CTA, dan sirkuit ke unit berikutnya.
+Copy fallback identik dengan draft awal yang telah disetujui pemilik;
+published Sanity tetap menang pada jalur publik dan draft hanya dapat dibaca
+dalam draft mode. Offer contoh dan jembatan tidak dikarang: bloknya baru
+muncul jika referensinya lengkap dan dapat membentuk rute yang sah. Urutan
+sisi Teknologi pada draft berlawanan dengan keputusan peta situs, sehingga
+renderer mengunci urutan kanonis `siap-pakai` lalu `paham-teknis` dari
+`SIDES`; data production tidak dimutasi. CTA tetap memakai
+`kontak@arth.invalid` dengan NOTE bahwa alamat itu dummy dan harus diganti
+sebelum publikasi. Spesifikasi e2e diselaraskan, tetapi Playwright tidak
+dijalankan sesuai instruksi pemilik.
+
+**U32 — template sisi membawa pembaca dari alur ke bab, tanpa mengarang
+katalog.** F3-03 mengganti scaffold sampel dengan urutan beli dari sisi,
+tabel bab yang semantik, dan satu langkah pertama yang mengambil copy dari
+draft Sanity yang sudah tersedia atau fallback siap tayang yang identik.
+Crosshair dan cover-preview hanya melapisi tabel; tautan bab dan offer tetap
+dapat dibaca tanpa JavaScript. Query publik membatasi daftar pada bab dan
+offer berstatus `disetujui`, serta membutuhkan tiga sampai tujuh offer per bab.
+Saat pemeriksaan ini belum ada dokumen `bab` atau `offer` di production, jadi
+keadaan kosong adalah hasil yang disengaja—bukan katalog fiktif. Pertukaran
+sisi memakai transisi `sheet`, tetapi tetap menjadi tautan biasa tanpa
+JavaScript dan langsung berpindah saat reduced motion. Query draft divalidasi
+secara baca-saja; tidak ada data Sanity ditulis atau diterbitkan. Spesifikasi
+e2e diselaraskan, tetapi Playwright tidak dijalankan sesuai instruksi pemilik.
+
+**U33 — template bab hanya muncul bila katalog siap dibaca.** F3-04
+menambahkan kutipan pembeli, kartu offer tanpa foto, batas, jembatan, dan
+langkah pertama yang kembali ke langkah sisi bila bab tidak mengisinya. Jalur
+publik menerima tepat tiga sampai tujuh offer yang `disetujui`; setiap kartu
+harus memiliki slug, judul, dampak, pembaca, dan jenis, serta medan Internal
+tidak diproyeksikan. Penyaring hanya aktif di Konstruksi › Pelaku proyek,
+menampilkan offer `keduanya` di dua pilihan pasar, dan tersembunyi tanpa
+JavaScript. Formwork dan FLIP menamai momen `bab-formwork` dan `bab-sift`;
+reduced motion menyisakan hasil akhirnya. Saat implementasi ini dibuat,
+production tidak memiliki dokumen `bab` atau `offer`, sehingga rute nyata
+belum dapat ditinjau secara visual tanpa fixture atau draf bersumber. Query
+Sanity diuji baca-saja dan tidak ada isi ditulis atau
+diterbitkan. Playwright tidak dijalankan sesuai instruksi pemilik.
+
+**U34 — halaman offer adalah lembar kerja, bukan brosur.** F3-05 merender
+delapan blok tetap: judul dan dampak, pembaca, situasi, pekerjaan, serahan,
+batas, langkah pertama, lalu jembatan opsional. Judul dibatasi delapan kata
+pada gerbang render; langkah dan serahan harus lengkap dan tidak memakai pin.
+Garis dimensi menjelaskan rentang masalah sampai serahan, sedangkan empat
+tanda `offer-fixings` mengunci batas dalam urutan searah jarum jam. Tombol
+cetak memakai lembar browser dengan navigasi dan chrome situs disembunyikan.
+Query publik kini menuntut offer beserta bab, sisi, dan unit induknya berstatus
+`disetujui`; target jembatan juga harus mempunyai rantai induk yang disetujui.
+Query pratinjau draft dipisahkan dan kedua jalur hanya memproyeksikan medan
+pembaca. Saat paket ini dibuat production masih tidak memiliki dokumen
+`offer`, sehingga bentuk nyata belum dapat ditinjau tanpa fixture atau draf
+bersumber. Query production diuji baca-saja; tidak ada isi ditulis atau
+diterbitkan. Playwright tidak dijalankan sesuai instruksi pemilik.
+
+**U35 — halaman jaringan menjelaskan uang sebelum membuka pendaftaran.**
+F3-06 memberi Peekabo › Jaringan susunan khusus: tiga jalur masuk, cara kerja,
+alur uang perujuk, asal komisi, hal yang tidak ada, syarat pembayaran, lalu
+gerbang pendaftaran. Jalur bab hanya menjadi tautan bila query sisi menemukan
+bab dengan tiga sampai tujuh offer yang dapat dirender; production belum
+memiliki dokumen `bab` atau `offer`, jadi tidak ada tautan kosong atau katalog
+karangan. Alur perujuk memakai empat langkah yang ditetapkan spesifikasi,
+`plumb` berbasis CSS view timeline, dan `stamp` per langkah; tidak ada pin,
+loop JavaScript, angka, tarif, atau simulasi penghasilan. Copy bisnis berasal
+dari draft awal sisi Jaringan yang sudah disetujui untuk ditulis, dengan
+fallback lokal identik; medan Internal tetap tidak diproyeksikan. Mengikuti
+usul keputusan 6 di Kerangka Pemandu, tombol pendaftaran sengaja tidak dibuat
+sampai kartu komisi pertama siap. Biayanya adalah tidak mengumpulkan calon
+pendaftar sekarang; manfaatnya, Arthur tidak meminta orang bergabung sebelum
+sumber, pemicu, jumlah, dan waktu pembayaran komisi dapat ditunjukkan
+tertulis. Tidak ada isi Sanity ditulis atau diterbitkan. Playwright/e2e tidak
+dijalankan sesuai instruksi pemilik.
+
+**U36 — rangkaian tiga unit hanya tampil bila seluruh urutannya dapat
+dipertanggungjawabkan.** F3-07 mengganti daftar mentah dengan situasi, tepat
+tiga langkah unit, satu atau dua offer per langkah, keterangan bahwa rangkaian
+itu mungkin, dan ajakan “Ceritakan masalahnya”. Dua `splice` menyambung langkah
+secara berurutan dan `level` menutup rangkaian; tanpa JavaScript maupun pada
+reduced motion semua sambungan sudah terpasang. Query publik menuntut dokumen
+sequence dan ketiga unit berstatus `disetujui`, lalu hanya membaca offer yang
+seluruh rantai offer → bab → sisi → unit juga disetujui. Jumlah referensi asli
+dibandingkan dengan hasil proyeksi supaya offer yang tertahan tidak diam-diam
+menghasilkan rangkaian yang lebih pendek. Query draft dipisahkan, medan
+Internal tidak diproyeksikan, dan gerbang Zod menolak langkah yang tidak utuh
+serta placeholder editorial. Saat implementasi ini dibuat, dataset production
+memiliki nol dokumen `sequence`; rute publik karena itu tetap menampilkan
+keadaan tidak ditemukan dengan `noindex`, bukan contoh karangan. Pada Cache
+Components dokumen ini berstatus HTTP 200 setelah shell statis terkirim—trade
+yang sudah dicatat untuk 404 dalam-chrome—sehingga catatan ini tidak mengklaim
+status HTTP 404. Tidak ada isi Sanity ditulis atau diterbitkan. Playwright/e2e
+tidak dijalankan sesuai instruksi pemilik.
+
+**U37 — halaman Tentang dan kontak selesai secara struktur tanpa memutuskan
+K5 secara diam-diam.** F3-09 menambahkan rute tetap `/id/kontak`, memindahkan
+tautan header dari jangkar beranda ke rute itu, lalu menyelaraskan daftar rute,
+pencarian, penjaga 404, tebakan `/contact`, dan Presentation Studio. Query
+publik hanya membaca `siteSettings` berstatus `disetujui`; draft mode memakai
+query terpisah, dan keduanya memproyeksikan hanya pernyataan, wilayah, kanal,
+alamat, akun resmi, dan metadata yang dibutuhkan pembaca. Batas Zod serta
+penjaga placeholder menahan dokumen rusak, tautan sosial berskema tidak aman,
+nomor WhatsApp tidak sah, dan penanda editorial. Pengukuran dataset production
+pada 14 Oktober 2026 menemukan satu draft `siteSettings`: nama Arthur serta
+Subang, Purwakarta, dan Bandung sudah ada; pernyataan pemilik, WhatsApp, waktu
+balas, akun resmi, dan metadata masih kosong; email dan alamat masih dummy yang
+diizinkan. Karena itu email dummy dan alamat contoh tampil sebagai teks
+ber-NOTE, tidak menjadi `mailto:`, tombol salin, lokasi nyata, atau janji bahwa
+kontak telah dibuka. Halaman tetap `noindex`; formulir tidak dibuat, sehingga
+tidak ada route handler, env, atau permukaan penyimpanan data baru yang
+memerlukan tinjauan keamanan F5-06. Tidak ada isi Sanity ditulis atau
+diterbitkan. Playwright/e2e tidak dijalankan sesuai instruksi pemilik.
+
+**U38 — halaman Kebijakan ada tanpa mengarang kebijakan.** F3-10 menambahkan
+rute tetap `/id/kebijakan`, tautan footer, pemetaan Presentation, dan
+pengalihan permanen dari bentuk generik `/id/halaman/kebijakan`. Query publik
+hanya menerima `page` berstatus `disetujui`; draft mode memakai query terpisah
+dengan proyeksi pembaca yang sama. Pengukuran production 15 Oktober 2026
+menemukan nol dokumen `page` pada perspektif published dan drafts, jadi halaman
+menampilkan status “draf belum dimasukkan” serta penjelasan bahwa tinjauan ahli
+hukum masih diperlukan—bukan contoh klausul. Metadata selalu `noindex`, dan
+route dikeluarkan dari sitemap, `llms.txt`, serta daftar mesin sampai gerbang
+legal dilepas secara eksplisit. Tidak ada isi Sanity ditulis atau diterbitkan.
+
+**U39 — penjaga render Phase 03 sekarang mencakup dua lubang yang tersisa.**
+F3-11 menambahkan batas Zod dan pemindaian placeholder rekursif pada Portable
+Text `page`, lalu memindahkan `howWeWork` ke resolver yang menolak singleton
+tidak lengkap. Query page yang sebelumnya membaca `$locale` tanpa pernah
+mengirim parameternya sekarang menerima locale secara eksplisit. Query draft
+dan publik memakai allowlist identik, medan Internal tidak diproyeksikan, dan
+fetch metadata mematikan Stega walaupun isi halaman sedang dipratinjau. Tautan
+internal page juga diselaraskan dengan keputusan U14: halaman biasa menuju
+`/halaman/<slug>`, sementara `kebijakan` menuju rute tetapnya. Uji terarah
+lulus 98/98 dan TypeScript strict lulus. Pemeriksaan penuh final lulus 660 uji,
+2.393 assertion, dan 0 gagal; build produksi menghasilkan 103/103 halaman.
+Pemeriksaan desktop serta viewport ponsel 390 × 844 tidak menemukan overflow
+yang terlihat. Rute kanonis merespons 200 dan alias generik merespons HTTP 308.
+Rincian batas buktinya dicatat pada laporan Phase 03.
+
+**U40 — F3-12 tidak dipalsukan menjadi hijau.** Dataset `ci` dan fixture F2-09
+belum tersedia, production juga belum mempunyai bab atau offer, dan pemilik
+melarang seluruh e2e lokal maupun GitHub Actions. Karena itu tidak dibuat test
+yang di-skip, tidak ditanam data dummy ke production, dan tidak diklaim bahwa
+rute bab/offer telah diuji pada ponsel. Struktur rute, resolver, status, dan
+data guard tersedia; bukti runtime tetap tertahan sampai prasyarat F2-09 ada
+dan pemilik secara eksplisit mengizinkan Playwright kembali. Laporan lengkap
+fitur aktif dan yang ditahan ada di `docs/PHASE-03-REPORT.md`.

@@ -19,16 +19,16 @@ function assertDocumentBody(
 
 describe('buildMarkdownDocument', () => {
   it('returns the advertised Markdown representation for a static route', async () => {
-    // '/en', not '/': `localePrefix` is 'always', so every advertised static
+    // '/id', not '/': `localePrefix` is 'always', so every advertised static
     // route carries a locale prefix. '/' only ever redirects.
-    const document = await buildMarkdownDocument('/en')
+    const document = await buildMarkdownDocument('/id')
     assertDocumentBody(document)
 
     expect(document.status).toBe(200)
     expect(document.contentType).toBe('text/markdown; charset=utf-8')
     // Read from SITE rather than spelled out: this assertion held the
     // starter's name in place long after the fork stopped being it.
-    expect(document.body).toContain(`# Home | ${SITE.name}`)
+    expect(document.body).toContain(`# Beranda | ${SITE.name}`)
     expect(document.body).toContain('## When to use')
     expect(document.body).toContain('## How to use')
   })
@@ -124,7 +124,7 @@ describe('buildMarkdownDocument', () => {
   })
 
   it('still returns 200 for a static route even when the CMS catalog is degraded — static routes never depend on it', () => {
-    const document = buildMarkdownDocumentFromRoutes('/en', [], {
+    const document = buildMarkdownDocumentFromRoutes('/id', [], {
       catalogDegraded: true,
     })
 

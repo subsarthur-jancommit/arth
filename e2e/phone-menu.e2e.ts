@@ -22,7 +22,7 @@ import { axeTags } from './axe-tags'
  *
  * ## Found the way a reader finds it
  *
- * The menu is located as the **visible navigation named "Primary"**, not by
+ * The menu is located as the **visible navigation named "Utama"**, not by
  * an id. The first version of this file used the id of a second, sheet-only
  * nav, and against the build before the change every test failed with
  * "element not found" — red because the id did not exist yet, which says
@@ -53,7 +53,7 @@ import { axeTags } from './axe-tags'
 const DISPLAY_MIN_PX = 44
 
 /** The open menu: the visible primary navigation. */
-const menuOf = (page: Page) => page.getByRole('navigation', { name: 'Primary' })
+const menuOf = (page: Page) => page.getByRole('navigation', { name: 'Utama' })
 
 async function openMenu(page: Page) {
   await page.getByRole('button', { name: 'Menu' }).click()
@@ -125,14 +125,17 @@ test.describe('the phone menu', () => {
     const context = await browser.newContext({ javaScriptEnabled: false })
     const page = await context.newPage()
     try {
-      await page.goto('/en/studio', { waitUntil: 'load' })
+      await page.goto('/id/kontak', { waitUntil: 'load' })
       await openMenu(page)
 
       const menu = menuOf(page)
-      const work = menu.getByRole('link', { name: 'Work', exact: true })
-      await expect(work).toBeInViewport()
+      const konstruksi = menu.getByRole('link', {
+        name: 'Konstruksi',
+        exact: true,
+      })
+      await expect(konstruksi).toBeInViewport()
 
-      const size = await work.evaluate((link) =>
+      const size = await konstruksi.evaluate((link) =>
         Number.parseFloat(getComputedStyle(link).fontSize)
       )
       expect(size, `the route words are ${size}px`).toBeGreaterThanOrEqual(
@@ -140,7 +143,7 @@ test.describe('the phone menu', () => {
       )
 
       await expect(
-        menu.getByRole('link', { name: 'Studio', exact: true }),
+        menu.getByRole('link', { name: 'Kontak', exact: true }),
         'the page the reader is on is not marked'
       ).toHaveAttribute('aria-current', 'page')
 
@@ -152,8 +155,8 @@ test.describe('the phone menu', () => {
        * stability; the harness does, so it is given a still target.
        */
       await settle(page)
-      await menu.getByRole('link', { name: 'Journal', exact: true }).click()
-      await expect(page).toHaveURL(/\/en\/journal$/)
+      await konstruksi.click()
+      await expect(page).toHaveURL(/\/id\/konstruksi$/)
     } finally {
       await context.close()
     }
@@ -162,7 +165,7 @@ test.describe('the phone menu', () => {
   test('the sheet fills the screen under the bar, and the bar stays', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     await openMenu(page)
 
     const sheet = await menuOf(page).evaluate((node) =>
@@ -184,13 +187,13 @@ test.describe('the phone menu', () => {
     ).toBeGreaterThanOrEqual(viewport.height - 1)
     expect(sheet.width).toBeGreaterThanOrEqual(viewport.width - 1)
     // MENU is still on screen, and it is now the way out.
-    await expect(page.getByRole('button', { name: 'Close' })).toBeInViewport()
+    await expect(page.getByRole('button', { name: 'Tutup' })).toBeInViewport()
   })
 
   test('Escape from inside the sheet closes it and focus comes back to MENU', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     await openMenu(page)
 
     // Focus goes into the sheet first, so the return is a return.
@@ -208,7 +211,7 @@ test.describe('the phone menu', () => {
   test('from the keyboard, Tab goes from MENU into the menu, and the stop is visible', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'load' })
+    await page.goto('/id', { waitUntil: 'load' })
     await page.getByRole('button', { name: 'Menu' }).focus()
     await page.keyboard.press('Enter')
     await expect(menuOf(page)).toBeVisible()
@@ -223,7 +226,7 @@ test.describe('the phone menu', () => {
       return {
         inMenu:
           nav !== null &&
-          nav.getAttribute('aria-label') === 'Primary' &&
+          nav.getAttribute('aria-label') === 'Utama' &&
           nav.getClientRects().length > 0,
         text: active.textContent?.trim() ?? '',
         onScreen:
@@ -245,7 +248,7 @@ test.describe('the phone menu', () => {
   test('Tab past the last link never lands focus under the sheet', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     await openMenu(page)
     const links = await menuOf(page).getByRole('link').count()
     expect(links).toBeGreaterThan(0)
@@ -288,7 +291,7 @@ test.describe('the phone menu', () => {
   test('⌘K with the menu open puts the palette on top, not under the sheet', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     await openMenu(page)
 
     await page.keyboard.press('Control+k')
@@ -299,7 +302,7 @@ test.describe('the phone menu', () => {
   test('focus going anywhere outside the sheet closes it, and search from the keyboard lands on top', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
 
     /*
      * The race, inside one task — on the way to `main`.
@@ -380,26 +383,28 @@ test.describe('the phone menu', () => {
      * document now holds two `#header-nav` — measured — and a `popovertarget`
      * resolved by id takes the first one in the tree.
      */
-    await page.goto('/en', { waitUntil: 'networkidle' })
-    await page.locator('footer a[href="/en/studio"]').first().click()
-    await expect(page).toHaveURL(/\/en\/studio$/)
+    await page.goto('/id', { waitUntil: 'networkidle' })
+    await page.locator('footer a[href="/id/konstruksi"]').first().click()
+    await expect(page).toHaveURL(/\/id\/konstruksi$/)
     await page.waitForLoadState('networkidle')
 
     await openMenu(page)
     await expect(
-      menuOf(page).getByRole('link', { name: 'Studio', exact: true })
+      menuOf(page).getByRole('link', { name: 'Konstruksi', exact: true })
     ).toHaveAttribute('aria-current', 'page')
   })
 
   test('a link in the menu navigates, and the menu is shut when the reader comes back', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     await openMenu(page)
     await settle(page)
 
-    await menuOf(page).getByRole('link', { name: 'Work', exact: true }).click()
-    await expect(page).toHaveURL(/\/en\/work$/)
+    await menuOf(page)
+      .getByRole('link', { name: 'Teknologi', exact: true })
+      .click()
+    await expect(page).toHaveURL(/\/id\/teknologi$/)
     await expect(menuOf(page)).toBeHidden()
 
     /*
@@ -409,7 +414,7 @@ test.describe('the phone menu', () => {
      * of this test checking only the destination, where it could not fail.
      */
     await page.goBack()
-    await expect(page).toHaveURL(/\/en$/)
+    await expect(page).toHaveURL(/\/id$/)
     await expect(menuOf(page)).toBeHidden()
     await expect(page.getByRole('button', { name: 'Menu' })).toBeVisible()
   })
@@ -417,7 +422,7 @@ test.describe('the phone menu', () => {
   test('the page behind holds still while the sheet is open', async ({
     page,
   }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     await page.evaluate(() => window.scrollTo(0, 600))
     await page.waitForTimeout(300)
     await openMenu(page)
@@ -458,14 +463,14 @@ test.describe('the phone menu', () => {
     const reduced = await browser.newContext({ reducedMotion: 'reduce' })
     const page = await reduced.newPage()
     try {
-      await control.goto('/en', { waitUntil: 'networkidle' })
+      await control.goto('/id', { waitUntil: 'networkidle' })
       await control.getByRole('button', { name: 'Menu' }).click()
       expect(
         await runningInNav(control),
         'no entrance ran without the preference — this test cannot see one'
       ).toBeGreaterThan(0)
 
-      await page.goto('/en', { waitUntil: 'networkidle' })
+      await page.goto('/id', { waitUntil: 'networkidle' })
       await page.getByRole('button', { name: 'Menu' }).click()
       expect(await runningInNav(page), 'the entrance ran anyway').toBe(0)
       await expect(menuOf(page)).toBeVisible()
@@ -476,7 +481,7 @@ test.describe('the phone menu', () => {
   })
 
   test('the open menu passes axe', async ({ page }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' })
+    await page.goto('/id', { waitUntil: 'networkidle' })
     await openMenu(page)
     await settle(page)
 
@@ -509,12 +514,18 @@ test.describe('the same nav on desktop', () => {
      * `interaction-grammar`, `journey`, `motion` and `navigation-landing`
      * each walked into one.
      */
-    await page.goto('/en/work', { waitUntil: 'networkidle' })
+    await page.goto('/id/konstruksi', { waitUntil: 'networkidle' })
 
     await expect(menuOf(page)).toBeVisible()
     // Each route once, by name — not a count, which `next dev` breaks with
     // its fourth, Storybook, link (found in review).
-    for (const name of ['Work', 'Studio', 'Journal']) {
+    for (const name of [
+      'Konstruksi',
+      'Teknologi',
+      'Peekabo',
+      // "Cara kami bekerja" returns when its page is published (R0, R5).
+      'Kontak',
+    ]) {
       await expect(
         page.getByRole('banner').getByRole('link', { name, exact: true })
       ).toHaveCount(1)

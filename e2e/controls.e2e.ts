@@ -42,12 +42,12 @@ import { waitForEntrance } from './page-settled'
 const JOURNAL_ENTRY = 'scope-is-the-deliverable'
 
 const ROUTES = [
-  '/en',
   '/id',
+  '/id/kontak',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
-  '/en/konstruksi',
-  '/en/studio',
+  '/id/konstruksi',
+  '/id/konstruksi/pelaku-proyek',
   '/en/journal',
   `/en/journal/${JOURNAL_ENTRY}`,
 ]
@@ -126,7 +126,7 @@ async function wrappedControls(page: Page) {
 test.describe('a control stays a control', () => {
   test('the reader finds controls to measure at all', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 })
-    await settle(page, '/en')
+    await settle(page, '/id')
     const { counted } = await wrappedControls(page)
     expect(
       counted,
