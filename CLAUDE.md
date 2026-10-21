@@ -173,7 +173,12 @@ itself says to revert it and never commit it.
 ### Architecture in one pass
 
 - **Routing.** Every public page lives under `app/[locale]/` (`en`, `id`;
-  `localePrefix: 'always'`, so the root only redirects). Locales are defined
+  `localePrefix: 'always'`). Indonesian is the default and the only published
+  locale: the root redirects to `/id`, browser language detection is off, and
+  an `/en` page without approved English answers 307 to its `/id` twin —
+  except in draft mode, so Sanity can preview English fields. That list is
+  `UNTRANSLATED_SEGMENTS` in `lib/i18n/public-locale-redirect.ts`; a new
+  Indonesian-only route is added there in the same change. Locales are defined
   once in `lib/i18n/routing.ts`; UI strings are in `messages/{en,id}.json`
   (next-intl). `app/(chrome)/` holds what sits outside the locale tree — the
   embedded Sanity Studio at `/cms`. `app/sitemap.ts`, `robots.ts` and
