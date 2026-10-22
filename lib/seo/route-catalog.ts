@@ -150,12 +150,21 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = (
       changeFrequency: 'daily',
       priority: 1,
     },
+    /*
+     * The page's own meta description: `app/[locale]/cara-kerja/page.tsx`
+     * falls back to the first written promise while the published `howWeWork`
+     * document carries no `metadata`, so the catalog and the page head say the
+     * same thing. The Studio holds that sentence in Indonesian only and the
+     * page resolves `en` to it as well, so both slots carry it until an
+     * English translation is approved. Editing either field in the Studio
+     * means editing this line.
+     */
     {
       path: '/cara-kerja',
       label: { en: 'How we work', id: 'Cara kami bekerja' },
       description: {
-        en: 'Sample information about how Arthur works, pending owner review.',
-        id: 'Informasi contoh tentang cara Arthur bekerja, menunggu tinjauan pemilik.',
+        en: 'Lingkup, harga, target, dan laporan disepakati tertulis sebelum kerja dimulai.',
+        id: 'Lingkup, harga, target, dan laporan disepakati tertulis sebelum kerja dimulai.',
       },
       changeFrequency: 'monthly',
       priority: 0.7,
