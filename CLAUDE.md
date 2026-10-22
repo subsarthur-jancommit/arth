@@ -149,7 +149,7 @@ bun run test:e2e       # Playwright + axe-core (CI only — see "Melihat hasil")
 bun run storybook      # component catalogue
 bun run format         # oxfmt in place; also sorts imports and Tailwind classes
 bun run lint:types     # type-aware oxlint (no-floating/misused-promises); not in the hook
-bun run check          # lint + format check + lint:types + tsc + bun test + asset check
+bun run check          # CI's gate: lint + format check + lint:types + tsc + bun test + assets
 ```
 
 A single unit test: `bun test lib/content/units.test.ts`, or filter by name
@@ -163,9 +163,13 @@ plugin's own tests are `*.ruletest.ts`, run by `bun run test:oxlint-plugin`.
 `next build` does not typecheck (`ignoreBuildErrors` is on), so `tsc` in
 `check` is the only type gate.
 
-`lefthook` runs oxfmt, oxlint and typecheck on every commit, and `bun test` on
-pre-push. An **error** stops the commit; a **warning** is reported and does
-not. A branch switch clears `.next/types`; it regenerates on the next build.
+`lefthook` runs oxfmt, oxlint and typecheck on every commit, `bun test` on
+pre-push, and `bun i` after a merge. An **error** stops the commit; a
+**warning** is reported and does not. On the owner's laptop the gates are
+CI's, not these hooks: commit with `LEFTHOOK_EXCLUDE=typecheck,unit-tests`,
+push and merge with `LEFTHOOK=0`, and never run `bun install` just to make a
+gate or a hook work (`docs/PROSEDUR-KERJA.md` §3 step 2). A branch switch
+clears `.next/types`; it regenerates on the next build.
 
 `next dev` appends a `nextjs-agent-rules` block to `AGENTS.md`. `AGENTS.md`
 itself says to revert it and never commit it.
@@ -240,11 +244,11 @@ The site is live at <https://arth-test-01.vercel.app>, and production is
   one who opens it.
 - **Production:** the URL above, public. To see which commit is live, ask the
   deployments API: `gh api repos/subsarthur-jancommit/arth/deployments`.
-- **No dev server and no local e2e suite.** CI on GitHub Actions is the one
-  place `bunx playwright test` runs. In the session: `bun run check`, and one
-  `bun run build` when a change touches rendering (`docs/PROSEDUR-KERJA.md`
-  §3). Measured in the cloud session on 2026-10-07: the build takes 66 s and
-  about 4.5 GB of memory at its peak on a 15 GB machine. Nothing is left
-  running.
+- **No dev server and no local gates.** CI on GitHub Actions runs
+  `bun run build`, `bun run check` and `bunx playwright test`. The session
+  pushes and opens a draft PR, and the results are read with `gh api`
+  (`docs/PROSEDUR-KERJA.md` §3 steps 2–3). Measured on the owner's laptop on
+  2026-10-22: `bun install` took about 355 s, the unit suite about 190 s, and
+  the pre-push `bun test` timed out three times. Nothing is left running.
 - **Screenshots** of the live site: one headless Chromium, sequential, saved
   outside the repository.
