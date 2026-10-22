@@ -19,14 +19,18 @@
  *
  * ## Who reads it
  *
- * `proxy.ts` (the 404), the header and footer (the links), the home page (the
- * work-method link), and `lib/seo/route-catalog.ts` (sitemap, `llms.txt`,
- * search index). A path added here disappears from all of them at once.
+ * `proxy.ts` (the 404), the header and footer (the links), and
+ * `lib/seo/route-catalog.ts` (sitemap, `llms.txt`, search index). A path
+ * added here disappears from each of them that names it, at once.
+ *
+ * Leaving the list only brings a page back where it is named. When
+ * `/satu-klien-tiga-unit` left it, the proxy was the only reader that knew the
+ * page, so the same change gave it a catalog entry.
  *
  * Sanity draft mode is exempt in the proxy, so Presentation can still preview
  * these routes while their documents are drafts.
  */
-export const AWAITING_CONTENT = ['/satu-klien-tiga-unit', '/kebijakan'] as const
+export const AWAITING_CONTENT = ['/kebijakan'] as const
 
 /** Whether a locale-free template (`/cara-kerja`) is still awaiting content. */
 export function isAwaitingContent(template: string): boolean {

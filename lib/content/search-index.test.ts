@@ -57,9 +57,10 @@ describe('page entries', () => {
 
   test('the Arthur destinations are present without promoting hidden indexes', () => {
     const paths = pageEntries('id').map((entry) => entry.href)
-    // Published and approved on 2026-10-17, so R5 removed it from
-    // `lib/seo/awaiting-content.ts` and the index offers it.
+    // Published and approved on 2026-10-17, so R5 removed them from
+    // `lib/seo/awaiting-content.ts` and the index offers them.
     expect(paths).toContain('/id/cara-kerja')
+    expect(paths).toContain('/id/satu-klien-tiga-unit')
     expect(paths).toContain('/id/kontak')
     for (const unit of UNITS) expect(paths).toContain(`/id/${unit}`)
     expect(paths).not.toContain('/id/work')

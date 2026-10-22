@@ -23,6 +23,9 @@ describe('public locale redirect', () => {
       '/id/peekabo/jaringan/perujuk'
     )
     expect(publicLocaleRedirect('/en/cara-kerja')).toBe('/id/cara-kerja')
+    expect(publicLocaleRedirect('/en/satu-klien-tiga-unit')).toBe(
+      '/id/satu-klien-tiga-unit'
+    )
     expect(publicLocaleRedirect('/en/kontak')).toBe('/id/kontak')
     expect(publicLocaleRedirect('/en/halaman/tentang')).toBe(
       '/id/halaman/tentang'
