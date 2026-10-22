@@ -161,16 +161,19 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = (
       priority: 0.7,
     },
     /*
-     * The page's own fallback description
-     * (`app/[locale]/satu-klien-tiga-unit/page.tsx`), so the catalog and the
-     * page head say the same thing while no sequence carries metadata.
+     * The meta description both sequences carry in Sanity since 2026-10-22
+     * (`docs/V3-SERAH-W7-HALAMAN.md` §2, recorded in
+     * `docs/V3-CATATAN-TULIS.md`), so the catalog and the page head say the
+     * same thing. Sanity's `metadata` field is not localized and the page
+     * resolves `en` to the same Indonesian sentence, so both slots carry it
+     * until an English translation is approved.
      */
     {
       path: '/satu-klien-tiga-unit',
       label: { en: 'One client, three units', id: 'Satu klien, tiga unit' },
       description: {
-        en: 'Possible working sequences across Konstruksi, Teknologi, and Peekabo.',
-        id: 'Rangkaian kerja yang mungkin lintas Konstruksi, Teknologi, dan Peekabo.',
+        en: 'Rangkaian yang mungkin dari tiga unit Arthur di Subang, Purwakarta, dan Bandung. Setiap unit tetap bisa dibeli sendiri.',
+        id: 'Rangkaian yang mungkin dari tiga unit Arthur di Subang, Purwakarta, dan Bandung. Setiap unit tetap bisa dibeli sendiri.',
       },
       changeFrequency: 'monthly',
       priority: 0.6,
