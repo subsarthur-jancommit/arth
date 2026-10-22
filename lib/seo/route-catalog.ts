@@ -11,6 +11,10 @@ import {
 import { localizedPath } from '@/lib/i18n/paths'
 import { PUBLISHED_LOCALES, type Locale } from '@/lib/i18n/routing'
 import { isAwaitingContent } from '@/lib/seo/awaiting-content'
+import {
+  HOW_WE_WORK_LEAD,
+  THREE_UNITS_FALLBACK_DESCRIPTION,
+} from '@/lib/seo/page-descriptions'
 import { type Localized, SITE } from '@/lib/seo/site'
 
 export interface StaticRoute {
@@ -23,6 +27,11 @@ export interface StaticRoute {
    * descriptions of its own pages — see `lib/seo/site.ts` for the same split applied to entity copy.
    */
   label: Localized<string>
+  /**
+   * For a page whose head reads its description from the CMS, only the
+   * fallback: the surfaces print the head's own, through
+   * {@link RouteDescriptions}.
+   */
   description: Localized<string>
   changeFrequency: NonNullable<MetadataRoute.Sitemap[number]['changeFrequency']>
   priority: number
@@ -42,6 +51,23 @@ export interface LocalizedStaticRoute extends Omit<
   template: string
   locale: Locale
 }
+
+/**
+ * What a page head says about itself, keyed by localized path
+ * (`/id/cara-kerja`), for the pages whose head reads its description from
+ * the CMS.
+ *
+ * `lib/seo/route-descriptions.ts` resolves it from the same published read
+ * and the same rule the head uses (`lib/seo/page-descriptions.ts`), and
+ * `/llms.txt`, the Markdown mirrors and the search index print it in place of
+ * the catalog's own `description`. A path missing from the map prints the
+ * catalog's: every code-owned page, and a head-described page whose document
+ * could not be read.
+ */
+export type RouteDescriptions = ReadonlyMap<string, string>
+
+/** Nothing resolved: every route prints the catalog's own description. */
+export const NO_ROUTE_DESCRIPTIONS: RouteDescriptions = new Map()
 
 /**
  * Starter-owned pages that always exist, independent of an optional CMS.
@@ -151,38 +177,35 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = (
       priority: 1,
     },
     /*
-     * The page's own meta description: `app/[locale]/cara-kerja/page.tsx`
-     * falls back to the first written promise while the published `howWeWork`
-     * document carries no `metadata`, so the catalog and the page head say the
-     * same thing. The Studio holds that sentence in Indonesian only and the
-     * page resolves `en` to it as well, so both slots carry it until an
-     * English translation is approved. Editing either field in the Studio
-     * means editing this line.
+     * The surfaces print what the page head says, not this line:
+     * `lib/seo/route-descriptions.ts` reads the published `howWeWork`
+     * document through the page's own loader and applies the head's own rule
+     * (its SEO description, else its first written promise). An edit in the
+     * Studio therefore reaches the head and the catalog together.
+     *
+     * This is printed only when that document cannot be read, and it is the
+     * page's own lead, not a copy of anything the Studio holds. Both slots
+     * carry it because the page resolves `en` to the Indonesian copy until an
+     * English translation is approved (owner, 2026-10-22).
      */
     {
       path: '/cara-kerja',
       label: { en: 'How we work', id: 'Cara kami bekerja' },
-      description: {
-        en: 'Lingkup, harga, target, dan laporan disepakati tertulis sebelum kerja dimulai.',
-        id: 'Lingkup, harga, target, dan laporan disepakati tertulis sebelum kerja dimulai.',
-      },
+      description: { en: HOW_WE_WORK_LEAD, id: HOW_WE_WORK_LEAD },
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     /*
-     * The meta description both sequences carry in Sanity since 2026-10-22
-     * (`docs/V3-SERAH-W7-HALAMAN.md` §2, recorded in
-     * `docs/V3-CATATAN-TULIS.md`), so the catalog and the page head say the
-     * same thing. Sanity's `metadata` field is not localized and the page
-     * resolves `en` to the same Indonesian sentence, so both slots carry it
-     * until an English translation is approved.
+     * Resolved the same way, from the first published sequence's SEO
+     * description. The fallback is the head's own, which the head also uses
+     * for `en`.
      */
     {
       path: '/satu-klien-tiga-unit',
       label: { en: 'One client, three units', id: 'Satu klien, tiga unit' },
       description: {
-        en: 'Rangkaian yang mungkin dari tiga unit Arthur di Subang, Purwakarta, dan Bandung. Setiap unit tetap bisa dibeli sendiri.',
-        id: 'Rangkaian yang mungkin dari tiga unit Arthur di Subang, Purwakarta, dan Bandung. Setiap unit tetap bisa dibeli sendiri.',
+        en: THREE_UNITS_FALLBACK_DESCRIPTION,
+        id: THREE_UNITS_FALLBACK_DESCRIPTION,
       },
       changeFrequency: 'monthly',
       priority: 0.6,

@@ -6,6 +6,7 @@ import {
   buildMarkdownDocumentFromRoutes,
   type MarkdownDocument,
 } from './markdown-document'
+import { HOW_WE_WORK_LEAD } from './page-descriptions'
 import { SITE } from './site'
 
 /** Narrows away the redirect/degraded branches for tests asserting on a document body. */
@@ -129,5 +130,52 @@ describe('buildMarkdownDocument', () => {
     })
 
     expect(document.status).toBe(200)
+  })
+})
+
+/*
+ * `/cara-kerja` reads its meta description from the CMS. The mirror has to
+ * print what that head says, in both places it names the page — the page's
+ * own section and the page list every mirror carries.
+ */
+describe('a page whose head describes itself from the CMS', () => {
+  const descriptions = new Map([
+    ['/id/cara-kerja', 'Cara kerja, seperti ditulis di Studio.'],
+  ])
+
+  it("prints the head's description under This page and in the page list", () => {
+    const document = buildMarkdownDocumentFromRoutes('/id/cara-kerja', [], {
+      descriptions,
+    })
+    assertDocumentBody(document)
+
+    expect(document.status).toBe(200)
+    expect(document.body).toContain(
+      '## This page\n\nCara kerja, seperti ditulis di Studio.\n'
+    )
+    expect(document.body).toContain(
+      `(${absoluteSiteUrl('/id/cara-kerja')}): Cara kerja, seperti ditulis di Studio.`
+    )
+  })
+
+  it("prints it in another page's list too", () => {
+    const document = buildMarkdownDocumentFromRoutes('/id/kontak', [], {
+      descriptions,
+    })
+    assertDocumentBody(document)
+
+    expect(document.body).toContain(
+      `(${absoluteSiteUrl('/id/cara-kerja')}): Cara kerja, seperti ditulis di Studio.`
+    )
+  })
+
+  it("prints the catalog's own line when nothing could be read", async () => {
+    // Hermetic: no CMS is configured under `bun test`, so the resolver reads
+    // nothing and the page keeps the catalog's description.
+    const document = await buildMarkdownDocument('/id/cara-kerja')
+    assertDocumentBody(document)
+
+    expect(document.status).toBe(200)
+    expect(document.body).toContain(`## This page\n\n${HOW_WE_WORK_LEAD}\n`)
   })
 })

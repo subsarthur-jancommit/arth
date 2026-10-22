@@ -5,6 +5,7 @@ import {
   buildStaticRoutesMarkdown,
 } from '@/lib/seo/agent-content'
 import { mergeVary } from '@/lib/seo/content-negotiation'
+import { resolveRouteDescriptions } from '@/lib/seo/route-descriptions'
 import { getAdvertisedRoutes } from '@/lib/seo/routes'
 import { formatList, type ResolvedSiteFacts, siteFacts } from '@/lib/seo/site'
 
@@ -61,11 +62,16 @@ async function buildBody(): Promise<string> {
    * only ever fetches this file still learns the site is bilingual.
    */
   const facts = siteFacts()
-  // Expanded per locale, like the sitemap's. This file used to list the bare
-  // template (`https://…/work/rimbun`), which is a URL that only 307s — on
-  // the one surface whose entire purpose is handing a crawler the address to
-  // record.
-  const cmsRoutes = await getAdvertisedRoutes()
+  const [cmsRoutes, descriptions] = await Promise.all([
+    // Expanded per locale, like the sitemap's. This file used to list the bare
+    // template (`https://…/work/rimbun`), which is a URL that only 307s — on
+    // the one surface whose entire purpose is handing a crawler the address
+    // to record.
+    getAdvertisedRoutes(),
+    // What the CMS-described pages say in their own head, read the way the
+    // head reads it, so a Studio edit cannot leave this file behind.
+    resolveRouteDescriptions(),
+  ])
 
   return `# ${facts.name}
 
@@ -77,7 +83,7 @@ ${buildAbout(facts)}
 
 ## Key pages
 
-${buildStaticRoutesMarkdown()}${buildCmsRoutesMarkdown(cmsRoutes)}${buildAgentGuidanceMarkdown()}${buildDeveloperResourcesMarkdown()}
+${buildStaticRoutesMarkdown(descriptions)}${buildCmsRoutesMarkdown(cmsRoutes)}${buildAgentGuidanceMarkdown()}${buildDeveloperResourcesMarkdown()}
 `
 }
 

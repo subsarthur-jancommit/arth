@@ -340,3 +340,59 @@ describe('an unreachable content source', () => {
     expect(index.some((entry) => entry.kind === 'project')).toBe(true)
   })
 })
+
+/**
+ * A page whose head reads its description from the CMS.
+ *
+ * The row has to say what the head says, which the route handler resolves
+ * with `resolveRouteDescriptions` and hands over like the rest of its data.
+ * The catalog's own line is only the fallback for a read that failed.
+ */
+describe('a description the page head resolved', () => {
+  const descriptions = new Map([
+    ['/id/cara-kerja', 'Cara kerja, seperti ditulis di Studio.'],
+  ])
+  const row = (entries: readonly SearchEntry[], href: string) =>
+    entries.find((entry) => entry.href === href)
+
+  test("replaces the catalog's own on that page's row and nowhere else", () => {
+    const plain = pageEntries('id')
+    const described = pageEntries('id', descriptions)
+
+    expect(row(described, '/id/cara-kerja')?.description).toBe(
+      'Cara kerja, seperti ditulis di Studio.'
+    )
+    expect(
+      described.filter((entry) => entry.href !== '/id/cara-kerja')
+    ).toEqual(plain.filter((entry) => entry.href !== '/id/cara-kerja'))
+  })
+
+  test('belongs to one locale: the other keeps its own', () => {
+    expect(row(pageEntries('en', descriptions), '/en/cara-kerja')).toEqual(
+      row(pageEntries('en'), '/en/cara-kerja')
+    )
+  })
+
+  test('reaches the index whether the content source answers or not', async () => {
+    const answered = await resolveSearchIndex(
+      'id',
+      () =>
+        Promise.resolve({
+          projects: null,
+          journal: resolveJournalEntries('id', null),
+        }),
+      descriptions
+    )
+    const unreachable = await resolveSearchIndex(
+      'id',
+      () => Promise.reject(new Error('read ECONNRESET')),
+      descriptions
+    )
+
+    for (const index of [answered, unreachable]) {
+      expect(row(index, '/id/cara-kerja')?.description).toBe(
+        'Cara kerja, seperti ditulis di Studio.'
+      )
+    }
+  })
+})
