@@ -28,13 +28,19 @@ import {
  * payload of every route on the site for a control most visits never open.
  * One fetch, on demand, cached.
  *
- * ## Why the proxy leaves it alone
+ * ## What the proxy does with it
  *
  * `proxy.ts` skips content negotiation for any path whose last segment
  * contains a dot (`FILE_EXTENSION`) — the same rule that already lets
  * `/llms.txt` and `/manifest.webmanifest` through untouched. So this route is
  * never treated as a page document and never negotiated into Markdown, and it
  * carries its locale in the path rather than in a header.
+ *
+ * One thing runs before that skip: `/en/search.json` answers 307 to
+ * `/id/search.json` outside draft mode, like every untranslated English page
+ * (`lib/i18n/public-locale-redirect.ts` records why). So this handler
+ * renders `en` only for Presentation previews, and `generateStaticParams`
+ * builds the published locales alone.
  *
  * ## `'use cache'` wraps the builder, not the handler
  *

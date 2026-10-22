@@ -258,6 +258,10 @@ export function CommandPalette({
    * an intent rather than on a page load. A failed fetch leaves the list
    * empty and the designed empty state shows — the palette must never be the
    * thing that breaks a page it was opened from.
+   *
+   * On an English page the request is answered with a 307 to
+   * `/id/search.json` (`lib/i18n/public-locale-redirect.ts`), and `fetch`
+   * follows it: the rows are the published Indonesian index.
    */
   useEffect(() => {
     if (given) return

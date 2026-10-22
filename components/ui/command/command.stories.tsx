@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { NextIntlClientProvider } from 'next-intl'
 
 import type { SearchEntry } from '@/lib/content/search-index'
+import messages from '@/messages/id.json'
 
 import { CommandPalette } from './palette'
 
@@ -30,37 +31,14 @@ import { CommandPalette } from './palette'
  */
 
 /*
- * The `search` namespace, written out rather than imported from
- * `messages/en.json`, for the reason `language-switcher.stories.tsx` records:
- * the JSON is typed through `messages/en.d.json.ts`, which needs
- * `allowArbitraryExtensions`, and turning that on for one story would loosen
- * module resolution repo-wide.
- */
-const messages = {
-  search: {
-    open: 'Search',
-    shortcut: '⌘K',
-    label: 'Search the site',
-    placeholder: 'Search units, projects and writing',
-    empty: 'Nothing matches that.',
-    emptyHint: 'Try a unit, a client name, or a year.',
-    loading: 'Building the index…',
-    failed:
-      'Search is unavailable right now. Every page is still reachable from the header and the footer.',
-    hint: 'Enter to open, Escape to close.',
-    close: 'Close search',
-    groups: {
-      page: 'Pages',
-      unit: 'Units',
-      project: 'Work',
-      journal: 'Journal',
-    },
-  },
-}
-
-/*
- * A slice of the **real** index, copied from what `/en/search.json` serves —
- * not written to look like one.
+ * A slice of the **real** index, copied from what production's
+ * `/id/search.json` served on 2026-10-22 — not written to look like one.
+ *
+ * Indonesian because `/en/search.json` answers 307 to that index
+ * (`lib/i18n/public-locale-redirect.ts`), so these are the rows on English
+ * pages too. The English rows this story used to carry had drifted from what
+ * `/en/search.json` served — only `page:/cara-kerja` still matched — and that
+ * index now reaches Presentation previews alone.
  *
  * The first draft of this file invented a client name for a real project, and
  * that is the line this project does not cross: `lib/content/home-fallback.ts`
@@ -70,64 +48,66 @@ const messages = {
  */
 const entries: SearchEntry[] = [
   {
-    id: 'unit:konstruksi',
-    kind: 'unit',
-    label: 'Konstruksi',
-    description:
-      'Konstruksi, read from two sides: project leads and building owners.',
-    href: '/en/konstruksi',
-    meta: '/konstruksi',
-  },
-  {
     id: 'page:/cara-kerja',
     kind: 'page',
-    label: 'How we work',
+    label: 'Cara kami bekerja',
     description:
       'Lingkup, harga, target, dan laporan disepakati tertulis sebelum kerja dimulai.',
-    href: '/en/cara-kerja',
+    href: '/id/cara-kerja',
     meta: '/cara-kerja',
   },
   {
-    id: 'unit:teknologi',
+    id: 'page:/kontak',
+    kind: 'page',
+    label: 'Tentang dan kontak',
+    description:
+      'Struktur Arthur, wilayah kerja yang sudah dikonfirmasi, dan status kontaknya saat ini.',
+    href: '/id/kontak',
+    meta: '/kontak',
+  },
+  {
+    id: 'page:/konstruksi',
+    kind: 'unit',
+    label: 'Konstruksi',
+    description:
+      'Konstruksi, dibaca dari dua sisi: yang menjalankan proyek, dan yang memiliki bangunannya.',
+    href: '/id/konstruksi',
+    meta: '/konstruksi',
+  },
+  {
+    id: 'page:/teknologi',
     kind: 'unit',
     label: 'Teknologi',
     description:
-      'Teknologi, read from two sides: ready to use and technically fluent.',
-    href: '/en/teknologi',
+      'Teknologi, dibaca dari dua sisi: pembeli yang mau hasil siap pakai, dan pembeli yang paham teknis.',
+    href: '/id/teknologi',
     meta: '/teknologi',
   },
   {
-    id: 'unit:peekabo',
+    id: 'page:/peekabo',
     kind: 'unit',
     label: 'Peekabo',
-    description: "Peekabo, Arthur's agency, read from two sides.",
-    href: '/en/peekabo',
+    description:
+      'Peekabo, agency-nya Arthur, dibaca dari dua sisi: pemilik usaha dan brand, dan jaringan penjual.',
+    href: '/id/peekabo',
     meta: '/peekabo',
-  },
-  {
-    id: 'page:contact',
-    kind: 'page',
-    label: 'Contact',
-    description: '',
-    href: '/en/#contact',
-    meta: null,
   },
   {
     id: 'project:arus-balik',
     kind: 'project',
     label: 'Arus Balik',
-    description: 'Architecture review, six weeks',
-    href: '/en/work/arus-balik',
+    description: 'Tinjauan arsitektur, enam minggu',
+    href: '/id/work/arus-balik',
     meta: 'Rumah Tanjung · 2025',
   },
   {
     id: 'journal:scope-is-the-deliverable',
     kind: 'journal',
-    label: 'Scope is the deliverable',
+    label: 'Lingkup adalah hasilnya',
     description:
-      'The week spent deciding what a piece of work is not is the week that decides whether it ships.',
-    href: '/en/journal/scope-is-the-deliverable',
-    meta: 'February 11, 2026',
+      'Minggu yang dipakai memutuskan sebuah pekerjaan itu bukan apa adalah minggu yang menentukan apakah ia selesai.',
+    href: '/id/journal/scope-is-the-deliverable',
+    meta: '11 Februari 2026',
   },
 ]
 
@@ -146,8 +126,16 @@ const meta = {
     entries,
   },
   decorators: [
+    /*
+     * The Indonesian dictionary itself, not a written-out copy of the
+     * `search` namespace. The copy this story carried had already drifted —
+     * it had no `hintTouch` — which is the reason `.storybook/preview.tsx`
+     * gives for importing the real one. Indonesian because it is the only
+     * published locale, and the rows above are what every public palette
+     * lists.
+     */
     (Story) => (
-      <NextIntlClientProvider locale="en" messages={messages}>
+      <NextIntlClientProvider locale="id" messages={messages}>
         <Story />
       </NextIntlClientProvider>
     ),
