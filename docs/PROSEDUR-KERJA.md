@@ -139,9 +139,12 @@ Pemilik boleh merge sendiri di GitHub; ruleset di §5 tetap berlaku untuknya.
 
    Sesudah PR draft terbuka, sesi melaporkan nomor PR dan head SHA, lalu
    mengakhiri gilirannya tanpa menunggu CI; sesi koordinator yang membaca
-   hasil CI dan menandai PR siap (langkah 4–6). Sesi tidak memulai sesi baru
-   atau mengusulkan kartu tugas kecuali pemilik memintanya; tindak lanjut
-   ditulis di laporan akhirnya. Disetujui pemilik 2026-10-22.
+   hasil CI dan menandai PR siap (langkah 4–6). Sesi koordinator adalah sesi
+   yang memulai sesi ini; kalau sesi dibuka langsung oleh pemilik, sesi itu
+   sendiri yang membaca hasil CI saat pemilik kembali, lalu menandai PR siap.
+   Sesi tidak memulai sesi baru atau mengusulkan kartu tugas kecuali pemilik
+   memintanya; tindak lanjut ditulis di laporan akhirnya. Disetujui
+   pemilik 2026-10-22.
 
 4. **CI pada head SHA.** Tunggu `ci` dan `e2e` selesai untuk SHA terakhir PR.
    Kalau merah, perbaiki lalu push. Re-run hanya untuk job yang mati sebelum
