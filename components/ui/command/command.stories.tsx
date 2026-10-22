@@ -83,7 +83,7 @@ const entries: SearchEntry[] = [
     kind: 'page',
     label: 'How we work',
     description:
-      'Sample information about how Arthur works, pending owner review.',
+      'Lingkup, harga, target, dan laporan disepakati tertulis sebelum kerja dimulai.',
     href: '/en/cara-kerja',
     meta: '/cara-kerja',
   },
