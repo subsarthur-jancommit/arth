@@ -169,6 +169,21 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = (
       changeFrequency: 'monthly',
       priority: 0.7,
     },
+    /*
+     * The page's own fallback description
+     * (`app/[locale]/satu-klien-tiga-unit/page.tsx`), so the catalog and the
+     * page head say the same thing while no sequence carries metadata.
+     */
+    {
+      path: '/satu-klien-tiga-unit',
+      label: { en: 'One client, three units', id: 'Satu klien, tiga unit' },
+      description: {
+        en: 'Possible working sequences across Konstruksi, Teknologi, and Peekabo.',
+        id: 'Rangkaian kerja yang mungkin lintas Konstruksi, Teknologi, dan Peekabo.',
+      },
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
     {
       path: '/kontak',
       label: { en: 'About and contact', id: 'Tentang dan kontak' },

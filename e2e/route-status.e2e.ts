@@ -99,6 +99,24 @@ test.describe('the pages that do answer are untouched by all of it', () => {
   }
 
   /*
+   * A fixed page that left `lib/seo/awaiting-content.ts` in R5, once both
+   * approved sequences were published. An empty read renders the not-found
+   * view over 200 (`docs/TINJAUAN-F01-F03.md` E3.2), so the status alone
+   * would pass against that; the heading and a sequence are asserted too.
+   */
+  test('/id/satu-klien-tiga-unit answers 200 with its sequences', async ({
+    request,
+  }) => {
+    const response = await request.get('/id/satu-klien-tiga-unit', {
+      maxRedirects: 0,
+    })
+    expect(response.status()).toBe(200)
+    const html = await response.text()
+    expect(html).toContain('Tiga unit. Satu urutan kerja.')
+    expect(html).toContain('data-epic="three-unit-splice"')
+  })
+
+  /*
    * The machine files, which the proxy's matcher deliberately excludes.
    *
    * Listed because the gone-and-missing logic sits *after* that matcher, and
