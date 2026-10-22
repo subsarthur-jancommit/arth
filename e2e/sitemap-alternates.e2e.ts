@@ -19,9 +19,13 @@ test('the sitemap carries hreflang and honest dates', async ({ request }) => {
 
   expect(xml).toContain('xmlns:xhtml="http://www.w3.org/1999/xhtml"')
 
-  // The two published fixed pages, each with its Indonesian alternates.
+  // The published fixed pages, each with its Indonesian alternates.
   const contact = urlBlock(xml, '/id/kontak')
-  for (const path of ['/id/kontak', '/id/cara-kerja']) {
+  for (const path of [
+    '/id/kontak',
+    '/id/cara-kerja',
+    '/id/satu-klien-tiga-unit',
+  ]) {
     const block = urlBlock(xml, path)
     for (const tag of ['id-ID', 'x-default']) {
       expect(block).toMatch(new RegExp(`hreflang="${tag}" href="[^"]*${path}"`))
