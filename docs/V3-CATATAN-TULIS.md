@@ -228,3 +228,38 @@ Perumahan developer menunggu offer yang masih ditahan.
   semua medan halaman terisi. `/id/cara-kerja` tetap 404 karena rutenya ada di
   `lib/seo/awaiting-content.ts`. PR yang mengeluarkannya dari daftar itu
   membuka halaman tersebut.
+
+## Metadata mesin pencari di Satu klien, tiga unit
+
+- **Izin:** "ok tulis metadata mesin pencari kedua rangkaian Satu klien, tiga
+  unit sesuai RENCANA-MUTASI.md, langsung terbit", 22 Oktober 2026. Rencana
+  mutasinya disimpan bersama cadangan di luar repositori.
+- **Sebelumnya:** penulisan W7 mengisi situasi, langkah, dan keterangan kedua
+  rangkaian, tetapi tidak judul dan deskripsi mesin pencari dari
+  `docs/V3-SERAH-W7-HALAMAN.md` bagian 2. Kedua dokumen tidak punya medan
+  `metadata`, jadi kepala halaman memakai judul dan deskripsi cadangan dari
+  kode.
+- **Cadangan:** sebelum mutasi, dataset diekspor ke luar repositori: 389
+  dokumen terbit dari ekspor publik, ditambah kedua rangkaian secara terpisah.
+  Empat draf `sanity.previewUrlSecret` tidak ikut karena berisi rahasia
+  pratinjau, dan mutasi tidak menyentuhnya.
+- **Ditulis:** `arthur-rangkaian-kafe-baru` dan `arthur-rangkaian-studio-siaran`
+  diberi metadata yang sama: judul "Satu klien, tiga unit: konstruksi, sistem,
+  dan pemasaran" dan deskripsi "Rangkaian yang mungkin dari tiga unit Arthur di
+  Subang, Purwakarta, dan Bandung. Setiap unit tetap bisa dibeli sendiri."
+  Keduanya diberi isi yang sama karena halaman membaca metadata dari rangkaian
+  pertama menurut `_createdAt`, sedangkan kedua dokumen dibuat pada detik yang
+  sama. Jejak sumber `metadata` ditambahkan. Mutasi dikunci ke revisi
+  `JbEcLtv325wEBDy8e4ow8h`, ditulis sebagai draf, lalu diterbitkan. Status dan
+  tanggal persetujuan tidak diubah.
+- **Diperiksa sesudahnya:** kedua dokumen kini di revisi
+  `G8ZeF7tvpW3E8RQnFAii4e`. Dibanding cadangan, yang berubah hanya `metadata`,
+  entri jejak sumber keempat, dan medan sistem Sanity (`_rev`, `_updatedAt`,
+  `_system`). Kueri dan parser situs atas API publik mengembalikan kedua
+  rangkaian dengan judul dan deskripsi itu, tanpa ada yang ditahan. Tidak ada
+  draf rangkaian yang tersisa. Sesudah PR #34 merge, produksi menjawab
+  `/id/satu-klien-tiga-unit` 200 dengan judul dan deskripsi itu di kepala
+  halaman.
+- **Di kode:** deskripsi `/satu-klien-tiga-unit` di `lib/seo/route-catalog.ts`
+  disamakan dengan deskripsi ini, sehingga `llms.txt` dan pencarian situs
+  memakai kalimat yang sama dengan kepala halaman.
