@@ -1,6 +1,10 @@
 import { localizedPath } from '@/lib/i18n/paths'
 import type { Locale } from '@/lib/i18n/routing'
-import { STATIC_ROUTE_TEMPLATES } from '@/lib/seo/route-catalog'
+import {
+  NO_ROUTE_DESCRIPTIONS,
+  type RouteDescriptions,
+  STATIC_ROUTE_TEMPLATES,
+} from '@/lib/seo/route-catalog'
 
 import { type JournalEntry, resolveJournalEntries } from './journal-fallback'
 import { isUnit } from './units'
@@ -91,17 +95,25 @@ function joinMeta(
  * A unit is recognised by its *whole* path being a unit segment, which is
  * what `/konstruksi` is. The predicate used to compare a `/practice/` prefix;
  * a unit has no prefix to compare, so the segment itself is the test.
+ *
+ * `descriptions` carries what a CMS-described page says in its own head
+ * (`RouteDescriptions`), resolved by the route handler like the rest of the
+ * fetched data. Without it a row prints the catalog's own description.
  */
-export function pageEntries(locale: Locale): SearchEntry[] {
+export function pageEntries(
+  locale: Locale,
+  descriptions: RouteDescriptions = NO_ROUTE_DESCRIPTIONS
+): SearchEntry[] {
   const pages = STATIC_ROUTE_TEMPLATES.map((route) => {
     const isUnitPage = isUnit(route.path.replace(/^\//, ''))
+    const href = localizedPath(locale, route.path)
 
     return {
       id: `page:${route.path}`,
       kind: isUnitPage ? ('unit' as const) : ('page' as const),
       label: route.label[locale],
-      description: route.description[locale],
-      href: localizedPath(locale, route.path),
+      description: descriptions.get(href) ?? route.description[locale],
+      href,
       /*
        * The path, locale-free, because `meta` is "the fact that identifies
        * this thing" and for a page that is where it lives. A project is
@@ -187,9 +199,10 @@ export function buildSearchIndex(
   sources: {
     projects: readonly SearchProject[] | null
     journal: readonly JournalEntry[]
+    descriptions?: RouteDescriptions
   }
 ): SearchEntry[] {
-  const pages = pageEntries(locale)
+  const pages = pageEntries(locale, sources.descriptions)
 
   return [
     ...pages.filter((entry) => entry.kind === 'page'),
@@ -238,16 +251,21 @@ export function buildSearchIndex(
  *
  * It is deliberately **not silent.** A degraded build and a genuinely empty
  * dataset produce the same palette, and only the warning tells them apart.
+ *
+ * `descriptions` is resolved outside the loader and kept on both paths: it
+ * comes from `resolveRouteDescriptions`, which never throws, so a failed
+ * project fetch has no reason to cost the page rows their descriptions.
  */
 export async function resolveSearchIndex(
   locale: Locale,
   load: () => Promise<{
     projects: readonly SearchProject[] | null
     journal: readonly JournalEntry[]
-  }>
+  }>,
+  descriptions: RouteDescriptions = NO_ROUTE_DESCRIPTIONS
 ): Promise<SearchEntry[]> {
   try {
-    return buildSearchIndex(locale, await load())
+    return buildSearchIndex(locale, { ...(await load()), descriptions })
   } catch (error) {
     console.warn(
       `[search-index] ${locale}: content source unreachable, serving pages only.`,
@@ -256,6 +274,7 @@ export async function resolveSearchIndex(
     return buildSearchIndex(locale, {
       projects: null,
       journal: resolveJournalEntries(locale, null),
+      descriptions,
     })
   }
 }

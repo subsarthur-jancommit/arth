@@ -16,6 +16,7 @@ import {
   journalEntriesQuery,
   projectsQuery,
 } from '@/lib/integrations/sanity/queries'
+import { resolveRouteDescriptions } from '@/lib/seo/route-descriptions'
 
 /**
  * `/[locale]/search.json` — what the command palette searches.
@@ -50,10 +51,19 @@ export function generateStaticParams() {
 async function buildIndex(locale: Locale): Promise<SearchEntry[]> {
   'use cache'
 
+  /*
+   * What `/cara-kerja` and `/satu-klien-tiga-unit` say in their own head,
+   * read through the pages' own loaders, so the rows cannot fall behind a
+   * Studio edit. It never throws: a page it cannot read keeps the catalog's
+   * own description, so both branches below get the same rows.
+   */
+  const descriptions = await resolveRouteDescriptions([locale])
+
   if (!isConfigured('sanity')) {
     return buildSearchIndex(locale, {
       projects: null,
       journal: resolveJournalEntries(locale, null),
+      descriptions,
     })
   }
 
@@ -64,7 +74,7 @@ async function buildIndex(locale: Locale): Promise<SearchEntry[]> {
    * The branch above covers "no dataset configured"; this covers "configured
    * and unreachable", which is the case that actually happened.
    */
-  return resolveSearchIndex(locale, async () => {
+  const load = async () => {
     const [projects, journal] = await Promise.all([
       sanityFetch({
         query: projectsQuery,
@@ -97,7 +107,9 @@ async function buildIndex(locale: Locale): Promise<SearchEntry[]> {
       projects: projects.data,
       journal: resolveJournalEntries(locale, journal.data),
     }
-  })
+  }
+
+  return resolveSearchIndex(locale, load, descriptions)
 }
 
 export async function GET(

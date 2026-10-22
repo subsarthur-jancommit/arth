@@ -14,6 +14,13 @@ crawlable/citable, or change how a page negotiates HTML vs. Markdown.
 - `json-ld.tsx` — renders a JSON-LD `<script>` tag from a schema.
 - `route-catalog.ts` — `STATIC_ROUTES`: code-owned pages with no CMS
   backing (label, description, sitemap metadata).
+- `page-descriptions.ts` — the rule a page head uses when it reads its meta
+  description from the CMS (`/cara-kerja`, `/satu-klien-tiga-unit`), and the
+  fallback sentences the catalog keeps for those pages. Imports no Sanity
+  code: the client-side command palette reaches the catalog.
+- `route-descriptions.ts` — `resolveRouteDescriptions()`: applies that rule
+  to the pages' own published reads, so `/llms.txt`, the Markdown mirrors and
+  `search.json` print what the head says. Server only; never throws.
 - `routes.ts` — `ContentRoute` type and CMS-backed route lookup
   (`getCmsRoutes`), re-exports `STATIC_ROUTES`. Shared by the sitemap and
   `/llms.txt` so neither can disagree about which URLs exist.
@@ -33,8 +40,8 @@ crawlable/citable, or change how a page negotiates HTML vs. Markdown.
 
 **Routes that consume this module:**
 
-- `app/llms.txt/route.ts` — generates `/llms.txt` from `SITE` and
-  `getCmsRoutes()`.
+- `app/llms.txt/route.ts` — generates `/llms.txt` from `SITE`,
+  `getCmsRoutes()` and `resolveRouteDescriptions()`.
 - `app/agent-content/route.ts` — serves the Markdown mirror for a page when
   content negotiation picks `text/markdown`.
 - `proxy.ts` — runs `negotiateDocumentType` (from `content-negotiation.ts`)
