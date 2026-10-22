@@ -260,6 +260,9 @@ Perumahan developer menunggu offer yang masih ditahan.
   draf rangkaian yang tersisa. Sesudah PR #34 merge, produksi menjawab
   `/id/satu-klien-tiga-unit` 200 dengan judul dan deskripsi itu di kepala
   halaman.
-- **Di kode:** deskripsi `/satu-klien-tiga-unit` di `lib/seo/route-catalog.ts`
-  disamakan dengan deskripsi ini, sehingga `llms.txt` dan pencarian situs
-  memakai kalimat yang sama dengan kepala halaman.
+- **Di kode:** tidak ada salinan. Sejak PR #38, `llms.txt`, cermin Markdown,
+  dan indeks pencarian mencetak deskripsi yang dibaca kepala halaman dari
+  rangkaian pertama, jadi kalimat ini sampai ke sana langsung dari Sanity.
+  Kalimat di `lib/seo/route-catalog.ts` hanya cadangan bila Sanity tidak
+  terbaca, sama dengan cadangan kepala halaman. Diperiksa di produksi sesudah
+  PR #38 merge: `llms.txt` dan `/id/search.json` memuat deskripsi ini.
