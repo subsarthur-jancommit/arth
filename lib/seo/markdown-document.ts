@@ -10,7 +10,12 @@ import {
   HTML_FORMAT_OVERRIDE_PARAM,
   HTML_FORMAT_OVERRIDE_VALUE,
 } from '@/lib/seo/content-negotiation'
-import { STATIC_ROUTES } from '@/lib/seo/route-catalog'
+import {
+  NO_ROUTE_DESCRIPTIONS,
+  type RouteDescriptions,
+  STATIC_ROUTES,
+} from '@/lib/seo/route-catalog'
+import { resolveRouteDescriptions } from '@/lib/seo/route-descriptions'
 import { getCmsRoutesResult } from '@/lib/seo/routes'
 import type { ContentRoute } from '@/lib/seo/routes'
 import { siteFacts } from '@/lib/seo/site'
@@ -117,19 +122,28 @@ function buildMarkdownUnavailable(
   }
 }
 
+function staticRouteAt(path: string) {
+  return STATIC_ROUTES.find((candidate) => candidate.path === path)
+}
+
 /** Classifies a path against an already-resolved route catalog. */
 export function buildMarkdownDocumentFromRoutes(
   requestedPath: string,
   cmsRoutes: readonly ContentRoute[],
-  options: BuildMarkdownDocumentOptions & { catalogDegraded?: boolean } = {}
+  options: BuildMarkdownDocumentOptions & {
+    catalogDegraded?: boolean
+    /** What head-described pages say about themselves; see `RouteDescriptions`. */
+    descriptions?: RouteDescriptions
+  } = {}
 ): MarkdownDocument {
   const {
     htmlAcceptable = true,
     catalogDegraded = false,
     search = '',
+    descriptions = NO_ROUTE_DESCRIPTIONS,
   } = options
   const path = normalizeRoutePath(requestedPath)
-  const route = STATIC_ROUTES.find((candidate) => candidate.path === path)
+  const route = staticRouteAt(path)
   if (!route) {
     const cmsRoute = cmsRoutes.find((candidate) => candidate.path === path)
     if (cmsRoute) {
@@ -171,13 +185,13 @@ export function buildMarkdownDocumentFromRoutes(
 
 ## This page
 
-${route.description}
+${descriptions.get(route.path) ?? route.description}
 
 This representation summarizes the route as the site owns it. It lists CMS pages for discovery but does not claim to reproduce their bodies.
 
 ## Pages
 
-${buildStaticRoutesMarkdown(locale)}${buildCmsRoutesMarkdown(cmsRoutes)}${buildAgentGuidanceMarkdown(locale)}${buildDeveloperResourcesMarkdown()}
+${buildStaticRoutesMarkdown(descriptions, locale)}${buildCmsRoutesMarkdown(cmsRoutes)}${buildAgentGuidanceMarkdown(locale)}${buildDeveloperResourcesMarkdown()}
 
 ## Agent files
 
@@ -193,12 +207,24 @@ export async function buildMarkdownDocument(
   requestedPath: string,
   options: BuildMarkdownDocumentOptions = {}
 ): Promise<MarkdownDocument> {
-  const { routes, degraded } = await getCmsRoutesResult()
+  /*
+   * Head-described pages are read only for a static route's document, in its
+   * own language: a 404, a 303 or a 406 prints no page list, so it has no
+   * reason to wait on the CMS for one.
+   */
+  const route = staticRouteAt(normalizeRoutePath(requestedPath))
+  const [{ routes, degraded }, descriptions] = await Promise.all([
+    getCmsRoutesResult(),
+    route
+      ? resolveRouteDescriptions([route.locale])
+      : Promise.resolve(NO_ROUTE_DESCRIPTIONS),
+  ])
   return buildMarkdownDocumentFromRoutes(requestedPath, routes, {
     ...(options.htmlAcceptable !== undefined && {
       htmlAcceptable: options.htmlAcceptable,
     }),
     ...(options.search !== undefined && { search: options.search }),
     catalogDegraded: degraded,
+    descriptions,
   })
 }
