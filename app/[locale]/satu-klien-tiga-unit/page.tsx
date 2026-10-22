@@ -6,6 +6,7 @@ import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
 import { sequenceContent } from '@/lib/content/sequence-content'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
+import { threeUnitsDescription } from '@/lib/seo/page-descriptions'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 import { type SequenceStep, UnitSequence } from '@/vault/blocks/unit-sequence'
 
@@ -80,9 +81,9 @@ export async function generateMetadata() {
 
   return generatePageMetadata({
     title: first.metadata?.title ?? 'Satu klien, tiga unit',
-    description:
-      first.metadata?.description ??
-      'Rangkaian kerja yang mungkin lintas Konstruksi, Teknologi, dan Peekabo.',
+    // The rule `/llms.txt`, the search index and the Markdown mirror apply
+    // too (`lib/seo/route-descriptions.ts`), so they cannot disagree with it.
+    description: threeUnitsDescription(first),
     ...(first.metadata?.keywords && { keywords: first.metadata.keywords }),
     noIndex: isDraftMode || first.metadata?.noIndex === true,
     url: `/${locale}/satu-klien-tiga-unit`,
