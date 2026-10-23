@@ -3,18 +3,20 @@ import { getTranslations } from 'next-intl/server'
 import { draftMode } from 'next/headers'
 import { locale as localeRootParam } from 'next/root-params'
 
+import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
 import { Link } from '@/components/ui/link'
 import { SectionHeader } from '@/components/ui/section-header'
-import {
-  HOME_PILLAR_FALLBACKS,
-  HOME_SITUATION_FALLBACKS,
-  resolveHomeContent,
-} from '@/lib/content/home-fallback'
+import { resolveHomeContent } from '@/lib/content/home-fallback'
 import { canRenderPublicContent } from '@/lib/content/public-content-guard'
-import { UNIT_FALLBACKS } from '@/lib/content/unit-fallback'
 import { latestWriting } from '@/lib/content/unit-writing'
-import { isSideOf, isUnit, sideTemplate, UNITS } from '@/lib/content/units'
+import {
+  isSideOf,
+  isUnit,
+  sideTemplate,
+  type Unit,
+  UNITS,
+} from '@/lib/content/units'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
@@ -77,8 +79,8 @@ async function fetchPreviewHome(locale: Locale) {
 }
 
 async function fetchHomeForRequest(locale: Locale) {
-  // A project without Sanity configured still renders a complete page: every
-  // section falls back to the master brief's ready-to-publish text.
+  // Without Sanity there are no settings, and the page shows the not-found
+  // view: since V6 the umbrella header lives in Sanity only.
   if (!isConfigured('sanity')) {
     return { settings: null, units: [], isDraftMode: false }
   }
@@ -101,52 +103,53 @@ export default async function Home() {
   const requested = await localeRootParam()
   const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
 
-  const [{ settings, units, isDraftMode }, t, latest] = await Promise.all([
-    fetchHomeForRequest(locale),
-    getTranslations('home'),
-    latestWriting(locale),
-  ])
+  const [{ settings, units, isDraftMode }, t, tUnit, latest] =
+    await Promise.all([
+      fetchHomeForRequest(locale),
+      getTranslations('home'),
+      getTranslations('unit'),
+      latestWriting(locale),
+    ])
 
   const content = resolveHomeContent(locale, settings)
 
   /*
-   * Each unit's name and one-line summary, from its approved document when it
-   * passes the public-content guard and from the master brief's ready header
-   * otherwise.
+   * Sanity is the only home of the umbrella header since V6
+   * (docs/RENCANA-KONTEKS-V2.md). Without a published headline the route
+   * shows the not-found view instead of a copy kept in code, and every
+   * section below renders only what its own field holds.
    */
-  const unitEntries = UNITS.map((value) => {
-    const fallback = UNIT_FALLBACKS[value]
+  if (!content.headline) return <LocalizedNotFound />
+
+  /*
+   * Each unit's name and one-line summary, from its approved document when it
+   * passes the public-content guard. A unit without one is left out.
+   */
+  const unitEntries = UNITS.flatMap((value) => {
     const candidate = units.find((unit) => unit.kunci === value)
-    const label = candidate?.nama ?? fallback.nama
-    const intro = candidate?.ringkas ?? fallback.ringkas
-    return canRenderPublicContent(`home unit/${value}`, [label, intro])
-      ? { value, label, intro }
-      : { value, label: fallback.nama, intro: fallback.ringkas }
+    const label = candidate?.nama
+    const intro = candidate?.ringkas
+    return label &&
+      intro &&
+      canRenderPublicContent(`home unit/${value}`, [label, intro])
+      ? [{ value, label, intro }]
+      : []
   })
-  const unitLabel = (value: string) =>
-    unitEntries.find((unit) => unit.value === value)?.label ?? value
+  const unitLabel = (value: Unit) =>
+    unitEntries.find((unit) => unit.value === value)?.label ?? tUnit(value)
 
   /*
    * “Pilih situasi Anda”: each situation opens its chapter once that chapter
    * is published, and its side page until then (docs/RENCANA-KONTEKS-V2.md
    * §4.2), so no situation links to a page that is not there.
    */
-  const sourceSituations =
-    settings?.situasi && settings.situasi.length > 0
-      ? settings.situasi.map((situation) => ({
-          key: situation._key,
-          text: situation.teks,
-          unit: situation.unit,
-          side: situation.sisi,
-          chapter: situation.babTujuan,
-        }))
-      : HOME_SITUATION_FALLBACKS.map((situation) => ({
-          key: situation.key,
-          text: situation.text,
-          unit: situation.unit,
-          side: situation.side,
-          chapter: null,
-        }))
+  const sourceSituations = (settings?.situasi ?? []).map((situation) => ({
+    key: situation._key,
+    text: situation.teks,
+    unit: situation.unit,
+    side: situation.sisi,
+    chapter: situation.babTujuan,
+  }))
   const situations = sourceSituations.flatMap((situation) => {
     const unit = situation.unit ?? undefined
     const side = situation.side ?? undefined
@@ -176,26 +179,19 @@ export default async function Home() {
   })
 
   /* The umbrella header's labelled paragraphs, word for word. */
-  const candidatePillars = (settings?.pilar ?? []).flatMap((pillar) =>
-    pillar.lead && pillar.isi
-      ? [{ key: pillar._key, lead: pillar.lead, body: pillar.isi }]
-      : []
-  )
-  const pillars = (
-    candidatePillars.length
-      ? candidatePillars
-      : HOME_PILLAR_FALLBACKS.map((pillar) => ({
-          key: pillar.key,
-          lead: pillar.lead,
-          body: pillar.isi,
-        }))
-  ).filter((pillar) =>
-    canRenderPublicContent(`home pillar/${pillar.key}`, [
-      pillar.lead,
-      pillar.body,
-    ])
-  )
-  const opening = settings?.opening ?? content.statementFallback[0] ?? null
+  const pillars = (settings?.pilar ?? [])
+    .flatMap((pillar) =>
+      pillar.lead && pillar.isi
+        ? [{ key: pillar._key, lead: pillar.lead, body: pillar.isi }]
+        : []
+    )
+    .filter((pillar) =>
+      canRenderPublicContent(`home pillar/${pillar.key}`, [
+        pillar.lead,
+        pillar.body,
+      ])
+    )
+  const opening = settings?.opening ?? null
 
   const actionLabel = settings?.ajakan?.label ?? t('actionFallback')
   const actionAfter = settings?.ajakan?.sesudahnya ?? t('actionAfterFallback')
@@ -209,7 +205,7 @@ export default async function Home() {
     <Wrapper theme="dark" lenis={{ anchors: true }} webgl gsap>
       <Hero
         headline={content.headline}
-        subline={content.subline}
+        subline={content.subline ?? undefined}
         /*
          * The hero's counterweight (Tahap 67): the index in the top right,
          * headline and action bottom left. The labels are the unit list's

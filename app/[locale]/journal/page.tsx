@@ -47,10 +47,9 @@ import s from './page.module.css'
  * which is which. `journal-fallback.test.ts` asserts the precedence rather
  * than leaving it to be read out of the code.
  *
- * Nothing was written into the dataset to make this page renderable. That
- * decision, and the reasoning, is `lib/content/home-fallback.ts`'s, taken
- * again unchanged: the alternatives were a blank page or invented articles in
- * a studio's live content library.
+ * Nothing was written into the dataset to make this page renderable, and
+ * `lib/content/journal-fallback.ts` records why: the alternatives were a
+ * blank page or invented articles in a studio's live content library.
  *
  * ## Motion
  *

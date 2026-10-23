@@ -31,7 +31,7 @@ const buyingStepSchema = z.object({
   _key: z.string(),
   nama: textSchema.nullable(),
   keterangan: textSchema.nullable(),
-  /** The pre-V2 one-line form, read until the migration has run. */
+  /** The pre-V2 one-line form, unused by published sides since the V0 migration. */
   teks: textSchema.nullable(),
 })
 

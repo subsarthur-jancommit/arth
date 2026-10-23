@@ -12,12 +12,16 @@ import { UNITS, type Unit } from './units'
  *
  * ## Why it exists, and why nothing was written to the dataset
  *
- * The same reasoning `lib/content/home-fallback.ts` already records, and it
- * applies here without modification. The dataset is named `production` and
- * seeding writes into it with a write token; putting invented articles into a
- * studio's live content library is not something to do on the way past. The
- * two honest options were a designed empty state, which cannot be judged as a
- * layout, or scaffolding in code that the CMS overrides. This is the second.
+ * The dataset is named `production` and seeding writes into it with a write
+ * token; putting invented articles into a studio's live content library is
+ * not something to do on the way past. The two honest options were a designed
+ * empty state, which cannot be judged as a layout, or scaffolding in code that
+ * the CMS overrides. This is the second.
+ *
+ * V6 of `docs/RENCANA-KONTEKS-V2.md` removed the home, unit, and side
+ * stand-ins that once shared this reasoning. This one goes with the `/journal`
+ * fixtures at F5-04, and `lib/content/editorial-copy.test.ts` names it until
+ * then.
  *
  * ## Why these are about method rather than clients
  *
@@ -200,17 +204,17 @@ export interface JournalDocument {
 }
 
 /**
- * The CMS's entries when it has any, this file's when it does not.
+ * The CMS's entries alone, without the scaffolding.
  *
- * All-or-nothing on purpose, and the alternative is worse: merging the two
- * would put invented articles alongside the studio's real ones with nothing
- * on the page to tell a reader which is which.
+ * The home page reads this rather than {@link resolveJournalEntries}: the
+ * scaffolding was written for the old site and is not Arthur's (Aturan isi
+ * 13), so the home page shows no writing until the studio publishes some.
+ * The journal's own pages keep the scaffolding until F5-04 retires it.
  */
-export function resolveJournalEntries(
-  locale: Locale,
+export function publishedJournalEntries(
   documents: readonly JournalDocument[] | null
 ): readonly JournalEntry[] {
-  const published = (documents ?? [])
+  return (documents ?? [])
     .filter(
       (document): document is JournalDocument & { slug: string } =>
         usable(document.slug) && usable(document.title)
@@ -225,6 +229,20 @@ export function resolveJournalEntries(
       body: [],
       practice: isUnit(document.practice) ? document.practice : null,
     }))
+}
+
+/**
+ * The CMS's entries when it has any, this file's when it does not.
+ *
+ * All-or-nothing on purpose, and the alternative is worse: merging the two
+ * would put invented articles alongside the studio's real ones with nothing
+ * on the page to tell a reader which is which.
+ */
+export function resolveJournalEntries(
+  locale: Locale,
+  documents: readonly JournalDocument[] | null
+): readonly JournalEntry[] {
+  const published = publishedJournalEntries(documents)
 
   return published.length > 0 ? published : (ENTRIES[locale] ?? ENTRIES.en)
 }
