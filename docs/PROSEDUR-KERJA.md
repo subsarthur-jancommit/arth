@@ -2,7 +2,9 @@
 
 > **Mengikat.** Berlaku untuk setiap agen dan setiap sesi, cloud maupun lokal.
 > Ditulis 2026-10-07 atas permintaan pemilik repo, sesudah audit kesiapan sesi
-> cloud. `CLAUDE.md` merujuknya sebagai aturan keras #22–#26.
+> cloud. `CLAUDE.md` merujuknya sebagai aturan keras #22–#26. Diubah
+> 2026-10-22 atas instruksi pemilik: gerbang berjalan di GitHub Actions, bukan
+> di laptop pemilik (§3 langkah 2–3).
 >
 > Untuk merge, produksi, dan kredensial, dokumen ini menggantikan aturan merge
 > di `docs/HANDOFF.md` §4.8 dan daftar perintah di
@@ -48,9 +50,12 @@ Pemilik boleh merge sendiri di GitHub; ruleset di §5 tetap berlaku untuknya.
 
 ## 2. Prasyarat sesi — dicek sebelum commit pertama
 
-1. **Bun 1.3.5.** `bun --version` harus mencetak `1.3.5`, versi
-   `"packageManager"` di `package.json` dan versi yang dipakai CI. Kalau
-   berbeda, berhenti dan lapor.
+1. **Bun 1.3.5, kalau bun dijalankan lokal**, termasuk lewat hook `oxc`.
+   `bun --version` harus mencetak `1.3.5`, versi `"packageManager"` di
+   `package.json` dan versi yang dipakai CI. Kalau berbeda, berhenti dan
+   lapor. Sesi yang hanya mengedit, commit, push, dan membaca CI tidak
+   menjalankan bun (§3 langkah 2); CI memasang versinya sendiri dari
+   `package.json`.
 
    Ini bukan formalitas. Bun 1.4.2 memasang `postcss` 8.5.28 di root dan
    menyisakan 8.5.26 di dalam `@tailwindcss/postcss`, padahal `bun.lock`
@@ -66,7 +71,8 @@ Pemilik boleh merge sendiri di GitHub; ruleset di §5 tetap berlaku untuknya.
    dari `origin/main`.
 
 3. **Tidak ada `NEXT_PUBLIC_SANITY_*` di environment sesi.** Nilai itu hanya
-   diberikan pada perintah build (§3 langkah 2). Kalau terpasang global,
+   diberikan pada perintah build (di CI: langkah `Build` dan
+   `Run e2e tests`). Kalau terpasang global,
    `bun test` ikut menjangkau Sanity dan satu tes gagal
    (`buildMarkdownDocument > returns a recoverable Markdown 404`). Diukur
    2026-10-07: 557 lulus, 1 gagal. Penjelasan teknisnya ada di komentar
@@ -80,31 +86,65 @@ Pemilik boleh merge sendiri di GitHub; ruleset di §5 tetap berlaku untuknya.
    perubahan yang bisa di-revert utuh. PR bertumpuk boleh, tetapi yang menuju
    `main` tetap menempuh langkah 4–9 sendiri.
 
-2. **Gerbang lokal sebelum push** — semuanya, hasilnya ditulis di PR:
+2. **Gerbang di GitHub Actions, bukan di laptop.** Instruksi pemilik,
+   2026-10-22: "SAYA INGIN KAMU MENGGUNAKAN KEKUATAN KOMPUTASI DARI GITHUB
+   UNTUK MELAKUKAN CI dan VERIFIKASI. HINDARI MENGGUNAKAN KEKUATAN KOMPUTASI
+   LAPTOP SAYA YANG TERBATAS."
+
+   Push branch dan buka PR draft segera (langkah 3), karena CI hanya berjalan
+   untuk PR. Gerbangnya adalah dua job GitHub Actions di PR itu:
+
+   - `ci`: `bun run build`, lalu `bun run check` (oxlint, oxfmt, lint
+     type-aware, tsc, unit test, tes plugin oxlint, cek aset, cek salinan
+     publik);
+   - `e2e`: Playwright beserta axe, kalau ada berkas yang bisa mengubah
+     halaman. Untuk perubahan dokumen saja, job ini melapor sukses tanpa
+     menjalankan tes (`e2e skipped, no UI-affecting changes`).
+
+   Hasilnya dibaca lewat `gh api` (REST), untuk head SHA PR:
 
    ```bash
-   bun run check
+   SHA=$(git rev-parse HEAD)
+   gh api "repos/subsarthur-jancommit/arth/commits/$SHA/check-runs" \
+     --jq '.check_runs[] | "\(.name) \(.status) \(.conclusion)"'
+   gh api "repos/subsarthur-jancommit/arth/actions/runs?head_sha=$SHA" \
+     --jq '.workflow_runs[] | "#\(.run_number) \(.conclusion) \(.html_url)"'
    ```
 
-   Ini gerbang yang sama dengan langkah "Run checks" di CI: oxlint, oxfmt,
-   lint type-aware, tsc, unit test, tes plugin oxlint, cek aset. Diukur di sesi
-   cloud 2026-10-07: 35 detik.
+   Hitungan tes ada di log job:
+   `gh api repos/subsarthur-jancommit/arth/actions/jobs/<id>/logs`.
 
-   Kalau perubahan menyentuh `app/`, `lib/`, `components/`, `vault/`,
-   `proxy.ts` atau `next.config.ts`, jalankan juga satu build produksi:
+   Di laptop pemilik tidak ada yang dijalankan demi gerbang atau hook:
 
-   ```bash
-   NEXT_PUBLIC_SANITY_PROJECT_ID=az53j4l1 NEXT_PUBLIC_SANITY_DATASET=production \
-   NEXT_PUBLIC_SANITY_API_VERSION=2025-03-01 bun run build
-   ```
+   - commit dengan `LEFTHOOK_EXCLUDE=typecheck,unit-tests git commit …`, jadi
+     hook tidak menjalankan tsc; `oxc` (oxfmt dan oxlint pada berkas yang
+     di-stage) tetap berjalan;
+   - push dengan `LEFTHOOK=0 git push …`, jadi hook tidak menjalankan seluruh
+     unit test;
+   - merge atau pull dengan `LEFTHOOK=0`, karena hook post-merge
+     `install-deps` menjalankan `bun i`;
+   - jangan menjalankan `bun install` hanya supaya gerbang atau hook bisa
+     berjalan. Di worktree tanpa `node_modules`, `oxc` pun gagal dengan
+     `error: Script not found "oxfmt"`, jadi commit di sana memakai
+     `LEFTHOOK=0`; format diperiksa oleh `oxfmt --check` di `ci`.
 
-   Diukur di sesi cloud 2026-10-07: 66 detik, memori terpakai di puncaknya
-   sekitar 4,5 GB dari 15 GB. Tidak ada `bun dev` atau `next start` yang
-   dibiarkan menyala, dan e2e hanya berjalan di CI.
+   Diukur 2026-10-22 di worktree OneDrive laptop pemilik, ketika beberapa sesi
+   menjalankan gerbang lokal bersamaan: `bun install` sekitar 355 detik, unit
+   suite sekitar 190 detik, dan `bun test` di hook pre-push habis waktu tiga
+   kali sehingga push untuk PR #36 tertahan.
 
-3. **Push, lalu buka PR sebagai draft**, base `main`. Isinya mengikuti
-   `.github/PULL_REQUEST_TEMPLATE.md`: ringkasan, perubahan, hasil gerbang
-   lokal, risiko, dan cara mundur.
+3. **Push, lalu buka PR sebagai draft**, base `main`, segera sesudah commit
+   pertama. Isinya mengikuti `.github/PULL_REQUEST_TEMPLATE.md`: ringkasan,
+   perubahan, gerbang (run CI pada head SHA), risiko, dan cara mundur.
+
+   Sesudah PR draft terbuka, sesi melaporkan nomor PR dan head SHA, lalu
+   mengakhiri gilirannya tanpa menunggu CI; sesi koordinator yang membaca
+   hasil CI dan menandai PR siap (langkah 4–6). Sesi koordinator adalah sesi
+   yang memulai sesi ini; kalau sesi dibuka langsung oleh pemilik, sesi itu
+   sendiri yang membaca hasil CI saat pemilik kembali, lalu menandai PR siap.
+   Sesi tidak memulai sesi baru atau mengusulkan kartu tugas kecuali pemilik
+   memintanya; tindak lanjut ditulis di laporan akhirnya. Disetujui
+   pemilik 2026-10-22.
 
 4. **CI pada head SHA.** Tunggu `ci` dan `e2e` selesai untuk SHA terakhir PR.
    Kalau merah, perbaiki lalu push. Re-run hanya untuk job yang mati sebelum
