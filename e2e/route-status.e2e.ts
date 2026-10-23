@@ -117,6 +117,23 @@ test.describe('the pages that do answer are untouched by all of it', () => {
   })
 
   /*
+   * The last fixed page to leave `lib/seo/awaiting-content.ts`, in V5, once
+   * its text was published marked for legal review. The not-found view
+   * would pass the status alone, so the policy section is asserted, and so
+   * are the review note and the noindex the page keeps until that review.
+   */
+  test('/id/kebijakan answers 200 with its policy, marked for legal review', async ({
+    request,
+  }) => {
+    const response = await request.get('/id/kebijakan', { maxRedirects: 0 })
+    expect(response.status()).toBe(200)
+    const html = await response.text()
+    expect(html).toContain('aria-label="Draf isi kebijakan"')
+    expect(html).toContain('Masih menunggu tinjauan ahli hukum.')
+    expect(html).toMatch(/<meta name="robots" content="[^"]*noindex/)
+  })
+
+  /*
    * The machine files, which the proxy's matcher deliberately excludes.
    *
    * Listed because the gone-and-missing logic sits *after* that matcher, and

@@ -30,9 +30,7 @@
 .previewFlag,
 .noteLabel,
 .noteTitle,
-.noteBody,
-.emptyTitle,
-.emptyBody {
+.noteBody {
   margin: 0;
 }
 
@@ -77,7 +75,6 @@
 }
 
 .reviewNote,
-.empty,
 .document {
   max-width: 72ch;
 }
@@ -89,8 +86,7 @@
   border: 1px solid var(--line-strong);
 }
 
-.noteBody,
-.emptyBody {
+.noteBody {
   color: var(--text-muted);
 }
 
@@ -101,13 +97,6 @@
   & > * + * {
     margin-block-start: 1.25rem;
   }
-}
-
-.empty {
-  display: grid;
-  gap: 1rem;
-  padding-block-start: var(--section-lead);
-  border-top: 1px solid var(--line-strong);
 }
 
 @media print {

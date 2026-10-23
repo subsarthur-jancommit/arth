@@ -193,8 +193,12 @@ itself says to revert it and never commit it.
   hreflang URLs; the sitemap, the head and `/llms.txt` all derive from it.
 - **Content.** Sanity is the CMS (`lib/integrations/sanity/`: schemas,
   GROQ `queries.ts`, generated `sanity.types.ts`). Every integration
-  self-disables when its env vars are absent, so `lib/content/*-fallback.ts`
-  supplies what renders without the CMS. Read env only through `@/lib/env`.
+  self-disables when its env vars are absent. Arthur's words live in Sanity
+  only: without it the home, unit and side pages show the not-found view, and
+  `lib/content/*-fallback.ts` keeps just the placeholder contact (until K5)
+  and the journal scaffolding (until F5-04);
+  `lib/content/editorial-copy.test.ts` fails if editorial text comes back.
+  Read env only through `@/lib/env`.
   `app/api/revalidate` and `app/api/draft-mode` are the webhook and preview
   entry points.
 - **Motion.** Lenis, GSAP and Tempus share a single RAF (rule #6); route
