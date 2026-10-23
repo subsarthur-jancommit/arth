@@ -22,6 +22,10 @@
  * links still stand, and an empty "did you mean" would be a promise kept by
  * nobody. A failed fetch is silent for the same reason.
  *
+ * On an English address that request answers with the Indonesian index
+ * (`lib/i18n/public-locale-redirect.ts`), so what is offered is always a
+ * published page, in Indonesian.
+ *
  * ## The moment
  *
  * `wayfinding` is `NorthArrow`'s: the drawing's north point bears on the way

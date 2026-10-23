@@ -75,6 +75,46 @@ test.describe('the search palette', () => {
     })
   }
 
+  /*
+   * English is not a published locale, so an English index could only list
+   * Arthur's pages under descriptions nobody approved, linked to `/en`
+   * addresses that answer 307 anyway — 13 of its 22 rows, measured on
+   * production 2026-10-22. The index answers the way those pages do
+   * (`lib/i18n/public-locale-redirect.ts`).
+   */
+  test('the English index answers with the published one', async ({
+    request,
+  }) => {
+    const response = await request.get('/en/search.json', { maxRedirects: 0 })
+    expect(response.status()).toBe(307)
+    expect(
+      new URL(response.headers().location ?? '', 'http://x').pathname
+    ).toBe('/id/search.json')
+  })
+
+  /*
+   * The reader's side of the same answer. `/en/journal` still renders, so its
+   * palette still has to work: the fetch follows the 307, and every row is a
+   * published page rather than an `/en` address that bounces. On 2026-10-22
+   * the first row here was `/en`.
+   */
+  test('/en/journal: every result is a published page', async ({ page }) => {
+    await page.goto('/en/journal')
+    await page.waitForTimeout(1200)
+    await page.locator('[data-search-trigger]').click()
+    await page.waitForSelector('[data-search-row]')
+
+    const hrefs = await page
+      .locator('[data-search-row]')
+      .evaluateAll((rows) => rows.map((row) => row.getAttribute('href') ?? ''))
+
+    expect(hrefs.length).toBeGreaterThan(5)
+    expect(
+      hrefs.filter((href) => href !== '/id' && !href.startsWith('/id/')),
+      'these results lead outside the published locale'
+    ).toEqual([])
+  })
+
   test('it searches content, not only route names', async ({ page }) => {
     await page.goto('/id')
     await page.waitForTimeout(1200)

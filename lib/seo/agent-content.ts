@@ -1,5 +1,5 @@
 import type { Locale } from '@/lib/i18n/routing'
-import { STATIC_ROUTES } from '@/lib/seo/route-catalog'
+import { type RouteDescriptions, STATIC_ROUTES } from '@/lib/seo/route-catalog'
 import type { ContentRoute } from '@/lib/seo/routes'
 import { SITE, siteFacts } from '@/lib/seo/site'
 
@@ -15,14 +15,21 @@ export function absoluteSiteUrl(path: string): string {
  * language's pages and omitting it lists both. `/llms.txt` wants both — it is
  * one unlocalized document describing a bilingual site — while a Markdown
  * representation of `/id/work` should not be half English.
+ *
+ * `descriptions` is required, not defaulted: a caller that forgot it would
+ * print the catalog's fallback for a page whose head says something else,
+ * which is the drift `lib/seo/page-descriptions.ts` exists to close.
  */
-export function buildStaticRoutesMarkdown(locale?: Locale): string {
+export function buildStaticRoutesMarkdown(
+  descriptions: RouteDescriptions,
+  locale?: Locale
+): string {
   return STATIC_ROUTES.filter(
     (route) => locale === undefined || route.locale === locale
   )
     .map(
       (route) =>
-        `- [${route.label}](${absoluteSiteUrl(route.path)}): ${route.description}`
+        `- [${route.label}](${absoluteSiteUrl(route.path)}): ${descriptions.get(route.path) ?? route.description}`
     )
     .join('\n')
 }

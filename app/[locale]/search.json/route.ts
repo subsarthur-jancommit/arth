@@ -16,6 +16,7 @@ import {
   journalEntriesQuery,
   projectsQuery,
 } from '@/lib/integrations/sanity/queries'
+import { resolveRouteDescriptions } from '@/lib/seo/route-descriptions'
 
 /**
  * `/[locale]/search.json` — what the command palette searches.
@@ -28,13 +29,19 @@ import {
  * payload of every route on the site for a control most visits never open.
  * One fetch, on demand, cached.
  *
- * ## Why the proxy leaves it alone
+ * ## What the proxy does with it
  *
  * `proxy.ts` skips content negotiation for any path whose last segment
  * contains a dot (`FILE_EXTENSION`) — the same rule that already lets
  * `/llms.txt` and `/manifest.webmanifest` through untouched. So this route is
  * never treated as a page document and never negotiated into Markdown, and it
  * carries its locale in the path rather than in a header.
+ *
+ * One thing runs before that skip: `/en/search.json` answers 307 to
+ * `/id/search.json` outside draft mode, like every untranslated English page
+ * (`lib/i18n/public-locale-redirect.ts` records why). So this handler
+ * renders `en` only for Presentation previews, and `generateStaticParams`
+ * builds the published locales alone.
  *
  * ## `'use cache'` wraps the builder, not the handler
  *
@@ -50,10 +57,19 @@ export function generateStaticParams() {
 async function buildIndex(locale: Locale): Promise<SearchEntry[]> {
   'use cache'
 
+  /*
+   * What `/cara-kerja` and `/satu-klien-tiga-unit` say in their own head,
+   * read through the pages' own loaders, so the rows cannot fall behind a
+   * Studio edit. It never throws: a page it cannot read keeps the catalog's
+   * own description, so both branches below get the same rows.
+   */
+  const descriptions = await resolveRouteDescriptions([locale])
+
   if (!isConfigured('sanity')) {
     return buildSearchIndex(locale, {
       projects: null,
       journal: resolveJournalEntries(locale, null),
+      descriptions,
     })
   }
 
@@ -64,7 +80,7 @@ async function buildIndex(locale: Locale): Promise<SearchEntry[]> {
    * The branch above covers "no dataset configured"; this covers "configured
    * and unreachable", which is the case that actually happened.
    */
-  return resolveSearchIndex(locale, async () => {
+  const load = async () => {
     const [projects, journal] = await Promise.all([
       sanityFetch({
         query: projectsQuery,
@@ -97,7 +113,9 @@ async function buildIndex(locale: Locale): Promise<SearchEntry[]> {
       projects: projects.data,
       journal: resolveJournalEntries(locale, journal.data),
     }
-  })
+  }
+
+  return resolveSearchIndex(locale, load, descriptions)
 }
 
 export async function GET(

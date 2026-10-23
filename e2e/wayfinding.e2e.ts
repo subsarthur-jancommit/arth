@@ -11,16 +11,27 @@ import { FEATURED_WORK } from './fixtures'
  * offers nothing at all rather than a wrong guess.
  */
 test.describe('a dead address points the way', () => {
-  test('a mistyped work offers the work it was close to', async ({ page }) => {
-    await page.goto(`/en/work/${FEATURED_WORK.slice(0, -1)}`)
-    await expect(page.getByRole('heading', { name: '404' })).toBeVisible()
+  /*
+   * The offer is the published page on either locale. An English address
+   * fetches an index that answers with the Indonesian one
+   * (`lib/i18n/public-locale-redirect.ts`), so `/en/work/…` is pointed at
+   * `/id/work/…` — the page the palette there opens too. On 2026-10-22 it
+   * offered `/en/work/…`.
+   */
+  for (const locale of ['id', 'en'] as const) {
+    test(`/${locale}: a mistyped work offers the work it was close to`, async ({
+      page,
+    }) => {
+      await page.goto(`/${locale}/work/${FEATURED_WORK.slice(0, -1)}`)
+      await expect(page.getByRole('heading', { name: '404' })).toBeVisible()
 
-    await expect(
-      page.locator(
-        `#main-content [data-wayfinder] a[href="/en/work/${FEATURED_WORK}"]`
-      )
-    ).toBeVisible()
-  })
+      await expect(
+        page.locator(
+          `#main-content [data-wayfinder] a[href="/id/work/${FEATURED_WORK}"]`
+        )
+      ).toBeVisible()
+    })
+  }
 
   test('an address close to nothing offers nothing', async ({ page }) => {
     /*
