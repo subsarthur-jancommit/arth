@@ -56,6 +56,7 @@ test.describe('English is offered only where it is written', () => {
     ['/en/peekabo/jaringan', '/id/peekabo/jaringan'],
     ['/en/kontak', '/id/kontak'],
     ['/en/satu-klien-tiga-unit', '/id/satu-klien-tiga-unit'],
+    ['/en/kebijakan', '/id/kebijakan'],
   ] as const) {
     test(`${from} answers 307 to ${to}`, async ({ request }) => {
       const response = await request.get(from, { maxRedirects: 0 })
