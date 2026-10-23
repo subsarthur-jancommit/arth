@@ -32,6 +32,11 @@ describe('public locale redirect', () => {
     )
   })
 
+  it('sends the English search index to the published one', () => {
+    expect(publicLocaleRedirect('/en/search.json')).toBe('/id/search.json')
+    expect(publicLocaleRedirect('/id/search.json')).toBeNull()
+  })
+
   it('leaves the translated legacy routes and unknown paths alone', () => {
     expect(publicLocaleRedirect('/en/work')).toBeNull()
     expect(publicLocaleRedirect('/en/work/project')).toBeNull()

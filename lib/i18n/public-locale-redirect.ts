@@ -1,7 +1,8 @@
 import { UNITS } from '@/lib/content/units'
 
 /**
- * First segments under `/en` whose pages carry Indonesian editorial content.
+ * First segments under `/en` whose pages carry Indonesian editorial content,
+ * and the search index that lists them.
  *
  * K2 (`docs/PROGRES-ARTHUR.md`): English follows later, and an `/en` page
  * without a translation answers 307 to its `/id` twin. Until R0 only `/en`
@@ -20,6 +21,17 @@ export const UNTRANSLATED_SEGMENTS: readonly string[] = [
   'kebijakan',
   'kontak',
   'satu-klien-tiga-unit',
+  /*
+   * Not a page: the search palette's index (`app/[locale]/search.json`).
+   * It lists the pages above, so in English it could only describe them in
+   * descriptions nobody approved, and link to `/en` addresses that answer 307
+   * anyway — 13 of its 22 rows, measured on production 2026-10-22. Its two
+   * readers, the palette and the 404's suggestions (`vault/blocks/wayfinder`),
+   * fetch it and follow the 307, so `/en/work` and `/en/journal` keep both
+   * over the published index. Draft mode keeps the English index for
+   * Presentation, as it keeps the pages.
+   */
+  'search.json',
 ]
 
 /** The `/id` twin of an untranslated English path, or `null` to leave it. */
