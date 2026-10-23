@@ -8,15 +8,11 @@ import { Wrapper } from '@/components/layout/wrapper'
 import { Link } from '@/components/ui/link'
 import { NoScriptFrontDoors } from '@/components/ui/route-loading'
 import { SectionHeader } from '@/components/ui/section-header'
-import { sideContent } from '@/lib/content/arthur-content'
+import { sideContent, type SideContent } from '@/lib/content/arthur-content'
 import {
   NETWORK_MONEY_STEP_KEYS,
   NETWORK_PATH_KEYS,
 } from '@/lib/content/network'
-import {
-  NETWORK_SIDE_FALLBACK,
-  SIDE_FALLBACKS,
-} from '@/lib/content/side-fallback'
 import {
   isSideOf,
   isUnit,
@@ -43,6 +39,28 @@ export function generateStaticParams() {
   return UNITS.flatMap((unit) => SIDES[unit].map((side) => ({ unit, side })))
 }
 
+/*
+ * The network's own sentences are required words (Aturan isi, kalimat wajib
+ * jaringan): a network page missing one of them is not shown at all, rather
+ * than shown with a gap where a promise it must make should be. The page and
+ * its head both ask here, so they cannot disagree about whether it exists.
+ */
+function networkTerms(network: SideContent['jaringan']) {
+  return network?.caraKerja &&
+    network.asalKomisi &&
+    network.yangTidakAda &&
+    network.syarat
+    ? {
+        summary: network.caraKerja,
+        terms: {
+          source: network.asalKomisi,
+          absent: network.yangTidakAda,
+          condition: network.syarat,
+        },
+      }
+    : null
+}
+
 export default async function SidePage({ params }: SidePageProps) {
   const { unit, side } = await params
 
@@ -64,27 +82,35 @@ export default async function SidePage({ params }: SidePageProps) {
     getTranslations('network'),
     sideContent(locale, unit, side, isEnabled),
   ])
-  const fallback = SIDE_FALLBACKS[side]
+  /*
+   * Sanity is the only home of a side's words since V6
+   * (docs/RENCANA-KONTEKS-V2.md). Without its published title the route shows
+   * the not-found view rather than a copy kept in code, and each block below
+   * renders only when its own field is filled.
+   */
+  if (!content?.judul) return <LocalizedNotFound />
+
   const [firstSide, secondSide] = SIDES[unit]
   const otherSide = side === firstSide ? secondSide : firstSide
-  const title = content?.judul ?? fallback.judul
+  const title = content.judul
   // A way to buy or a workflow step has a name and a line under it. The
-  // one-line `teks` is the pre-V2 shape, read until the migration has run.
-  const steps = (content?.caraMembeli ?? []).flatMap((item) => {
+  // one-line `teks` is the pre-V2 shape. No published side has used it since
+  // the V0 migration ran (checked 2026-10-23), so this read can go with the
+  // schema field.
+  const buyingSteps = (content.caraMembeli ?? []).flatMap((item) => {
     const name = item.nama ?? item.teks
     return name
       ? [{ key: item._key, title: name, body: item.keterangan ?? '' }]
       : []
   })
-  const buyingSteps = steps.length
-    ? steps
-    : fallback.caraMembeli.map((item) => ({
-        key: item._key,
-        title: item.nama,
-        body: item.keterangan,
-      }))
-  const action = content?.langkahPertama ?? fallback.langkahPertama
-  const chapters = (content?.bab ?? []).flatMap((chapter) => {
+  const action =
+    content.langkahPertama?.label && content.langkahPertama.sesudahnya
+      ? {
+          label: content.langkahPertama.label,
+          after: content.langkahPertama.sesudahnya,
+        }
+      : null
+  const chapters = (content.bab ?? []).flatMap((chapter) => {
     if (!chapter.nama) return []
     const href = chapter.slug
       ? `${sideTemplate(unit, side)}/${chapter.slug}`
@@ -114,28 +140,14 @@ export default async function SidePage({ params }: SidePageProps) {
       },
     ]
   })
-  const sideName = content?.nama ?? fallback.nama
-  const candidateBuyers = (content?.pembeli ?? []).flatMap((item) =>
+  const sideName = content.nama ?? tSide(side)
+  const buyers = (content.pembeli ?? []).flatMap((item) =>
     item.teks ? [item.teks] : []
   )
-  const buyers = candidateBuyers.length ? candidateBuyers : fallback.pembeli
   const isNetworkSide = unit === 'peekabo' && side === 'jaringan'
-  const networkContent = {
-    caraKerja: content?.jaringan?.caraKerja ?? NETWORK_SIDE_FALLBACK.caraKerja,
-    asalKomisi:
-      content?.jaringan?.asalKomisi ?? NETWORK_SIDE_FALLBACK.asalKomisi,
-    yangTidakAda:
-      content?.jaringan?.yangTidakAda ?? NETWORK_SIDE_FALLBACK.yangTidakAda,
-    syarat: content?.jaringan?.syarat ?? NETWORK_SIDE_FALLBACK.syarat,
-    ajakanDaftar: {
-      label:
-        content?.jaringan?.ajakanDaftar?.label ??
-        NETWORK_SIDE_FALLBACK.ajakanDaftar.label,
-      sesudahnya:
-        content?.jaringan?.ajakanDaftar?.sesudahnya ??
-        NETWORK_SIDE_FALLBACK.ajakanDaftar.sesudahnya,
-    },
-  }
+  const networkContent = networkTerms(content.jaringan)
+  if (isNetworkSide && !networkContent) return <LocalizedNotFound />
+
   const networkPaths = NETWORK_PATH_KEYS.map((path, index) => {
     const chapter = chapters[index]
 
@@ -187,19 +199,21 @@ export default async function SidePage({ params }: SidePageProps) {
             title={title}
             className={s.header}
           />
-          <div className={s.buyers}>
-            <p className="caption">{tSide('buyersLabel')}</p>
-            <ul className={s.buyerList}>
-              {buyers.map((buyer) => (
-                <li key={buyer} className="p">
-                  {buyer}
-                </li>
-              ))}
-            </ul>
-          </div>
+          {buyers.length > 0 ? (
+            <div className={s.buyers}>
+              <p className="caption">{tSide('buyersLabel')}</p>
+              <ul className={s.buyerList}>
+                {buyers.map((buyer) => (
+                  <li key={buyer} className="p">
+                    {buyer}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </header>
 
-        {isNetworkSide ? (
+        {isNetworkSide && networkContent ? (
           <NetworkSide
             paths={networkPaths}
             steps={buyingSteps.map((step) => ({
@@ -207,12 +221,8 @@ export default async function SidePage({ params }: SidePageProps) {
               text: step.body ? `${step.title}. ${step.body}` : step.title,
             }))}
             moneySteps={networkMoneySteps}
-            summary={networkContent.caraKerja}
-            terms={{
-              source: networkContent.asalKomisi,
-              absent: networkContent.yangTidakAda,
-              condition: networkContent.syarat,
-            }}
+            summary={networkContent.summary}
+            terms={networkContent.terms}
             labels={{
               pathsEyebrow: tNetwork('paths.eyebrow'),
               pathsTitle: tNetwork('paths.title'),
@@ -234,12 +244,14 @@ export default async function SidePage({ params }: SidePageProps) {
           />
         ) : (
           <>
-            <StepSequence
-              label={tSide(`buying.${side}`)}
-              steps={buyingSteps}
-              data-epic="side-buying-path"
-              className={s.steps}
-            />
+            {buyingSteps.length > 0 ? (
+              <StepSequence
+                label={tSide(`buying.${side}`)}
+                steps={buyingSteps}
+                data-epic="side-buying-path"
+                className={s.steps}
+              />
+            ) : null}
 
             {/* Only once a chapter has published offers (P4, R0). */}
             {chapters.length > 0 && (
@@ -255,14 +267,16 @@ export default async function SidePage({ params }: SidePageProps) {
               />
             )}
 
-            <section className={s.action}>
-              <p className="caption">{tSide('firstStepEyebrow')}</p>
-              <h2 className="h2">{action.label}</h2>
-              <p className="p-big">{action.sesudahnya}</p>
-              <Link href="/kontak" className={cn('caption', s.actionLink)}>
-                {tSide('firstStepLink')}
-              </Link>
-            </section>
+            {action ? (
+              <section className={s.action}>
+                <p className="caption">{tSide('firstStepEyebrow')}</p>
+                <h2 className="h2">{action.label}</h2>
+                <p className="p-big">{action.after}</p>
+                <Link href="/kontak" className={cn('caption', s.actionLink)}>
+                  {tSide('firstStepLink')}
+                </Link>
+              </section>
+            ) : null}
           </>
         )}
 
@@ -310,11 +324,23 @@ export async function generateMetadata({ params }: SidePageProps) {
   }
 
   const content = await sideContent(locale, unit, side)
-  const fallback = SIDE_FALLBACKS[side]
+  // The page shows the not-found view without a published title, or on the
+  // network side without its required sentences, and the head says so too
+  // rather than describing a page that is not there.
+  const isNetworkSide = unit === 'peekabo' && side === 'jaringan'
+  if (!content?.judul || (isNetworkSide && !networkTerms(content.jaringan))) {
+    const tNotFound = await getTranslations('notFound')
+    return generatePageMetadata({
+      title: tNotFound('title'),
+      noIndex: true,
+      url: localizedPath(locale, sideTemplate(unit, side)),
+    })
+  }
+
+  const description = content.langkahPertama?.sesudahnya
   return generatePageMetadata({
-    title: content?.judul ?? fallback.judul,
-    description:
-      content?.langkahPertama?.sesudahnya ?? fallback.langkahPertama.sesudahnya,
+    title: content.judul,
+    ...(description && { description }),
     url: localizedPath(locale, sideTemplate(unit, side)),
   })
 }

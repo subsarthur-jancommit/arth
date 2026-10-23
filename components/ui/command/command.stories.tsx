@@ -41,10 +41,11 @@ import { CommandPalette } from './palette'
  * index now reaches Presentation previews alone.
  *
  * The first draft of this file invented a client name for a real project, and
- * that is the line this project does not cross: `lib/content/home-fallback.ts`
- * records the reasoning, and a Storybook story is a browsable catalogue, not a
- * private test double. One of each kind, so every group heading and every rail
- * variant — a path, a client and year, a date — is on screen at once.
+ * that is the line this project does not cross:
+ * `lib/content/journal-fallback.ts` records the reasoning, and a Storybook
+ * story is a browsable catalogue, not a private test double. One of each kind,
+ * so every group heading and every rail variant — a path, a client and year, a
+ * date — is on screen at once.
  */
 const entries: SearchEntry[] = [
   {

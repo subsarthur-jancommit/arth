@@ -36,10 +36,9 @@ test.describe('instant navigation', () => {
       /*
        * A level-1 heading, not a specific string.
        *
-       * The homepage headline comes from the CMS now, falling back to
-       * `lib/content/home-fallback.ts` only when `siteSettings` is empty.
-       * Asserting the fallback text made this test pass or fail on whether
-       * the dataset happened to be seeded, which says nothing about instant
+       * The homepage headline is `siteSettings`'s, and since V6 nothing in
+       * code stands in for it. Asserting its text would make this test pass
+       * or fail on what the dataset holds, which says nothing about instant
        * navigation. What this test is actually for is that the shell paints
        * without waiting on the network — a visible `<h1>` proves that.
        */

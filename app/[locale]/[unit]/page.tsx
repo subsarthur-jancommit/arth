@@ -4,11 +4,11 @@ import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { locale as localeRootParam } from 'next/root-params'
 
+import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
 import { Link } from '@/components/ui/link'
 import { SectionHeader } from '@/components/ui/section-header'
 import { unitContent, type UnitContent } from '@/lib/content/arthur-content'
-import { UNIT_FALLBACKS } from '@/lib/content/unit-fallback'
 import {
   isSideOf,
   isUnit,
@@ -64,19 +64,13 @@ function offerRoute(offer: Offer): string | null {
   return offer.punyaHalaman ? `${situation}/${offer.slug}` : situation
 }
 
-function sideDoorsFor(unit: Unit, content: UnitContent | null): SideDoor[] {
-  const fallback = UNIT_FALLBACKS[unit]
+function sideDoorsFor(unit: Unit, content: UnitContent): SideDoor[] {
+  return SIDES[unit].flatMap((side) => {
+    const door = content.sisi?.find((item) => item.kunci === side)
 
-  return SIDES[unit].map((side) => {
-    const candidate = content?.sisi?.find((item) => item.kunci === side)
-    const backup = fallback.sisi.find((item) => item.kunci === side)
-
-    return {
-      id: candidate?._id ?? backup?._id ?? side,
-      key: side,
-      name: candidate?.nama ?? backup?.nama ?? side,
-      title: candidate?.judul ?? backup?.judul ?? side,
-    }
+    return door?.nama && door.judul
+      ? [{ id: door._id, key: side, name: door.nama, title: door.judul }]
+      : []
   })
 }
 
@@ -91,42 +85,47 @@ export default async function UnitPage({ params }: UnitPageProps) {
     getTranslations('unit'),
     unitContent(locale, unit, isEnabled),
   ])
-  const fallback = UNIT_FALLBACKS[unit]
-  const name = content?.nama ?? fallback.nama
-  const title = content?.judul ?? fallback.judul
-  const statement = content?.pembuka ?? fallback.pembuka
-  const subtitle = content?.subjudul ?? fallback.subjudul
+  /*
+   * Sanity is the only home of a unit's words since V6
+   * (docs/RENCANA-KONTEKS-V2.md). Without a published header the route shows
+   * the not-found view, as /cara-kerja does, instead of a copy kept in code
+   * that a Studio edit could never reach. Every block below it renders only
+   * when its own field is filled.
+   */
+  if (!content?.nama || !content.judul || !content.pembuka) {
+    return <LocalizedNotFound />
+  }
+
+  const name = content.nama
+  const title = content.judul
+  const statement = content.pembuka
+  const subtitle = content.subjudul
   // The header's labelled paragraphs, word for word (Aturan isi 11).
-  const candidatePillars = (content?.pilar ?? []).flatMap((pillar) =>
+  const pillars = (content.pilar ?? []).flatMap((pillar) =>
     pillar.lead && pillar.isi
       ? [{ key: pillar._key, lead: pillar.lead, body: pillar.isi }]
       : []
   )
-  const pillars = candidatePillars.length
-    ? candidatePillars
-    : fallback.pilar.map((pillar) => ({
-        key: pillar._key,
-        lead: pillar.lead,
-        body: pillar.isi,
-      }))
-  const problems = content?.masalah?.length ? content.masalah : fallback.masalah
-  const candidateWorkItems = (content?.caraKerja ?? []).flatMap((item) =>
+  const problems = (content.masalah ?? []).flatMap((item) =>
+    item.teks ? [{ key: item._key, text: item.teks }] : []
+  )
+  const workItems = (content.caraKerja ?? []).flatMap((item) =>
     item.teks ? [item.teks] : []
   )
-  const workItems = candidateWorkItems.length
-    ? candidateWorkItems
-    : fallback.caraKerja.map((item) => item.teks)
-  const examples = (content?.contohOffer ?? []).flatMap((offer) => {
+  const examples = (content.contohOffer ?? []).flatMap((offer) => {
     const href = offerRoute(offer)
     return href && offer.judul ? [{ ...offer, href }] : []
   })
-  const bridges = (content?.jembatan ?? []).flatMap((bridge) => {
+  const bridges = (content.jembatan ?? []).flatMap((bridge) => {
     const href = bridge.offer ? offerRoute(bridge.offer) : null
     return href && bridge.kalimat && bridge.offer?.judul
       ? [{ ...bridge, href, label: bridge.offer.judul }]
       : []
   })
-  const action = content?.ajakan ?? fallback.ajakan
+  const action =
+    content.ajakan?.label && content.ajakan.sesudahnya
+      ? { label: content.ajakan.label, after: content.ajakan.sesudahnya }
+      : null
   const nextUnit = nextUnitAfter(unit)
 
   return (
@@ -164,23 +163,25 @@ export default async function UnitPage({ params }: UnitPageProps) {
           doors={sideDoorsFor(unit, content)}
         />
 
-        <Reveal as="section" className={s.section} perItem>
-          <SectionHeader
-            reveal
-            eyebrow={t('problemsEyebrow')}
-            title={t('problemsTitle')}
-          />
-          <ol className={s.problemList}>
-            {problems.map((problem, index) => (
-              <li key={problem._key} data-reveal-item className={s.problem}>
-                <span className="caption">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <p className="h3">{problem.teks}</p>
-              </li>
-            ))}
-          </ol>
-        </Reveal>
+        {problems.length > 0 ? (
+          <Reveal as="section" className={s.section} perItem>
+            <SectionHeader
+              reveal
+              eyebrow={t('problemsEyebrow')}
+              title={t('problemsTitle')}
+            />
+            <ol className={s.problemList}>
+              {problems.map((problem, index) => (
+                <li key={problem.key} data-reveal-item className={s.problem}>
+                  <span className="caption">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <p className="h3">{problem.text}</p>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+        ) : null}
 
         {examples.length > 0 ? (
           <Reveal as="section" className={s.section} perItem>
@@ -212,12 +213,14 @@ export default async function UnitPage({ params }: UnitPageProps) {
           </Reveal>
         ) : null}
 
-        <CapabilitySet
-          label={t('workEyebrow')}
-          items={workItems}
-          data-epic="unit-method"
-          className={s.work}
-        />
+        {workItems.length > 0 ? (
+          <CapabilitySet
+            label={t('workEyebrow')}
+            items={workItems}
+            data-epic="unit-method"
+            className={s.work}
+          />
+        ) : null}
 
         {bridges.length > 0 ? (
           <Reveal as="section" className={s.section} perItem>
@@ -239,23 +242,25 @@ export default async function UnitPage({ params }: UnitPageProps) {
           </Reveal>
         ) : null}
 
-        <Reveal as="section" className={s.action}>
-          <p data-reveal-item className="caption">
-            {t('ctaEyebrow')}
-          </p>
-          <h2 data-reveal-item className="h2">
-            {action.label}
-          </h2>
-          <p data-reveal-item className="p-big">
-            {action.sesudahnya}
-          </p>
-          {/* The contact page until K5 names a channel (P4, R0). */}
-          <p data-reveal-item>
-            <Link href="/kontak" className={cn('caption', s.actionLink)}>
-              {t('ctaLink')}
-            </Link>
-          </p>
-        </Reveal>
+        {action ? (
+          <Reveal as="section" className={s.action}>
+            <p data-reveal-item className="caption">
+              {t('ctaEyebrow')}
+            </p>
+            <h2 data-reveal-item className="h2">
+              {action.label}
+            </h2>
+            <p data-reveal-item className="p-big">
+              {action.after}
+            </p>
+            {/* The contact page until K5 names a channel (P4, R0). */}
+            <p data-reveal-item>
+              <Link href="/kontak" className={cn('caption', s.actionLink)}>
+                {t('ctaLink')}
+              </Link>
+            </p>
+          </Reveal>
+        ) : null}
 
         <NextPractice
           href={unitTemplate(nextUnit)}
@@ -283,11 +288,20 @@ export async function generateMetadata({ params }: UnitPageProps) {
   }
 
   const content = await unitContent(locale, unit)
-  const fallback = UNIT_FALLBACKS[unit]
+  // The same condition the page renders on, so the head never describes a
+  // page that shows the not-found view.
+  if (!content?.nama || !content.judul || !content.pembuka) {
+    const tNotFound = await getTranslations('notFound')
+    return generatePageMetadata({
+      title: tNotFound('title'),
+      noIndex: true,
+      url: localizedPath(locale, unitTemplate(unit)),
+    })
+  }
 
   return generatePageMetadata({
-    title: content?.judul ?? fallback.judul,
-    description: content?.ringkas ?? fallback.ringkas,
+    title: content.judul,
+    ...(content.ringkas && { description: content.ringkas }),
     url: localizedPath(locale, unitTemplate(unit)),
   })
 }
