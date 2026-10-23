@@ -82,16 +82,12 @@
   },
   "policyPage": {
     "eyebrow": "Fixed document",
-    "title": "Arthur policy",
     "lead": "This document will explain the rules that apply to use of the site and dealings with Arthur once its contents have been reviewed.",
     "draftPreview": "Sanity draft preview — this content is not published.",
     "reviewEyebrow": "Document status",
     "reviewTitle": "Legal review is still required.",
     "reviewBody": "Nothing on this page should yet be treated as legal advice or a final policy. The page remains noindex until review is complete and the owner explicitly releases the gate.",
     "documentLabel": "Draft policy content",
-    "emptyEyebrow": "Not available yet",
-    "emptyTitle": "The policy draft has not been entered.",
-    "emptyBody": "Arthur does not display a sample policy in place of a document that has not been reviewed. Content will appear here after it is prepared in Sanity.",
     "metaTitle": "Arthur policy — under review",
     "metaDescription": "The preparation status of Arthur's policy document."
   },

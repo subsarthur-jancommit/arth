@@ -25,14 +25,19 @@
  *
  * Leaving the list only brings a page back where it is named. When
  * `/satu-klien-tiga-unit` left it, the proxy was the only reader that knew the
- * page, so the same change gave it a catalog entry.
+ * page, so the same change gave it a catalog entry. `/kebijakan`, the last
+ * one, left it in V5 and stays out of the catalog on purpose: it is `noindex`
+ * until its legal review is done, so only the footer links it.
+ *
+ * The list is empty now. It stays, so that the next fixed page built before
+ * its copy is approved can wait here the same way.
  *
  * Sanity draft mode is exempt in the proxy, so Presentation can still preview
  * these routes while their documents are drafts.
  */
-export const AWAITING_CONTENT = ['/kebijakan'] as const
+export const AWAITING_CONTENT: readonly string[] = []
 
 /** Whether a locale-free template (`/cara-kerja`) is still awaiting content. */
 export function isAwaitingContent(template: string): boolean {
-  return (AWAITING_CONTENT as readonly string[]).includes(template)
+  return AWAITING_CONTENT.includes(template)
 }
