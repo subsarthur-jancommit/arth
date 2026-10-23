@@ -49,8 +49,6 @@ const ALLOWED_MESSAGE_KEYS = new Map([
   ['home.draftPreview', 'draft mode only'],
   ['contactPage.draftPreview', 'draft mode only'],
   ['policyPage.draftPreview', 'draft mode only'],
-  // `/kebijakan` answers 404 while it awaits content (`awaiting-content.ts`).
-  ['policyPage.emptyBody', '/kebijakan awaits content'],
   // Legacy fixture pages, labelled dummy by plan until F5-04 removes them.
   ['project.contactPlaceholderNote', '/work fixtures, removed at F5-04'],
   ['journal.contactPlaceholderNote', '/journal fixtures, removed at F5-04'],

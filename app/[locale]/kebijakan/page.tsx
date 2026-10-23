@@ -4,6 +4,7 @@ import type { PortableTextBlock } from 'next-sanity'
 import { draftMode } from 'next/headers'
 import { locale as localeRootParam } from 'next/root-params'
 
+import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
 import { fixedPageContent } from '@/lib/content/fixed-page-content'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
@@ -33,21 +34,25 @@ export default async function PolicyPage() {
     policyForRequest(locale),
     getTranslations('policyPage'),
   ])
+  /*
+   * The page is public since V5 left `lib/seo/awaiting-content.ts`, so an
+   * unpublished or withheld document shows the not-found view, as
+   * `/cara-kerja` does, rather than an empty state written for the editor.
+   */
+  if (!content) return <LocalizedNotFound />
+
   // SAFETY: fixedPageContent validates that this is a non-empty Portable Text
   // array. TypeGen and @portabletext/react derive equivalent shapes through
   // different packages, so TypeScript cannot name their structural equality.
-  const body = content?.content as PortableTextBlock[] | undefined
+  const body = content.content as PortableTextBlock[]
 
   return (
     <Wrapper theme="light">
       <article className={s.page}>
         <header className={s.hero}>
           <p className={cn('caption', s.eyebrow)}>{t('eyebrow')}</p>
-          <h1
-            className={cn('h1', s.title)}
-            data-sanity={content ? 'title' : undefined}
-          >
-            {content?.title ?? t('title')}
+          <h1 className={cn('h1', s.title)} data-sanity="title">
+            {content.title}
           </h1>
           <p className={cn('p-big', s.lead)}>{t('lead')}</p>
         </header>
@@ -66,23 +71,13 @@ export default async function PolicyPage() {
           <p className={cn('p', s.noteBody)}>{t('reviewBody')}</p>
         </aside>
 
-        {body ? (
-          <section
-            className={s.document}
-            aria-label={t('documentLabel')}
-            data-sanity={content?._id}
-          >
-            <RichText content={body} />
-          </section>
-        ) : (
-          <section className={s.empty} aria-labelledby="policy-empty-title">
-            <p className={cn('caption', s.noteLabel)}>{t('emptyEyebrow')}</p>
-            <h2 id="policy-empty-title" className={cn('h2', s.emptyTitle)}>
-              {t('emptyTitle')}
-            </h2>
-            <p className={cn('p-big', s.emptyBody)}>{t('emptyBody')}</p>
-          </section>
-        )}
+        <section
+          className={s.document}
+          aria-label={t('documentLabel')}
+          data-sanity={content._id}
+        >
+          <RichText content={body} />
+        </section>
       </article>
     </Wrapper>
   )
