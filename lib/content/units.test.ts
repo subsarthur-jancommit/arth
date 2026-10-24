@@ -239,9 +239,12 @@ describe('every unit is read from exactly two sides', () => {
  */
 describe("the capability block reads every unit's steps from Sanity", () => {
   it('cannot publish a unit without a step', () => {
-    const validation = unitSchema.fields.find(
+    const field = unitSchema.fields.find(
       (candidate) => candidate.name === 'caraKerja'
-    )?.validation
+    )
+    // Not every field in the schema declares `validation`; narrow first.
+    const validation =
+      field && 'validation' in field ? field.validation : undefined
     // A chainable stand-in for the Studio's Rule that records each call.
     const calls: string[] = []
     const rule = new Proxy(
