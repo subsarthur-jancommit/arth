@@ -23,6 +23,11 @@ p{margin:0 0 .7em}
 code{font-family:var(--mono);font-size:.86em;background:var(--chip);padding:.05em .3em;border-radius:3px;overflow-wrap:anywhere}
 .eyebrow,.lbl{font-family:var(--mono);font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
 .lede{font-size:clamp(17px,1.7vw,21px);max-width:62ch}
+.gab2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;margin-top:26px;align-items:start}
+@media (max-width:1020px){.gab2{grid-template-columns:minmax(0,1fr)}}
+.gab2 ul,.gab2 ol{padding-left:1.15em;display:grid;gap:6px;margin:0}
+.gab2 li,.gab2 p{font-size:15px;line-height:1.55}
+.gab td b{font-weight:600}
 .keputusan{max-width:62ch;margin-top:14px;padding:12px 14px;border:1px solid var(--fg);border-radius:8px;background:var(--card)}
 .same{margin-top:26px;padding-top:18px;border-top:1px solid var(--line);max-width:1120px}
 .same ul{margin:10px 0 0;padding-left:1.15em;display:grid;gap:8px}

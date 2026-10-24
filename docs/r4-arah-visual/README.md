@@ -13,6 +13,16 @@ mengubah produksi. Saya yang memilih."
 "Saya pilih arah B, Maket cahaya." R4 dibangun dari arah ini. Arah A dan C
 tetap di folder ini sebagai catatan pilihan yang tidak diambil.
 
+**Usulan lanjutan, 24 Oktober 2026, menunggu persetujuan.** Pemilik bertanya
+apakah ketiganya bisa dipakai dengan tupoksi berbeda, lalu meminta gambar
+diamnya. Usulannya: B sebagai panggung (beranda, pembuka unit, lintasan), A
+sebagai dokumen (halaman situasi dan pekerjaan, cara kerja, cara dibayar,
+kebijakan, versi cetak), dan C untuk janji dan ajakan (stempel, coretan, tombol).
+Penyatunya satu navbar, satu keluarga huruf pada tiga lebar, satu gambar kafe,
+dan ungu sebagai satu-satunya warna aksen. Gambarnya ada di bagian Usulan di
+`index.html` dan dibuat oleh `gabungan.py`; kontrasnya di `kontras.md`, bagian
+Sistem gabungan.
+
 ## Tiga arah
 
 - **A, Lembar kerja.** Tinta di atas kertas. Pelat digambar seperti lembar

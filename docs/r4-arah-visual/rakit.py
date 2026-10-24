@@ -1,6 +1,7 @@
 """Merakit index.html dari pelat, layar, dan alasan."""
 
 import alasan
+import gabungan
 import layar_a
 from halaman import LAYAR, PAGE_CSS, SCRIPT, fig, plate, row
 
@@ -28,7 +29,8 @@ INTRO = (
     'untuk pelat gambar kerja, beranda, kartu, dan navigasi. Semuanya gambar diam: belum ada '
     'yang dibangun, dan produksi tidak berubah. Pilih satu, lalu R4 membangunnya.</p>'
     '<p class="keputusan"><b>Dipilih pemilik, 24 Oktober 2026: arah B, Maket cahaya.</b> '
-    'R4 dibangun dari arah ini. Arah A dan C tetap di halaman ini sebagai catatan.</p>'
+    'Pada hari yang sama pemilik meminta usulan memakai ketiganya dengan tupoksi berbeda: '
+    'lihat bagian Usulan di bawah. Usulan itu menunggu persetujuan.</p>'
     '<div class="same"><h2>Yang sama di ketiga arah</h2><ul>'
     '<li><b>Isi.</b> Semua teks diambil dari situs yang sedang tayang '
     '(arth-test-01.vercel.app) pada 24 Oktober 2026. Tidak ada teks contoh.</li>'
@@ -70,6 +72,75 @@ PILIHAN = (
     '<div class="lb-body"></div></dialog>')
 
 
+TUPOKSI = (
+    ('B · Maket cahaya', '#110f0d', '#f4f3ef', 'Panggung: memikat dan memperkenalkan',
+     'Beranda, pembuka tiga halaman unit, lintasan yang di-pin, perpindahan antarhalaman.',
+     'Tema gelap; pelat aksonometri sebagai material WebGL.'),
+    ('A · Lembar kerja', '#f4f3ef', '#110f0d', 'Dokumen: menjelaskan dan meyakinkan',
+     'Halaman situasi dan pekerjaan, Cara kami bekerja, Cara kami dibayar, Kebijakan, versi '
+     'cetak, dan jalur tanpa WebGL.',
+     'Tema terang; pelat garis biasa; kepala halaman seperti kop.'),
+    ('C · Papan proyek', '#5d42af', '#f4f3ef', 'Janji dan ajakan: menandai komitmen, mengajak bicara',
+     'Stempel janji, coretan pada masalah yang dijawab, tanda Mulai dari sini, tombol ajakan, '
+     'halaman Kontak.',
+     'Ungu hanya untuk stempel dan tombol ajakan; papan berlubang paling banyak di satu atau '
+     'dua halaman.'),
+)
+
+
+def gfig(body, cap, cls=''):
+    return ('<figure class="%s">%s<figcaption><span>%s</span><button class="besar" type="button" '
+            'data-besar>Perbesar</button></figcaption></figure>' % (cls, body, cap))
+
+
+def gabungan_section(contrast_html):
+    rows = ''.join('<tr><td><span class="sw" style="background:%s;color:%s">Aa</span><b>%s</b></td>'
+                   '<td>%s</td><td>%s</td><td>%s</td></tr>' % (bg, fg, n, t, w, b)
+                   for n, bg, fg, t, w, b in TUPOKSI)
+    duo = '<div class="duo">%s%s</div>' % gabungan.pekerjaan_ponsel()
+    return (
+        '<section class="baris gab" id="gabungan"><header><h2>Usulan: ketiganya dengan tupoksi '
+        'berbeda</h2><p>Satu sistem untuk seluruh situs. B tetap wajah utama; A dan C mendapat '
+        'tugas sendiri. Semua teks tetap teks yang tayang.</p></header>'
+        '<div class="tbl"><table><thead><tr><th scope="col">Arah</th><th scope="col">Tupoksi</th>'
+        '<th scope="col">Dipakai di</th><th scope="col">Bentuknya</th></tr></thead><tbody>%s'
+        '</tbody></table></div>'
+        '<div class="tiga" style="margin-top:22px">%s%s%s</div>'
+        '<div class="gab2">%s<div>%s'
+        '<h3>Yang menyatukan</h3><ul>'
+        '<li>Satu navbar bentuk B, sama di tema gelap dan terang.</li>'
+        '<li>Satu keluarga huruf pada tiga lebar: lebar untuk judul panggung, normal untuk '
+        'dokumen, sempit untuk stempel. Archivo di sini pengganti sementara (SIL OFL 1.1); belum '
+        'ada huruf berlisensi yang dipilih.</li>'
+        '<li>Satu gambar: model kafe yang sama, digambar aksonometri di panggung dan garis biasa '
+        'di dokumen.</li>'
+        '<li>Satu warna aksen, ungu, hanya untuk janji dan ajakan: ungu terang di tanah gelap, '
+        'ungu di kertas. Coretan memakai tinta, bukan ungu.</li>'
+        '<li>Perpindahan yang bercerita: pelat bercahaya mendarat dan menjadi lembar kertas; '
+        'stempel mendarat di langkah pertama.</li></ul>'
+        '<h3>Yang perlu Anda putuskan</h3><ol>'
+        '<li>Ungu sebagai warna aksen. Ini membuka lagi keputusan monokrom Tahap 66.</li>'
+        '<li>Pembagian halaman terang dan gelap seperti tabel di atas, atau lain.</li>'
+        '<li>Satu keluarga huruf dengan sumbu lebar, dan nanti huruf berlisensinya.</li></ol>'
+        '<h3>Kontras</h3>%s'
+        '<h3>Dampak ke urutan kerja</h3><p>Tidak ada paket baru. R4 tetap membangun B (beranda, '
+        'pelat, navbar) ditambah jalur datar A. R5 menerapkan gaya A di halaman dokumen saat '
+        'halaman dibangun ulang. R6 memasang stempel dan coretan C bersama momen gerak yang sudah '
+        'direncanakan, misalnya Janji dicap di MOTION-SPEC §13.6.</p></div></div></section>'
+        % (rows,
+           gfig(gabungan.beranda(), 'Beranda, panggung B. Satu-satunya warna adalah tombol ajakan '
+                'ungu di navbar.'),
+           gfig(gabungan.beranda_bawah(), 'Bagian bawah beranda: janji cara kami bekerja, dan '
+                'stempel ungu terang di dekat langkah pertama.'),
+           gfig(gabungan.transisi(), 'Perpindahan dari beranda ke halaman pekerjaan, tiga bingkai '
+                '(momen set-depth).'),
+           gfig(gabungan.pekerjaan(), 'Halaman pekerjaan Pesan dan bayar dari meja dalam gaya A. '
+                'Coretan tinta menandai masalah yang dijawab; stempel dan tombol ungu di langkah '
+                'pertama.', cls='tinggi'),
+           gfig(duo, 'Halaman pekerjaan yang sama di ponsel: kepala halaman, lalu langkah pertama.'),
+           contrast_html('g')))
+
+
 def _tag(a, swatch, prefix='Arah '):
     return ('<div class="tag"><i style="background:%s;border-color:%s"></i>%s%s · %s</div>'
             % (swatch[0], swatch[1], prefix, a.upper(), alasan.ARAH[a]['nama']))
@@ -85,6 +156,7 @@ def build_page(sym, defs_str, contrast_html, ground, swatch, fonts):
              % (defs_str, ''.join('<symbol id="%s" viewBox="0 0 1600 1120">%s</symbol>' % kv
                                   for kv in sym.items())),
              INTRO,
+             gabungan_section(contrast_html),
              '<nav class="pilih" aria-label="Tampilkan arah"><span>Tampilkan</span>'
              '<button type="button" data-pilih="semua" aria-pressed="true">Ketiganya</button>'
              + ''.join('<button type="button" data-pilih="%s" aria-pressed="false">%s · %s</button>'
@@ -151,7 +223,7 @@ def build_page(sym, defs_str, contrast_html, ground, swatch, fonts):
                  '<p>Kontras dihitung dengan rumus WCAG 2.x dari token yang sama (aturan #11); '
                  'rinciannya di kontras.md.</p></header><div class="tiga">%s</div></section>' % arts)
     parts.append(PILIHAN)
-    css = PAGE_CSS + layar_a.css() + layar_b.css() + layar_c.css()
+    css = PAGE_CSS + layar_a.css() + layar_b.css() + layar_c.css() + gabungan.css()
     return ('<title>Arah visual R4</title>\n'
             '<meta name="claude:viewport-fit-sides" content="cover">\n'
             '<link rel="preconnect" href="https://fonts.googleapis.com">\n'

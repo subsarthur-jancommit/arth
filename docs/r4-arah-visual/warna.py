@@ -82,6 +82,7 @@ X = dict(
     muted_a=hexc(over(INK, 0.75, PAPER)),
     muted_b=hexc(over(PAPER, 0.75, INK)),
     muted_c=hexc(over(TINTA, 0.72, KERTAS)),
+    surface_g=hexc(over(INK, 0.04, PAPER)),
 )
 
 # Sumber token untuk tabel: nama token atau resepnya.
@@ -133,6 +134,20 @@ PAIRS = {
         ('Coretan: tinta di atas kertas', TINTA, KERTAS, 'non'),
     ],
 }
+
+
+PAIRS['g'] = [
+    ('Panggung (B): kertas di atas tinta', PAPER, INK, 'teks'),
+    ('Panggung: tombol ajakan, tinta di atas ungu terang', INK, UNGU_TERANG, 'teks'),
+    ('Panggung: stempel ungu terang di atas tinta', UNGU_TERANG, INK, 'teks'),
+    ('Dokumen (A): tinta di atas kertas', INK, PAPER, 'teks'),
+    ('Dokumen: keterangan tinta 75%', over(INK, 0.75, PAPER), PAPER, 'teks'),
+    ('Dokumen: tinta di atas blok langkah pertama (tinta 4%)', INK, over(INK, 0.04, PAPER), 'teks'),
+    ('Janji dan ajakan (C): stempel ungu di atas kertas', UNGU, PAPER, 'teks'),
+    ('Janji dan ajakan: stempel ungu di atas blok langkah pertama', UNGU, over(INK, 0.04, PAPER), 'teks'),
+    ('Janji dan ajakan: tombol, kertas di atas ungu', PAPER, UNGU, 'teks'),
+    ('Coretan tinta di atas kertas', INK, PAPER, 'non'),
+]
 
 
 def rows(arah):

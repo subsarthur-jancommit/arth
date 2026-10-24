@@ -49,6 +49,10 @@ def symbols():
     s['p-c-teknologi-lembar'] = pelat_c.teknologi_lembar()
     s['p-c-teknologi-gerak'] = pelat_c.teknologi_lembar(markup=0.55, lift=True)
     s['p-c-peekabo-lepas'] = pelat_c.peekabo(with_board=False, stamped=False)
+    # sistem gabungan: pelat arah A dengan satu keluarga huruf (Archivo)
+    pelat_a.pakai_huruf('arch', wide='125%')
+    s['p-g-a-teknologi'] = pelat_a.teknologi()
+    pelat_a.pakai_huruf('syne')
     return s
 
 
@@ -109,13 +113,15 @@ def write_kontras():
            'Ini hitungan, bukan pengukuran di halaman yang dirender. Bila satu arah dibangun, '
            '`contrast.test.ts` dan `e2e/contrast-situ.e2e.ts` tetap yang menentukan (aturan #11).',
            '']
-    for arah in 'abc':
+    names = {a: 'Arah %s, %s' % (a.upper(), alasan.ARAH[a]['nama']) for a in 'abc'}
+    names['g'] = 'Sistem gabungan (usulan)'
+    for arah in 'abcg':
         rows = []
         for r in warna.rows(arah):
             rows.append([r['label'], '`%s`' % r['fg'], '`%s`' % r['bg'], warna.fmt_ratio(r['r']),
                          ('4,5:1' if r['kind'] == 'teks' else '3:1'),
                          'Lulus' if r['ok'] else 'Di bawah ambang'])
-        out += ['## Arah %s, %s' % (arah.upper(), alasan.ARAH[arah]['nama']), '',
+        out += ['## ' + names[arah], '',
                 md_table(['Pasangan', 'Depan', 'Latar', 'Rasio', 'Ambang', 'Hasil'], rows), '']
     out += ['Token sumber:', '']
     out += ['- `%s`: %s' % (warna.X[k], v) for k, v in warna.SUMBER.items()]

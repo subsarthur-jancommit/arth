@@ -113,6 +113,33 @@
     font-size: clamp(17px, 1.7vw, 21px);
     max-width: 62ch;
   }
+  .gab2 {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 24px;
+    margin-top: 26px;
+    align-items: start;
+  }
+  @media (max-width: 1020px) {
+    .gab2 {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .gab2 ul,
+  .gab2 ol {
+    padding-left: 1.15em;
+    display: grid;
+    gap: 6px;
+    margin: 0;
+  }
+  .gab2 li,
+  .gab2 p {
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .gab td b {
+    font-weight: 600;
+  }
   .keputusan {
     max-width: 62ch;
     margin-top: 14px;
@@ -1799,6 +1826,453 @@
     height: 56px;
     justify-content: center;
     font-size: 17px;
+  }
+
+  .sb.g-b .bn .cta {
+    background: #bcb3fa;
+    color: #110f0d;
+    border-color: #bcb3fa;
+    box-shadow: 0 0 22px rgba(188, 179, 250, 0.25);
+  }
+  .sg {
+    position: absolute;
+    inset: 0;
+    background: #f4f3ef;
+    color: #110f0d;
+    font-family: 'Archivo', 'Segoe UI', Arial, sans-serif;
+    overflow: hidden;
+  }
+  .sg .m {
+    font-family: 'Geist Mono', ui-monospace, Consolas, monospace;
+  }
+  .sg .pl {
+    position: absolute;
+    overflow: visible;
+  }
+  .sg .bn {
+    background: #f4f3ef;
+    border-bottom: 1px solid rgba(17, 15, 13, 0.25);
+  }
+  .sg .bn .seg {
+    border-color: rgba(17, 15, 13, 0.25);
+  }
+  .sg .bn .seg span {
+    color: #4a4846;
+  }
+  .sg .bn .seg span.on {
+    color: #110f0d;
+  }
+  .sg .bn .seg span.on::after {
+    background: #110f0d;
+    box-shadow: none;
+  }
+  .sg .bn .pg {
+    color: #4a4846;
+  }
+  .sg .bn .pill {
+    border-color: rgba(17, 15, 13, 0.25);
+    color: #4a4846;
+  }
+  .sg .bn kbd {
+    border-color: rgba(17, 15, 13, 0.25);
+  }
+  .sg .bn .lang b {
+    background: #110f0d;
+    color: #f4f3ef;
+  }
+  .sg .bn .cta {
+    background: #5d42af;
+    color: #f4f3ef;
+    border-color: #5d42af;
+    box-shadow: none;
+  }
+  .sg .bnp {
+    background: #f4f3ef;
+    border-bottom: 1px solid rgba(17, 15, 13, 0.25);
+  }
+  .sg .bnp .pill {
+    border-color: rgba(17, 15, 13, 0.25);
+  }
+  .g-crumb {
+    position: absolute;
+    left: 56px;
+    top: 102px;
+    font-family: 'Geist Mono', ui-monospace, Consolas, monospace;
+    font-size: 13px;
+    color: #4a4846;
+  }
+  .g-crumb span + span::before {
+    content: '/';
+    margin: 0 10px;
+    color: rgba(17, 15, 13, 0.25);
+  }
+  .g-head {
+    position: absolute;
+    left: 56px;
+    top: 152px;
+    width: 830px;
+  }
+  .g-eye {
+    font-family: 'Geist Mono', ui-monospace, Consolas, monospace;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: #4a4846;
+  }
+  .g-head h1 {
+    margin: 14px 0 0;
+    font-weight: 700;
+    font-size: 70px;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+  }
+  .g-head p {
+    margin: 22px 0 0;
+    font-size: 24px;
+    line-height: 1.42;
+    max-width: 720px;
+  }
+  .g-kop {
+    position: absolute;
+    left: 944px;
+    top: 152px;
+    width: 440px;
+    margin: 0;
+    border-top: 1.5px solid #110f0d;
+  }
+  .g-kop div {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 12px;
+    padding: 13px 0;
+    border-bottom: 1px solid rgba(17, 15, 13, 0.28);
+  }
+  .g-kop dt {
+    font-family: 'Geist Mono', ui-monospace, Consolas, monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4a4846;
+    padding-top: 4px;
+  }
+  .g-kop dd {
+    margin: 0;
+    font-size: 17px;
+  }
+  .g-sec {
+    position: absolute;
+    left: 56px;
+    width: 1328px;
+  }
+  .g-sec > h2 {
+    margin: 0;
+    font-family: 'Geist Mono', ui-monospace, Consolas, monospace;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #4a4846;
+  }
+  .g-sit p {
+    margin: 14px 0 0;
+    font-size: 30px;
+    line-height: 1.4;
+    max-width: 1000px;
+  }
+  .coret {
+    position: relative;
+    white-space: nowrap;
+  }
+  .coret svg {
+    position: absolute;
+    left: -18px;
+    top: -12px;
+    width: calc(100% + 36px);
+    height: calc(100% + 24px);
+    overflow: visible;
+  }
+  .g-cap {
+    position: absolute;
+    left: 56px;
+    font-family: 'Geist Mono', ui-monospace, Consolas, monospace;
+    font-size: 12.5px;
+    color: #4a4846;
+  }
+  .g-pkt > div {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 14px;
+  }
+  .g-pkt article {
+    border: 1.5px solid #110f0d;
+    padding: 24px 28px;
+  }
+  .g-pkt h3 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 30px;
+  }
+  .g-pkt ul {
+    list-style: none;
+    margin: 14px 0 0;
+    padding: 0;
+  }
+  .g-pkt li {
+    position: relative;
+    padding: 11px 0 11px 30px;
+    border-top: 1px solid rgba(17, 15, 13, 0.14);
+    font-size: 19px;
+    line-height: 1.4;
+  }
+  .g-pkt li::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 23px;
+    width: 14px;
+    height: 1.5px;
+    background: #110f0d;
+  }
+  .g-batas p {
+    margin: 12px 0 0;
+    font-size: 20px;
+    line-height: 1.5;
+  }
+  .g-lp {
+    background: #ebeae6;
+    padding: 40px 44px;
+    box-sizing: border-box;
+  }
+  .g-lp h3 {
+    margin: 12px 0 0;
+    font-weight: 700;
+    font-size: 52px;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .g-lp p {
+    margin: 16px 0 0;
+    font-size: 20px;
+    line-height: 1.5;
+    max-width: 860px;
+  }
+  .g-lp p.muted {
+    color: #4a4846;
+    font-size: 17px;
+    max-width: 820px;
+  }
+  .g-act {
+    display: flex;
+    gap: 22px;
+    margin-top: 24px;
+    align-items: center;
+  }
+  .g-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    height: 56px;
+    padding: 0 26px;
+    background: #5d42af;
+    color: #f4f3ef;
+    font-weight: 600;
+    font-size: 18px;
+    border-radius: 999px;
+  }
+  .g-link {
+    font-weight: 600;
+    font-size: 17px;
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    text-decoration-thickness: 1.5px;
+  }
+  .g-foot {
+    display: flex;
+    gap: 28px;
+    font-family: 'Geist Mono', ui-monospace, Consolas, monospace;
+    font-size: 13px;
+    color: #4a4846;
+  }
+  .g-foot span {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .stp {
+    position: absolute;
+    overflow: visible;
+  }
+  .g-bb {
+    position: absolute;
+    top: 126px;
+  }
+  .g-bb .eye {
+    font-family: 'Geist Mono', ui-monospace, Consolas, monospace;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #bbbab6;
+  }
+  .g-janji {
+    list-style: none;
+    margin: 18px 0 0;
+    padding: 0;
+    border-top: 1px solid rgba(244, 243, 239, 0.25);
+  }
+  .g-janji li {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(244, 243, 239, 0.18);
+    font-size: 20px;
+    line-height: 1.45;
+  }
+  .g-bb h2 {
+    margin: 16px 0 0;
+    font-stretch: 125%;
+    font-weight: 800;
+    font-size: 44px;
+    line-height: 1.1;
+  }
+  .g-btn-d {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    height: 56px;
+    padding: 0 26px;
+    margin-top: 32px;
+    background: #bcb3fa;
+    color: #110f0d;
+    font-weight: 700;
+    font-size: 18px;
+    border-radius: 999px;
+    box-shadow: 0 0 24px rgba(188, 179, 250, 0.25);
+  }
+  .g-story {
+    position: absolute;
+    inset: 0;
+    background: #dcdbd6;
+    color: #110f0d;
+    font-family: 'Archivo', 'Segoe UI', Arial, sans-serif;
+  }
+  .g-story .pan {
+    position: absolute;
+    top: 56px;
+    width: 430px;
+    height: 301px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+  }
+  .g-story p {
+    position: absolute;
+    top: 378px;
+    width: 430px;
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.42;
+  }
+  .g-story p b {
+    display: block;
+    font-family: 'Geist Mono', ui-monospace, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    margin-bottom: 6px;
+  }
+  .g-story i {
+    position: absolute;
+    top: 190px;
+    font-style: normal;
+    font-size: 30px;
+  }
+  .gp-crumb {
+    position: absolute;
+    left: 18px;
+    top: 80px;
+    font-family: 'Geist Mono', ui-monospace, Consolas, monospace;
+    font-size: 11px;
+    color: #4a4846;
+  }
+  .gp-crumb span + span::before {
+    content: '/';
+    margin: 0 6px;
+    color: rgba(17, 15, 13, 0.25);
+  }
+  .gp-head {
+    position: absolute;
+    left: 18px;
+    top: 112px;
+    width: 354px;
+  }
+  .gp-head h1 {
+    margin: 10px 0 0;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+  }
+  .gp-head p {
+    margin: 12px 0 0;
+    font-size: 17px;
+    line-height: 1.42;
+  }
+  .gp-head dl {
+    margin: 16px 0 0;
+    border-top: 1.5px solid #110f0d;
+  }
+  .gp-head dl div {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 8px;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(17, 15, 13, 0.28);
+  }
+  .gp-head dt {
+    font-family: 'Geist Mono', ui-monospace, Consolas, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4a4846;
+    padding-top: 3px;
+  }
+  .gp-head dd {
+    margin: 0;
+    font-size: 15px;
+  }
+  .gp-lp {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 64px;
+    bottom: 0;
+    background: #ebeae6;
+    padding: 28px 18px;
+    box-sizing: border-box;
+  }
+  .gp-lp h3 {
+    margin: 10px 0 0;
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 1.05;
+  }
+  .gp-lp p {
+    margin: 12px 0 0;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .gp-lp p.muted {
+    color: #4a4846;
+    font-size: 14.5px;
+  }
+  .gp-lp .g-btn {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    height: 54px;
+  }
+  .gp-lp .g-link {
+    display: block;
+    margin-top: 16px;
+    text-align: center;
   }
 </style>
 <svg
@@ -28006,6 +28480,843 @@
       fill="none"
     />
   </symbol>
+  <symbol id="p-g-a-teknologi" viewBox="0 0 1600 1120">
+    <rect
+      x="16"
+      y="16"
+      width="1568"
+      height="1088"
+      fill="none"
+      stroke="#110f0d"
+      stroke-width="2.5"
+    />
+    <rect
+      x="24"
+      y="24"
+      width="1552"
+      height="1072"
+      fill="none"
+      stroke="#110f0d"
+      stroke-width="0.75"
+      stroke-opacity="0.6"
+    />
+    <line
+      x1="1236"
+      y1="24"
+      x2="1236"
+      y2="1096"
+      stroke="#110f0d"
+      stroke-width="1.5"
+    />
+    <text
+      x="80"
+      y="112"
+      font-family="'Archivo', 'Segoe UI', Arial, sans-serif"
+      font-size="24"
+      font-weight="700"
+      fill="#110f0d"
+      letter-spacing="0.5"
+    >
+      DIAGRAM ALUR PESANAN
+    </text>
+    <text
+      x="80"
+      y="136"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="13"
+      fill="#4a4846"
+    >
+      Pesan dan bayar dari meja · Layar pesanan di dapur · Bot stok bahan dan
+      pesan ulang ke pemasok
+    </text>
+    <line
+      x1="70"
+      y1="150"
+      x2="1205"
+      y2="150"
+      stroke="#110f0d"
+      stroke-width="1"
+      stroke-opacity="0.3"
+    />
+    <text
+      x="84"
+      y="268"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="14.5"
+      font-weight="500"
+      fill="#110f0d"
+      letter-spacing="1"
+      stroke="#f4f3ef"
+      stroke-width="4.35"
+      stroke-linejoin="round"
+      paint-order="stroke"
+    >
+      TAMU
+    </text>
+    <line
+      x1="70"
+      y1="376"
+      x2="1205"
+      y2="376"
+      stroke="#110f0d"
+      stroke-width="1"
+      stroke-opacity="0.3"
+    />
+    <text
+      x="84"
+      y="543"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="14.5"
+      font-weight="500"
+      fill="#110f0d"
+      letter-spacing="1"
+      stroke="#f4f3ef"
+      stroke-width="4.35"
+      stroke-linejoin="round"
+      paint-order="stroke"
+    >
+      SISTEM
+    </text>
+    <line
+      x1="70"
+      y1="700"
+      x2="1205"
+      y2="700"
+      stroke="#110f0d"
+      stroke-width="1"
+      stroke-opacity="0.3"
+    />
+    <text
+      x="84"
+      y="790"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="14.5"
+      font-weight="500"
+      fill="#110f0d"
+      letter-spacing="1"
+      stroke="#f4f3ef"
+      stroke-width="4.35"
+      stroke-linejoin="round"
+      paint-order="stroke"
+    >
+      DAPUR
+    </text>
+    <line
+      x1="70"
+      y1="870"
+      x2="1205"
+      y2="870"
+      stroke="#110f0d"
+      stroke-width="1"
+      stroke-opacity="0.3"
+    />
+    <text
+      x="84"
+      y="964"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="14.5"
+      font-weight="500"
+      fill="#110f0d"
+      letter-spacing="1"
+      stroke="#f4f3ef"
+      stroke-width="4.35"
+      stroke-linejoin="round"
+      paint-order="stroke"
+    >
+      PEMASOK
+    </text>
+    <line
+      x1="70"
+      y1="1048"
+      x2="1205"
+      y2="1048"
+      stroke="#110f0d"
+      stroke-width="1"
+      stroke-opacity="0.3"
+    />
+    <line
+      x1="200"
+      y1="150"
+      x2="200"
+      y2="1048"
+      stroke="#110f0d"
+      stroke-width="1"
+      stroke-opacity="0.3"
+    />
+    <polyline
+      points="490,319 530,319"
+      stroke="#110f0d"
+      stroke-width="1.6"
+      fill="none"
+    />
+    <polygon
+      points="530,319 519,324.5 519,313.5"
+      fill="#110f0d"
+      stroke="none"
+    />
+    <polyline
+      points="490,213 960,213 960,420"
+      stroke="#110f0d"
+      stroke-width="1.6"
+      fill="none"
+    />
+    <polygon
+      points="960,420 954.5,409 965.5,409"
+      fill="#110f0d"
+      stroke="none"
+    />
+    <polyline
+      points="780,319 890,319 890,420"
+      stroke="#110f0d"
+      stroke-width="1.6"
+      fill="none"
+    />
+    <polygon
+      points="890,420 884.5,409 895.5,409"
+      fill="#110f0d"
+      stroke="none"
+    />
+    <polyline
+      points="655,420 655,362"
+      stroke="#110f0d"
+      stroke-width="1.6"
+      fill="none"
+    />
+    <polygon
+      points="655,362 660.5,373 649.5,373"
+      fill="#110f0d"
+      stroke="none"
+    />
+    <polyline
+      points="960,536 960,600"
+      stroke="#110f0d"
+      stroke-width="1.6"
+      fill="none"
+    />
+    <polygon
+      points="960,600 954.5,589 965.5,589"
+      fill="#110f0d"
+      stroke="none"
+    />
+    <polyline
+      points="830,500 805,500 805,788 740,788"
+      stroke="#110f0d"
+      stroke-width="1.6"
+      fill="none"
+    />
+    <polygon
+      points="740,788 751,782.5 751,793.5"
+      fill="#110f0d"
+      stroke="none"
+    />
+    <polyline
+      points="1060,643 1078,643"
+      stroke="#110f0d"
+      stroke-width="1.6"
+      fill="none"
+    />
+    <polygon
+      points="1078,643 1067,648.5 1067,637.5"
+      fill="#110f0d"
+      stroke="none"
+    />
+    <polyline
+      points="1140,687 1140,912"
+      stroke="#110f0d"
+      stroke-width="1.6"
+      fill="none"
+    />
+    <polygon
+      points="1140,912 1134.5,901 1145.5,901"
+      fill="#110f0d"
+      stroke="none"
+    />
+    <text
+      x="1152"
+      y="806"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="12.5"
+      font-weight="500"
+      fill="#110f0d"
+      letter-spacing="1"
+      stroke="#f4f3ef"
+      stroke-width="3.75"
+      stroke-linejoin="round"
+      paint-order="stroke"
+    >
+      YA
+    </text>
+    <polyline
+      points="1140,599 1140,572 1000,572 1000,600"
+      stroke="#110f0d"
+      stroke-width="1.6"
+      fill="none"
+    />
+    <polygon
+      points="1000,600 994.5,589 1005.5,589"
+      fill="#110f0d"
+      stroke="none"
+    />
+    <text
+      x="1070"
+      y="563"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="12.5"
+      font-weight="500"
+      fill="#110f0d"
+      letter-spacing="1"
+      stroke="#f4f3ef"
+      stroke-width="3.75"
+      stroke-linejoin="round"
+      paint-order="stroke"
+    >
+      TIDAK
+    </text>
+    <polyline
+      points="470,788 420,788"
+      stroke="#110f0d"
+      stroke-width="1.6"
+      fill="none"
+    />
+    <polygon
+      points="420,788 431,782.5 431,793.5"
+      fill="#110f0d"
+      stroke="none"
+    />
+    <polyline
+      points="320,752 320,362"
+      stroke="#110f0d"
+      stroke-width="1.6"
+      stroke-dasharray="7 5"
+      fill="none"
+    />
+    <polygon
+      points="320,362 325.5,373 314.5,373"
+      fill="#110f0d"
+      stroke="none"
+    />
+    <text
+      x="332"
+      y="562"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="12.5"
+      font-weight="500"
+      fill="#110f0d"
+      letter-spacing="1"
+      stroke="#f4f3ef"
+      stroke-width="3.75"
+      stroke-linejoin="round"
+      paint-order="stroke"
+    >
+      SAJI
+    </text>
+    <rect
+      x="240"
+      y="170"
+      width="250"
+      height="86"
+      fill="#f4f3ef"
+      stroke="#110f0d"
+      stroke-width="1.6"
+    />
+    <text
+      x="258"
+      y="219"
+      font-family="'Archivo', 'Segoe UI', Arial, sans-serif"
+      font-size="17"
+      font-weight="600"
+      fill="#110f0d"
+    >
+      Pesan lewat WhatsApp
+    </text>
+    <rect
+      x="240"
+      y="276"
+      width="250"
+      height="86"
+      fill="#f4f3ef"
+      stroke="#110f0d"
+      stroke-width="1.6"
+    />
+    <text
+      x="258"
+      y="325"
+      font-family="'Archivo', 'Segoe UI', Arial, sans-serif"
+      font-size="17"
+      font-weight="600"
+      fill="#110f0d"
+    >
+      Memesan dari meja
+    </text>
+    <rect
+      x="530"
+      y="276"
+      width="250"
+      height="86"
+      fill="#f4f3ef"
+      stroke="#110f0d"
+      stroke-width="1.6"
+    />
+    <text
+      x="548"
+      y="325"
+      font-family="'Archivo', 'Segoe UI', Arial, sans-serif"
+      font-size="17"
+      font-weight="600"
+      fill="#110f0d"
+    >
+      Membayar dari meja
+    </text>
+    <rect
+      x="530"
+      y="420"
+      width="250"
+      height="96"
+      fill="#f4f3ef"
+      stroke="#110f0d"
+      stroke-width="1.6"
+    />
+    <text
+      x="548"
+      y="453"
+      font-family="'Archivo', 'Segoe UI', Arial, sans-serif"
+      font-size="17"
+      font-weight="600"
+      fill="#110f0d"
+    >
+      Harga dan promo
+    </text>
+    <text
+      x="548"
+      y="477"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="13"
+      fill="#110f0d"
+      fill-opacity="0.75"
+    >
+      menurut aturan Anda
+    </text>
+    <rect
+      x="830"
+      y="420"
+      width="260"
+      height="116"
+      fill="#f4f3ef"
+      stroke="#110f0d"
+      stroke-width="1.6"
+    />
+    <text
+      x="848"
+      y="453"
+      font-family="'Archivo', 'Segoe UI', Arial, sans-serif"
+      font-size="17"
+      font-weight="600"
+      fill="#110f0d"
+    >
+      Pesanan dicatat
+    </text>
+    <text
+      x="848"
+      y="477"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="13"
+      fill="#110f0d"
+      fill-opacity="0.75"
+    >
+      <tspan x="848" dy="0">Uang yang masuk cocok dengan</tspan>
+      <tspan x="848" dy="17.94">catatan pesanan.</tspan>
+    </text>
+    <rect
+      x="830"
+      y="600"
+      width="230"
+      height="86"
+      fill="#f4f3ef"
+      stroke="#110f0d"
+      stroke-width="1.6"
+    />
+    <text
+      x="848"
+      y="649"
+      font-family="'Archivo', 'Segoe UI', Arial, sans-serif"
+      font-size="17"
+      font-weight="600"
+      fill="#110f0d"
+    >
+      Stok bahan tercatat
+    </text>
+    <rect
+      x="470"
+      y="730"
+      width="270"
+      height="116"
+      fill="#f4f3ef"
+      stroke="#110f0d"
+      stroke-width="1.6"
+    />
+    <text
+      x="488"
+      y="763"
+      font-family="'Archivo', 'Segoe UI', Arial, sans-serif"
+      font-size="17"
+      font-weight="600"
+      fill="#110f0d"
+    >
+      Layar pesanan di dapur
+    </text>
+    <text
+      x="488"
+      y="787"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="13"
+      fill="#110f0d"
+      fill-opacity="0.75"
+    >
+      <tspan x="488" dy="0">berikut urutan dan waktu</tspan>
+      <tspan x="488" dy="17.94">sajinya</tspan>
+    </text>
+    <rect
+      x="220"
+      y="752"
+      width="200"
+      height="80"
+      fill="#f4f3ef"
+      stroke="#110f0d"
+      stroke-width="1.6"
+    />
+    <text
+      x="238"
+      y="798"
+      font-family="'Archivo', 'Segoe UI', Arial, sans-serif"
+      font-size="17"
+      font-weight="600"
+      fill="#110f0d"
+    >
+      Saji ke meja
+    </text>
+    <rect
+      x="870"
+      y="912"
+      width="330"
+      height="110"
+      fill="#f4f3ef"
+      stroke="#110f0d"
+      stroke-width="1.6"
+    />
+    <text
+      x="888"
+      y="945"
+      font-family="'Archivo', 'Segoe UI', Arial, sans-serif"
+      font-size="17"
+      font-weight="600"
+      fill="#110f0d"
+    >
+      Pesan ulang ke pemasok
+    </text>
+    <text
+      x="888"
+      y="969"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="13"
+      fill="#110f0d"
+      fill-opacity="0.75"
+    >
+      terkirim sendiri saat bahan menipis
+    </text>
+    <polygon
+      points="1140,599 1202,643 1140,687 1078,643"
+      fill="#f4f3ef"
+      stroke="#110f0d"
+      stroke-width="1.6"
+    />
+    <text
+      x="1140"
+      y="639"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="13"
+      fill="#110f0d"
+      text-anchor="middle"
+    >
+      <tspan x="1140" dy="0">Bahan</tspan>
+      <tspan x="1140" dy="15.6">menipis?</tspan>
+    </text>
+    <text
+      x="500"
+      y="201"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="13"
+      fill="#110f0d"
+      fill-opacity="0.75"
+    >
+      juga saat tidak ada admin yang berjaga
+    </text>
+    <circle
+      cx="222"
+      cy="319"
+      r="14"
+      fill="#f4f3ef"
+      stroke="#110f0d"
+      stroke-width="1.4"
+    />
+    <text
+      x="222"
+      y="323.5"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="11"
+      font-weight="600"
+      fill="#110f0d"
+      text-anchor="middle"
+    >
+      01
+    </text>
+    <text
+      x="1258"
+      y="84"
+      font-family="'Archivo', 'Segoe UI', Arial, sans-serif"
+      font-size="30"
+      font-weight="800"
+      fill="#110f0d"
+      letter-spacing="-0.5"
+      style="font-stretch: 125%"
+    >
+      ARTHUR
+    </text>
+    <text
+      x="1258"
+      y="114"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="14"
+      fill="#4a4846"
+    >
+      Unit Teknologi
+    </text>
+    <line
+      x1="1236"
+      y1="140"
+      x2="1576"
+      y2="140"
+      stroke="#110f0d"
+      stroke-width="1"
+      stroke-opacity="0.28"
+    />
+    <line
+      x1="1236"
+      y1="250"
+      x2="1576"
+      y2="250"
+      stroke="#110f0d"
+      stroke-width="1"
+      stroke-opacity="0.28"
+    />
+    <line
+      x1="1236"
+      y1="350"
+      x2="1576"
+      y2="350"
+      stroke="#110f0d"
+      stroke-width="1"
+      stroke-opacity="0.28"
+    />
+    <line
+      x1="1236"
+      y1="500"
+      x2="1576"
+      y2="500"
+      stroke="#110f0d"
+      stroke-width="1"
+      stroke-opacity="0.28"
+    />
+    <line
+      x1="1236"
+      y1="600"
+      x2="1576"
+      y2="600"
+      stroke="#110f0d"
+      stroke-width="1"
+      stroke-opacity="0.28"
+    />
+    <line
+      x1="1236"
+      y1="680"
+      x2="1576"
+      y2="680"
+      stroke="#110f0d"
+      stroke-width="1"
+      stroke-opacity="0.28"
+    />
+    <line
+      x1="1236"
+      y1="830"
+      x2="1576"
+      y2="830"
+      stroke="#110f0d"
+      stroke-width="1"
+      stroke-opacity="0.28"
+    />
+    <text
+      x="1258"
+      y="166"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="11.5"
+      font-weight="500"
+      fill="#4a4846"
+      letter-spacing="1.4"
+    >
+      PEKERJAAN
+    </text>
+    <text
+      x="1258"
+      y="196"
+      font-family="'Archivo', 'Segoe UI', Arial, sans-serif"
+      font-size="21"
+      font-weight="600"
+      fill="#110f0d"
+    >
+      <tspan x="1258" dy="0">Pesan dan bayar dari</tspan>
+      <tspan x="1258" dy="25.2">meja</tspan>
+    </text>
+    <text
+      x="1258"
+      y="276"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="11.5"
+      font-weight="500"
+      fill="#4a4846"
+      letter-spacing="1.4"
+    >
+      ISI LEMBAR
+    </text>
+    <text
+      x="1258"
+      y="304"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="15"
+      fill="#110f0d"
+    >
+      <tspan x="1258" dy="0">Diagram alur</tspan>
+      <tspan x="1258" dy="21">pesanan</tspan>
+    </text>
+    <text
+      x="1258"
+      y="376"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="11.5"
+      font-weight="500"
+      fill="#4a4846"
+      letter-spacing="1.4"
+    >
+      SITUASI
+    </text>
+    <text
+      x="1258"
+      y="404"
+      font-family="'Archivo', 'Segoe UI', Arial, sans-serif"
+      font-size="16.5"
+      fill="#110f0d"
+    >
+      <tspan x="1258" dy="0">Anda menyewa tempat untuk</tspan>
+      <tspan x="1258" dy="21.78">kafe baru dan ingin kafe</tspan>
+      <tspan x="1258" dy="21.78">itu siap melayani sejak</tspan>
+      <tspan x="1258" dy="21.78">hari pertama dibuka.</tspan>
+    </text>
+    <text
+      x="1258"
+      y="526"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="11.5"
+      font-weight="500"
+      fill="#4a4846"
+      letter-spacing="1.4"
+    >
+      CATATAN
+    </text>
+    <text
+      x="1258"
+      y="552"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="13"
+      fill="#110f0d"
+    >
+      <tspan x="1258" dy="0">Rangkaian yang mungkin, bukan proyek</tspan>
+      <tspan x="1258" dy="18.46">yang pernah kami kerjakan.</tspan>
+    </text>
+    <text
+      x="1258"
+      y="626"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="11.5"
+      font-weight="500"
+      fill="#4a4846"
+      letter-spacing="1.4"
+    >
+      WILAYAH
+    </text>
+    <text
+      x="1258"
+      y="654"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="14"
+      fill="#110f0d"
+    >
+      Subang, Purwakarta, dan Bandung
+    </text>
+    <text
+      x="1258"
+      y="706"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="11.5"
+      font-weight="500"
+      fill="#4a4846"
+      letter-spacing="1.4"
+    >
+      UNIT
+    </text>
+    <text
+      x="1258"
+      y="734"
+      font-family="'Archivo', 'Segoe UI', Arial, sans-serif"
+      font-size="16.5"
+      fill="#110f0d"
+    >
+      <tspan x="1258" dy="0">Bot dan workflow yang</tspan>
+      <tspan x="1258" dy="21.78">bekerja dua puluh empat</tspan>
+      <tspan x="1258" dy="21.78">jam untuk bisnis Anda, di</tspan>
+      <tspan x="1258" dy="21.78">sektor apa pun.</tspan>
+    </text>
+    <text
+      x="1258"
+      y="856"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="11.5"
+      font-weight="500"
+      fill="#4a4846"
+      letter-spacing="1.4"
+    >
+      LEMBAR
+    </text>
+    <text
+      x="1254"
+      y="1010"
+      font-family="'Archivo', 'Segoe UI', Arial, sans-serif"
+      font-size="118"
+      font-weight="800"
+      fill="#110f0d"
+      letter-spacing="-4"
+      style="font-stretch: 125%"
+    >
+      02
+    </text>
+    <text
+      x="1478"
+      y="1004"
+      font-family="'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+      font-size="22"
+      font-weight="500"
+      fill="#110f0d"
+    >
+      / 03
+    </text>
+  </symbol>
 </svg>
 <div class="wrap">
   <header class="intro">
@@ -28017,8 +29328,9 @@
       Pilih satu, lalu R4 membangunnya.
     </p>
     <p class="keputusan">
-      <b>Dipilih pemilik, 24 Oktober 2026: arah B, Maket cahaya.</b> R4 dibangun
-      dari arah ini. Arah A dan C tetap di halaman ini sebagai catatan.
+      <b>Dipilih pemilik, 24 Oktober 2026: arah B, Maket cahaya.</b> Pada hari
+      yang sama pemilik meminta usulan memakai ketiganya dengan tupoksi berbeda:
+      lihat bagian Usulan di bawah. Usulan itu menunggu persetujuan.
     </p>
     <div class="same">
       <h2>Yang sama di ketiga arah</h2>
@@ -28051,6 +29363,939 @@
       </ul>
     </div>
   </header>
+  <section class="baris gab" id="gabungan">
+    <header>
+      <h2>Usulan: ketiganya dengan tupoksi berbeda</h2>
+      <p>
+        Satu sistem untuk seluruh situs. B tetap wajah utama; A dan C mendapat
+        tugas sendiri. Semua teks tetap teks yang tayang.
+      </p>
+    </header>
+    <div class="tbl">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Arah</th>
+            <th scope="col">Tupoksi</th>
+            <th scope="col">Dipakai di</th>
+            <th scope="col">Bentuknya</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="sw" style="background: #110f0d; color: #f4f3ef"
+                >Aa</span
+              ><b>B · Maket cahaya</b>
+            </td>
+            <td>Panggung: memikat dan memperkenalkan</td>
+            <td>
+              Beranda, pembuka tiga halaman unit, lintasan yang di-pin,
+              perpindahan antarhalaman.
+            </td>
+            <td>Tema gelap; pelat aksonometri sebagai material WebGL.</td>
+          </tr>
+          <tr>
+            <td>
+              <span class="sw" style="background: #f4f3ef; color: #110f0d"
+                >Aa</span
+              ><b>A · Lembar kerja</b>
+            </td>
+            <td>Dokumen: menjelaskan dan meyakinkan</td>
+            <td>
+              Halaman situasi dan pekerjaan, Cara kami bekerja, Cara kami
+              dibayar, Kebijakan, versi cetak, dan jalur tanpa WebGL.
+            </td>
+            <td>Tema terang; pelat garis biasa; kepala halaman seperti kop.</td>
+          </tr>
+          <tr>
+            <td>
+              <span class="sw" style="background: #5d42af; color: #f4f3ef"
+                >Aa</span
+              ><b>C · Papan proyek</b>
+            </td>
+            <td>Janji dan ajakan: menandai komitmen, mengajak bicara</td>
+            <td>
+              Stempel janji, coretan pada masalah yang dijawab, tanda Mulai dari
+              sini, tombol ajakan, halaman Kontak.
+            </td>
+            <td>
+              Ungu hanya untuk stempel dan tombol ajakan; papan berlubang paling
+              banyak di satu atau dua halaman.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tiga" style="margin-top: 22px">
+      <figure class="">
+        <div
+          class="fw"
+          data-w="1440"
+          style="--w: 1440; --h: 900"
+          data-besar
+          role="img"
+          aria-label="Sistem gabungan, beranda: panggung arah B dengan tombol ajakan ungu: judul lebar di kiri di atas tinta, maket Konstruksi bercahaya di kanan, pelat Teknologi dan Peekabo samar di kejauhan."
+        >
+          <div class="fr">
+            <div class="sb g-b">
+              <svg
+                class="pl"
+                viewBox="0 0 1440 900"
+                style="left: 0px; top: 0px; width: 1440px; height: 900px"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <rect width="1440" height="900" fill="url(#b-pool)" />
+                <use
+                  href="#p-b-peekabo-scene"
+                  width="1600"
+                  height="1120"
+                  transform="translate(1190.0 64.0) scale(0.2000)"
+                  opacity=".2"
+                  filter="url(#b-blur-2)"
+                />
+                <use
+                  href="#p-b-teknologi-scene"
+                  width="1600"
+                  height="1120"
+                  transform="translate(980.0 30.0) scale(0.3000)"
+                  opacity=".26"
+                  filter="url(#b-blur-2)"
+                />
+                <use
+                  href="#p-b-konstruksi-scene"
+                  width="1600"
+                  height="1120"
+                  transform="translate(560.0 70.0) scale(0.6800)"
+                />
+              </svg>
+              <div class="b-fade"></div>
+              <header class="bn">
+                <span class="wm">ARTHUR</span
+                ><span class="seg"
+                  ><span class="">Konstruksi</span
+                  ><span class="">Teknologi</span
+                  ><span class="">Peekabo</span></span
+                ><span class="pg">Cara kami bekerja</span
+                ><span class="pg">Kontak</span><span class="sp"></span
+                ><span class="pill">Cari <kbd>⌘K</kbd></span
+                ><span class="pill lang"><b>ID</b><i>EN</i></span
+                ><span class="cta">Ceritakan masalahnya <span>→</span></span>
+              </header>
+              <h1 class="b-h1 x">
+                Proyek jalan.<br />Sistem bekerja.<br />Pasar bertambah.
+              </h1>
+              <p class="b-p">
+                Konstruksi sipil, sistem teknologi, dan agency marketshare untuk
+                Subang, Purwakarta, dan Bandung.
+              </p>
+              <span class="b-cta">Pilih situasi Anda <span>↓</span></span>
+              <ol class="b-depth">
+                <li class="on">
+                  <b>01</b><span>Konstruksi</span
+                  ><em>Isi celahnya. Bangun sampai jadi. Rawat sesudahnya.</em>
+                </li>
+                <li class="">
+                  <b>02</b><span>Teknologi</span
+                  ><em>Buka pasar baru. Otomatiskan sisanya.</em>
+                </li>
+                <li class="">
+                  <b>03</b><span>Peekabo</span
+                  ><em
+                    >Rebut perhatian. Bangun kepercayaan. Biarkan jaringan yang
+                    menjual.</em
+                  >
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+        <figcaption>
+          <span
+            >Beranda, panggung B. Satu-satunya warna adalah tombol ajakan ungu
+            di navbar.</span
+          ><button class="besar" type="button" data-besar>Perbesar</button>
+        </figcaption>
+      </figure>
+      <figure class="">
+        <div
+          class="fw"
+          data-w="1440"
+          style="--w: 1440; --h: 900"
+          data-besar
+          role="img"
+          aria-label="Sistem gabungan, bagian bawah beranda: janji cara kami bekerja dengan stempel ungu di tanah gelap, dan langkah pertama dengan tombol ungu."
+        >
+          <div class="fr">
+            <div class="sb g-b">
+              <svg
+                class="pl"
+                viewBox="0 0 1440 900"
+                style="left: 0px; top: 0px; width: 1440px; height: 900px"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <rect width="1440" height="900" fill="url(#b-pool)" />
+                <use
+                  href="#p-b-peekabo-scene"
+                  width="1600"
+                  height="1120"
+                  transform="translate(760.0 430.0) scale(0.5000)"
+                  opacity=".22"
+                />
+              </svg>
+              <header class="bn">
+                <span class="wm">ARTHUR</span
+                ><span class="seg"
+                  ><span class="">Konstruksi</span
+                  ><span class="">Teknologi</span
+                  ><span class="">Peekabo</span></span
+                ><span class="pg">Cara kami bekerja</span
+                ><span class="pg">Kontak</span><span class="sp"></span
+                ><span class="pill">Cari <kbd>⌘K</kbd></span
+                ><span class="pill lang"><b>ID</b><i>EN</i></span
+                ><span class="cta">Ceritakan masalahnya <span>→</span></span>
+              </header>
+              <div class="g-bb" style="left: 56px; width: 640px">
+                <span class="eye">Cara kami bekerja</span>
+                <ul class="g-janji">
+                  <li>
+                    Lingkup, harga, target, dan laporan disepakati tertulis
+                    sebelum kerja dimulai.
+                  </li>
+                  <li>
+                    Tenaga ahli bekerja di lapangan proyek Anda; nama atau
+                    sertifikat tidak dipinjamkan.
+                  </li>
+                  <li>Sistem, data, kode, dan merek tetap milik Anda.</li>
+                  <li>
+                    Komisi dari mitra kami ungkapkan, dan jaringan penjual kami
+                    dibayar dari penjualan yang benar-benar terjadi.
+                  </li>
+                  <li>Kami tidak menjanjikan keuntungan instan.</li>
+                </ul>
+              </div>
+              <div class="g-bb" style="left: 790px; width: 594px">
+                <span class="eye">Langkah pertama</span>
+                <h2>
+                  Ceritakan masalahnya. Kami tentukan unit mana yang bekerja
+                  lebih dulu.
+                </h2>
+                <span class="g-btn-d">Ke halaman kontak <span>→</span></span>
+              </div>
+              <svg
+                class="stp"
+                viewBox="0 0 300 81"
+                style="
+                  left: 800px;
+                  top: 540px;
+                  width: 270px;
+                  height: 73px;
+                  transform: rotate(-7deg);
+                "
+                aria-hidden="true"
+              >
+                <g filter="url(#c-ink)" opacity=".93">
+                  <rect
+                    x="3"
+                    y="3"
+                    width="294"
+                    height="75"
+                    rx="3"
+                    fill="none"
+                    stroke="#bcb3fa"
+                    stroke-width="4.5"
+                  />
+                  <rect
+                    x="10"
+                    y="10"
+                    width="280"
+                    height="61"
+                    rx="2"
+                    fill="none"
+                    stroke="#bcb3fa"
+                    stroke-width="1.4"
+                  />
+                  <text
+                    x="150"
+                    y="45"
+                    text-anchor="middle"
+                    font-family="Archivo, 'Segoe UI', Arial, sans-serif"
+                    font-weight="800"
+                    font-size="34"
+                    letter-spacing="1"
+                    style="font-stretch: 72%"
+                    fill="#bcb3fa"
+                  >
+                    DISEPAKATI TERTULIS
+                  </text>
+                  <text
+                    x="150"
+                    y="64"
+                    text-anchor="middle"
+                    font-family="Geist Mono,ui-monospace,Consolas,monospace"
+                    font-size="11"
+                    font-weight="600"
+                    letter-spacing="2"
+                    fill="#bcb3fa"
+                  >
+                    SEBELUM KERJA DIMULAI
+                  </text>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <figcaption>
+          <span
+            >Bagian bawah beranda: janji cara kami bekerja, dan stempel ungu
+            terang di dekat langkah pertama.</span
+          ><button class="besar" type="button" data-besar>Perbesar</button>
+        </figcaption>
+      </figure>
+      <figure class="">
+        <div
+          class="fw"
+          data-w="1440"
+          style="--w: 1440; --h: 520"
+          data-besar
+          role="img"
+          aria-label="Sistem gabungan, perpindahan dari beranda ke halaman pekerjaan dalam tiga bingkai: maket bercahaya, pelat rebah, lalu lembar kerja di kertas."
+        >
+          <div class="fr">
+            <div class="g-story">
+              <div class="pan" style="left: 40px; background: #110f0d">
+                <svg
+                  class="pl"
+                  viewBox="0 0 430 301"
+                  style="left: 0px; top: 0px; width: 430px; height: 301px"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <use
+                    href="#p-b-teknologi-scene"
+                    width="1600"
+                    height="1120"
+                    transform="translate(0.0 0.0) scale(0.2687)"
+                  />
+                </svg>
+              </div>
+              <p style="left: 40px">
+                <b>1 · BERANDA</b>Maket bercahaya; kamera bergerak di antara
+                pelat.
+              </p>
+              <i style="left: 480px">→</i>
+              <div class="pan" style="left: 510px; background: #110f0d">
+                <svg
+                  class="pl"
+                  viewBox="0 0 430 301"
+                  style="left: 0px; top: 0px; width: 430px; height: 301px"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <use
+                    href="#p-b-teknologi-datar"
+                    width="1600"
+                    height="1120"
+                    transform="translate(0.0 0.0) scale(0.2687)"
+                  />
+                </svg>
+              </div>
+              <p style="left: 510px">
+                <b>2 · KAMERA TURUN</b>Kamera menghadap tegak lurus; pelat rebah
+                menjadi gambar datar.
+              </p>
+              <i style="left: 950px">→</i>
+              <div class="pan" style="left: 980px; background: #f4f3ef">
+                <svg
+                  class="pl"
+                  viewBox="0 0 430 301"
+                  style="left: 0px; top: 0px; width: 430px; height: 301px"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <use
+                    href="#p-g-a-teknologi"
+                    width="1600"
+                    height="1120"
+                    transform="translate(0.0 0.0) scale(0.2687)"
+                  />
+                </svg>
+              </div>
+              <p style="left: 980px">
+                <b>3 · HALAMAN PEKERJAAN</b>Tinta dan kertas bertukar: pelat
+                yang sama menjadi lembar kerja.
+              </p>
+            </div>
+          </div>
+        </div>
+        <figcaption>
+          <span
+            >Perpindahan dari beranda ke halaman pekerjaan, tiga bingkai (momen
+            set-depth).</span
+          ><button class="besar" type="button" data-besar>Perbesar</button>
+        </figcaption>
+      </figure>
+    </div>
+    <div class="gab2">
+      <figure class="tinggi">
+        <div
+          class="fw"
+          data-w="1440"
+          style="--w: 1440; --h: 2620"
+          data-besar
+          role="img"
+          aria-label="Sistem gabungan, halaman pekerjaan Pesan dan bayar dari meja dalam gaya arah A: kepala halaman seperti kop, pelat diagram alur sebagai lembar kerja, dua paket, batas dan syarat, lalu langkah pertama dengan tombol dan stempel ungu."
+        >
+          <div class="fr">
+            <div class="sg">
+              <header class="bn">
+                <span class="wm">ARTHUR</span
+                ><span class="seg"
+                  ><span class="">Konstruksi</span
+                  ><span class="on">Teknologi</span
+                  ><span class="">Peekabo</span></span
+                ><span class="pg">Cara kami bekerja</span
+                ><span class="pg">Kontak</span><span class="sp"></span
+                ><span class="pill">Cari <kbd>⌘K</kbd></span
+                ><span class="pill lang"><b>ID</b><i>EN</i></span
+                ><span class="cta">Ceritakan masalahnya <span>→</span></span>
+              </header>
+              <div class="g-crumb">
+                <span>Teknologi</span><span>Hasil siap pakai</span
+                ><span>Kuliner dan F&amp;B</span>
+              </div>
+              <div class="g-head">
+                <span class="g-eye"
+                  >Alur kerja yang berjalan tanpa dikejar</span
+                >
+                <h1>Pesan dan bayar dari meja</h1>
+                <p>
+                  Tamu memesan dan membayar dari meja; pesanan langsung masuk ke
+                  dapur.
+                </p>
+              </div>
+              <dl class="g-kop">
+                <div>
+                  <dt>Untuk siapa</dt>
+                  <dd>Untuk pemilik kafe dan resto</dd>
+                </div>
+                <div>
+                  <dt>Unit</dt>
+                  <dd>Teknologi</dd>
+                </div>
+                <div>
+                  <dt>Situasi</dt>
+                  <dd>Kuliner dan F&B</dd>
+                </div>
+              </dl>
+              <section class="g-sec g-sit" style="top: 470px">
+                <h2>Situasinya</h2>
+                <p>
+                  Di jam ramai, tamu kafe Anda
+                  <span class="coret"
+                    >mengantre di kasir<svg
+                      viewBox="0 0 100 40"
+                      preserveAspectRatio="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M8 22 C4 9 30 3 52 4 C78 5 98 11 96 22 C94 33 70 38 46 37 C22 36 6 31 9 18 C11 11 20 7 30 6"
+                        fill="none"
+                        stroke="#110f0d"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        vector-effect="non-scaling-stroke"
+                      /></svg
+                  ></span>
+                  untuk memesan dan membayar. Kasir kewalahan.
+                </p>
+              </section>
+              <svg
+                class="pl"
+                viewBox="0 0 1600 1120"
+                style="left: 56px; top: 690px; width: 1328px; height: 929.6px"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <use
+                  href="#p-g-a-teknologi"
+                  width="1600"
+                  height="1120"
+                  transform="translate(0.0 0.0) scale(1.0000)"
+                /></svg
+              ><span class="g-cap" style="top: 1632px"
+                >Lembar 02 / 03 · Diagram alur pesanan · Rangkaian yang mungkin,
+                bukan proyek yang pernah kami kerjakan.</span
+              >
+              <section class="g-sec g-pkt" style="top: 1700px">
+                <h2>Dua paket</h2>
+                <div>
+                  <article>
+                    <h3>Paket Starter</h3>
+                    <ul>
+                      <li>
+                        Menu pesan dari meja memakai layanan yang sudah jadi.
+                      </li>
+                      <li>Tamu memesan dan membayar dari meja.</li>
+                      <li>
+                        Pesanan masuk ke dapur dengan pembayaran sudah selesai.
+                      </li>
+                    </ul>
+                  </article>
+                  <article>
+                    <h3>Paket Integrator</h3>
+                    <ul>
+                      <li>
+                        Pesanan dari meja disambungkan ke catatan dan aturan
+                        kafe Anda.
+                      </li>
+                      <li>Uang yang masuk cocok dengan catatan pesanan.</li>
+                      <li>Harga dan promo berjalan menurut aturan Anda.</li>
+                    </ul>
+                  </article>
+                </div>
+              </section>
+              <section class="g-sec g-batas" style="top: 2010px">
+                <h2>Batas dan syarat</h2>
+                <p>
+                  Perangkat keras di kafe Anda, seperti tablet atau printer,
+                  tidak termasuk.
+                </p>
+              </section>
+              <section class="g-sec g-lp" style="top: 2130px">
+                <h2>Langkah pertama</h2>
+                <h3>Minta sesi diagnosis</h3>
+                <p>
+                  Di sesi itu kami melihat alur pesanan di kafe Anda hari ini
+                  dan menentukan paket yang cukup. Bila belum waktunya, kami
+                  mengatakannya terus terang dan menyarankan persiapan satu
+                  sampai tiga bulan. Biaya konsultasinya bersifat pilihan.
+                </p>
+                <p class="muted">
+                  Kami tidak membangun dari nol bila layanan yang sudah matang
+                  menyelesaikan masalahnya; kami menyarankannya lebih dulu, dan
+                  berkata jujur bila sesuatu belum perlu Anda beli.
+                </p>
+                <div class="g-act">
+                  <span class="g-btn">Mulai percakapan <span>→</span></span
+                  ><span class="g-link">Cara kami dibayar</span>
+                </div>
+              </section>
+              <svg
+                class="stp"
+                viewBox="0 0 300 81"
+                style="
+                  left: 1080px;
+                  top: 2178px;
+                  width: 270px;
+                  height: 73px;
+                  transform: rotate(-6deg);
+                "
+                aria-hidden="true"
+              >
+                <g filter="url(#c-ink)" opacity=".93">
+                  <rect
+                    x="3"
+                    y="3"
+                    width="294"
+                    height="75"
+                    rx="3"
+                    fill="none"
+                    stroke="#5d42af"
+                    stroke-width="4.5"
+                  />
+                  <rect
+                    x="10"
+                    y="10"
+                    width="280"
+                    height="61"
+                    rx="2"
+                    fill="none"
+                    stroke="#5d42af"
+                    stroke-width="1.4"
+                  />
+                  <text
+                    x="150"
+                    y="45"
+                    text-anchor="middle"
+                    font-family="Archivo, 'Segoe UI', Arial, sans-serif"
+                    font-weight="800"
+                    font-size="34"
+                    letter-spacing="1"
+                    style="font-stretch: 72%"
+                    fill="#5d42af"
+                  >
+                    DISEPAKATI TERTULIS
+                  </text>
+                  <text
+                    x="150"
+                    y="64"
+                    text-anchor="middle"
+                    font-family="Geist Mono,ui-monospace,Consolas,monospace"
+                    font-size="11"
+                    font-weight="600"
+                    letter-spacing="2"
+                    fill="#5d42af"
+                  >
+                    SEBELUM KERJA DIMULAI
+                  </text>
+                </g>
+              </svg>
+              <div class="g-sec g-foot" style="top: 2560px">
+                <span>Kembali ke situasi</span
+                ><span>Kembali ke daftar situasi</span
+                ><span>Cetak halaman ini</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <figcaption>
+          <span
+            >Halaman pekerjaan Pesan dan bayar dari meja dalam gaya A. Coretan
+            tinta menandai masalah yang dijawab; stempel dan tombol ungu di
+            langkah pertama.</span
+          ><button class="besar" type="button" data-besar>Perbesar</button>
+        </figcaption>
+      </figure>
+      <div>
+        <figure class="">
+          <div class="duo">
+            <div
+              class="fw"
+              data-w="390"
+              style="--w: 390; --h: 844"
+              data-besar
+              role="img"
+              aria-label="Sistem gabungan, halaman pekerjaan di ponsel: kepala halaman dan awal pelat."
+            >
+              <div class="fr">
+                <div class="sg">
+                  <header class="bnp">
+                    <span class="wm">ARTHUR</span><span class="sp"></span
+                    ><span class="pill">Cari</span
+                    ><span class="pill">Menu</span>
+                  </header>
+                  <div class="gp-crumb">
+                    <span>Teknologi</span><span>Hasil siap pakai</span
+                    ><span>Kuliner dan F&amp;B</span>
+                  </div>
+                  <div class="gp-head">
+                    <span class="g-eye" style="font-size: 11px"
+                      >Alur kerja yang berjalan tanpa dikejar</span
+                    >
+                    <h1>Pesan dan bayar dari meja</h1>
+                    <p>
+                      Tamu memesan dan membayar dari meja; pesanan langsung
+                      masuk ke dapur.
+                    </p>
+                    <dl>
+                      <div>
+                        <dt>Untuk siapa</dt>
+                        <dd>Untuk pemilik kafe dan resto</dd>
+                      </div>
+                      <div>
+                        <dt>Unit</dt>
+                        <dd>Teknologi</dd>
+                      </div>
+                      <div>
+                        <dt>Situasi</dt>
+                        <dd>Kuliner dan F&B</dd>
+                      </div>
+                    </dl>
+                  </div>
+                  <svg
+                    class="pl"
+                    viewBox="0 0 1600 1120"
+                    style="
+                      left: -6px;
+                      top: 462px;
+                      width: 402px;
+                      height: 281.4px;
+                    "
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <use
+                      href="#p-g-a-teknologi"
+                      width="1600"
+                      height="1120"
+                      transform="translate(0.0 0.0) scale(1.0000)"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div
+              class="fw"
+              data-w="390"
+              style="--w: 390; --h: 844"
+              data-besar
+              role="img"
+              aria-label="Sistem gabungan, langkah pertama di ponsel dengan tombol dan stempel ungu."
+            >
+              <div class="fr">
+                <div class="sg">
+                  <header class="bnp">
+                    <span class="wm">ARTHUR</span><span class="sp"></span
+                    ><span class="pill">Cari</span
+                    ><span class="pill">Menu</span>
+                  </header>
+                  <div class="gp-lp">
+                    <span class="g-eye" style="font-size: 11px"
+                      >Langkah pertama</span
+                    >
+                    <h3>Minta sesi diagnosis</h3>
+                    <p>
+                      Di sesi itu kami melihat alur pesanan di kafe Anda hari
+                      ini dan menentukan paket yang cukup. Bila belum waktunya,
+                      kami mengatakannya terus terang dan menyarankan persiapan
+                      satu sampai tiga bulan. Biaya konsultasinya bersifat
+                      pilihan.
+                    </p>
+                    <p class="muted">
+                      Kami tidak membangun dari nol bila layanan yang sudah
+                      matang menyelesaikan masalahnya; kami menyarankannya lebih
+                      dulu, dan berkata jujur bila sesuatu belum perlu Anda
+                      beli.
+                    </p>
+                    <span class="g-btn">Mulai percakapan <span>→</span></span
+                    ><span class="g-link">Cara kami dibayar</span>
+                  </div>
+                  <svg
+                    class="stp"
+                    viewBox="0 0 300 81"
+                    style="
+                      left: 90px;
+                      top: 652px;
+                      width: 210px;
+                      height: 57px;
+                      transform: rotate(-6deg);
+                    "
+                    aria-hidden="true"
+                  >
+                    <g filter="url(#c-ink)" opacity=".93">
+                      <rect
+                        x="3"
+                        y="3"
+                        width="294"
+                        height="75"
+                        rx="3"
+                        fill="none"
+                        stroke="#5d42af"
+                        stroke-width="4.5"
+                      />
+                      <rect
+                        x="10"
+                        y="10"
+                        width="280"
+                        height="61"
+                        rx="2"
+                        fill="none"
+                        stroke="#5d42af"
+                        stroke-width="1.4"
+                      />
+                      <text
+                        x="150"
+                        y="45"
+                        text-anchor="middle"
+                        font-family="Archivo, 'Segoe UI', Arial, sans-serif"
+                        font-weight="800"
+                        font-size="34"
+                        letter-spacing="1"
+                        style="font-stretch: 72%"
+                        fill="#5d42af"
+                      >
+                        DISEPAKATI TERTULIS
+                      </text>
+                      <text
+                        x="150"
+                        y="64"
+                        text-anchor="middle"
+                        font-family="Geist Mono,ui-monospace,Consolas,monospace"
+                        font-size="11"
+                        font-weight="600"
+                        letter-spacing="2"
+                        fill="#5d42af"
+                      >
+                        SEBELUM KERJA DIMULAI
+                      </text>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <figcaption>
+            <span
+              >Halaman pekerjaan yang sama di ponsel: kepala halaman, lalu
+              langkah pertama.</span
+            ><button class="besar" type="button" data-besar>Perbesar</button>
+          </figcaption>
+        </figure>
+        <h3>Yang menyatukan</h3>
+        <ul>
+          <li>Satu navbar bentuk B, sama di tema gelap dan terang.</li>
+          <li>
+            Satu keluarga huruf pada tiga lebar: lebar untuk judul panggung,
+            normal untuk dokumen, sempit untuk stempel. Archivo di sini
+            pengganti sementara (SIL OFL 1.1); belum ada huruf berlisensi yang
+            dipilih.
+          </li>
+          <li>
+            Satu gambar: model kafe yang sama, digambar aksonometri di panggung
+            dan garis biasa di dokumen.
+          </li>
+          <li>
+            Satu warna aksen, ungu, hanya untuk janji dan ajakan: ungu terang di
+            tanah gelap, ungu di kertas. Coretan memakai tinta, bukan ungu.
+          </li>
+          <li>
+            Perpindahan yang bercerita: pelat bercahaya mendarat dan menjadi
+            lembar kertas; stempel mendarat di langkah pertama.
+          </li>
+        </ul>
+        <h3>Yang perlu Anda putuskan</h3>
+        <ol>
+          <li>
+            Ungu sebagai warna aksen. Ini membuka lagi keputusan monokrom Tahap
+            66.
+          </li>
+          <li>
+            Pembagian halaman terang dan gelap seperti tabel di atas, atau lain.
+          </li>
+          <li>
+            Satu keluarga huruf dengan sumbu lebar, dan nanti huruf
+            berlisensinya.
+          </li>
+        </ol>
+        <h3>Kontras</h3>
+        <div class="tbl">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Pasangan</th>
+                <th scope="col">Rasio</th>
+                <th scope="col">Ambang</th>
+                <th scope="col">Hasil</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <span class="sw" style="color: #f4f3ef; background: #110f0d"
+                    >Aa</span
+                  >Panggung (B): kertas di atas tinta
+                </td>
+                <td class="n">17,23:1</td>
+                <td>4,5:1 teks</td>
+                <td class="ok">Lulus</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="sw" style="color: #110f0d; background: #bcb3fa"
+                    >Aa</span
+                  >Panggung: tombol ajakan, tinta di atas ungu terang
+                </td>
+                <td class="n">9,99:1</td>
+                <td>4,5:1 teks</td>
+                <td class="ok">Lulus</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="sw" style="color: #bcb3fa; background: #110f0d"
+                    >Aa</span
+                  >Panggung: stempel ungu terang di atas tinta
+                </td>
+                <td class="n">9,99:1</td>
+                <td>4,5:1 teks</td>
+                <td class="ok">Lulus</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="sw" style="color: #110f0d; background: #f4f3ef"
+                    >Aa</span
+                  >Dokumen (A): tinta di atas kertas
+                </td>
+                <td class="n">17,23:1</td>
+                <td>4,5:1 teks</td>
+                <td class="ok">Lulus</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="sw" style="color: #4a4846; background: #f4f3ef"
+                    >Aa</span
+                  >Dokumen: keterangan tinta 75%
+                </td>
+                <td class="n">8,20:1</td>
+                <td>4,5:1 teks</td>
+                <td class="ok">Lulus</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="sw" style="color: #110f0d; background: #ebeae6"
+                    >Aa</span
+                  >Dokumen: tinta di atas blok langkah pertama (tinta 4%)
+                </td>
+                <td class="n">15,89:1</td>
+                <td>4,5:1 teks</td>
+                <td class="ok">Lulus</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="sw" style="color: #5d42af; background: #f4f3ef"
+                    >Aa</span
+                  >Janji dan ajakan (C): stempel ungu di atas kertas
+                </td>
+                <td class="n">6,60:1</td>
+                <td>4,5:1 teks</td>
+                <td class="ok">Lulus</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="sw" style="color: #5d42af; background: #ebeae6"
+                    >Aa</span
+                  >Janji dan ajakan: stempel ungu di atas blok langkah pertama
+                </td>
+                <td class="n">6,09:1</td>
+                <td>4,5:1 teks</td>
+                <td class="ok">Lulus</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="sw" style="color: #f4f3ef; background: #5d42af"
+                    >Aa</span
+                  >Janji dan ajakan: tombol, kertas di atas ungu
+                </td>
+                <td class="n">6,60:1</td>
+                <td>4,5:1 teks</td>
+                <td class="ok">Lulus</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="sw" style="color: #110f0d; background: #f4f3ef"
+                    >━</span
+                  >Coretan tinta di atas kertas
+                </td>
+                <td class="n">17,23:1</td>
+                <td>3:1 garis</td>
+                <td class="ok">Lulus</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Dampak ke urutan kerja</h3>
+        <p>
+          Tidak ada paket baru. R4 tetap membangun B (beranda, pelat, navbar)
+          ditambah jalur datar A. R5 menerapkan gaya A di halaman dokumen saat
+          halaman dibangun ulang. R6 memasang stempel dan coretan C bersama
+          momen gerak yang sudah direncanakan, misalnya Janji dicap di
+          MOTION-SPEC §13.6.
+        </p>
+      </div>
+    </div>
+  </section>
   <nav class="pilih" aria-label="Tampilkan arah">
     <span>Tampilkan</span
     ><button type="button" data-pilih="semua" aria-pressed="true">

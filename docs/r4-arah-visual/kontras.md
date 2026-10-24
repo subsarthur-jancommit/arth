@@ -45,6 +45,21 @@ Ini hitungan, bukan pengukuran di halaman yang dirender. Bila satu arah dibangun
 | Garis cetak: ungu di atas kertas               | `#5d42af` | `#f8fafd` | 7,01:1  | 3:1    | Lulus |
 | Coretan: tinta di atas kertas                  | `#151822` | `#f8fafd` | 16,94:1 | 3:1    | Lulus |
 
+## Sistem gabungan (usulan)
+
+| Pasangan                                                    | Depan     | Latar     | Rasio   | Ambang | Hasil |
+| ----------------------------------------------------------- | --------- | --------- | ------- | ------ | ----- |
+| Panggung (B): kertas di atas tinta                          | `#f4f3ef` | `#110f0d` | 17,23:1 | 4,5:1  | Lulus |
+| Panggung: tombol ajakan, tinta di atas ungu terang          | `#110f0d` | `#bcb3fa` | 9,99:1  | 4,5:1  | Lulus |
+| Panggung: stempel ungu terang di atas tinta                 | `#bcb3fa` | `#110f0d` | 9,99:1  | 4,5:1  | Lulus |
+| Dokumen (A): tinta di atas kertas                           | `#110f0d` | `#f4f3ef` | 17,23:1 | 4,5:1  | Lulus |
+| Dokumen: keterangan tinta 75%                               | `#4a4846` | `#f4f3ef` | 8,20:1  | 4,5:1  | Lulus |
+| Dokumen: tinta di atas blok langkah pertama (tinta 4%)      | `#110f0d` | `#ebeae6` | 15,89:1 | 4,5:1  | Lulus |
+| Janji dan ajakan (C): stempel ungu di atas kertas           | `#5d42af` | `#f4f3ef` | 6,60:1  | 4,5:1  | Lulus |
+| Janji dan ajakan: stempel ungu di atas blok langkah pertama | `#5d42af` | `#ebeae6` | 6,09:1  | 4,5:1  | Lulus |
+| Janji dan ajakan: tombol, kertas di atas ungu               | `#f4f3ef` | `#5d42af` | 6,60:1  | 4,5:1  | Lulus |
+| Coretan tinta di atas kertas                                | `#110f0d` | `#f4f3ef` | 17,23:1 | 3:1    | Lulus |
+
 Token sumber:
 
 - `#110f0d`: --color-ink, oklch(0.17 0.006 66)

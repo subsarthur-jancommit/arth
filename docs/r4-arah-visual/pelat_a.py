@@ -7,6 +7,14 @@ from pelat_dasar import board_ortho, flow_ortho, konstruksi_ortho, scale_bar
 from warna import X
 
 S = style_a()
+F = 'syne'  # huruf judul; sistem gabungan memakai 'arch' (lihat pakai_huruf)
+WIDE = None  # lebar huruf untuk merek dan nomor lembar
+
+
+def pakai_huruf(fam, wide=None):
+    """Ganti huruf judul arah A. Sistem gabungan memakai satu keluarga."""
+    global S, F, WIDE
+    S, F, WIDE = style_a(fam), fam, wide
 SITUASI = ('Anda menyewa tempat untuk kafe baru dan ingin kafe itu siap '
            'melayani sejak hari pertama dibuka.')
 JUJUR = 'Rangkaian yang mungkin, bukan proyek yang pernah kami kerjakan.'
@@ -49,7 +57,7 @@ def kop(unit, kerja, isi, row7_label, row7, nomor, bar=False):
     ink, muted = X['ink'], X['muted_a']
     x, w = 1258, 296
     hair = dict(stroke=ink, stroke_width=1, stroke_opacity=0.28)
-    out = [text(x, 84, 'ARTHUR', 38, 'syne', ink, weight=800, ls=-0.5),
+    out = [text(x, 84, 'ARTHUR', 38 if not WIDE else 30, F, ink, weight=800, ls=-0.5, stretch=WIDE),
            text(x, 114, 'Unit ' + unit, 14, 'mono', muted)]
 
     def label(y, s):
@@ -59,11 +67,11 @@ def kop(unit, kerja, isi, row7_label, row7, nomor, bar=False):
     for y in rows:
         out.append(line((1236, y), (1576, y), **hair))
     out.append(label(166, 'Pekerjaan'))
-    out.append(text(x, 196, wrap(kerja, 21, 'syne', w), 21, 'syne', ink, weight=600, lh=1.2))
+    out.append(text(x, 196, wrap(kerja, 21, F, w), 21, F, ink, weight=600, lh=1.2))
     out.append(label(276, 'Isi lembar'))
     out.append(text(x, 304, isi, 15, 'mono', ink, lh=1.4))
     out.append(label(376, 'Situasi'))
-    out.append(text(x, 404, wrap(SITUASI, 16.5, 'syne', w), 16.5, 'syne', ink, lh=1.32))
+    out.append(text(x, 404, wrap(SITUASI, 16.5, F, w), 16.5, F, ink, lh=1.32))
     out.append(label(526, 'Catatan'))
     out.append(text(x, 552, wrap(JUJUR, 13, 'mono', w), 13, 'mono', ink, lh=1.42))
     out.append(label(626, 'Wilayah'))
@@ -72,9 +80,9 @@ def kop(unit, kerja, isi, row7_label, row7, nomor, bar=False):
     if bar:
         out.append(scale_bar(x, 752, SKALA, S))
     else:
-        out.append(text(x, 734, wrap(row7, 16.5, 'syne', w), 16.5, 'syne', ink, lh=1.32))
+        out.append(text(x, 734, wrap(row7, 16.5, F, w), 16.5, F, ink, lh=1.32))
     out.append(label(856, 'Lembar'))
-    out.append(text(x - 4, 1010, nomor, 118, 'syne', ink, weight=800, ls=-4))
+    out.append(text(x - 4, 1010, nomor, 118, F, ink, weight=800, ls=-4, stretch=WIDE))
     out.append(text(1478, 1004, '/ 03', 22, 'mono', ink, weight=500))
     return ''.join(out)
 
@@ -83,10 +91,10 @@ def konstruksi():
     s = SKALA
     plan = OrthoXY(80 + 2.6 * s, 72 + 1.87 * s, s)
     sec = OrthoXZ(80 + 2.6 * s, 1000, s)
-    title_plan = (text(80, 512, 'Denah lantai 1', 24, 'syne', X['ink'], weight=700,
+    title_plan = (text(80, 512, 'Denah lantai 1', 24, F, X['ink'], weight=700,
                        upper=True, ls=0.5)
                   + scale_bar(330, 498, s, S))
-    title_sec = text(80, 1066, 'Potongan A–A', 24, 'syne', X['ink'], weight=700,
+    title_sec = text(80, 1066, 'Potongan A–A', 24, F, X['ink'], weight=700,
                      upper=True, ls=0.5)
     return (sheet_frame()
             + konstruksi_ortho(S, plan, sec, title_plan=title_plan, title_sec=title_sec)
@@ -95,7 +103,7 @@ def konstruksi():
 
 
 def teknologi():
-    title = (text(80, 112, 'Diagram alur pesanan', 24, 'syne', X['ink'], weight=700,
+    title = (text(80, 112, 'Diagram alur pesanan', 24, F, X['ink'], weight=700,
                   upper=True, ls=0.5)
              + text(80, 136, 'Pesan dan bayar dari meja · Layar pesanan di dapur · '
                     'Bot stok bahan dan pesan ulang ke pemasok', 13, 'mono', X['muted_a']))
@@ -106,7 +114,7 @@ def teknologi():
 
 
 def peekabo():
-    title = text(80, 112, 'Papan kampanye pembukaan', 24, 'syne', X['ink'], weight=700,
+    title = text(80, 112, 'Papan kampanye pembukaan', 24, F, X['ink'], weight=700,
                  upper=True, ls=0.5)
     return (sheet_frame() + title + board_ortho(S)
             + kop('Peekabo', 'Pembukaan cabang atau gerai', 'Papan kampanye\npembukaan',

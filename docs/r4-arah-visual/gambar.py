@@ -284,9 +284,9 @@ def _common(c, ground, halo, label_fam='mono', title_fam='syne', title_w=700,
     )
 
 
-def style_a():
+def style_a(fam='syne'):
     c = X['ink']
-    s = _common(c, X['paper'], X['paper'])
+    s = _common(c, X['paper'], X['paper'], title_fam=fam, node_fam=fam)
     s['roles'] = _roles(
         c,
         cut=dict(fill='url(#a-hatch)', stroke=c, stroke_width=2.2),
