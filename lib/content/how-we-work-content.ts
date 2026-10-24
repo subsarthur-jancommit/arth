@@ -14,6 +14,8 @@ const textSchema = z.string().trim().min(1)
 
 const howWeWorkSourceSchema = z.object({
   _id: z.string(),
+  // Optional in the Studio schema; the page leaves the lead out without it.
+  pembuka: textSchema.nullable().optional(),
   janji: z
     .array(
       z.object({
@@ -41,6 +43,7 @@ const howWeWorkSourceSchema = z.object({
 
 export interface HowWeWorkSource {
   _id: string
+  pembuka?: string | null
   janji:
     | {
         _key: string
@@ -86,6 +89,7 @@ export function resolveHowWeWorkContent(
 
   const content = parsed.data
   const values = [
+    content.pembuka,
     content.hakMilikKlien,
     content.pengungkapanKomisi,
     content.yangTidakDijual,

@@ -11,10 +11,6 @@ import {
 import { localizedPath } from '@/lib/i18n/paths'
 import { PUBLISHED_LOCALES, type Locale } from '@/lib/i18n/routing'
 import { isAwaitingContent } from '@/lib/seo/awaiting-content'
-import {
-  HOW_WE_WORK_LEAD,
-  THREE_UNITS_FALLBACK_DESCRIPTION,
-} from '@/lib/seo/page-descriptions'
 import { type Localized, SITE } from '@/lib/seo/site'
 
 export interface StaticRoute {
@@ -28,11 +24,11 @@ export interface StaticRoute {
    */
   label: Localized<string>
   /**
-   * For a page whose head reads its description from the CMS, only the
-   * fallback: the surfaces print the head's own, through
-   * {@link RouteDescriptions}.
+   * Absent for a page whose head reads its description from the CMS: the
+   * surfaces print the head's own, through {@link RouteDescriptions}, and
+   * the catalog keeps no copy of it, so a failed read prints the link alone.
    */
-  description: Localized<string>
+  description?: Localized<string>
   changeFrequency: NonNullable<MetadataRoute.Sitemap[number]['changeFrequency']>
   priority: number
 }
@@ -46,7 +42,7 @@ export interface LocalizedStaticRoute extends Omit<
   'label' | 'description'
 > {
   label: string
-  description: string
+  description: string | null
   /** The locale-free path this entry was expanded from (`/`, `/cara-kerja`). */
   template: string
   locale: Locale
@@ -177,36 +173,25 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = (
       priority: 1,
     },
     /*
-     * The surfaces print what the page head says, not this line:
+     * No description here: the surfaces print what the page head says.
      * `lib/seo/route-descriptions.ts` reads the published `howWeWork`
      * document through the page's own loader and applies the head's own rule
-     * (its SEO description, else its first written promise). An edit in the
-     * Studio therefore reaches the head and the catalog together.
-     *
-     * This is printed only when that document cannot be read, and it is the
-     * page's own lead, not a copy of anything the Studio holds. Both slots
-     * carry it because the page resolves `en` to the Indonesian copy until an
-     * English translation is approved (owner, 2026-10-22).
+     * (its SEO description, else its first written promise), so an edit in
+     * the Studio reaches the head and the catalog together. When that read
+     * fails, the surfaces print the link alone rather than a sentence kept in
+     * code.
      */
     {
       path: '/cara-kerja',
       label: { en: 'How we work', id: 'Cara kami bekerja' },
-      description: { en: HOW_WE_WORK_LEAD, id: HOW_WE_WORK_LEAD },
       changeFrequency: 'monthly',
       priority: 0.7,
     },
-    /*
-     * Resolved the same way, from the first published sequence's SEO
-     * description. The fallback is the head's own, which the head also uses
-     * for `en`.
-     */
+    // Resolved the same way, from the first published sequence's SEO
+    // description.
     {
       path: '/satu-klien-tiga-unit',
       label: { en: 'One client, three units', id: 'Satu klien, tiga unit' },
-      description: {
-        en: THREE_UNITS_FALLBACK_DESCRIPTION,
-        id: THREE_UNITS_FALLBACK_DESCRIPTION,
-      },
       changeFrequency: 'monthly',
       priority: 0.6,
     },
@@ -267,7 +252,7 @@ export const STATIC_ROUTES: readonly LocalizedStaticRoute[] =
     STATIC_ROUTE_TEMPLATES.map((route) => ({
       ...route,
       label: route.label[locale],
-      description: route.description[locale],
+      description: route.description?.[locale] ?? null,
       template: route.path,
       locale,
       path: localizedPath(locale, route.path),

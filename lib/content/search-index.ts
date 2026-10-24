@@ -112,7 +112,7 @@ export function pageEntries(
       id: `page:${route.path}`,
       kind: isUnitPage ? ('unit' as const) : ('page' as const),
       label: route.label[locale],
-      description: descriptions.get(href) ?? route.description[locale],
+      description: descriptions.get(href) ?? route.description?.[locale] ?? '',
       href,
       /*
        * The path, locale-free, because `meta` is "the fact that identifies

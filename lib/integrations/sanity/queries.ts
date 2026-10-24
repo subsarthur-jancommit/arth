@@ -1109,6 +1109,7 @@ export const sequencesPreviewQuery = defineQuery(`
 export const howWeWorkQuery = defineQuery(`
   *[_type == "howWeWork" && statusTinjauan == "disetujui"][0] {
     _id,
+    "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),
     "janji": janji[]{
       _key,
       "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
@@ -1142,6 +1143,7 @@ export const howWeWorkQuery = defineQuery(`
 export const howWeWorkPreviewQuery = defineQuery(`
   *[_type == "howWeWork"][0] {
     _id,
+    "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),
     "janji": janji[]{
       _key,
       "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
