@@ -1,8 +1,9 @@
 # Catatan tulis V4 dan V5
 
 Setiap penulisan isi ke Sanity untuk fase V4 (halaman pekerjaan) dan sisa V5
-(Kebijakan) dari `docs/RENCANA-KONTEKS-V2.md`, satu entri per tulisan. Gaya dan
-urutannya sama dengan `docs/V3-CATATAN-TULIS.md`.
+(Kebijakan) dari `docs/RENCANA-KONTEKS-V2.md`, ditambah perbaikan temuan
+kelompok A, satu entri per tulisan. Gaya dan urutannya sama dengan
+`docs/V3-CATATAN-TULIS.md`.
 
 **Izin untuk semua entri di bawah.** Izin tetap pemilik, ditulis di sesi
 koordinator pada 23 Oktober 2026: "Saya konfirmasi izin tetap untuk sisa
@@ -258,3 +259,145 @@ barang pesanan, dan jaringan.
    yang terbit sebelum V4, menyimpan bahasa di `_key`, dan kueri situs membacanya
    dari sana. Tulisan V4 dan V5 mengikuti data yang ada. Menyeragamkannya butuh
    migrasi tersendiri.
+
+Butir 1, 2, dan 4 ditangani di bagian Temuan kelompok A di bawah. Butir 3 dan
+5 tetap terbuka.
+
+## Temuan kelompok A
+
+Lima temuan dari pekerjaan V4 sampai V6 diperbaiki dalam satu sesi: kata
+katalog di halaman, jalur jaringan Peekabo, kalimat jujur Teknologi, teks
+editorial yang tersisa di kode, dan sebutan wilayah Teknologi. Kodenya ada di
+PR #43. Dua tulisan ke Sanity dicatat di bawah. Cara kerjanya sama dengan
+entri V4, dan cadangan serta rencananya ada di
+`_cadangan-sanity/2026-10-23-temuan-a/`.
+
+### Tulis 1: kata katalog dan wilayah Teknologi
+
+- **Izin:** izin tetap pemilik, 23 Oktober 2026: "Saya konfirmasi izin tetap
+  untuk sisa RENCANA-KONTEKS-V2 seperti kamu jelaskan: tulis dan terbitkan ke
+  Sanity sesuai rencana, merge setelah CI hijau tanpa tinjauan preview saya,
+  Kebijakan terbit bertanda tinjauan hukum. Hapus dummy saya lakukan sendiri."
+  Permintaan pemilik untuk sesi ini: "Ya, mulai satu sesi baru untuk
+  memperbaiki temuan kelompok A sesuai rencana dan izin tetap: kata katalog di
+  halaman, bug jalur Peekabo jaringan, kalimat jujur Teknologi, sisa teks
+  editorial di kode, dan sebutan wilayah Teknologi yang belum diputuskan."
+- **Sumber:** `docs/R1-GLOSARIUM-PEMBACA.md` bagian 1 (kata katalog) dan
+  bagian 6 (langkah pertama per pembaca). Untuk wilayah: wilayah layanan
+  Teknologi belum diputuskan pemilik.
+- **Ditulis:** 15 dokumen terbit, 36 medan, revisi `px20Ric2pGxO5zFljAIZ7S`,
+  23 Oktober 2026 pukul 16.24 UTC.
+  - **Sisi Untuk pelaku proyek.** Langkah pertamanya kini "Ceritakan bagian
+    yang macet", dengan kalimat "Kami mulai dari satu bagian proyek yang tak
+    sanggup Anda tangani. Seluruh lingkup atau paket menurut posisi Anda bisa
+    menyusul." Kalimat ini sudah tayang di halaman pekerjaan V4 sisi ini. Nama
+    tiga cara membeli diganti: Eceran per masalah menjadi "Ambil satu bagian
+    proyek", Paket hulu-hilir menjadi "Serahkan seluruh lingkup kepada satu
+    subkon", dan Paket rakitan menurut profil menjadi "Paket yang disusun
+    menurut posisi Anda di proyek".
+  - **Dua belas bab sisi itu.** Ajakannya sama dengan langkah pertama sisi.
+    Bab Arthur sebagai penyedia untuk instansi memakai ajakan halaman
+    pekerjaannya (GOV-03), "Ceritakan barang yang dibutuhkan", karena
+    pembacanya sekolah, dinas, kelurahan, dan desa.
+  - **Nama dan batas bab.** "Paket hulu-hilir untuk kontraktor utama" menjadi
+    "Satu subkon untuk seluruh lingkup", dari padanan glosarium. "Paket rakitan
+    menurut profil pembeli" menjadi "Paket yang disusun menurut posisi Anda di
+    proyek". Di batas bab Alat dan peralatan, "Bab ini mencakup" menjadi
+    "Pekerjaan di sini mencakup".
+  - **Sisi Untuk yang ingin hasil siap pakai.** "Sebagai penyaring" dibuang
+    dari langkah pertama dan dari keterangan Sesi diagnosis.
+  - **Bot pemantau tender regional (KON-01).** Dampaknya kini "Paket tender
+    baru yang sesuai kualifikasi dikirim setiap hari." Situasinya kini dibuka
+    dengan "Tender di wilayah Anda sering terlewat". Di Teknologi, hanya
+    dokumen ini yang menyebut Subang, Purwakarta, dan Bandung.
+  - Setiap dokumen mendapat entri jejak sumber `temuan-a-2026-10-23`. Slug,
+    status, metadata, dan medan lain tidak diubah.
+- **Cadangan:** ekspor publik 390 dokumen, sha256 `fcecdc254ffe…`; dokumen
+  sasaran `d51e8f5390b0…`.
+- **Diperiksa sesudahnya:** ke-36 medan sama kata per kata dengan rencana,
+  dibaca dari API publik. Tidak ada draf isi Arthur yang tersisa. Halaman bab
+  dan halaman pekerjaan di produksi memuat kata baru dalam beberapa menit.
+- **Di situs:** kedua halaman sisi masih menampilkan kata lama sampai
+  24 Oktober 04.45 UTC. Datanya disimpan dengan `'use cache'` bertag `side`,
+  dan tag itu baru dibatalkan oleh webhook Sanity, yang belum menembak
+  (keputusan D4). Halaman sisi akan memuat kata baru pada deploy produksi
+  berikutnya, yaitu saat PR #43 merge.
+
+### Tulis 2: tiga medan baru dan jembatan Kuliner
+
+- **Izin:** sama dengan tulis 1. Izin tetap pemilik: "Saya konfirmasi izin
+  tetap untuk sisa RENCANA-KONTEKS-V2 seperti kamu jelaskan: tulis dan
+  terbitkan ke Sanity sesuai rencana, merge setelah CI hijau tanpa tinjauan
+  preview saya, Kebijakan terbit bertanda tinjauan hukum. Hapus dummy saya
+  lakukan sendiri." Permintaan pemilik untuk sesi ini: "Ya, mulai satu sesi
+  baru untuk memperbaiki temuan kelompok A sesuai rencana dan izin tetap: kata
+  katalog di halaman, bug jalur Peekabo jaringan, kalimat jujur Teknologi,
+  sisa teks editorial di kode, dan sebutan wilayah Teknologi yang belum
+  diputuskan." Penugasan sesi ini menyebut bahwa izin tetap juga mencakup
+  deploy skema untuk temuan 3.
+- **Deploy skema:** `sanity schemas deploy --workspace default`, dijalankan
+  dari branch PR #43 (`ad6763a`) pada 24 Oktober 2026 pukul 04.41 UTC, lewat
+  CLI yang login sebagai akun pemilik. Dokumen skema `_.schemas.default` kini
+  memuat `bab.jalurJaringan`, `unit.kalimatJujur`, dan `howWeWork.pembuka`.
+  Tidak ada medan yang dihapus atau diubah. Validasi skema lokal bersih
+  sebelum deploy. Catatan skema milik studio terdaftar (aplikasi
+  `wzq57r3u1ckmwj8m33n9bern`, dibuat 6 Oktober) tidak ikut berubah, karena
+  memperbaruinya berarti deploy Studio, di luar tugas ini.
+- **Ditulis:** 4 dokumen terbit, revisi `rjdnMHo0jFlGJGvrNvScoB`, 04.43 UTC.
+  - **Unit Teknologi, `kalimatJujur`:** "Kami tidak membangun dari nol bila
+    layanan yang sudah matang menyelesaikan masalahnya; kami menyarankannya
+    lebih dulu, dan berkata jujur bila sesuatu belum perlu Anda beli." Kalimat
+    ini diambil dari glosarium bagian 10 aturan 5, dan sama kata per kata
+    dengan header Teknologi di dokumen yang sama.
+  - **Bab Kreator, streamer, dan host, `jalurJaringan`:** `creator`, yaitu
+    jalur "Jadi kreator atau host".
+  - **Cara kami bekerja, `pembuka`:** "Lingkup, harga, target, dan laporan
+    disepakati tertulis sebelum kerja dimulai." Ini lead halaman `/cara-kerja`
+    yang sebelumnya ada di kode (`HOW_WE_WORK_LEAD`).
+  - **Bab Kuliner, `jembatan`:** satu jembatan ke Kafe siap buka dari lokasi
+    sewa (FNB-01): "Untuk kafe yang belum buka, unit Konstruksi menyiapkan
+    lokasi sewa sampai alur pelanggan dan dapurnya bekerja." Jembatan ini
+    disetujui di serah bab Kuliner tetapi belum pernah ditulis. Sampai tulisan
+    ini, ia hanya ada di `lib/content/situation-overrides.ts`.
+  - Jejak sumber `temuan-a-3-2026-10-23` ada di keempatnya. Nilai dua bahasa
+    mengikuti bentuk dokumennya masing-masing.
+- **Isi kode yang dicocokkan sebelum dihapus:** ke-51 entri
+  `situation-overrides.ts` dibandingkan medan per medan dengan bab terbit.
+  Medan yang dibandingkan: situasi, untuk siapa, batas, metadata, jembatan,
+  dan pintu masuk. Semuanya sama, kecuali batas bab Alat (di Sanity lebih baru
+  sejak tulis 1) dan jembatan Kuliner (ditulis di sini). Jejak sumber bab-bab
+  itu masih menyebut berkas tersebut. Isinya tetap ada di riwayat git, di
+  `d5128da`.
+- **Cadangan:** ekspor publik 390 dokumen, sha256 `b6b1439401fc…`; dokumen
+  sasaran ada di `sebelum-2.ndjson`.
+- **Diperiksa sesudahnya:** keempat medan sama persis dengan rencana, dibaca
+  dari API publik. Lewat proyeksi seperti kueri situs, ke-24 halaman pekerjaan
+  Teknologi membaca kalimat jujur yang sama, dan halaman pekerjaan unit lain
+  tidak membacanya. Satu-satunya bab jaringan memakai jalur `creator`. Target
+  jembatan Kuliner dan babnya berstatus disetujui.
+- **Di situs:** jembatan Kuliner langsung tampil di halaman bab Kuliner.
+  Kalimat jujur, jalur jaringan, dan lead `/cara-kerja` dari Sanity baru
+  tampil setelah PR #43 merge. Sebelum itu, kode di `main` mengabaikan medan
+  baru, dan `/cara-kerja` tetap menampilkan lead yang sama dari kode. Studio
+  di `main` menampilkan medan baru sebagai "unknown field" sampai PR #43
+  merge. Medan itu jangan dihapus dari Studio.
+
+### Untuk diputuskan pemilik
+
+1. **Wilayah layanan Teknologi.** Sebutan Subang, Purwakarta, dan Bandung
+   dicabut dari halaman bot pemantau tender, satu-satunya halaman Teknologi
+   yang menyebutnya. Bila Teknologi memang hanya melayani tiga wilayah itu,
+   kalimatnya bisa dikembalikan.
+2. **Kata katalog di teks header yang dipakai apa adanya.** Paragraf "Dua
+   pintu masuk." di header Teknologi menyebut "Sisi A" dan "Sisi B". Ajakan
+   unit Peekabo dan langkah kerja ketiganya berbunyi "Kami tentukan lapis mana
+   yang bekerja lebih dulu". Glosarium bagian 1 melarang kata itu tampil,
+   tetapi Aturan isi 11 meminta header siap tayang dipakai apa adanya. Tidak
+   diubah. Pilihan pemilik: biarkan, ganti katanya, atau buang paragraf "Dua
+   pintu masuk." utuh, yang diizinkan skema unit.
+3. **Alamat `/konstruksi/pelaku-proyek/paket-rakitan`.** Slug bab itu masih
+   memuat kata katalog. Menggantinya memindahkan alamat bab itu dan alamat
+   halaman pekerjaan RAK-09. Tidak diubah.
+4. **Ajakan "Ceritakan barang yang dibutuhkan".** Label yang belum ada di
+   glosarium ini (butir 3 di atas) kini juga dipakai bab penyedia untuk
+   instansi.
