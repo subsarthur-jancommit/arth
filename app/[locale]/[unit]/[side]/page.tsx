@@ -10,6 +10,7 @@ import { NoScriptFrontDoors } from '@/components/ui/route-loading'
 import { SectionHeader } from '@/components/ui/section-header'
 import { sideContent, type SideContent } from '@/lib/content/arthur-content'
 import {
+  chapterForPath,
   NETWORK_MONEY_STEP_KEYS,
   NETWORK_PATH_KEYS,
 } from '@/lib/content/network'
@@ -129,6 +130,7 @@ export default async function SidePage({ params }: SidePageProps) {
         name: chapter.nama,
         situation: chapter.situasi,
         types: chapter.jenis ?? [],
+        networkPath: chapter.jalurJaringan ?? null,
         offerCount: chapter.jumlahOffer,
         entryOffer: chapter.pintuMasuk?.judul
           ? {
@@ -148,8 +150,8 @@ export default async function SidePage({ params }: SidePageProps) {
   const networkContent = networkTerms(content.jaringan)
   if (isNetworkSide && !networkContent) return <LocalizedNotFound />
 
-  const networkPaths = NETWORK_PATH_KEYS.map((path, index) => {
-    const chapter = chapters[index]
+  const networkPaths = NETWORK_PATH_KEYS.map((path) => {
+    const chapter = chapterForPath(path, chapters)
 
     return {
       id: path,

@@ -121,7 +121,15 @@ export const VERBATIM_FIELDS = {
     'ringkas',
     'ajakan',
   ],
-  unit: ['judul', 'subjudul', 'pembuka', 'pilar', 'ringkas', 'ajakan'],
+  unit: [
+    'judul',
+    'subjudul',
+    'pembuka',
+    'pilar',
+    'ringkas',
+    'ajakan',
+    'kalimatJujur',
+  ],
   side: ['judul'],
   bab: ['kutipan'],
 } as const satisfies Record<string, readonly string[]>

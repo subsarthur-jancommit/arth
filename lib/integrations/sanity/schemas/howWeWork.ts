@@ -25,6 +25,13 @@ export const howWeWork = defineType({
   validation: contentValidation(),
   fields: [
     defineField({
+      name: 'pembuka',
+      title: 'Pembuka',
+      type: 'internationalizedArrayText',
+      description:
+        'Satu kalimat di bawah judul halaman. Kosongkan bila halaman tidak memakainya.',
+    }),
+    defineField({
       name: 'janji',
       title: 'Janji tertulis',
       type: 'array',

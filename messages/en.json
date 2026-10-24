@@ -43,13 +43,6 @@
     "situationEyebrow": "Start with the problem",
     "situationTitle": "Choose your situation",
     "situationDestination": "To",
-    "sequenceEyebrow": "Sequence",
-    "sequenceTitle": "One client, three units",
-    "sequenceBody": "A café we build can use ordering and table payment, then open with a launch campaign. A broadcast studio we build can be used by live hosts. Each unit can still be bought on its own.",
-    "methodEyebrow": "Working promise",
-    "methodTitle": "How we work",
-    "methodLink": "See Arthur's working promises",
-    "methodFallback": "Scope, price, targets, and reporting are agreed in writing before work begins.",
     "actionEyebrow": "First step",
     "actionFallback": "Tell us the problem.",
     "actionAfterFallback": "We will decide which unit should work first.",
@@ -207,11 +200,10 @@
     "konstruksi": "Konstruksi",
     "teknologi": "Teknologi",
     "peekabo": "Peekabo",
-    "metaDescription": "One of Arthur’s three units, in Subang, Purwakarta, and Bandung.",
     "sideCount": "{count} ways in",
     "sideEyebrow": "Choose your position",
-    "sideTitle": "Start from the side closest to your situation.",
-    "sideLink": "Open side",
+    "sideTitle": "Start from the one closest to your position.",
+    "sideLink": "See the work",
     "problemsEyebrow": "Problems we answer",
     "problemsTitle": "What usually holds your work back.",
     "examplesEyebrow": "Example work",
@@ -226,7 +218,7 @@
     "pillarsTitle": "What we do"
   },
   "side": {
-    "eyebrow": "{unit} side",
+    "eyebrow": "{unit}",
     "pelaku-proyek": "People running a project",
     "pemilik-bangunan": "Building owners",
     "siap-pakai": "Ready to use",
@@ -234,11 +226,10 @@
     "pemilik-usaha": "Business owners",
     "jaringan": "The seller network",
     "navigationLabel": "Explore the {unit} unit",
-    "otherLabel": "The other side of {unit}",
+    "otherLabel": "{unit} for other readers",
     "backToUnit": "Back to {unit}",
-    "metaDescription": "{side} is one of the two sides of Arthur's {unit} unit.",
-    "switcherEyebrow": "Choose a side",
-    "switcherLabel": "Choose the other side of {unit}",
+    "switcherEyebrow": "Who it is for",
+    "switcherLabel": "{unit} for other readers",
     "chaptersEyebrow": "Find the situation",
     "chaptersTitle": "The situations we hear most often.",
     "chapterLabel": "Situation",
@@ -298,7 +289,7 @@
     "paths": {
       "eyebrow": "Choose a path",
       "title": "Three ways into the network.",
-      "chapterLabel": "Chapter",
+      "chapterLabel": "Situation",
       "open": "Open path",
       "referrer": {
         "title": "Refer a transaction",
@@ -306,7 +297,7 @@
       },
       "member": {
         "title": "Become a member",
-        "description": "For people choosing community benefits once the member offers are available."
+        "description": "For people choosing community benefits once membership opens."
       },
       "creator": {
         "title": "Become a creator or host",
@@ -341,63 +332,7 @@
     }
   },
   "sample": {
-    "label": "Sample content",
-    "unitNote": "The unit statement is written once the content type exists to hold it. Nothing here is a claim.",
-    "sideNote": "This side does not state Arthur's position yet. Its words will come from an approved source once the side content type exists."
-  },
-  "studio": {
-    "eyebrow": "How we work",
-    "title": "How we work",
-    "lead": "Arthur is an umbrella over three units: Konstruksi, Teknologi, and Peekabo, the agency among them. Each unit is read from two sides, because the same work looks different depending on which side of it you stand.",
-    "facts": {
-      "founded": "Founded",
-      "foundedValue": "2021",
-      "based": "Based",
-      "basedValue": "Jakarta, working remotely",
-      "team": "Team",
-      "teamValue": "Four, plus specialists per engagement",
-      "languages": "Languages",
-      "languagesValue": "English, Bahasa Indonesia"
-    },
-    "factsNote": "The founding year, location and team size are sample values, not verified facts.",
-    "sampleNote": "Everything on this page—including facts, work, process and figures—is sample material, not an Arthur statement.",
-    "statementEyebrow": "How we think about it",
-    "statement": "Most work fails before anyone writes code. It fails in the week where the brief is still soft, where nobody has said out loud which decisions are actually open and which are already made, and where the cost of being wrong has not been written down. So that is where we start. We read the system that exists, we name the trade-offs, and we put a number on the thing everyone is guessing at. What gets built after that is smaller than what was asked for, and it survives longer.",
-    "evidenceEyebrow": "Work it produced",
-    "measureFacts": "{engagements, plural, one {# engagement} other {# engagements}} for {clients, plural, one {# client} other {# clients}}",
-    "shapesTitle": "Shapes an engagement has taken",
-    "processEyebrow": "How we work",
-    "process": {
-      "scopeTitle": "Scope",
-      "scopeBody": "A week, sometimes two. We read what exists, talk to the people who maintain it, and write down what the engagement is and is not. If the honest answer is that you do not need us, that is the deliverable.",
-      "readTitle": "Read",
-      "readBody": "We map the decisions that are still open and the constraints that are not. Every trade-off gets written where the team can argue with it, months later, without us in the room.",
-      "decideTitle": "Decide",
-      "decideBody": "One recommendation, with the reasoning attached and the alternatives named. We would rather be overruled with the facts in hand than agreed with on authority.",
-      "deliverTitle": "Deliver",
-      "deliverBody": "Built, documented, and handed over so the team can run it without us. The engagement ends on a date we named at the start, not when the budget does."
-    },
-    "capabilitiesEyebrow": "The two sides of each unit",
-    "capabilities": {
-      "konstruksi": "People running a project · Building owners",
-      "teknologi": "Ready to use · Technically fluent",
-      "peekabo": "Business owners · The seller network"
-    },
-    "capabilitiesSeenIn": "Seen in",
-    "colophonEyebrow": "Colophon",
-    "colophonNote": "The details below describe this sample site. They are not claims about Arthur's services or track record.",
-    "colophon": {
-      "built": "Built with",
-      "builtValue": "Next.js on Satūs by darkroom.engineering, MIT licensed",
-      "type": "Type",
-      "typeValue": "Syne for display, Geist Mono for labels",
-      "colour": "Colour",
-      "colourValue": "Authored in oklch, derived with color-mix",
-      "access": "Accessibility",
-      "accessValue": "WCAG 2.2, tested with axe on every route"
-    },
-    "closing": "Arthur's working method will be written after the owner approves the content.",
-    "closingAction": "See Arthur's units"
+    "label": "Sample content"
   },
   "journal": {
     "readingTime": "{minutes} min read",

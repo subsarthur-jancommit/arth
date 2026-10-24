@@ -66,6 +66,13 @@ rencana editorial dan sumber yang tercatat di **Jejak sumber**. Tulis langsung
 kepada situasi pembeli, sebut benda atau langkah kerja yang konkret, dan jangan
 menjanjikan hasil di luar kendali Arthur.
 
+Dua medan di luar offer ikut tampil di halaman pekerjaan dan halaman jaringan.
+**Kalimat jujur di halaman pekerjaan** di dokumen Unit tampil apa adanya di
+bawah langkah pertama setiap halaman pekerjaan unit itu; Teknologi memakainya
+(glosarium pembaca bagian 10, aturan 5). **Jalur di halaman jaringan** di
+dokumen Bab menentukan jalur mana di halaman jaringan Peekabo yang membuka bab
+itu. Bab di sisi jaringan tanpa jalur tidak ditautkan dari halaman jaringan.
+
 Jangan menerbitkan teks yang masih memuat `[PERLU …]`, `isi contoh`, atau
 `teks sementara`. Studio menolaknya. Bila fakta seperti kanal kontak, alamat,
 harga, angka, atau izin klaim belum tersedia, tandai **Perlu Anda** dan tulis
@@ -83,7 +90,8 @@ pemilik, wilayah, dan kanal kontak. Email `kontak@arth.invalid` serta alamat
 contoh yang terlihat hari ini adalah dummy—bukan alamat atau lokasi nyata—dan
 harus diganti sebelum halaman kontak boleh diterbitkan.
 
-**Cara kami bekerja** juga singleton. **Rangkaian tiga unit**, **Tanya jawab**,
+**Cara kami bekerja** juga singleton; medan **Pembuka**-nya adalah kalimat di
+bawah judul halaman `/cara-kerja`. **Rangkaian tiga unit**, **Tanya jawab**,
 dan **Halaman tetap** ada di bagian Isi pendukung. Page memakai `judul` dan
 `isi` berbahasa; medan lama tetap terlihat hanya-baca selama migrasi yang
 disetujui belum terjadi. Jangan menghapus atau mengosongkan medan lama tanpa

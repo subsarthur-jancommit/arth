@@ -11,10 +11,6 @@ import {
 import { localizedPath } from '@/lib/i18n/paths'
 import { PUBLISHED_LOCALES, type Locale } from '@/lib/i18n/routing'
 import { isAwaitingContent } from '@/lib/seo/awaiting-content'
-import {
-  HOW_WE_WORK_LEAD,
-  THREE_UNITS_FALLBACK_DESCRIPTION,
-} from '@/lib/seo/page-descriptions'
 import { type Localized, SITE } from '@/lib/seo/site'
 
 export interface StaticRoute {
@@ -28,11 +24,11 @@ export interface StaticRoute {
    */
   label: Localized<string>
   /**
-   * For a page whose head reads its description from the CMS, only the
-   * fallback: the surfaces print the head's own, through
-   * {@link RouteDescriptions}.
+   * Absent for a page whose head reads its description from the CMS: the
+   * surfaces print the head's own, through {@link RouteDescriptions}, and
+   * the catalog keeps no copy of it, so a failed read prints the link alone.
    */
-  description: Localized<string>
+  description?: Localized<string>
   changeFrequency: NonNullable<MetadataRoute.Sitemap[number]['changeFrequency']>
   priority: number
 }
@@ -46,7 +42,7 @@ export interface LocalizedStaticRoute extends Omit<
   'label' | 'description'
 > {
   label: string
-  description: string
+  description: string | null
   /** The locale-free path this entry was expanded from (`/`, `/cara-kerja`). */
   template: string
   locale: Locale
@@ -108,16 +104,16 @@ const UNIT_LABELS = {
  */
 const UNIT_DESCRIPTIONS = {
   konstruksi: {
-    en: 'Konstruksi, read from two sides: the people running a project, and the people who own the building.',
-    id: 'Konstruksi, dibaca dari dua sisi: yang menjalankan proyek, dan yang memiliki bangunannya.',
+    en: 'Konstruksi, for people running projects and for building owners.',
+    id: 'Konstruksi, untuk pelaku proyek dan untuk pemilik bangunan.',
   },
   teknologi: {
-    en: 'Teknologi, read from two sides: buyers who want a finished thing, and buyers who read the build.',
-    id: 'Teknologi, dibaca dari dua sisi: pembeli yang mau hasil siap pakai, dan pembeli yang paham teknis.',
+    en: 'Teknologi, for owners who want it ready to use and for developers and technical teams.',
+    id: 'Teknologi, untuk yang ingin hasil siap pakai dan untuk yang paham teknis.',
   },
   peekabo: {
-    en: "Peekabo, Arthur's agency, read from two sides: brand and business owners, and the seller network.",
-    id: 'Peekabo, agency-nya Arthur, dibaca dari dua sisi: pemilik usaha dan brand, dan jaringan penjual.',
+    en: "Peekabo, Arthur's agency, for business owners and brands, and for people who want to help sell.",
+    id: 'Peekabo, agency kami, untuk pemilik usaha dan brand, serta untuk yang ingin ikut menjualkan.',
   },
 } satisfies Record<Unit, Localized<string>>
 
@@ -137,28 +133,28 @@ const SIDE_LABELS = {
  */
 const SIDE_DESCRIPTIONS = {
   'pelaku-proyek': {
-    en: 'The Konstruksi side for people running a project.',
-    id: 'Sisi Konstruksi untuk pelaku proyek.',
+    en: 'Konstruksi, for people running projects.',
+    id: 'Konstruksi, untuk pelaku proyek.',
   },
   'pemilik-bangunan': {
-    en: 'The Konstruksi side for people who own the building.',
-    id: 'Sisi Konstruksi untuk pemilik bangunan.',
+    en: 'Konstruksi, for building owners.',
+    id: 'Konstruksi, untuk pemilik bangunan.',
   },
   'siap-pakai': {
-    en: 'The Teknologi side for people who want something ready to use.',
-    id: 'Sisi Teknologi untuk pembaca yang menginginkan hasil siap pakai.',
+    en: 'Teknologi, for owners who want it ready to use.',
+    id: 'Teknologi, untuk yang ingin hasil siap pakai.',
   },
   'paham-teknis': {
-    en: 'The Teknologi side for technically fluent readers.',
-    id: 'Sisi Teknologi untuk pembaca yang paham teknis.',
+    en: 'Teknologi, for developers and technical teams.',
+    id: 'Teknologi, untuk yang paham teknis.',
   },
   'pemilik-usaha': {
-    en: 'The Peekabo side for business owners.',
-    id: 'Sisi Peekabo untuk pemilik usaha.',
+    en: 'Peekabo, for business owners and brands.',
+    id: 'Peekabo, untuk pemilik usaha dan brand.',
   },
   jaringan: {
-    en: 'The Peekabo side for the seller network.',
-    id: 'Sisi Peekabo untuk jaringan penjual.',
+    en: 'Peekabo, for people who want to help sell.',
+    id: 'Peekabo, untuk yang ingin ikut menjualkan.',
   },
 } satisfies Record<Side, Localized<string>>
 
@@ -177,36 +173,25 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = (
       priority: 1,
     },
     /*
-     * The surfaces print what the page head says, not this line:
+     * No description here: the surfaces print what the page head says.
      * `lib/seo/route-descriptions.ts` reads the published `howWeWork`
      * document through the page's own loader and applies the head's own rule
-     * (its SEO description, else its first written promise). An edit in the
-     * Studio therefore reaches the head and the catalog together.
-     *
-     * This is printed only when that document cannot be read, and it is the
-     * page's own lead, not a copy of anything the Studio holds. Both slots
-     * carry it because the page resolves `en` to the Indonesian copy until an
-     * English translation is approved (owner, 2026-10-22).
+     * (its SEO description, else its first written promise), so an edit in
+     * the Studio reaches the head and the catalog together. When that read
+     * fails, the surfaces print the link alone rather than a sentence kept in
+     * code.
      */
     {
       path: '/cara-kerja',
       label: { en: 'How we work', id: 'Cara kami bekerja' },
-      description: { en: HOW_WE_WORK_LEAD, id: HOW_WE_WORK_LEAD },
       changeFrequency: 'monthly',
       priority: 0.7,
     },
-    /*
-     * Resolved the same way, from the first published sequence's SEO
-     * description. The fallback is the head's own, which the head also uses
-     * for `en`.
-     */
+    // Resolved the same way, from the first published sequence's SEO
+    // description.
     {
       path: '/satu-klien-tiga-unit',
       label: { en: 'One client, three units', id: 'Satu klien, tiga unit' },
-      description: {
-        en: THREE_UNITS_FALLBACK_DESCRIPTION,
-        id: THREE_UNITS_FALLBACK_DESCRIPTION,
-      },
       changeFrequency: 'monthly',
       priority: 0.6,
     },
@@ -267,7 +252,7 @@ export const STATIC_ROUTES: readonly LocalizedStaticRoute[] =
     STATIC_ROUTE_TEMPLATES.map((route) => ({
       ...route,
       label: route.label[locale],
-      description: route.description[locale],
+      description: route.description?.[locale] ?? null,
       template: route.path,
       locale,
       path: localizedPath(locale, route.path),

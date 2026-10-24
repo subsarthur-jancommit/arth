@@ -33,16 +33,21 @@
 import { describe, expect, it } from 'bun:test'
 import { readFileSync } from 'node:fs'
 
+import {
+  unitPagePreviewQuery,
+  unitPageQuery,
+} from '@/lib/integrations/sanity/queries'
+import { unit as unitSchema } from '@/lib/integrations/sanity/schemas/unit'
 import { SITE } from '@/lib/seo/site'
 
 import {
   ALL_SIDES,
-  capabilityItems,
   isSideOf,
   isUnit,
   SIDES,
   UNIT_STUDIO_TITLES,
   UNITS,
+  unitSteps,
 } from './units'
 
 /**
@@ -218,57 +223,64 @@ describe('every unit is read from exactly two sides', () => {
 })
 
 /*
- * `vault/blocks/capability-set` renders these as separate statements a reader
- * moves through, and `/studio` renders the same line joined by the same dot.
- * Both read the dictionary through `capabilityItems`, so the count is
- * load-bearing in two places and authored in neither.
+ * `vault/blocks/capability-set` lists a unit's own steps on the unit page:
+ * `unit.caraKerja` in Sanity, one item per step. Until 2026-10-23 these tests
+ * read the `studio.capabilities` lines in the message files instead, the copy
+ * of the old `/studio` page. No page had read them since `/studio` became a
+ * redirect, and they left with that namespace (V6 of
+ * `docs/RENCANA-KONTEKS-V2.md`: no editorial text in code).
  *
- * What this catches: a translator who drops a dot (two items become one in
- * one language and stay two in the other), and a unit added to `UNITS` with
- * no line at all — which would render an empty section rather than failing.
+ * The two failures they guarded against move with the source. A unit with no
+ * line would render an empty section: the Studio now refuses to publish a
+ * unit without a step, and the page omits the section when none arrives. A
+ * translator who drops a dot would split a line differently per language:
+ * each step is now one item in one array, read in the visitor's language with
+ * the Indonesian text as its fallback, so every locale gets the same steps.
  */
-describe('the authored capability lines survive being split', () => {
-  for (const locale of LOCALES) {
-    it(`gives every unit a line in ${locale}`, () => {
-      const lines = section(locale, ['studio', 'capabilities'])
-      const missing = UNITS.filter((unit) => (lines[unit] ?? '').trim() === '')
-
-      expect(
-        missing,
-        `${locale}: units with no line — the section would render empty`
-      ).toEqual([])
-    })
-  }
-
-  it('splits into the same number of items in both languages', () => {
-    const counts = Object.fromEntries(
-      LOCALES.map((locale) => {
-        const lines = section(locale, ['studio', 'capabilities'])
-        return [
-          locale,
-          UNITS.map((unit) => capabilityItems(lines[unit] ?? '').length),
-        ]
-      })
+describe("the capability block reads every unit's steps from Sanity", () => {
+  it('cannot publish a unit without a step', () => {
+    const field = unitSchema.fields.find(
+      (candidate) => candidate.name === 'caraKerja'
+    )
+    // Not every field in the schema declares `validation`; narrow first.
+    const validation =
+      field && 'validation' in field ? field.validation : undefined
+    // A chainable stand-in for the Studio's Rule that records each call.
+    const calls: string[] = []
+    const rule = new Proxy(
+      {},
+      {
+        get:
+          (_target, name, receiver) =>
+          (...args: unknown[]) => {
+            calls.push(`${String(name)}(${args.join(', ')})`)
+            return receiver
+          },
+      }
     )
 
-    // Nothing above proves an item survived the split: a line of only
-    // separators passes "not empty" and yields zero items.
-    for (const locale of LOCALES) {
-      expect(
-        Math.min(...(counts[locale] ?? [0])),
-        `${locale}: a unit split into fewer than two items`
-      ).toBeGreaterThan(1)
-    }
-
-    expect(
-      counts.id,
-      'the two dictionaries disagree on how many items a unit has'
-    ).toEqual(counts.en)
+    expect(typeof validation).toBe('function')
+    if (typeof validation === 'function') validation(rule as never)
+    expect(calls).toEqual(['required()', 'min(1)'])
   })
 
-  it('drops empty fragments rather than publishing them', () => {
-    expect(capabilityItems('One ·  · Two')).toEqual(['One', 'Two'])
-    expect(capabilityItems('')).toEqual([])
-    expect(capabilityItems('No separator here')).toEqual(['No separator here'])
+  it('reads the same steps in every locale, Indonesian as the fallback', () => {
+    for (const query of [unitPageQuery, unitPagePreviewQuery]) {
+      expect(query).toMatch(
+        /"caraKerja": caraKerja\[\]\{\s*_key,\s*"teks": coalesce\(teks\[_key == \$locale\]\[0\]\.value, teks\[_key == "id"\]\[0\]\.value\)/
+      )
+    }
+  })
+
+  it('drops an empty step rather than publishing it', () => {
+    expect(
+      unitSteps([
+        { teks: 'Satu' },
+        { teks: null },
+        { teks: '  ' },
+        { teks: 'Dua' },
+      ])
+    ).toEqual(['Satu', 'Dua'])
+    expect(unitSteps(null)).toEqual([])
   })
 })

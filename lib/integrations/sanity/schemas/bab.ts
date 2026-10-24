@@ -1,5 +1,9 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+import {
+  NETWORK_PATH_KEYS,
+  NETWORK_PATH_STUDIO_TITLES,
+} from '@/lib/content/network'
 import { VERBATIM_FIELDS } from '@/lib/content/style-gate'
 
 import { localeValue, requireIndonesian } from '../utils/i18n-array'
@@ -82,6 +86,20 @@ export const bab = defineType({
       title: 'Urutan di sisi',
       type: 'number',
       validation: (Rule) => Rule.required().integer().min(0),
+    }),
+    defineField({
+      name: 'jalurJaringan',
+      title: 'Jalur di halaman jaringan',
+      description:
+        'Hanya untuk bab di sisi jaringan Peekabo: jalur yang membuka bab ini. Bab di sisi itu tanpa jalur tidak ditautkan dari halaman jaringan.',
+      type: 'string',
+      options: {
+        list: NETWORK_PATH_KEYS.map((value) => ({
+          title: NETWORK_PATH_STUDIO_TITLES[value],
+          value,
+        })),
+        layout: 'radio',
+      },
     }),
     defineField({
       name: 'batas',

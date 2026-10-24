@@ -59,7 +59,7 @@ export default async function ThreeUnitsPage() {
               note={sequence.keterangan}
               labels={{
                 situation: 'Situasi',
-                offer: 'Offer dalam langkah ini',
+                offer: 'Pekerjaan dalam langkah ini',
                 possible: 'Rangkaian yang mungkin',
                 action: 'Ceritakan masalahnya',
               }}
@@ -79,11 +79,13 @@ export async function generateMetadata() {
 
   if (!first) return { robots: { index: false } }
 
+  // The rule `/llms.txt`, the search index and the Markdown mirror apply too
+  // (`lib/seo/route-descriptions.ts`), so they cannot disagree with it.
+  const description = threeUnitsDescription(first)
+
   return generatePageMetadata({
     title: first.metadata?.title ?? 'Satu klien, tiga unit',
-    // The rule `/llms.txt`, the search index and the Markdown mirror apply
-    // too (`lib/seo/route-descriptions.ts`), so they cannot disagree with it.
-    description: threeUnitsDescription(first),
+    ...(description && { description }),
     ...(first.metadata?.keywords && { keywords: first.metadata.keywords }),
     noIndex: isDraftMode || first.metadata?.noIndex === true,
     url: `/${locale}/satu-klien-tiga-unit`,

@@ -27,10 +27,11 @@ export function buildStaticRoutesMarkdown(
   return STATIC_ROUTES.filter(
     (route) => locale === undefined || route.locale === locale
   )
-    .map(
-      (route) =>
-        `- [${route.label}](${absoluteSiteUrl(route.path)}): ${descriptions.get(route.path) ?? route.description}`
-    )
+    .map((route) => {
+      const link = `- [${route.label}](${absoluteSiteUrl(route.path)})`
+      const description = descriptions.get(route.path) ?? route.description
+      return description ? `${link}: ${description}` : link
+    })
     .join('\n')
 }
 

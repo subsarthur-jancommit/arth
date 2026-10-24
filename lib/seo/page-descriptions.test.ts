@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'bun:test'
 
 import {
-  HOW_WE_WORK_LEAD,
   howWeWorkDescription,
-  THREE_UNITS_FALLBACK_DESCRIPTION,
   threeUnitsDescription,
 } from './page-descriptions'
 import { STATIC_ROUTE_TEMPLATES } from './route-catalog'
@@ -52,10 +50,10 @@ describe('howWeWorkDescription', () => {
     ).toBe('Deskripsi dari Studio.')
   })
 
-  it('ends at the page lead when nothing at all is written', () => {
-    expect(howWeWorkDescription({ metadata: null, janji: [] })).toBe(
-      HOW_WE_WORK_LEAD
-    )
+  it('gives none when nothing at all is written', () => {
+    // No sentence kept in code stands in for the Studio's
+    // (lib/content/editorial-copy.test.ts).
+    expect(howWeWorkDescription({ metadata: null, janji: [] })).toBeNull()
   })
 })
 
@@ -66,34 +64,29 @@ describe('threeUnitsDescription', () => {
     ).toBe('Deskripsi rangkaian.')
   })
 
-  it("falls back to the page's own sentence", () => {
-    expect(threeUnitsDescription({ metadata: null })).toBe(
-      THREE_UNITS_FALLBACK_DESCRIPTION
-    )
-    expect(threeUnitsDescription({ metadata: metadata(null) })).toBe(
-      THREE_UNITS_FALLBACK_DESCRIPTION
-    )
+  it('gives none while the first sequence has no SEO description', () => {
+    expect(threeUnitsDescription({ metadata: null })).toBeNull()
+    expect(threeUnitsDescription({ metadata: metadata(null) })).toBeNull()
   })
 })
 
 /*
- * The catalog keeps a description for these two pages only as the line to
- * print when the CMS cannot be read. It must be what the head itself says
- * with nothing written, never a sentence copied out of the Studio: a copy is
- * the drift this module closed, and a merge that brings one back fails here.
+ * The catalog keeps no description for these two pages. A copy of the
+ * head's sentence is the drift this module closed, and a sentence of the
+ * catalog's own is editorial text in code; a merge that brings either back
+ * fails here.
  */
 describe("the catalog's own line for a head-described page", () => {
+  const paths = STATIC_ROUTE_TEMPLATES.map((route) => route.path)
   const catalog = (path: string) =>
     STATIC_ROUTE_TEMPLATES.find((route) => route.path === path)?.description
 
-  it('is the head with nothing written, in both slots', () => {
-    const howWeWork = howWeWorkDescription({ metadata: null, janji: [] })
-    const threeUnits = threeUnitsDescription({ metadata: null })
+  it('does not exist', () => {
+    // Anti-vacuum: a route missing from the catalog has no description either.
+    expect(paths).toContain('/cara-kerja')
+    expect(paths).toContain('/satu-klien-tiga-unit')
 
-    expect(catalog('/cara-kerja')).toEqual({ en: howWeWork, id: howWeWork })
-    expect(catalog('/satu-klien-tiga-unit')).toEqual({
-      en: threeUnits,
-      id: threeUnits,
-    })
+    expect(catalog('/cara-kerja')).toBeUndefined()
+    expect(catalog('/satu-klien-tiga-unit')).toBeUndefined()
   })
 })

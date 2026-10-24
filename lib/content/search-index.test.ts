@@ -69,7 +69,13 @@ describe('page entries', () => {
 
   test('every entry carries a label, a description and a locale-prefixed href', () => {
     for (const locale of ['en', 'id'] as const) {
-      for (const entry of pageEntries(locale)) {
+      // The two pages whose head reads its description from the CMS get it
+      // from the route handler's read; the catalog keeps no copy.
+      const descriptions = new Map([
+        [`/${locale}/cara-kerja`, 'Lingkup disepakati tertulis.'],
+        [`/${locale}/satu-klien-tiga-unit`, 'Rangkaian yang mungkin.'],
+      ])
+      for (const entry of pageEntries(locale, descriptions)) {
         expect(entry.label.trim()).not.toBe('')
         expect(entry.description.trim()).not.toBe('')
         expect(entry.href).toStartWith(`/${locale}`)

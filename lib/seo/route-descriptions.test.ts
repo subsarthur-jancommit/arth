@@ -4,7 +4,6 @@ import type { HowWeWorkContent } from '@/lib/content/how-we-work-content'
 import type { SequenceContent } from '@/lib/content/sequence-content'
 import type { Locale } from '@/lib/i18n/routing'
 
-import { THREE_UNITS_FALLBACK_DESCRIPTION } from './page-descriptions'
 import { STATIC_ROUTES } from './route-catalog'
 import {
   type PageHeadSources,
@@ -79,12 +78,10 @@ describe('resolveRouteDescriptions', () => {
       })
     )
 
-    // The first written promise, and the sequence page's own sentence: what
+    // The first written promise, and nothing for the sequence page: what
     // the two heads print in that state.
     expect(descriptions.get('/id/cara-kerja')).toBe('Lingkup disepakati.')
-    expect(descriptions.get('/id/satu-klien-tiga-unit')).toBe(
-      THREE_UNITS_FALLBACK_DESCRIPTION
-    )
+    expect(descriptions.has('/id/satu-klien-tiga-unit')).toBe(false)
   })
 
   it('reads every locale it is asked for, in that locale', async () => {

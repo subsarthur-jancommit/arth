@@ -191,6 +191,14 @@ describe('offer query', () => {
     expect(offerPagePreviewQuery).not.toContain('statusTinjauan')
   })
 
+  it("reads the unit's honesty sentence for the first step", () => {
+    for (const query of [offerPageQuery, offerPagePreviewQuery]) {
+      expect(query).toContain(
+        'bab->sisi->unit->kalimatJujur[_key == $locale][0].value'
+      )
+    }
+  })
+
   it('uses the side first step as the offer fallback', () => {
     for (const query of [offerPageQuery, offerPagePreviewQuery]) {
       expect(query).toContain('bab->sisi->langkahPertama.label')
@@ -293,6 +301,12 @@ describe('network side query', () => {
 
     expect(sidePageQuery).not.toContain('jejakSumber')
     expect(sidePageQuery).not.toContain('ditulisOleh')
+  })
+
+  it('tells each network path which chapter it opens', () => {
+    for (const query of [sidePageQuery, sidePagePreviewQuery]) {
+      expect(query).toContain('jalurJaringan')
+    }
   })
 })
 

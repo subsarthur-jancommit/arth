@@ -175,6 +175,9 @@ export function buildMarkdownDocumentFromRoutes(
    */
   const locale = localeFromPath(path) ?? undefined
   const facts = siteFacts(locale)
+  // A page described only by the CMS has no line of its own when that read
+  // failed; the section then opens with what this representation is.
+  const summary = descriptions.get(route.path) ?? route.description
 
   return {
     status: 200,
@@ -185,9 +188,7 @@ export function buildMarkdownDocumentFromRoutes(
 
 ## This page
 
-${descriptions.get(route.path) ?? route.description}
-
-This representation summarizes the route as the site owns it. It lists CMS pages for discovery but does not claim to reproduce their bodies.
+${summary ? `${summary}\n\n` : ''}This representation summarizes the route as the site owns it. It lists CMS pages for discovery but does not claim to reproduce their bodies.
 
 ## Pages
 
