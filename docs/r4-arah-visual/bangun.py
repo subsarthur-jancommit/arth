@@ -25,6 +25,7 @@ from layar_dasar import attr
 HERE = os.path.dirname(os.path.abspath(__file__))
 FONTS = ('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900'
          '&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600'
+         '&family=Instrument+Serif:ital@0;1'
          '&family=Syne:wght@400..800&display=swap')
 UNIT_NAMES = dict(konstruksi='Konstruksi', teknologi='Teknologi', peekabo='Peekabo')
 X = warna.X
@@ -43,6 +44,7 @@ def symbols():
     # sistem gabungan: pelat arah A dengan satu keluarga huruf (Archivo)
     pelat_a.pakai_huruf('arch', wide='125%')
     s['p-g-a-teknologi'] = pelat_a.teknologi()
+    s['p-g-a-konstruksi'] = pelat_a.konstruksi()
     pelat_a.pakai_huruf('syne')
     return s
 
@@ -144,6 +146,13 @@ def main():
     with open(os.path.join(HERE, 'index.html'), 'w', encoding='utf-8', newline='\n') as fh:
         fh.write(page)
     print('pelat: %d berkas; index.html %d KB' % (len(files), len(page) // 1024))
+    import akhir
+
+    keep = {k: v for k, v in sym.items() if k.startswith(('p-b-', 'p-g-'))}
+    final = akhir.build(keep, defs(), contrast_html, FONTS)
+    with open(os.path.join(HERE, 'hasil-akhir.html'), 'w', encoding='utf-8', newline='\n') as fh:
+        fh.write(final)
+    print('hasil-akhir.html %d KB' % (len(final) // 1024))
     if warna.GAMUT:
         print('di luar gamut sRGB:', warna.GAMUT)
 

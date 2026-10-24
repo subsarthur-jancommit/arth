@@ -275,7 +275,12 @@ A sebagai dasar utama** dan **mencabut arah C** ("SAYA SETUJU UNTUK MENJADIKAN
 ARAH B dan ARAH A sebagai DASARAN UTAMANYA. … CABUT ARAH VISUAL C."): B menjadi
 panggung (beranda, pembuka unit, lintasan), A menjadi dokumen (halaman situasi
 dan pekerjaan, cara kerja, cara dibayar, kebijakan, versi cetak). Situs tetap
-monokrom. R5 menerapkan gaya A di halaman dokumen.
+monokrom. R5 menerapkan gaya A di halaman dokumen. Huruf dan pembagian halaman
+diserahkan pemilik kepada agen dan diputuskan hari itu: Archivo untuk judul,
+Geist untuk teks, Instrument Serif miring untuk kutipan pembeli, Geist Mono
+untuk label (Syne pensiun); panggung gelap untuk beranda, pembuka unit, Satu
+klien tiga unit, dan Kontak, dokumen terang untuk halaman lainnya. Rinciannya di
+`docs/r4-arah-visual/hasil-akhir.html`.
 
 ### R5 Bangun ulang halaman
 

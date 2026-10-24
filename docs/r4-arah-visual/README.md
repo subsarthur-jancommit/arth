@@ -37,11 +37,37 @@ di riwayat git, commit `917219c`.
   panggung, normal di dokumen), dan satu gambar kafe yang digambar dua cara.
   Situs tetap monokrom: tinta dan kertas, tanpa warna aksen.
 
-Yang masih perlu diputuskan: pembagian halaman terang dan gelap, dan huruf
-judul berlisensi (atau tetap Archivo, yang berlisensi OFL).
+Alasan pemilik, 24 Oktober 2026: "saya mengambil ARAH B karena MENYUKAI
+KONSEPNYA YANG BISA MORPH DAN JUGA SANGAT BAGUS UNTUK PITCH DECK DAN PRESENTASI
+LANGSUNG KE CLIENT TERHADAP SELURUH CAPATABILTAS YANG DIMILIKI. DAN DENGAN WARNA
+TERSEBUT KEDEPANNYA UNTUK ANIMASI DAN MOTION AKAN LEBIH MUDAH. KEMUDIAN ALASAN
+UTAMA SAYA MENGAMBIL ARAH A, KARENA SAYA MELIHAT BAHWA ADA SEBUAH KECOCOKAN
+DENGAN MEKANISME TEKNIS SEPERTI BLUEPRINT KONTRUKSI, ALUR AGENCY, DAN BAHKAN
+FLOWCHART TEKNOLOGI. TONENYA JUGA NYAMAN DI LIHAT DAN MUDAH DIPAHAMI UNTUK
+LAYOUTINGNYA."
+
+## Huruf dan pembagian halaman
+
+Pemilik menyerahkan dua keputusan terakhir kepada agen ("KAMU PUTUSKAN SENDIRI
+…"). Keputusannya, dengan gambar di `hasil-akhir.html`:
+
+- **Huruf: empat peran, tiga keluarga.** Archivo untuk judul (lebar 125, tebal
+  800 di panggung; lebar 100, tebal 700 di dokumen), Geist untuk teks dan
+  navigasi, Instrument Serif miring hanya untuk kutipan suara pembeli di
+  pembuka halaman situasi, dan Geist Mono untuk label teknis. Syne pensiun.
+  Sumbu huruf tidak dianimasikan (aturan #4); "morph" ada di pelat.
+- **Panggung, gelap (B):** beranda, pembuka halaman unit, Satu klien tiga unit,
+  dan Kontak.
+- **Dokumen, terang (A):** isi halaman unit, enam halaman pembaca, situasi,
+  pekerjaan, Cara kami bekerja, Cara kami dibayar, Kebijakan, dan versi cetak.
+- **Perpindahan:** panggung ke dokumen memakai `set-depth` (pelat mendarat dan
+  tinta bertukar dengan kertas); header membawa tanahnya sendiri.
 
 ## Isi folder
 
+- `hasil-akhir.html`: hasil akhir untuk diperiksa pemilik: sistem huruf,
+  pembagian halaman, dan layar akhir (beranda, Satu klien tiga unit, halaman
+  unit, situasi, pekerjaan, navbar, ponsel).
 - `index.html`: sistem yang disetujui di bagian atas, lalu arah B dan A
   berdampingan seperti semula diusulkan. Di ponsel satu kolom.
 - `pelat/`: sembilan pelat SVG. `a-*` dan `b-*` untuk Konstruksi (denah dan
@@ -87,9 +113,10 @@ dan keluaran skrip belum berformat.
   huruf yang disalin ke repositori. Lisensi dibaca dari `OFL.txt` masing-masing
   di github.com/google/fonts pada 24 Oktober 2026, semuanya SIL Open Font
   License 1.1: Syne (Copyright 2017 The Syne Project Authors), Geist dan Geist
-  Mono (Copyright 2024 The Geist Project Authors), dan Archivo (Copyright 2020
-  The Archivo Project Authors). Archivo adalah pengganti sementara untuk huruf
-  judul. Belum ada huruf berlisensi yang dipilih.
+  Mono (Copyright 2024 The Geist Project Authors), Archivo (Copyright 2020 The
+  Archivo Project Authors), dan Instrument Serif (Copyright 2022 The Instrument
+  Serif Project Authors). OFL membolehkan pemakaian komersial. Syne hanya ada
+  di gambar arah A yang asli; sistem akhir tidak memakainya.
 - **Rujukan, bukan salinan.** Kosakata gerak dari `docs/MOTION-SPEC.md` §12
   (datum, dimension, set-depth). `docs/TEARDOWN.md` dibaca sebagai bukti, tidak
   ada yang disalin. Konvensi dunia nyata yang menjadi inspirasi: kop gambar
