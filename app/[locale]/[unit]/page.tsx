@@ -15,6 +15,7 @@ import {
   SIDES,
   type Unit,
   UNITS,
+  unitSteps,
   unitTemplate,
 } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
@@ -109,9 +110,7 @@ export default async function UnitPage({ params }: UnitPageProps) {
   const problems = (content.masalah ?? []).flatMap((item) =>
     item.teks ? [{ key: item._key, text: item.teks }] : []
   )
-  const workItems = (content.caraKerja ?? []).flatMap((item) =>
-    item.teks ? [item.teks] : []
-  )
+  const workItems = unitSteps(content.caraKerja)
   const examples = (content.contohOffer ?? []).flatMap((offer) => {
     const href = offerRoute(offer)
     return href && offer.judul ? [{ ...offer, href }] : []
