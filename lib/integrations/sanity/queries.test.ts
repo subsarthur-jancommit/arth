@@ -191,6 +191,14 @@ describe('offer query', () => {
     expect(offerPagePreviewQuery).not.toContain('statusTinjauan')
   })
 
+  it("reads the unit's honesty sentence for the first step", () => {
+    for (const query of [offerPageQuery, offerPagePreviewQuery]) {
+      expect(query).toContain(
+        'bab->sisi->unit->kalimatJujur[_key == $locale][0].value'
+      )
+    }
+  })
+
   it('uses the side first step as the offer fallback', () => {
     for (const query of [offerPageQuery, offerPagePreviewQuery]) {
       expect(query).toContain('bab->sisi->langkahPertama.label')

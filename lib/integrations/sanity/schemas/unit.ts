@@ -143,6 +143,13 @@ export const unit = defineType({
         }),
       ],
     }),
+    defineField({
+      name: 'kalimatJujur',
+      title: 'Kalimat jujur di halaman pekerjaan',
+      type: 'internationalizedArrayText',
+      description:
+        'Satu kalimat dari header unit, apa adanya. Tampil di dekat ajakan setiap halaman pekerjaan unit ini (glosarium pembaca bagian 10, aturan 5). Kosongkan bila unit tidak memakainya.',
+    }),
     defineField({ name: 'metadata', title: 'Metadata', type: 'metadata' }),
     ...internalFields(),
   ],
