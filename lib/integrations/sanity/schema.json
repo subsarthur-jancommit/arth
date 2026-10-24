@@ -494,6 +494,14 @@
           "type": "string"
         }
       },
+      "pembuka": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "internationalizedArrayText"
+        },
+        "optional": true
+      },
       "janji": {
         "type": "objectAttribute",
         "value": {
@@ -1792,6 +1800,14 @@
         },
         "optional": true
       },
+      "kalimatJujur": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "internationalizedArrayText"
+        },
+        "optional": true
+      },
       "metadata": {
         "type": "objectAttribute",
         "value": {
@@ -2544,6 +2560,27 @@
         "type": "objectAttribute",
         "value": {
           "type": "number"
+        },
+        "optional": true
+      },
+      "jalurJaringan": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "referrer"
+            },
+            {
+              "type": "string",
+              "value": "member"
+            },
+            {
+              "type": "string",
+              "value": "creator"
+            }
+          ]
         },
         "optional": true
       },
