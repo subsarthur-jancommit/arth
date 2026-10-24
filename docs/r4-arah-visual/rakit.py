@@ -27,6 +27,8 @@ INTRO = (
     ' · 24 Oktober 2026</p><h1>Tiga arah visual untuk Arthur</h1><p class="lede">Tiga pilihan '
     'untuk pelat gambar kerja, beranda, kartu, dan navigasi. Semuanya gambar diam: belum ada '
     'yang dibangun, dan produksi tidak berubah. Pilih satu, lalu R4 membangunnya.</p>'
+    '<p class="keputusan"><b>Dipilih pemilik, 24 Oktober 2026: arah B, Maket cahaya.</b> '
+    'R4 dibangun dari arah ini. Arah A dan C tetap di halaman ini sebagai catatan.</p>'
     '<div class="same"><h2>Yang sama di ketiga arah</h2><ul>'
     '<li><b>Isi.</b> Semua teks diambil dari situs yang sedang tayang '
     '(arth-test-01.vercel.app) pada 24 Oktober 2026. Tidak ada teks contoh.</li>'

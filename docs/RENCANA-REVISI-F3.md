@@ -264,6 +264,13 @@ Bergantung pada P2.
 | WebGL (aturan #14, #15)                 | Dipakai hanya bila pelat juga menjadi material; jalur tanpa WebGL tampak disengaja                                                |
 | Navbar (E8.1, E8.2)                     | Desktop dan ponsel dirancang ulang untuk lima tujuan; sisi kanan header punya komposisi, termasuk tempat pengalih bahasa untuk R7 |
 
+**Status 24 Oktober 2026:** tiga arah ditunjukkan sebagai gambar diam di
+[`docs/r4-arah-visual/`](./r4-arah-visual/README.md) (PR #46): A Lembar kerja,
+B Maket cahaya, C Papan proyek. Pemilik memilih **arah B, Maket cahaya** ("Saya
+pilih arah B, Maket cahaya."). R4 dibangun dari arah ini: pelat aksonometri
+bercahaya sebagai material WebGL di kanvas root, pelat SVG datar sebagai jalur
+tanpa WebGL dan reduced motion, dan navbar arah B.
+
 ### R5 Bangun ulang halaman
 
 Bergantung pada R3 dan R4. Satu PR per kelompok halaman: beranda; unit dan

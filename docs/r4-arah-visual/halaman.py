@@ -23,6 +23,7 @@ p{margin:0 0 .7em}
 code{font-family:var(--mono);font-size:.86em;background:var(--chip);padding:.05em .3em;border-radius:3px;overflow-wrap:anywhere}
 .eyebrow,.lbl{font-family:var(--mono);font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
 .lede{font-size:clamp(17px,1.7vw,21px);max-width:62ch}
+.keputusan{max-width:62ch;margin-top:14px;padding:12px 14px;border:1px solid var(--fg);border-radius:8px;background:var(--card)}
 .same{margin-top:26px;padding-top:18px;border-top:1px solid var(--line);max-width:1120px}
 .same ul{margin:10px 0 0;padding-left:1.15em;display:grid;gap:8px}
 .pilih{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding-block:10px;margin-top:26px;background:var(--bg);border-bottom:1px solid var(--line)}

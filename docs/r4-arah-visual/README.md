@@ -9,6 +9,10 @@ Permintaan pemilik, 24 Oktober 2026: "Ya, mulai satu sesi untuk menyiapkan 2–3
 pilihan arah visual R4 sebagai gambar diam sesuai RENCANA-REVISI-F3, tanpa
 mengubah produksi. Saya yang memilih."
 
+**Keputusan pemilik, 24 Oktober 2026: arah B, Maket cahaya.** Kata pemilik:
+"Saya pilih arah B, Maket cahaya." R4 dibangun dari arah ini. Arah A dan C
+tetap di folder ini sebagai catatan pilihan yang tidak diambil.
+
 ## Tiga arah
 
 - **A, Lembar kerja.** Tinta di atas kertas. Pelat digambar seperti lembar
