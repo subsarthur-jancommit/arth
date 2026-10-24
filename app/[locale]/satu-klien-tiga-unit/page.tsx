@@ -59,7 +59,7 @@ export default async function ThreeUnitsPage() {
               note={sequence.keterangan}
               labels={{
                 situation: 'Situasi',
-                offer: 'Offer dalam langkah ini',
+                offer: 'Pekerjaan dalam langkah ini',
                 possible: 'Rangkaian yang mungkin',
                 action: 'Ceritakan masalahnya',
               }}

@@ -108,16 +108,16 @@ const UNIT_LABELS = {
  */
 const UNIT_DESCRIPTIONS = {
   konstruksi: {
-    en: 'Konstruksi, read from two sides: the people running a project, and the people who own the building.',
-    id: 'Konstruksi, dibaca dari dua sisi: yang menjalankan proyek, dan yang memiliki bangunannya.',
+    en: 'Konstruksi, for people running projects and for building owners.',
+    id: 'Konstruksi, untuk pelaku proyek dan untuk pemilik bangunan.',
   },
   teknologi: {
-    en: 'Teknologi, read from two sides: buyers who want a finished thing, and buyers who read the build.',
-    id: 'Teknologi, dibaca dari dua sisi: pembeli yang mau hasil siap pakai, dan pembeli yang paham teknis.',
+    en: 'Teknologi, for owners who want it ready to use and for developers and technical teams.',
+    id: 'Teknologi, untuk yang ingin hasil siap pakai dan untuk yang paham teknis.',
   },
   peekabo: {
-    en: "Peekabo, Arthur's agency, read from two sides: brand and business owners, and the seller network.",
-    id: 'Peekabo, agency-nya Arthur, dibaca dari dua sisi: pemilik usaha dan brand, dan jaringan penjual.',
+    en: "Peekabo, Arthur's agency, for business owners and brands, and for people who want to help sell.",
+    id: 'Peekabo, agency kami, untuk pemilik usaha dan brand, serta untuk yang ingin ikut menjualkan.',
   },
 } satisfies Record<Unit, Localized<string>>
 
@@ -137,28 +137,28 @@ const SIDE_LABELS = {
  */
 const SIDE_DESCRIPTIONS = {
   'pelaku-proyek': {
-    en: 'The Konstruksi side for people running a project.',
-    id: 'Sisi Konstruksi untuk pelaku proyek.',
+    en: 'Konstruksi, for people running projects.',
+    id: 'Konstruksi, untuk pelaku proyek.',
   },
   'pemilik-bangunan': {
-    en: 'The Konstruksi side for people who own the building.',
-    id: 'Sisi Konstruksi untuk pemilik bangunan.',
+    en: 'Konstruksi, for building owners.',
+    id: 'Konstruksi, untuk pemilik bangunan.',
   },
   'siap-pakai': {
-    en: 'The Teknologi side for people who want something ready to use.',
-    id: 'Sisi Teknologi untuk pembaca yang menginginkan hasil siap pakai.',
+    en: 'Teknologi, for owners who want it ready to use.',
+    id: 'Teknologi, untuk yang ingin hasil siap pakai.',
   },
   'paham-teknis': {
-    en: 'The Teknologi side for technically fluent readers.',
-    id: 'Sisi Teknologi untuk pembaca yang paham teknis.',
+    en: 'Teknologi, for developers and technical teams.',
+    id: 'Teknologi, untuk yang paham teknis.',
   },
   'pemilik-usaha': {
-    en: 'The Peekabo side for business owners.',
-    id: 'Sisi Peekabo untuk pemilik usaha.',
+    en: 'Peekabo, for business owners and brands.',
+    id: 'Peekabo, untuk pemilik usaha dan brand.',
   },
   jaringan: {
-    en: 'The Peekabo side for the seller network.',
-    id: 'Sisi Peekabo untuk jaringan penjual.',
+    en: 'Peekabo, for people who want to help sell.',
+    id: 'Peekabo, untuk yang ingin ikut menjualkan.',
   },
 } satisfies Record<Side, Localized<string>>
 

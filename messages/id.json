@@ -210,8 +210,8 @@
     "metaDescription": "Satu dari tiga unit Arthur di Subang, Purwakarta, dan Bandung.",
     "sideCount": "{count} pintu masuk",
     "sideEyebrow": "Pilih posisi Anda",
-    "sideTitle": "Mulai dari sisi yang paling dekat dengan situasi Anda.",
-    "sideLink": "Buka sisi",
+    "sideTitle": "Pilih yang paling dekat dengan posisi Anda.",
+    "sideLink": "Lihat pekerjaannya",
     "problemsEyebrow": "Masalah yang dijawab",
     "problemsTitle": "Yang biasanya menahan pekerjaan Anda.",
     "examplesEyebrow": "Contoh pekerjaan",
@@ -226,7 +226,7 @@
     "pillarsTitle": "Yang kami kerjakan"
   },
   "side": {
-    "eyebrow": "Sisi {unit}",
+    "eyebrow": "{unit}",
     "pelaku-proyek": "Pelaku proyek",
     "pemilik-bangunan": "Pemilik bangunan",
     "siap-pakai": "Siap pakai",
@@ -234,11 +234,11 @@
     "pemilik-usaha": "Pemilik usaha",
     "jaringan": "Jaringan penjual",
     "navigationLabel": "Jelajahi unit {unit}",
-    "otherLabel": "Sisi lain di {unit}",
+    "otherLabel": "{unit} untuk pembaca lain",
     "backToUnit": "Kembali ke {unit}",
     "metaDescription": "{side} adalah satu dari dua sisi unit {unit} milik Arthur.",
-    "switcherEyebrow": "Pilih sisi",
-    "switcherLabel": "Pilih sisi lain di unit {unit}",
+    "switcherEyebrow": "Untuk siapa",
+    "switcherLabel": "{unit} untuk pembaca lain",
     "chaptersEyebrow": "Temukan situasinya",
     "chaptersTitle": "Situasi yang paling sering kami dengar.",
     "chapterLabel": "Situasi",
@@ -298,7 +298,7 @@
     "paths": {
       "eyebrow": "Pilih jalur",
       "title": "Tiga cara masuk ke jaringan.",
-      "chapterLabel": "Bab",
+      "chapterLabel": "Situasi",
       "open": "Buka jalur",
       "referrer": {
         "title": "Rujuk transaksi",
@@ -306,7 +306,7 @@
       },
       "member": {
         "title": "Jadi anggota",
-        "description": "Untuk Anda yang memilih manfaat komunitas saat offer anggotanya tersedia."
+        "description": "Untuk Anda yang memilih manfaat komunitas saat keanggotaannya dibuka."
       },
       "creator": {
         "title": "Jadi kreator atau host",

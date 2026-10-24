@@ -210,8 +210,8 @@
     "metaDescription": "One of Arthur’s three units, in Subang, Purwakarta, and Bandung.",
     "sideCount": "{count} ways in",
     "sideEyebrow": "Choose your position",
-    "sideTitle": "Start from the side closest to your situation.",
-    "sideLink": "Open side",
+    "sideTitle": "Start from the one closest to your position.",
+    "sideLink": "See the work",
     "problemsEyebrow": "Problems we answer",
     "problemsTitle": "What usually holds your work back.",
     "examplesEyebrow": "Example work",
@@ -226,7 +226,7 @@
     "pillarsTitle": "What we do"
   },
   "side": {
-    "eyebrow": "{unit} side",
+    "eyebrow": "{unit}",
     "pelaku-proyek": "People running a project",
     "pemilik-bangunan": "Building owners",
     "siap-pakai": "Ready to use",
@@ -234,11 +234,11 @@
     "pemilik-usaha": "Business owners",
     "jaringan": "The seller network",
     "navigationLabel": "Explore the {unit} unit",
-    "otherLabel": "The other side of {unit}",
+    "otherLabel": "{unit} for other readers",
     "backToUnit": "Back to {unit}",
     "metaDescription": "{side} is one of the two sides of Arthur's {unit} unit.",
-    "switcherEyebrow": "Choose a side",
-    "switcherLabel": "Choose the other side of {unit}",
+    "switcherEyebrow": "Who it is for",
+    "switcherLabel": "{unit} for other readers",
     "chaptersEyebrow": "Find the situation",
     "chaptersTitle": "The situations we hear most often.",
     "chapterLabel": "Situation",
@@ -298,7 +298,7 @@
     "paths": {
       "eyebrow": "Choose a path",
       "title": "Three ways into the network.",
-      "chapterLabel": "Chapter",
+      "chapterLabel": "Situation",
       "open": "Open path",
       "referrer": {
         "title": "Refer a transaction",
@@ -306,7 +306,7 @@
       },
       "member": {
         "title": "Become a member",
-        "description": "For people choosing community benefits once the member offers are available."
+        "description": "For people choosing community benefits once membership opens."
       },
       "creator": {
         "title": "Become a creator or host",
