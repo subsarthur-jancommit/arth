@@ -270,9 +270,12 @@ B Maket cahaya, C Papan proyek. Pemilik memilih **arah B, Maket cahaya** ("Saya
 pilih arah B, Maket cahaya."). R4 dibangun dari arah ini: pelat aksonometri
 bercahaya sebagai material WebGL di kanvas root, pelat SVG datar sebagai jalur
 tanpa WebGL dan reduced motion, dan navbar arah B. Pada hari yang sama pemilik
-meminta usulan memakai ketiganya dengan tupoksi berbeda (B panggung, A dokumen,
-C janji dan ajakan); gambar diamnya ada di folder yang sama dan menunggu
-persetujuan pemilik.
+meminta usulan memakai ketiganya dengan tupoksi berbeda, lalu menyetujui **B dan
+A sebagai dasar utama** dan **mencabut arah C** ("SAYA SETUJU UNTUK MENJADIKAN
+ARAH B dan ARAH A sebagai DASARAN UTAMANYA. … CABUT ARAH VISUAL C."): B menjadi
+panggung (beranda, pembuka unit, lintasan), A menjadi dokumen (halaman situasi
+dan pekerjaan, cara kerja, cara dibayar, kebijakan, versi cetak). Situs tetap
+monokrom. R5 menerapkan gaya A di halaman dokumen.
 
 ### R5 Bangun ulang halaman
 

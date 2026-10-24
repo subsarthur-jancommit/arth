@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Gambar diam R4: tiga arah visual untuk dipilih pemilik.
+"""Gambar diam R4: arah visual yang disetujui pemilik, B dan A.
 
 Dasar: keputusan P2 dan paket R4 di docs/RENCANA-REVISI-F3.md; temuan E1,
 E8.1, E8.2, dan E8.3 di docs/TINJAUAN-F01-F03.md.
 
 Menulis ke folder ini:
-  pelat/*.svg   pelat gambar kerja, tiga arah x tiga unit, ditambah tiga
+  pelat/*.svg   pelat gambar kerja, arah A dan B x tiga unit, ditambah tiga
                 pelat datar untuk jalur tanpa WebGL arah B
   kontras.md    rasio kontras WCAG setiap pasangan teks dan latar
-  index.html    halaman pembanding, ketiga arah berdampingan
+  index.html    sistem yang disetujui, lalu arah B dan A berdampingan
 
 Hanya pustaka standar Python. Jalankan:  python docs/r4-arah-visual/bangun.py
 Karya asli untuk proyek ini; asal teks dan huruf dicatat di README.md.
@@ -19,19 +19,17 @@ import os
 import alasan
 import pelat_a
 import pelat_b
-import pelat_c
 import warna
 from layar_dasar import attr
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FONTS = ('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900'
-         '&family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700'
          '&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600'
          '&family=Syne:wght@400..800&display=swap')
 UNIT_NAMES = dict(konstruksi='Konstruksi', teknologi='Teknologi', peekabo='Peekabo')
 X = warna.X
-GROUND = dict(a=X['paper'], b=X['ink'], c=X['papan'])
-SWATCH = dict(a=(X['paper'], X['ink']), b=(X['ink'], X['paper']), c=(X['ungu'], X['ungu']))
+GROUND = dict(a=X['paper'], b=X['ink'])
+SWATCH = dict(a=(X['paper'], X['ink']), b=(X['ink'], X['paper']))
 
 
 def symbols():
@@ -42,13 +40,6 @@ def symbols():
         s['p-b-' + k] = pelat_b.PLATES[k]()
         s['p-b-%s-scene' % k] = pelat_b.PLATES[k](cap=False)
         s['p-b-%s-datar' % k] = pelat_b.PLATES[k + '_datar']()
-    s['p-c-konstruksi'] = pelat_c.konstruksi()
-    s['p-c-teknologi'] = pelat_c.teknologi()
-    s['p-c-peekabo'] = pelat_c.peekabo()
-    s['p-c-konstruksi-lembar'] = pelat_c.konstruksi_lembar()
-    s['p-c-teknologi-lembar'] = pelat_c.teknologi_lembar()
-    s['p-c-teknologi-gerak'] = pelat_c.teknologi_lembar(markup=0.55, lift=True)
-    s['p-c-peekabo-lepas'] = pelat_c.peekabo(with_board=False, stamped=False)
     # sistem gabungan: pelat arah A dengan satu keluarga huruf (Archivo)
     pelat_a.pakai_huruf('arch', wide='125%')
     s['p-g-a-teknologi'] = pelat_a.teknologi()
@@ -57,7 +48,7 @@ def symbols():
 
 
 def defs():
-    return pelat_a.defs() + pelat_b.defs() + pelat_c.defs()
+    return pelat_a.defs() + pelat_b.defs()
 
 
 def write_svgs(sym):
@@ -67,7 +58,7 @@ def write_svgs(sym):
             'height="1120" role="img" aria-labelledby="t d">\n')
     style = '<style><![CDATA[@import url("%s");]]></style>\n' % FONTS
     files = []
-    for arah in 'abc':
+    for arah in 'ab':
         for unit in ('konstruksi', 'teknologi', 'peekabo'):
             ids = ['p-%s-%s' % (arah, unit)]
             if arah == 'b':
@@ -113,9 +104,9 @@ def write_kontras():
            'Ini hitungan, bukan pengukuran di halaman yang dirender. Bila satu arah dibangun, '
            '`contrast.test.ts` dan `e2e/contrast-situ.e2e.ts` tetap yang menentukan (aturan #11).',
            '']
-    names = {a: 'Arah %s, %s' % (a.upper(), alasan.ARAH[a]['nama']) for a in 'abc'}
-    names['g'] = 'Sistem gabungan (usulan)'
-    for arah in 'abcg':
+    names = {a: 'Arah %s, %s' % (a.upper(), alasan.ARAH[a]['nama']) for a in 'ab'}
+    names['g'] = 'Sistem yang disetujui: B panggung, A dokumen'
+    for arah in 'gba':
         rows = []
         for r in warna.rows(arah):
             rows.append([r['label'], '`%s`' % r['fg'], '`%s`' % r['bg'], warna.fmt_ratio(r['r']),

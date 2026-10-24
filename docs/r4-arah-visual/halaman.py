@@ -3,10 +3,9 @@
 import alasan
 import layar_a
 import layar_b
-import layar_c
 from layar_dasar import attr
 
-LAYAR = dict(a=layar_a, b=layar_b, c=layar_c)
+LAYAR = dict(a=layar_a, b=layar_b)
 
 PAGE_CSS = """
 :root{--bg:#f2f2ef;--fg:#171716;--muted:#5b5b57;--line:#d5d5cf;--card:#fbfbf9;--chip:#e6e6e1;--focus:#2754c5;--ok:#1d6b3a;--no:#9a2b2b;--sans:'Geist',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--mono:'Geist Mono',ui-monospace,'Cascadia Mono',Consolas,monospace}
@@ -39,10 +38,11 @@ button:focus-visible,.fw:focus-visible{outline:2px solid var(--focus);outline-of
 .baris{padding-block:34px 6px;border-bottom:1px solid var(--line)}
 .baris>header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 24px;margin-bottom:16px}
 .baris>header p{margin:0;color:var(--muted);max-width:72ch}
-.tiga{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px 20px;align-items:start}
-@media (max-width:1020px){.tiga{grid-template-columns:minmax(0,1fr)}}
+.tiga{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 24px;align-items:start}
+.tiga.tiga3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:1020px){.tiga,.tiga.tiga3{grid-template-columns:minmax(0,1fr)}}
 body:not([data-arah="semua"]) .tiga{grid-template-columns:minmax(0,1fr)}
-body[data-arah="a"] [data-arah]:not([data-arah="a"]),body[data-arah="b"] [data-arah]:not([data-arah="b"]),body[data-arah="c"] [data-arah]:not([data-arah="c"]){display:none}
+body[data-arah="a"] [data-arah]:not([data-arah="a"]),body[data-arah="b"] [data-arah]:not([data-arah="b"]){display:none}
 figure{margin:0;min-width:0}
 figcaption{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-top:8px;font-size:14px;line-height:1.45;color:var(--muted)}
 .tag{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-family:var(--mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase}
@@ -100,7 +100,7 @@ SCRIPT = """
   }
   btns.forEach(function(b){b.addEventListener('click',function(){pilih(b.getAttribute('data-pilih'),true)})});
   var start='semua',h=(location.hash||'').replace('#','');
-  if(/^arah-[abc]$/.test(h)){start=h.slice(5)}else{try{var s=localStorage.getItem('r4-arah');if(s)start=s}catch(e){}}
+  if(/^arah-[ab]$/.test(h)){start=h.slice(5)}else{try{var s=localStorage.getItem('r4-arah');if(s)start=s}catch(e){}}
   pilih(start,false);
   var lb=document.getElementById('lb'),body=lb.querySelector('.lb-body'),cap=lb.querySelector('.lb-bar p');
   document.addEventListener('click',function(e){

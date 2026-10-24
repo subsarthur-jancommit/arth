@@ -8,13 +8,11 @@ FAM = {
     'syne': "'Syne', 'Avenir Next', 'Segoe UI', sans-serif",
     'mono': "'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace",
     'arch': "'Archivo', 'Segoe UI', Arial, sans-serif",
-    'bar': "'Barlow', 'Segoe UI', Arial, sans-serif",
-    'barc': "'Barlow Condensed', 'Arial Narrow', Arial, sans-serif",
 }
 
 # Lebar rata-rata satu huruf, dalam em. Hanya untuk memecah baris; sengaja
 # sedikit lebih lebar dari aslinya supaya teks tidak keluar dari kotaknya.
-ADV = {'mono': 0.6, 'syne': 0.6, 'arch': 0.7, 'bar': 0.5, 'barc': 0.43}
+ADV = {'mono': 0.6, 'syne': 0.6, 'arch': 0.7}
 
 
 def tw(s, size, fam, ls=0.0):
@@ -323,21 +321,3 @@ def style_b(flat=False):
                      stroke_dasharray='2 5')
     return s
 
-
-def style_c():
-    c = X['ungu']
-    s = _common(c, X['kertas'], X['kertas'], title_fam='barc', title_w=800,
-                node_fam='bar', node_w=600)
-    s['roles'] = _roles(
-        c,
-        cut=dict(fill=c, fill_opacity=0.9, stroke=c, stroke_width=1.2),
-        furn_cut=dict(fill=c, fill_opacity=0.35, stroke=c, stroke_width=1.4),
-        earth=dict(fill=c, fill_opacity=0.14),
-    )
-    s['roles']['furn'].update(stroke_opacity=0.9)
-    s['roles']['elev'].update(stroke_opacity=0.82)
-    s['title'].update(size=27, ls=0.8)
-    s['node_title'].update(size=18, fill=X['tinta'])
-    s['node_sub'].update(fill=X['tinta'], op=0.72, size=12.5)
-    s['lane'].update(stroke_opacity=0.4)
-    return s

@@ -1,4 +1,4 @@
-"""Alasan setiap arah, dalam bahasa Indonesia yang sederhana. Teks ini untuk
+"""Alasan arah A dan B, dalam bahasa Indonesia yang sederhana. Teks ini untuk
 pemilik, bukan untuk pembeli, jadi tidak tayang di situs."""
 
 ARAH = {
@@ -52,31 +52,6 @@ ARAH = {
             'Teks di atas scene bisa kehilangan kontras bila garis terang lewat di belakangnya. Judul harus duduk di zona tanpa garis, dan <code>contrast-situ</code> mengukurnya.',
             'Label pelat di kejauhan sengaja redup (4,21:1) dan bukan teks yang perlu dibaca; teks yang dibaca selalu ada di DOM.',
             'Seluruh situs menjadi gelap. Halaman panjang seperti Kebijakan dan Cara kami dibayar perlu keputusan: ikut gelap atau tetap terang.',
-        ],
-    ),
-    'c': dict(
-        nama='Papan proyek',
-        satu='Lembar cetak ungu ditempel di papan berlubang, dicap, dan dicoret. Satu warna baru: ungu stempel. Tanpa WebGL.',
-        chips=('Terang', 'Satu warna', 'Tanpa WebGL'),
-        suasana='Hidup, dekat, dan terasa kerja lapangan, seperti papan di direksi keet: lembar dicetak, ditempel, dicap, lalu dicoret saat dibahas bersama.',
-        pelat=[
-            'Cetak biru ungu di atas kertas putih yang dingin, seperti cetakan blueprint. Dinding yang terpotong diisi penuh. Coretan tinta hitam menunjuk bagian yang dijawab pekerjaan itu, misalnya antre di kasir yang dicoret dan diganti bayar dari meja.',
-            'Stempel ungu mencatat janji yang memang tertulis di situs: disepakati tertulis, sebelum kerja dimulai. Dasarnya papan berlubang; catatan ditempel dengan selotip, dan label memakai pita huruf timbul.',
-            'Usulan token baru: <code>--papan</code>, <code>--kertas</code>, <code>--tinta</code>, <code>--ungu</code> (oklch 0,47 0,165 290), dan <code>--ungu-terang</code> untuk tema gelap.',
-        ],
-        huruf='Barlow Condensed tebal huruf besar untuk judul, seperti papan nama proyek; Barlow untuk isi; Geist Mono untuk label. Barlow di sini pengganti sementara (SIL OFL 1.1). Belum ada huruf berlisensi yang dipilih; bila arah ini dipilih, R4 memilih huruf sempit yang berlisensi.',
-        gerak=[
-            'Lintasan di-pin. Papan terisi satu benda dalam satu waktu: lembar 01 jatuh dan ditempel (momen <code>fixings</code>), stempel mendarat (<code>stamp</code>), lembar 02 menyusul, lalu coretan digambar mengitari bagian yang dijawab.',
-        ],
-        rm='Papan sudah terisi penuh; stempel dan coretan sudah ada (bingkai kanan).',
-        nojs='Sama dengan reduced motion.',
-        ponsel='Lembar bertumpuk ke bawah, masing-masing mendarat saat masuk layar. Perkiraan; dilihat di ponsel saat R4.',
-        webgl='Dicabut dari beranda. Semua gerak memakai SVG dan transform CSS.',
-        risiko=[
-            'Warna ungu mengubah identitas situs dan membuka lagi keputusan monokrom (Tahap 66, <code>docs/MOTION-SPEC.md</code> §12.1). Perlu keputusan tertulis, dan <code>contrast.test.ts</code> mendapat pasangan warna baru.',
-            'Bisa terasa ramai. Coretan dan stempel harus jarang supaya tetap berarti.',
-            'Stempel hanya boleh menyebut hal yang memang benar di situs, dan tidak boleh terbaca sebagai tanda proyek nyata. Teks stempel bertekstur juga harus ada di DOM.',
-            'Huruf sempit huruf besar sulit dibaca untuk kalimat panjang; hanya untuk judul.',
         ],
     ),
 }

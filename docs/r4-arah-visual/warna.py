@@ -3,6 +3,8 @@
 oklch() diubah ke sRGB 8-bit seperti yang dilukis browser, lalu rasio kontras
 dihitung dengan rumus WCAG 2.x. Warna transparan dikomposit di sRGB, sama
 seperti `color-mix(in oklab, X 75%, transparent)` dilukis di atas latarnya.
+
+Arah B dan A memakai dua netral yang sudah ada saja; situs tetap monokrom.
 """
 
 import math
@@ -60,51 +62,29 @@ def ratio(a, b):
 # Dua netral yang sudah dipakai situs (lib/styles/colors.ts).
 INK = oklch(0.17, 0.006, 66, 'ink')
 PAPER = oklch(0.964, 0.006, 92, 'paper')
-
-# Usulan arah C saja.
-PAPAN = oklch(0.905, 0.012, 248, 'papan')
-KERTAS = oklch(0.985, 0.004, 248, 'kertas')
-TINTA = oklch(0.21, 0.02, 275, 'tinta')
-UNGU = oklch(0.47, 0.165, 290, 'ungu')
-UNGU_TERANG = oklch(0.8, 0.1, 290, 'ungu-terang')
-MALAM = oklch(0.2, 0.02, 275, 'malam')
+SURFACE = over(INK, 0.04, PAPER)  # --surface di tema terang
 
 X = dict(
     ink=hexc(INK),
     paper=hexc(PAPER),
-    papan=hexc(PAPAN),
-    kertas=hexc(KERTAS),
-    tinta=hexc(TINTA),
-    ungu=hexc(UNGU),
-    ungu_terang=hexc(UNGU_TERANG),
-    malam=hexc(MALAM),
-    lubang=hexc(over(TINTA, 0.22, PAPAN)),
     muted_a=hexc(over(INK, 0.75, PAPER)),
     muted_b=hexc(over(PAPER, 0.75, INK)),
-    muted_c=hexc(over(TINTA, 0.72, KERTAS)),
-    surface_g=hexc(over(INK, 0.04, PAPER)),
+    surface_g=hexc(SURFACE),
 )
 
-# Sumber token untuk tabel: nama token atau resepnya.
 SUMBER = dict(
     ink='--color-ink, oklch(0.17 0.006 66)',
     paper='--color-paper, oklch(0.964 0.006 92)',
-    papan='usulan --papan, oklch(0.905 0.012 248)',
-    kertas='usulan --kertas, oklch(0.985 0.004 248)',
-    tinta='usulan --tinta, oklch(0.21 0.02 275)',
-    ungu='usulan --ungu, oklch(0.47 0.165 290)',
-    ungu_terang='usulan --ungu-terang, oklch(0.8 0.1 290)',
-    malam='usulan --malam, oklch(0.2 0.02 275)',
 )
 
-# Setiap pasangan teks dan latar yang tampil di gambar diam, per arah.
-# 'teks' perlu 4,5:1 (WCAG 1.4.3); 'non' adalah garis yang membawa arti dan
-# perlu 3:1 (WCAG 1.4.11).
+# Setiap pasangan teks dan latar yang tampil di gambar diam. 'teks' perlu
+# 4,5:1 (WCAG 1.4.3); 'non' adalah garis yang membawa arti dan perlu 3:1
+# (WCAG 1.4.11).
 PAIRS = {
     'a': [
         ('Judul, isi, label pelat: tinta di atas kertas', INK, PAPER, 'teks'),
         ('Keterangan dan isi kop: tinta 75% (--text-muted)', over(INK, 0.75, PAPER), PAPER, 'teks'),
-        ('Tombol Ceritakan masalahnya: kertas di atas tinta', PAPER, INK, 'teks'),
+        ('Tombol: kertas di atas tinta', PAPER, INK, 'teks'),
         ('Garis dinding, jalur, dan label: tinta', INK, PAPER, 'non'),
         ('Garis perabot: tinta 72%', over(INK, 0.72, PAPER), PAPER, 'non'),
         ('Garis bantu as dan arsiran: tinta 45%', over(INK, 0.45, PAPER), PAPER, 'non'),
@@ -119,35 +99,20 @@ PAIRS = {
         ('Garis pelat: kertas di atas tinta', PAPER, INK, 'non'),
         ('Garis redup: kertas 45%', over(PAPER, 0.45, INK), INK, 'non'),
     ],
-    'c': [
-        ('Judul dan navigasi: tinta di atas papan', TINTA, PAPAN, 'teks'),
-        ('Isi kartu dan label: tinta di atas kertas', TINTA, KERTAS, 'teks'),
-        ('Keterangan: tinta 72% di atas kertas', over(TINTA, 0.72, KERTAS), KERTAS, 'teks'),
-        ('Keterangan di papan: tinta 72% di atas papan', over(TINTA, 0.72, PAPAN), PAPAN, 'teks'),
-        ('Label pelat dan stempel: ungu di atas kertas', UNGU, KERTAS, 'teks'),
-        ('Stempel di papan: ungu di atas papan', UNGU, PAPAN, 'teks'),
-        ('Tombol: kertas di atas ungu', KERTAS, UNGU, 'teks'),
-        ('Pita label: kertas di atas tinta', KERTAS, TINTA, 'teks'),
-        ('Tema gelap (usulan): kertas di atas malam', KERTAS, MALAM, 'teks'),
-        ('Tema gelap (usulan): ungu terang di atas malam', UNGU_TERANG, MALAM, 'teks'),
-        ('Garis cetak: ungu di atas kertas', UNGU, KERTAS, 'non'),
-        ('Coretan: tinta di atas kertas', TINTA, KERTAS, 'non'),
+    'g': [
+        ('Panggung (B): kertas di atas tinta', PAPER, INK, 'teks'),
+        ('Panggung: keterangan kertas 75%', over(PAPER, 0.75, INK), INK, 'teks'),
+        ('Panggung: tombol ajakan, tinta di atas kertas', INK, PAPER, 'teks'),
+        ('Dokumen (A): tinta di atas kertas', INK, PAPER, 'teks'),
+        ('Dokumen: keterangan tinta 75%', over(INK, 0.75, PAPER), PAPER, 'teks'),
+        ('Dokumen: tinta di atas blok langkah pertama (--surface)', INK, SURFACE, 'teks'),
+        ('Dokumen: keterangan tinta 75% di atas blok langkah pertama',
+         over(INK, 0.75, SURFACE), SURFACE, 'teks'),
+        ('Dokumen: tombol ajakan, kertas di atas tinta', PAPER, INK, 'teks'),
+        ('Garis pelat dokumen: tinta', INK, PAPER, 'non'),
+        ('Garis pelat panggung: kertas di atas tinta', PAPER, INK, 'non'),
     ],
 }
-
-
-PAIRS['g'] = [
-    ('Panggung (B): kertas di atas tinta', PAPER, INK, 'teks'),
-    ('Panggung: tombol ajakan, tinta di atas ungu terang', INK, UNGU_TERANG, 'teks'),
-    ('Panggung: stempel ungu terang di atas tinta', UNGU_TERANG, INK, 'teks'),
-    ('Dokumen (A): tinta di atas kertas', INK, PAPER, 'teks'),
-    ('Dokumen: keterangan tinta 75%', over(INK, 0.75, PAPER), PAPER, 'teks'),
-    ('Dokumen: tinta di atas blok langkah pertama (tinta 4%)', INK, over(INK, 0.04, PAPER), 'teks'),
-    ('Janji dan ajakan (C): stempel ungu di atas kertas', UNGU, PAPER, 'teks'),
-    ('Janji dan ajakan: stempel ungu di atas blok langkah pertama', UNGU, over(INK, 0.04, PAPER), 'teks'),
-    ('Janji dan ajakan: tombol, kertas di atas ungu', PAPER, UNGU, 'teks'),
-    ('Coretan tinta di atas kertas', INK, PAPER, 'non'),
-]
 
 
 def rows(arah):
