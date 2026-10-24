@@ -1,7 +1,7 @@
 import { defineField, defineType } from 'sanity'
 
-import { FIXED_PAGE_SLUGS } from '../utils/link'
 import { localeValue, requireIndonesian } from '../utils/i18n-array'
+import { FIXED_PAGE_SLUGS } from '../utils/link'
 import { contentValidation, internalFields } from './internal'
 
 const DEFAULT_LOCALE = 'id'
