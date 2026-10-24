@@ -119,7 +119,12 @@ export function fixedPageDestination(pathname: string): string | null {
   if (segments.length !== 3) return null
 
   const [locale, route, slug] = segments
-  if (!isLocale(locale) || route !== 'halaman' || !FIXED_PAGE_SLUGS.has(slug)) {
+  if (
+    !isLocale(locale) ||
+    route !== 'halaman' ||
+    slug === undefined ||
+    !FIXED_PAGE_SLUGS.has(slug)
+  ) {
     return null
   }
 

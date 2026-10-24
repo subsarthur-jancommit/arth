@@ -170,7 +170,10 @@ test.describe('the pages that do answer are untouched by all of it', () => {
         '/id/teknologi/siap-pakai/kuliner/bot-pesan-antar-whatsapp'
       )
     ).text()
-    expect(html).toMatch(/href="\/id\/cara-kami-dibayar"[^>]*data-payment-link/)
+    // Next's Link writes `href` after the other props, so attribute order is
+    // not fixed: find the tag that carries the marker, then check its target.
+    const link = html.match(/<a\b[^>]*\bdata-payment-link\b[^>]*>/)?.[0]
+    expect(link).toContain('href="/id/cara-kami-dibayar"')
   })
 
   /*
