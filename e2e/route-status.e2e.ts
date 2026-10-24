@@ -134,6 +134,46 @@ test.describe('the pages that do answer are untouched by all of it', () => {
   })
 
   /*
+   * The page Teknologi work pages refer to for payment. Its words come from
+   * one published `page` document; the not-found view would pass the status
+   * alone, so a section heading and the contact action's origin are asserted.
+   */
+  test('/id/cara-kami-dibayar answers 200 with its payment ways', async ({
+    request,
+  }) => {
+    const response = await request.get('/id/cara-kami-dibayar', {
+      maxRedirects: 0,
+    })
+    expect(response.status()).toBe(200)
+    const html = await response.text()
+    expect(html).toContain('Kemitraan bagi hasil')
+    expect(html).toContain('dari=cara-kami-dibayar')
+  })
+
+  test('/id/halaman/cara-kami-dibayar answers 308 to its own route', async ({
+    request,
+  }) => {
+    const response = await request.get('/id/halaman/cara-kami-dibayar', {
+      maxRedirects: 0,
+    })
+    expect(response.status()).toBe(308)
+    expect(
+      new URL(response.headers().location ?? '', 'http://x').pathname
+    ).toBe('/id/cara-kami-dibayar')
+  })
+
+  test('a Teknologi work page links to Cara kami dibayar', async ({
+    request,
+  }) => {
+    const html = await (
+      await request.get(
+        '/id/teknologi/siap-pakai/kuliner/bot-pesan-antar-whatsapp'
+      )
+    ).text()
+    expect(html).toMatch(/href="\/id\/cara-kami-dibayar"[^>]*data-payment-link/)
+  })
+
+  /*
    * The machine files, which the proxy's matcher deliberately excludes.
    *
    * Listed because the gone-and-missing logic sits *after* that matcher, and

@@ -93,6 +93,7 @@ const GUESSED_SEGMENTS = new Map([
  */
 export const REAL_SEGMENTS = new Set([
   ...UNITS,
+  'cara-kami-dibayar',
   'cara-kerja',
   'kebijakan',
   'kontak',

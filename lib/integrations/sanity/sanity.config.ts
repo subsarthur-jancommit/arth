@@ -127,6 +127,7 @@ function resolveHref(documentType?: string, slug?: string): string | undefined {
     // slug.
     case 'page':
       if (slug === 'kebijakan') return previewPath('/kebijakan')
+      if (slug === 'cara-kami-dibayar') return previewPath('/cara-kami-dibayar')
       return slug ? `/${PREVIEW_LOCALE}/halaman/${slug}` : undefined
     case 'project':
       return slug ? `/${PREVIEW_LOCALE}/work/${slug}` : undefined
@@ -194,6 +195,10 @@ export default projectId && dataset
               {
                 route: '/:locale/kebijakan',
                 filter: `_type == "page" && slug.current == "kebijakan"`,
+              },
+              {
+                route: '/:locale/cara-kami-dibayar',
+                filter: `_type == "page" && slug.current == "cara-kami-dibayar"`,
               },
               {
                 route: '/:locale/halaman/:slug',

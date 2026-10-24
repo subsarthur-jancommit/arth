@@ -25,6 +25,7 @@ test('the sitemap carries hreflang and honest dates', async ({ request }) => {
     '/id/kontak',
     '/id/cara-kerja',
     '/id/satu-klien-tiga-unit',
+    '/id/cara-kami-dibayar',
   ]) {
     const block = urlBlock(xml, path)
     for (const tag of ['id-ID', 'x-default']) {

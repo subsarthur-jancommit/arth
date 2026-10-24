@@ -1,5 +1,6 @@
 import { defineField, defineType } from 'sanity'
 
+import { FIXED_PAGE_SLUGS } from '../utils/link'
 import { localeValue, requireIndonesian } from '../utils/i18n-array'
 import { contentValidation, internalFields } from './internal'
 
@@ -120,7 +121,7 @@ export const page = defineType({
     prepare({ title, legacyTitle, slug }) {
       let subtitle = 'No slug'
       if (slug) {
-        subtitle = slug === 'kebijakan' ? '/kebijakan' : `/halaman/${slug}`
+        subtitle = FIXED_PAGE_SLUGS.has(slug) ? `/${slug}` : `/halaman/${slug}`
       }
 
       return {

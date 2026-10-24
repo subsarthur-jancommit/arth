@@ -240,6 +240,9 @@ describe('fixed public page redirects', () => {
     expect(fixedPageDestination('/id/halaman/kebijakan')).toBe('/id/kebijakan')
     expect(fixedPageDestination('/id/halaman/kebijakan/')).toBe('/id/kebijakan')
     expect(fixedPageDestination('/en/halaman/kebijakan')).toBe('/en/kebijakan')
+    expect(fixedPageDestination('/id/halaman/cara-kami-dibayar')).toBe(
+      '/id/cara-kami-dibayar'
+    )
   })
 
   it('does not claim unrelated or malformed paths', () => {

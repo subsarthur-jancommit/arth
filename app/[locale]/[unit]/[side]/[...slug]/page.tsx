@@ -673,6 +673,20 @@ export default async function ArthurDetailPage({
           >
             {t('firstStepLink')}
           </Link>
+          {/*
+           * Teknologi work pages keep their commission sentence and refer to
+           * the one page that explains every way Arthur is paid
+           * (docs/R1-SERAH-CARA-KAMI-DIBAYAR.md, section 2).
+           */}
+          {values.unit === 'teknologi' ? (
+            <Link
+              href="/cara-kami-dibayar"
+              className={cn('caption', s.actionLink)}
+              data-payment-link=""
+            >
+              Cara kami dibayar
+            </Link>
+          ) : null}
         </section>
 
         {bridge ? (
