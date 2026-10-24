@@ -111,15 +111,21 @@ export const urlForReference = (link: LinkLike): string => {
   return '#'
 }
 
+/** Fixed `page` documents served at their own top-level route. */
+export const FIXED_PAGE_SLUGS: ReadonlySet<string> = new Set([
+  'kebijakan',
+  'cara-kami-dibayar',
+])
+
 function resolveDocumentUrl(documentType?: string, slug?: string): string {
   if (!slug || !isSafeInternalSlug(slug)) return '#'
 
   switch (documentType) {
     // Fixed CMS pages live under /halaman so they cannot collide with the
-    // dynamic unit route. Kebijakan is the one explicit fixed-route contract:
-    // it has its own legal-review gate and redirects the generic form.
+    // dynamic unit route. Kebijakan and Cara kami dibayar have their own
+    // routes, and `proxy.ts` redirects their generic form.
     case 'page':
-      return slug === 'kebijakan' ? '/kebijakan' : `/halaman/${slug}`
+      return FIXED_PAGE_SLUGS.has(slug) ? `/${slug}` : `/halaman/${slug}`
     // Projects get their own namespace rather than sharing the `page`
     // catch-all: slugs are unique per type in Sanity, not across types, so a
     // work called "About" and a page called "About" would otherwise both

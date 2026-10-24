@@ -401,3 +401,35 @@ entri V4, dan cadangan serta rencananya ada di
 4. **Ajakan "Ceritakan barang yang dibutuhkan".** Label yang belum ada di
    glosarium ini (butir 3 di atas) kini juga dipakai bab penyedia untuk
    instansi.
+
+## Cara kami dibayar, 24 Oktober 2026
+
+- **Izin:** izin tetap pemilik, 23 Oktober 2026: "Saya konfirmasi izin tetap
+  untuk sisa RENCANA-KONTEKS-V2 seperti kamu jelaskan: tulis dan terbitkan ke
+  Sanity sesuai rencana, merge setelah CI hijau tanpa tinjauan preview saya,
+  Kebijakan terbit bertanda tinjauan hukum. Hapus dummy saya lakukan sendiri."
+- **Sumber:** `docs/R1-SERAH-CARA-KAMI-DIBAYAR.md` bagian 1, "Status: disetujui
+  pemilik, 15 Oktober 2026". Rencana: `docs/RENCANA-KONTEKS-V2.md` §3.
+- **Sebelum:** tidak ada dokumen dengan slug `cara-kami-dibayar`, draf maupun
+  terbit; dataset berisi 390 dokumen.
+- **Ditulis:** 1 dokumen baru `arthur-page-cara-kami-dibayar` (tipe `page`,
+  seperti `arthur-page-kebijakan`), dibuat sebagai draf lalu diterbitkan,
+  revisi `SK9TfWTPqr5bMKWRrUSXPe`, 08.58 UTC. Tidak ada dokumen lain yang
+  diubah atau dihapus.
+  - **Judul dan metadata:** dari bagian "Di mesin pencari".
+  - **Isi:** 16 blok, kata demi kata dari bagian 1: pembuka, lima bagian
+    bertajuk, dan kalimat langkah pertama. Kalimat bertanda siap tayang tidak
+    diubah. Label tombol "Ceritakan masalahnya" ada di kode halaman, sama
+    dengan ajakan beranda.
+  - `statusTinjauan` disetujui, `tanggalDisetujui` 2026-10-15, dan tiga baris
+    jejak sumber.
+- **Diperiksa sesudahnya:** dibaca dari API publik dengan saringan yang sama
+  dengan `pageQuery`: judul dan ke-16 blok sama dengan rencana, tidak ada draf
+  tersisa, dataset berisi 391 dokumen.
+- **Di situs:** halaman `/id/cara-kami-dibayar` tampil setelah PR rutenya
+  merge. Sebelum itu, alamat itu tetap 404.
+- **Belum dikerjakan:** tombol belum membawa nama pekerjaan bila pembeli datang
+  dari halaman pekerjaan; hanya `dari=cara-kami-dibayar`. Paragraf cara bayar
+  di halaman pekerjaan tidak dipendekkan, karena blok "Cara kami bekerja" yang
+  dimaksud serah tidak ada di halaman pekerjaan saat ini; halaman pekerjaan
+  Teknologi diberi tautan ke halaman ini di bagian langkah pertama.

@@ -195,6 +195,21 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = (
       changeFrequency: 'monthly',
       priority: 0.6,
     },
+    /*
+     * Resolved the same way, from the published `page` document's SEO
+     * description. This structural line is printed only when that read
+     * fails; the page's own words stay in Sanity (V6).
+     */
+    {
+      path: '/cara-kami-dibayar',
+      label: { en: 'How we are paid', id: 'Cara kami dibayar' },
+      description: {
+        en: 'How Arthur is paid.',
+        id: 'Cara Arthur dibayar.',
+      },
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
     {
       path: '/kontak',
       label: { en: 'About and contact', id: 'Tentang dan kontak' },

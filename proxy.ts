@@ -19,6 +19,7 @@ import { NextResponse } from 'next/server'
 import { guessedDestination } from '@/lib/i18n/guessed-paths'
 import { publicLocaleRedirect } from '@/lib/i18n/public-locale-redirect'
 import { isLocale, routing } from '@/lib/i18n/routing'
+import { FIXED_PAGE_SLUGS } from '@/lib/integrations/sanity/utils/link'
 import {
   type DocumentMediaType,
   HTML_FORMAT_OVERRIDE_PARAM,
@@ -118,11 +119,16 @@ export function fixedPageDestination(pathname: string): string | null {
   if (segments.length !== 3) return null
 
   const [locale, route, slug] = segments
-  if (!isLocale(locale) || route !== 'halaman' || slug !== 'kebijakan') {
+  if (
+    !isLocale(locale) ||
+    route !== 'halaman' ||
+    slug === undefined ||
+    !FIXED_PAGE_SLUGS.has(slug)
+  ) {
     return null
   }
 
-  return `/${locale}/kebijakan`
+  return `/${locale}/${slug}`
 }
 // Proxy response headers are applied to the rendered response. Include the
 // router cache keys that Next emits so adding Accept cannot replace them.

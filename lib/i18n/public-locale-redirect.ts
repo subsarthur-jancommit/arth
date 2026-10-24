@@ -16,6 +16,7 @@ import { UNITS } from '@/lib/content/units'
  */
 export const UNTRANSLATED_SEGMENTS: readonly string[] = [
   ...UNITS,
+  'cara-kami-dibayar',
   'cara-kerja',
   'halaman',
   'kebijakan',

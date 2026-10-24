@@ -1,4 +1,8 @@
 import {
+  type FixedPageContent,
+  fixedPageContent,
+} from '@/lib/content/fixed-page-content'
+import {
   type HowWeWorkContent,
   howWeWorkContent,
 } from '@/lib/content/how-we-work-content'
@@ -25,6 +29,8 @@ import {
 export interface PageHeadSources {
   howWeWork: (locale: Locale) => Promise<HowWeWorkContent | null>
   sequences: (locale: Locale) => Promise<readonly SequenceContent[]>
+  /** Optional so a test that names only the two above still type-checks. */
+  fixedPage?: (locale: Locale, slug: string) => Promise<FixedPageContent | null>
 }
 
 /*
@@ -41,6 +47,7 @@ export interface PageHeadSources {
 const PUBLISHED_SOURCES: PageHeadSources = {
   howWeWork: (locale) => howWeWorkContent(locale, false, false),
   sequences: (locale) => sequenceContent(locale, false),
+  fixedPage: (locale, slug) => fixedPageContent(locale, slug, false, false),
 }
 
 interface HeadDescribedRoute {
@@ -68,6 +75,13 @@ const HEAD_DESCRIBED_ROUTES: readonly HeadDescribedRoute[] = [
     describe: async (locale, sources) => {
       const [first] = await sources.sequences(locale)
       return first ? threeUnitsDescription(first) : null
+    },
+  },
+  {
+    template: '/cara-kami-dibayar',
+    describe: async (locale, sources) => {
+      const content = await sources.fixedPage?.(locale, 'cara-kami-dibayar')
+      return content?.metadata.description ?? null
     },
   },
 ]
