@@ -114,6 +114,27 @@ Stated precisely, per §7: what is closed is _"this was never checked"_. The
 evidence above is dated, and a licence can change — so the pre-launch checklist
 keeps a line for re-reading it, not for discovering it.
 
+### Fonts — `next/font/google`, R4 (2026-10-24)
+
+`lib/styles/fonts.ts` loads four families through `next/font/google`, which
+downloads the files at build time and serves them from the site itself. No
+font file is committed to this repository. Licences read from each family's
+own `OFL.txt` in github.com/google/fonts on 2026-10-24, not from a badge or a
+listing page:
+
+| Family           | Licence     | Copyright                                 |
+| ---------------- | ----------- | ----------------------------------------- |
+| Archivo          | SIL OFL 1.1 | 2020 The Archivo Project Authors          |
+| Geist            | SIL OFL 1.1 | 2024 The Geist Project Authors            |
+| Geist Mono       | SIL OFL 1.1 | 2024 The Geist Project Authors            |
+| Instrument Serif | SIL OFL 1.1 | 2022 The Instrument Serif Project Authors |
+
+OFL permits use, embedding and commercial work; it forbids selling the fonts
+on their own, and none of that is done here. Syne (SIL OFL 1.1, 2017 The Syne
+Project Authors) leaves the site in R4. `lib/scripts/generate-brand-assets.ts`
+still renders the favicon and share images with Syne until they are
+regenerated.
+
 ---
 
 ## 3. Skills vendored into `.claude/skills/`

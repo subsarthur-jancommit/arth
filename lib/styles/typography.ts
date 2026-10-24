@@ -1,19 +1,23 @@
 import type { CSSProperties } from 'react'
 
 /*
- * Two roles, and the division matters more than the count.
+ * Four roles — R4 (`lib/styles/fonts.ts` has the reasons).
  *
- * `display` (Syne) carries everything a reader reads: headings and prose.
- * `mono` (Geist Mono) carries everything a reader scans: captions, labels,
- * calls to action. That split is the pattern measured across Lusion,
- * basement.studio, By-Kin and darkroom in `docs/TEARDOWN.md` §4 — the mono is
- * never decoration, it is the metadata voice.
+ * `display` (Archivo) carries headings. `text` (Geist) carries what a reader
+ * reads at length: prose, leads, navigation. `serif` (Instrument Serif) carries
+ * one thing only, the buyer's quote. `mono` (Geist Mono) carries everything a
+ * reader scans: captions, labels, calls to action. The display/mono split is
+ * the pattern measured across Lusion, basement.studio, By-Kin and darkroom in
+ * `docs/TEARDOWN.md` §4 — the mono is never decoration, it is the metadata
+ * voice.
  *
- * The first Tahap 1 put prose in mono as well. With Syne carrying identity now
- * that the palette has no accent, prose belongs in it too.
+ * Until R4, prose sat in the display face (Syne). It moves to `text` because
+ * Archivo is a heading face first, and a page of documents reads at length.
  */
 const fonts = {
   display: '--next-font-display',
+  text: '--next-font-text',
+  serif: '--next-font-serif',
   mono: '--next-font-mono', // this should be the variable name defined in fonts.ts
 } as const
 
@@ -22,11 +26,11 @@ const typography = {
     'font-family': `var(${fonts.display})`,
     'font-style': 'normal',
     'font-weight': 700,
-    // 85%, not 80%. Sub-100% leading on display type is the signature of
-    // considered typography, but Syne has taller forms than the neutral sans
-    // it replaced and 80% collides the lines.
-    'line-height': '85%',
-    'letter-spacing': '-0.04em',
+    // 92%. Sub-100% leading on display type is the signature of considered
+    // typography. Syne sat at 85%; 92% is the value the R4 mockups were drawn
+    // with in Archivo, and it is checked on the preview, not measured here.
+    'line-height': '92%',
+    'letter-spacing': '-0.03em',
     /*
      * 38 on mobile, not 42, and not 72.
      *
@@ -50,6 +54,11 @@ const typography = {
      * Re-measure both locales when either the scale or the copy changes.
      * `hero.module.css` keeps `overflow-wrap: anywhere` as a last resort, but
      * a broken word is a symptom, not a design.
+     *
+     * Re-measured for Archivo in R4 (700, -0.03em, normal width, headless
+     * Chrome, 2026-10-24): "memperhatikan" is 7.07em, so the cap rises to
+     * 282.7 / (7.07 × 0.853) = 46.9. 38 stays, now with room. At width 125
+     * the same word is 9.15em; a heading set wide must re-measure.
      */
     'font-size': { mobile: 38, desktop: 120 },
   },
@@ -57,8 +66,8 @@ const typography = {
     'font-family': `var(${fonts.display})`,
     'font-style': 'normal',
     'font-weight': 600,
-    'line-height': '90%',
-    'letter-spacing': '-0.025em',
+    'line-height': '96%',
+    'letter-spacing': '-0.02em',
     'font-size': { mobile: 32, desktop: 48 },
   },
   /*
@@ -76,16 +85,29 @@ const typography = {
     'font-family': `var(${fonts.display})`,
     'font-style': 'normal',
     'font-weight': 600,
-    'line-height': '100%',
-    'letter-spacing': '-0.02em',
+    'line-height': '105%',
+    'letter-spacing': '-0.015em',
     'font-size': { mobile: 24, desktop: 32 },
   },
+  /*
+   * The buyer's quote that opens a situation page — R4. The one place the
+   * serif appears, italic, at a size between h2 and h1 so the quote leads the
+   * page without competing with a heading.
+   */
+  quote: {
+    'font-family': `var(${fonts.serif})`,
+    'font-style': 'italic',
+    'font-weight': 400,
+    'line-height': '112%',
+    'letter-spacing': '-0.005em',
+    'font-size': { mobile: 28, desktop: 50 },
+  },
   'p-big': {
-    'font-family': `var(${fonts.display})`,
+    'font-family': `var(${fonts.text})`,
     'font-style': 'normal',
     'font-weight': 400,
-    'line-height': '125%',
-    'letter-spacing': '-0.02em',
+    'line-height': '135%',
+    'letter-spacing': '-0.01em',
     'font-size': { mobile: 16, desktop: 20 },
   },
   /*
@@ -97,7 +119,7 @@ const typography = {
    * consumer is `RichText` — CMS body text.
    */
   p: {
-    'font-family': `var(${fonts.display})`,
+    'font-family': `var(${fonts.text})`,
     'font-style': 'normal',
     'font-weight': 400,
     'line-height': { mobile: '150%', desktop: '145%' },

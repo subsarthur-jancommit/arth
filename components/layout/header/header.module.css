@@ -122,8 +122,8 @@
 .brand {
   /*
    * The wordmark is display type, not a nav item, and it is the only place on
-   * the header where Syne appears — which is what makes it read as the mark
-   * rather than as another link.
+   * the header where the display face (Archivo since R4) appears — which is
+   * what makes it read as the mark rather than as another link.
    */
   font-family: var(--font-display);
   font-weight: 700;
