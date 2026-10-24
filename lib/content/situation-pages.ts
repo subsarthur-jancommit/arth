@@ -134,11 +134,12 @@ const SIDE_FIRST_STEP = {
     label: 'Ceritakan bangunannya',
     sesudahnya: 'Kami survei kondisi lapangan sebelum angka apa pun disebut.',
   },
-  // Konstruksi Sisi A, Cara membeli: eceran first; the side's langkahPertama.
+  // Konstruksi Sisi A, the glossary's first step for this reader (section 6);
+  // the side page's langkahPertama since 2026-10-23.
   'konstruksi/A': {
-    label: 'Mulai dari satu celah',
+    label: 'Ceritakan bagian yang macet',
     sesudahnya:
-      'Pilih eceran per masalah untuk bagian yang tidak sanggup Anda tangani; paket hulu-hilir dan paket rakitan dapat menyusul.',
+      'Kami mulai dari satu bagian proyek yang tak sanggup Anda tangani. Seluruh lingkup atau paket menurut posisi Anda bisa menyusul.',
   },
   // Peekabo Sisi B, Cara bergabung step 1 narrowed to the one open route,
   // creators and hosts; the revised side page carries the same step.

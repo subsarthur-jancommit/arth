@@ -12,10 +12,9 @@ import { expect, test } from '@playwright/test'
  * so a Studio edit moves them together. This spec is what notices a surface
  * that stops doing so.
  *
- * `/satu-klien-tiga-unit` is the discriminating case today: its head carries
- * the description written in Sanity, which differs from the code fallback
- * the catalog keeps, so a surface printing the fallback fails here.
- * `/cara-kerja`'s head currently equals its fallback, the page's own lead.
+ * Both pages discriminate: the catalog keeps no line of its own for them
+ * (2026-10-23), so a surface that stops reading the head's description
+ * prints none and fails here.
  *
  * ## Why only prerendered surfaces are compared
  *

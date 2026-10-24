@@ -649,6 +649,7 @@ const sideChapterFields = `
   "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),
   "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
   urutan,
+  jalurJaringan,
   "jumlahOffer": count(*[
     _type == "offer" &&
     statusTinjauan == "disetujui" &&
@@ -680,6 +681,7 @@ const sideChapterPreviewFields = `
   "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),
   "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
   urutan,
+  jalurJaringan,
   "jumlahOffer": count(*[_type == "offer" && bab._ref == ^._id]),
   "jenis": array::compact(array::unique(*[
     _type == "offer" &&
@@ -925,6 +927,7 @@ const offerReaderFields = `
       "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value, bab->sisi->langkahPertama.label[_key == $locale][0].value, bab->sisi->langkahPertama.label[_key == "id"][0].value),
       "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value, bab->sisi->langkahPertama.sesudahnya[_key == $locale][0].value, bab->sisi->langkahPertama.sesudahnya[_key == "id"][0].value)
     },
+    "kalimatJujur": coalesce(bab->sisi->unit->kalimatJujur[_key == $locale][0].value, bab->sisi->unit->kalimatJujur[_key == "id"][0].value),
     "jembatan": {
       ${offerBridgeFields}
     },
@@ -1009,6 +1012,7 @@ export const offerPagePreviewQuery = defineQuery(`
       "label": coalesce(langkahPertama.label[_key == $locale][0].value, langkahPertama.label[_key == "id"][0].value, bab->sisi->langkahPertama.label[_key == $locale][0].value, bab->sisi->langkahPertama.label[_key == "id"][0].value),
       "sesudahnya": coalesce(langkahPertama.sesudahnya[_key == $locale][0].value, langkahPertama.sesudahnya[_key == "id"][0].value, bab->sisi->langkahPertama.sesudahnya[_key == $locale][0].value, bab->sisi->langkahPertama.sesudahnya[_key == "id"][0].value)
     },
+    "kalimatJujur": coalesce(bab->sisi->unit->kalimatJujur[_key == $locale][0].value, bab->sisi->unit->kalimatJujur[_key == "id"][0].value),
     "jembatan": {
       ${offerBridgePreviewFields}
     },
@@ -1105,6 +1109,7 @@ export const sequencesPreviewQuery = defineQuery(`
 export const howWeWorkQuery = defineQuery(`
   *[_type == "howWeWork" && statusTinjauan == "disetujui"][0] {
     _id,
+    "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),
     "janji": janji[]{
       _key,
       "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),
@@ -1138,6 +1143,7 @@ export const howWeWorkQuery = defineQuery(`
 export const howWeWorkPreviewQuery = defineQuery(`
   *[_type == "howWeWork"][0] {
     _id,
+    "pembuka": coalesce(pembuka[_key == $locale][0].value, pembuka[_key == "id"][0].value),
     "janji": janji[]{
       _key,
       "judul": coalesce(judul[_key == $locale][0].value, judul[_key == "id"][0].value),

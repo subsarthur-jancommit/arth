@@ -6,7 +6,6 @@ import {
   buildMarkdownDocumentFromRoutes,
   type MarkdownDocument,
 } from './markdown-document'
-import { HOW_WE_WORK_LEAD } from './page-descriptions'
 import { SITE } from './site'
 
 /** Narrows away the redirect/degraded branches for tests asserting on a document body. */
@@ -169,13 +168,18 @@ describe('a page whose head describes itself from the CMS', () => {
     )
   })
 
-  it("prints the catalog's own line when nothing could be read", async () => {
+  it('prints no line of its own when nothing could be read', async () => {
     // Hermetic: no CMS is configured under `bun test`, so the resolver reads
-    // nothing and the page keeps the catalog's description.
+    // nothing, and the catalog keeps no copy of the head's sentence.
     const document = await buildMarkdownDocument('/id/cara-kerja')
     assertDocumentBody(document)
 
     expect(document.status).toBe(200)
-    expect(document.body).toContain(`## This page\n\n${HOW_WE_WORK_LEAD}\n`)
+    expect(document.body).toContain(
+      '## This page\n\nThis representation summarizes the route'
+    )
+    expect(document.body).toContain(
+      `- [Cara kami bekerja](${absoluteSiteUrl('/id/cara-kerja')})\n`
+    )
   })
 })

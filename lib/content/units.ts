@@ -144,31 +144,16 @@ export function sideTemplate(unit: Unit, side: string): string {
  */
 
 /**
- * The character the capability lines are authored with, between items.
+ * The items of a unit's capability block: the unit's own steps, as
+ * `unit.caraKerja` holds them in Sanity, in order.
  *
- * Carried over from `practices.ts` unchanged, including its reason: a line in
- * `messages/{en,id}.json` holds several pieces of information in one string,
- * and the middle dot is the only thing separating them. No capability's name
- * contains one.
+ * Until 2026-10-23 the block's test read a dot-separated line per unit from
+ * the message files (`capabilityItems`), the copy of the old `/studio` page.
+ * Each step is its own item, so nothing is split. A step with no text is
+ * left out rather than shown empty, and a unit with none gets no block.
  */
-export const CAPABILITY_SEPARATOR = '·'
-
-/**
- * One authored capability line, read back as the items it was written from.
- *
- * The alternative — a named message key per item — does not type-check where
- * it is needed, because the caller maps over the whole union and TypeScript
- * cannot correlate the two halves through a `.map()`. `practices.ts` recorded
- * that at length; the conclusion has not changed, so the line stays one
- * readable sentence for whoever translates it and the guarantee lives in the
- * test instead.
- *
- * A line that lost its separators degrades to a one-item list rather than an
- * empty section, and the test is what stops that reaching a reader.
- */
-export function capabilityItems(line: string): readonly string[] {
-  return line
-    .split(CAPABILITY_SEPARATOR)
-    .map((item) => item.trim())
-    .filter((item) => item !== '')
+export function unitSteps(
+  steps: readonly { teks: string | null }[] | null | undefined
+): string[] {
+  return (steps ?? []).flatMap((step) => (step.teks?.trim() ? [step.teks] : []))
 }

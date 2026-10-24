@@ -308,6 +308,9 @@ const offerReaderSchema = z.object({
   langkahPertama: z
     .object({ label: z.string().nullable(), sesudahnya: z.string().nullable() })
     .nullable(),
+  // The unit's honesty sentence (glossary section 10, rule 5). Optional so a
+  // response cached before the field existed still parses.
+  kalimatJujur: z.string().nullable().optional(),
   jembatan: z
     .object({
       kalimat: z.string().nullable(),
@@ -412,6 +415,7 @@ function offerIsSafe(data: OfferReaderData): boolean {
     ]),
     data.langkahPertama?.label,
     data.langkahPertama?.sesudahnya,
+    data.kalimatJujur,
     data.jembatan?.kalimat,
     data.metadata?.title,
     data.metadata?.description,
@@ -667,6 +671,9 @@ export default async function ArthurDetailPage({
           <p className="caption">{t('firstStepEyebrow')}</p>
           <h2 className="h2">{offerData.langkahPertama?.label}</h2>
           <p className="p-big">{offerData.langkahPertama?.sesudahnya}</p>
+          {offerData.kalimatJujur ? (
+            <p className="p">{offerData.kalimatJujur}</p>
+          ) : null}
           <Link
             href={askHref(values.chapter, offerData.slug ?? undefined)}
             className={cn('caption', s.actionLink)}

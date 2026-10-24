@@ -43,13 +43,11 @@ import {
 } from '@/lib/content/offer-models'
 import { OFFER_PAGES } from '@/lib/content/offer-pages'
 import { babDraft, babId, offerDraft } from '@/lib/content/sanity-drafts'
-import { SITUATION_OVERRIDES } from '@/lib/content/situation-overrides'
 import {
   deriveSituation,
   type SituationPage,
   type SituationSource,
   situationMarkdown,
-  situationSlug,
 } from '@/lib/content/situation-pages'
 import type { Side } from '@/lib/content/units'
 
@@ -499,19 +497,14 @@ async function main() {
     const index = process.argv.indexOf(name)
     return index === -1 ? undefined : process.argv[index + 1]
   }
+  // The handwritten answers these pages once took from code live only in the
+  // published `bab` documents since 2026-10-23 (V6), so a page built here is
+  // the derived half alone: a starting point for a new chapter, never a
+  // rewrite of a published one.
   const pages = situations
     .filter((source) => source.unit === 'teknologi')
     .toSorted((a, b) => b.side.localeCompare(a.side))
-    .map((source) =>
-      deriveSituation(
-        source,
-        drafts,
-        bridges,
-        SITUATION_OVERRIDES.get(
-          `${source.unit}/${source.side}/${situationSlug(source.nama)}`
-        )
-      )
-    )
+    .map((source) => deriveSituation(source, drafts, bridges))
 
   const draftsOut = arg('--drafts')
   if (draftsOut) {

@@ -124,8 +124,8 @@ export const SITE: SiteFacts = {
   url: BASE_URL,
   logo: `${BASE_URL}/icon.png`,
   description: {
-    en: 'Arthur is an umbrella over three units: Konstruksi, Teknologi, and Peekabo, the agency among them. Each unit is read from two sides.',
-    id: 'Arthur adalah payung atas tiga unit: Konstruksi, Teknologi, dan Peekabo, agency di antaranya. Tiap unit dibaca dari dua sisi.',
+    en: 'Arthur is an umbrella over three units: Konstruksi, Teknologi, and Peekabo, the agency among them.',
+    id: 'Arthur adalah payung atas tiga unit: Konstruksi, Teknologi, dan Peekabo, agency di antaranya.',
   },
   areaServed: {
     en: 'Subang, Purwakarta, and Bandung',
@@ -205,7 +205,7 @@ export const SITE: SiteFacts = {
         {
           name: 'Find the right unit',
           description:
-            'Use Arthur to find which of its three units — Konstruksi, Teknologi or Peekabo — covers a piece of work, and which side of that unit a reader stands on.',
+            'Use Arthur to find which of its three units — Konstruksi, Teknologi or Peekabo — covers a piece of work, and who that unit works for.',
         },
         {
           name: 'Review past work',
@@ -224,7 +224,7 @@ export const SITE: SiteFacts = {
         {
           name: 'Menemukan unit yang tepat',
           description:
-            'Pakai Arthur untuk menemukan unit mana di antara Konstruksi, Teknologi, dan Peekabo yang mencakup sebuah pekerjaan, dan dari sisi mana pembacanya berdiri.',
+            'Pakai Arthur untuk menemukan unit mana di antara Konstruksi, Teknologi, dan Peekabo yang mencakup sebuah pekerjaan, dan untuk siapa unit itu bekerja.',
         },
         {
           name: 'Menelusuri pekerjaan sebelumnya',

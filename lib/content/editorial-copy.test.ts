@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { readdirSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 /**
@@ -18,6 +18,12 @@ import { join } from 'node:path'
  * copy, and none of them may appear in code that reaches a reader. And the
  * fallback modules that remain are named, each with the decision that
  * retires it, so a new one cannot arrive unnoticed.
+ *
+ * The group A fixes (2026-10-23) removed what V6 left: the chapter answer
+ * sheet `lib/content/situation-overrides.ts`, the `/cara-kerja` lead and a
+ * description in `lib/seo/page-descriptions.ts`, and interface strings no
+ * page read. Their sentences joined the list, and the answer sheet may not
+ * come back under its own name.
  */
 
 /**
@@ -50,6 +56,27 @@ const SENTINELS = [
   'Seseorang ingin ikut menjual, menjadi anggota komunitas, atau menjadi host.',
   // The previous site's English statement, retired.
   'Arth works to a brief.',
+  // Chapter copy, now in the 51 `bab` documents. The chapter waves wrote it
+  // from `lib/content/situation-overrides.ts`, removed once every field was
+  // checked against the published chapters.
+  'Pesanan di chat bercampur, dan kasir kewalahan saat ramai.',
+  'Anda ingin rumah jadi tanpa anggaran yang membengkak.',
+  'Paketnya sudah menang, tetapi belum ada subkon yang sanggup memegang semuanya.',
+  'Anda bisa live berjam-jam, tetapi penghasilannya belum menentu.',
+  'Ide Anda dipetakan dalam satu jam, lalu bot, dasbor, atau portofolionya dapat dibangun.',
+  'Untuk kafe yang belum buka, unit Konstruksi menyiapkan lokasi sewa sampai alur pelanggan dan dapurnya bekerja.',
+  // The `/cara-kerja` lead, now `howWeWork.pembuka`, and the line
+  // `/satu-klien-tiga-unit` printed with no SEO description written, retired.
+  'Lingkup, harga, target, dan laporan disepakati tertulis sebelum kerja dimulai.',
+  'Rangkaian kerja yang mungkin lintas Konstruksi, Teknologi, dan Peekabo.',
+  // Interface strings no page read, retired: the home page's sequence and
+  // method blocks, the unit and side head lines, and the old `/studio` page.
+  'Kafe yang kami bangun bisa langsung memakai pemesanan dan pembayaran dari meja',
+  'Satu dari tiga unit Arthur di Subang, Purwakarta, dan Bandung.',
+  'Tiap unit dibaca dari dua sisi',
+  // The first step that put catalog words on every chapter of the project
+  // runners' side (glossary, section 1).
+  'Pilih eceran per masalah untuk bagian yang tidak sanggup Anda tangani',
 ] as const
 
 /**
@@ -107,5 +134,13 @@ describe('editorial copy lives in Sanity, not in code', () => {
       .toSorted()
 
     expect(fallbacks).toEqual(['home-fallback.ts', 'journal-fallback.ts'])
+  })
+
+  it('the chapter answer sheet stays retired', () => {
+    // A second copy of every published chapter, which no Studio edit could
+    // reach. The sentences above catch its copy; this catches its name.
+    expect(existsSync(join('lib', 'content', 'situation-overrides.ts'))).toBe(
+      false
+    )
   })
 })

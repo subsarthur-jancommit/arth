@@ -70,8 +70,7 @@ const entries: SearchEntry[] = [
     id: 'page:/konstruksi',
     kind: 'unit',
     label: 'Konstruksi',
-    description:
-      'Konstruksi, dibaca dari dua sisi: yang menjalankan proyek, dan yang memiliki bangunannya.',
+    description: 'Konstruksi, untuk pelaku proyek dan untuk pemilik bangunan.',
     href: '/id/konstruksi',
     meta: '/konstruksi',
   },
@@ -80,7 +79,7 @@ const entries: SearchEntry[] = [
     kind: 'unit',
     label: 'Teknologi',
     description:
-      'Teknologi, dibaca dari dua sisi: pembeli yang mau hasil siap pakai, dan pembeli yang paham teknis.',
+      'Teknologi, untuk yang ingin hasil siap pakai dan untuk yang paham teknis.',
     href: '/id/teknologi',
     meta: '/teknologi',
   },
@@ -89,7 +88,7 @@ const entries: SearchEntry[] = [
     kind: 'unit',
     label: 'Peekabo',
     description:
-      'Peekabo, agency-nya Arthur, dibaca dari dua sisi: pemilik usaha dan brand, dan jaringan penjual.',
+      'Peekabo, agency kami, untuk pemilik usaha dan brand, serta untuk yang ingin ikut menjualkan.',
     href: '/id/peekabo',
     meta: '/peekabo',
   },

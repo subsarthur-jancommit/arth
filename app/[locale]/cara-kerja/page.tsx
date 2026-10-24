@@ -6,10 +6,7 @@ import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
 import { howWeWorkContent } from '@/lib/content/how-we-work-content'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
-import {
-  HOW_WE_WORK_LEAD,
-  howWeWorkDescription,
-} from '@/lib/seo/page-descriptions'
+import { howWeWorkDescription } from '@/lib/seo/page-descriptions'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 import { PromiseStamp, type WrittenPromise } from '@/vault/blocks/promise-stamp'
 import { Dimension } from '@/vault/motion/dimension'
@@ -74,7 +71,9 @@ export default async function HowWeWorkPage() {
         <header className={s.hero}>
           <p className={cn('caption', s.eyebrow)}>Arthur</p>
           <h1 className={cn('h1', s.title)}>Cara kami bekerja</h1>
-          <p className={cn('p-big', s.lead)}>{HOW_WE_WORK_LEAD}</p>
+          {data.pembuka ? (
+            <p className={cn('p-big', s.lead)}>{data.pembuka}</p>
+          ) : null}
         </header>
 
         {promises.length > 0 && (
@@ -164,12 +163,13 @@ export async function generateMetadata() {
   if (!data) return { robots: { index: false } }
 
   const keywords = data.metadata?.keywords
+  // The rule `/llms.txt`, the search index and the Markdown mirror apply too
+  // (`lib/seo/route-descriptions.ts`), so they cannot disagree with it.
+  const description = howWeWorkDescription(data)
 
   return generatePageMetadata({
     title: data.metadata?.title ?? 'Cara kami bekerja',
-    // The rule `/llms.txt`, the search index and the Markdown mirror apply
-    // too (`lib/seo/route-descriptions.ts`), so they cannot disagree with it.
-    description: howWeWorkDescription(data),
+    ...(description && { description }),
     ...(keywords && { keywords }),
     noIndex: isDraftMode || data.metadata?.noIndex === true,
     url: `/${locale}/cara-kerja`,

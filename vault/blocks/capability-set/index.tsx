@@ -67,9 +67,9 @@
  * @example
  * ```tsx
  * <CapabilitySet
- *   label={t('capabilitiesEyebrow')}
- *   items={capabilityItems(t(`capabilities.${value}`))}
- *   data-epic="practice-capabilities"
+ *   label={t('workEyebrow')}
+ *   items={unitSteps(content.caraKerja)}
+ *   data-epic="unit-method"
  * />
  * ```
  */
