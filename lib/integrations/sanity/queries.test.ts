@@ -294,6 +294,12 @@ describe('network side query', () => {
     expect(sidePageQuery).not.toContain('jejakSumber')
     expect(sidePageQuery).not.toContain('ditulisOleh')
   })
+
+  it('tells each network path which chapter it opens', () => {
+    for (const query of [sidePageQuery, sidePagePreviewQuery]) {
+      expect(query).toContain('jalurJaringan')
+    }
+  })
 })
 
 describe('site settings cutover', () => {

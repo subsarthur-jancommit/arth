@@ -649,6 +649,7 @@ const sideChapterFields = `
   "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),
   "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
   urutan,
+  jalurJaringan,
   "jumlahOffer": count(*[
     _type == "offer" &&
     statusTinjauan == "disetujui" &&
@@ -680,6 +681,7 @@ const sideChapterPreviewFields = `
   "kutipan": coalesce(kutipan[_key == $locale][0].value, kutipan[_key == "id"][0].value),
   "situasi": coalesce(situasi[_key == $locale][0].value, situasi[_key == "id"][0].value),
   urutan,
+  jalurJaringan,
   "jumlahOffer": count(*[_type == "offer" && bab._ref == ^._id]),
   "jenis": array::compact(array::unique(*[
     _type == "offer" &&

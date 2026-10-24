@@ -119,6 +119,9 @@ const sideContentSchema = z.object({
         kutipan: textSchema.nullable(),
         situasi: textSchema.nullable(),
         urutan: z.number().nullable(),
+        // A string, not the path keys: an unknown value leaves the chapter
+        // off the network paths instead of failing the whole side.
+        jalurJaringan: z.string().nullable().optional(),
         jumlahOffer: z.number().int().nonnegative(),
         jenis: z.array(textSchema).nullable(),
         pintuMasuk: z
