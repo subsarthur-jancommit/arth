@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'bun:test'
 
 import type { SituationPage } from '@/lib/content/situation-pages'
+import { SIDES } from '@/lib/content/units'
 
 import {
   audienceOf,
+  CATALOG_SIDE_KEYS,
   draftDocuments,
   draftOffer,
   parseBridges,
@@ -313,5 +315,15 @@ describe('parseSituations and parseBridges', () => {
       ].join('\n')
     )
     expect(pairs).toEqual([['FNB-01', 'KUL-02']])
+  })
+})
+
+describe('CATALOG_SIDE_KEYS', () => {
+  it('maps Sisi A and Sisi B onto the two route keys of each unit', () => {
+    for (const [unit, keys] of Object.entries(CATALOG_SIDE_KEYS)) {
+      expect(new Set([keys.A, keys.B])).toEqual(
+        new Set(SIDES[unit as keyof typeof SIDES])
+      )
+    }
   })
 })

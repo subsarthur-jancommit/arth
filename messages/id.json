@@ -43,13 +43,6 @@
     "situationEyebrow": "Mulai dari masalah",
     "situationTitle": "Pilih situasi Anda",
     "situationDestination": "Ke",
-    "sequenceEyebrow": "Rangkaian",
-    "sequenceTitle": "Satu klien, tiga unit",
-    "sequenceBody": "Kafe yang kami bangun bisa langsung memakai pemesanan dan pembayaran dari meja, lalu dibuka dengan kampanye pembukaan gerai. Studio siaran yang kami bangun bisa langsung dipakai host live. Setiap unit tetap bisa dibeli sendiri.",
-    "methodEyebrow": "Janji kerja",
-    "methodTitle": "Cara kami bekerja",
-    "methodLink": "Lihat janji kerja Arthur",
-    "methodFallback": "Lingkup, harga, target, dan laporan disepakati tertulis sebelum kerja dimulai.",
     "actionEyebrow": "Langkah pertama",
     "actionFallback": "Ceritakan masalahnya.",
     "actionAfterFallback": "Kami tentukan unit mana yang bekerja lebih dulu.",
@@ -207,7 +200,6 @@
     "konstruksi": "Konstruksi",
     "teknologi": "Teknologi",
     "peekabo": "Peekabo",
-    "metaDescription": "Satu dari tiga unit Arthur di Subang, Purwakarta, dan Bandung.",
     "sideCount": "{count} pintu masuk",
     "sideEyebrow": "Pilih posisi Anda",
     "sideTitle": "Pilih yang paling dekat dengan posisi Anda.",
@@ -236,7 +228,6 @@
     "navigationLabel": "Jelajahi unit {unit}",
     "otherLabel": "{unit} untuk pembaca lain",
     "backToUnit": "Kembali ke {unit}",
-    "metaDescription": "{side} adalah satu dari dua sisi unit {unit} milik Arthur.",
     "switcherEyebrow": "Untuk siapa",
     "switcherLabel": "{unit} untuk pembaca lain",
     "chaptersEyebrow": "Temukan situasinya",
@@ -341,63 +332,7 @@
     }
   },
   "sample": {
-    "label": "Isi contoh",
-    "unitNote": "Pernyataan unit ditulis setelah ada tipe isi yang menyimpannya. Tidak ada klaim di sini.",
-    "sideNote": "Isi sisi ini belum menjadi pernyataan Arthur. Kata-katanya akan ditulis dari sumber yang disetujui setelah tipe isi sisi tersedia."
-  },
-  "studio": {
-    "eyebrow": "Cara kerja",
-    "title": "Cara kami bekerja",
-    "lead": "Arthur adalah payung atas tiga unit: Konstruksi, Teknologi, dan Peekabo, agency di antaranya. Tiap unit dibaca dari dua sisi, karena pekerjaan yang sama terlihat berbeda tergantung dari sisi mana Anda berdiri.",
-    "facts": {
-      "founded": "Berdiri",
-      "foundedValue": "2021",
-      "based": "Basis",
-      "basedValue": "Jakarta, bekerja jarak jauh",
-      "team": "Tim",
-      "teamValue": "Empat, plus spesialis per penugasan",
-      "languages": "Bahasa",
-      "languagesValue": "Inggris, Bahasa Indonesia"
-    },
-    "factsNote": "Nilai untuk tahun berdiri, lokasi, dan tim adalah teks sementara, bukan fakta terverifikasi.",
-    "sampleNote": "Isi halaman ini, termasuk fakta, karya, proses, dan angka, adalah contoh, bukan pernyataan Arthur.",
-    "statementEyebrow": "Cara kami memikirkannya",
-    "statement": "Sebagian besar pekerjaan gagal sebelum ada yang menulis kode. Ia gagal di minggu ketika brief-nya masih lunak, ketika belum ada yang menyebut lantang keputusan mana yang benar-benar terbuka dan mana yang sudah ditutup, dan ketika ongkos salah belum pernah dituliskan. Jadi di situlah kami mulai. Kami membaca sistem yang sudah ada, menamai tukar-tambahnya, dan menaruh angka pada hal yang selama ini ditebak semua orang. Yang dibangun sesudah itu lebih kecil daripada yang diminta, dan ia bertahan lebih lama.",
-    "evidenceEyebrow": "Karya yang dihasilkannya",
-    "measureFacts": "{engagements, plural, other {# penugasan}} untuk {clients, plural, other {# klien}}",
-    "shapesTitle": "Bentuk yang pernah diambil sebuah penugasan",
-    "processEyebrow": "Cara kami bekerja",
-    "process": {
-      "scopeTitle": "Lingkup",
-      "scopeBody": "Seminggu, kadang dua. Kami membaca yang sudah ada, berbicara dengan orang yang merawatnya, dan menuliskan penugasan ini apa dan bukan apa. Kalau jawaban jujurnya Anda tidak butuh kami, itulah hasilnya.",
-      "readTitle": "Baca",
-      "readBody": "Kami memetakan keputusan yang masih terbuka dan batasan yang tidak. Setiap tukar-tambah ditulis di tempat tim bisa membantahnya, berbulan-bulan kemudian, tanpa kami di ruangan.",
-      "decideTitle": "Putuskan",
-      "decideBody": "Satu rekomendasi, dengan alasannya melekat dan alternatifnya disebut. Kami lebih suka dibantah dengan fakta di tangan daripada disetujui karena otoritas.",
-      "deliverTitle": "Kirim",
-      "deliverBody": "Dibangun, didokumentasikan, dan diserahkan supaya tim bisa menjalankannya tanpa kami. Penugasan berakhir pada tanggal yang kami sebut di awal, bukan saat anggarannya habis."
-    },
-    "capabilitiesEyebrow": "Dua sisi tiap unit",
-    "capabilities": {
-      "konstruksi": "Pelaku proyek · Pemilik bangunan",
-      "teknologi": "Siap pakai · Paham teknis",
-      "peekabo": "Pemilik usaha · Jaringan penjual"
-    },
-    "capabilitiesSeenIn": "Terlihat dalam",
-    "colophonEyebrow": "Kolofon",
-    "colophonNote": "Rincian di bawah menggambarkan situs contoh ini. Rincian tersebut bukan klaim layanan atau rekam jejak Arthur.",
-    "colophon": {
-      "built": "Dibangun dengan",
-      "builtValue": "Next.js di atas Satūs oleh darkroom.engineering, lisensi MIT",
-      "type": "Huruf",
-      "typeValue": "Syne untuk display, Geist Mono untuk label",
-      "colour": "Warna",
-      "colourValue": "Ditulis dalam oklch, diturunkan dengan color-mix",
-      "access": "Aksesibilitas",
-      "accessValue": "WCAG 2.2, diuji dengan axe di setiap rute"
-    },
-    "closing": "Rincian cara kerja Arthur akan ditulis setelah pemilik menyetujui isinya.",
-    "closingAction": "Lihat unit Arthur"
+    "label": "Isi contoh"
   },
   "journal": {
     "readingTime": "{minutes} menit baca",

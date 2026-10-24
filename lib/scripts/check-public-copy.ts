@@ -52,8 +52,6 @@ const ALLOWED_MESSAGE_KEYS = new Map([
   // Legacy fixture pages, labelled dummy by plan until F5-04 removes them.
   ['project.contactPlaceholderNote', '/work fixtures, removed at F5-04'],
   ['journal.contactPlaceholderNote', '/journal fixtures, removed at F5-04'],
-  // No page reads the `studio` namespace since `/studio` became a redirect.
-  ['studio.closing', 'unread namespace'],
 ])
 
 /** A next-intl message catalogue: strings, nested under namespace keys. */
