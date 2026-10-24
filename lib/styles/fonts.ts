@@ -1,33 +1,57 @@
-import { Geist_Mono, Syne } from 'next/font/google'
+import { Archivo, Geist, Geist_Mono, Instrument_Serif } from 'next/font/google'
 
 /*
- * Syne for display, Geist Mono for data.
+ * Four roles, three families — R4, chosen with the owner on 2026-10-24
+ * (`docs/r4-arah-visual/README.md`, "Huruf dan pembagian halaman").
  *
- * Syne was drawn for Synesthésie, a French art centre, and is widely used in
- * contemporary-art contexts. That provenance is the point: this site sits
- * around artwork, and a face from the art world reads as belonging there in a
- * way a general-purpose UI sans does not.
+ * - `display` — Archivo. Headings. A grotesque with a width axis (62–125):
+ *   the stage pages (home, unit openings, one client three units, contact)
+ *   set it wide, the document pages set it at normal width, so both themes
+ *   read as one site. It replaces Syne, which was chosen for an art-world
+ *   portfolio this site no longer is.
+ * - `text` — Geist. Running text, navigation and buttons: neutral, and easy
+ *   to read at length.
+ * - `serif` — Instrument Serif. Only the buyer's quote that opens a situation
+ *   page: the one human voice among technical drawings.
+ * - `mono` — Geist Mono, unchanged. Labels, captions, measurements: the
+ *   working-drawing voice. Every site measured in `docs/TEARDOWN.md` pairs its
+ *   display face with a mono that carries metadata.
  *
- * It replaces Geist, which was the first Tahap 1 choice. Geist is a fine face
- * and basement.studio ships it — but it is a neutral tech sans, and neutrality
- * is what this site cannot afford once the palette gives up its accent. With
- * no colour carrying identity, the typography has to.
+ * All four are SIL Open Font License 1.1, read from each family's own
+ * `OFL.txt` in github.com/google/fonts on 2026-10-24 (`docs/PROVENANCE.md`).
  *
- * Geist Mono stays. Every site measured in `docs/TEARDOWN.md` pairs its
- * display face with a mono that carries labels, captions and metadata, and
- * that division of labour is what makes a portfolio read as engineered rather
- * than merely decorated.
+ * No `weight` on the variable families (Archivo, Geist and Geist Mono ship a
+ * variable `wght` axis): one file covers every weight the styles use, and
+ * pinning weights would download a static file each. Instrument Serif ships a
+ * single 400, so it names it. `axes: ['wdth']` asks for Archivo's width axis
+ * on top of weight.
  *
- * No `weight` — both families ship a variable `wght` axis (Syne 400–800,
- * Geist Mono 100–900), so one file per family covers every weight the styles
- * use. Pinning explicit weights would download a separate static file each and
- * snap in-between weights to the nearest loaded one.
+ * The serif is not preloaded: it appears on situation pages only, and a
+ * preload would fetch it on every route.
  */
-const display = Syne({
+const display = Archivo({
   subsets: ['latin'],
   display: 'swap',
+  axes: ['wdth'],
   variable: '--next-font-display',
   fallback: ['system-ui', 'Helvetica Neue', 'Arial', 'sans-serif'],
+})
+
+const text = Geist({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--next-font-text',
+  fallback: ['system-ui', 'Helvetica Neue', 'Arial', 'sans-serif'],
+})
+
+const serif = Instrument_Serif({
+  subsets: ['latin'],
+  display: 'swap',
+  weight: '400',
+  style: ['normal', 'italic'],
+  preload: false,
+  variable: '--next-font-serif',
+  fallback: ['Georgia', 'Times New Roman', 'serif'],
 })
 
 const mono = Geist_Mono({
@@ -37,7 +61,7 @@ const mono = Geist_Mono({
   fallback: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
 })
 
-const fonts = [display, mono]
+const fonts = [display, text, serif, mono]
 const fontsVariable = fonts.map((font) => font.variable).join(' ')
 
 export { fontsVariable }

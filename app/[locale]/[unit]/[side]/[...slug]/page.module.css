@@ -30,10 +30,6 @@
   color: var(--text-muted);
 }
 
-.quote {
-  font-style: normal;
-}
-
 .offers {
   margin-inline: calc(-20 / 375 * 100vw);
   padding-inline: calc(20 / 375 * 100vw);

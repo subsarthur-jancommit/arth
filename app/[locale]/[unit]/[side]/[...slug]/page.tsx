@@ -493,7 +493,7 @@ export default async function ArthurDetailPage({
         <article className={s.page}>
           <header className={s.hero}>
             <p className="caption">{chapterData.nama}</p>
-            <blockquote className={cn('h1', s.quote)}>
+            <blockquote className={cn('quote', s.quote)}>
               {chapterData.kutipan}
             </blockquote>
             {chapterData.situasi ? (
