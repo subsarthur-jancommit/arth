@@ -38,11 +38,11 @@ test.describe('a step of the studio process can be pointed at', () => {
     page,
   }) => {
     for (const locale of ['en', 'id']) {
-      await page.goto(`/${locale}/metode-kerja`)
+      await page.goto(`/${locale}/metode`)
       const ids = await page
         .locator('[data-step-sequence] li[data-step]')
         .evaluateAll((items) => items.map((item) => item.id))
-      expect(ids, `/${locale}/metode-kerja`).toEqual(
+      expect(ids, `/${locale}/metode`).toEqual(
         STEPS.map((key) => `process-${key}`)
       )
     }
@@ -51,7 +51,7 @@ test.describe('a step of the studio process can be pointed at', () => {
   test('arriving by a step link marks that step, and only it', async ({
     page,
   }) => {
-    await page.goto('/id/metode-kerja#process-decide')
+    await page.goto('/id/metode#process-decide')
 
     const arrived = page.locator('[data-step-sequence] li[data-arrived]')
     await expect(arrived).toHaveCount(1)
@@ -63,10 +63,10 @@ test.describe('a step of the studio process can be pointed at', () => {
     page,
   }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
-    await page.goto('/en/metode-kerja')
+    await page.goto('/en/metode')
     await readToDecide(page)
 
-    expect(await copiedLink(page)).toMatch(/\/en\/metode-kerja#process-decide$/)
+    expect(await copiedLink(page)).toMatch(/\/en\/metode#process-decide$/)
   })
 })
 
@@ -84,9 +84,9 @@ test.describe('under reduced motion', () => {
   }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.emulateMedia({ reducedMotion: 'reduce' })
-    await page.goto('/en/metode-kerja')
+    await page.goto('/en/metode')
     await readToDecide(page)
 
-    expect(await copiedLink(page)).toMatch(/\/en\/metode-kerja#process-decide$/)
+    expect(await copiedLink(page)).toMatch(/\/en\/metode#process-decide$/)
   })
 })

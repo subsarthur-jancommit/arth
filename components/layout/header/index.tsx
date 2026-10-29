@@ -133,7 +133,7 @@ const UNIT_LINKS = UNITS.map((unit) => ({
  */
 const ROUTE_LINKS = [
   ...UNIT_LINKS.map((link) => ({ ...link, kind: 'unit' as const })),
-  { href: '/metode-kerja', labelKey: 'studio' as const, kind: 'nav' as const },
+  { href: '/metode', labelKey: 'studio' as const, kind: 'nav' as const },
   { href: '/kontak', labelKey: 'contact' as const, kind: 'nav' as const },
 ].filter(({ href }) => !isAwaitingContent(href))
 

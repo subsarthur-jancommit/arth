@@ -18,30 +18,28 @@ describe('renamed paths', () => {
   it('sends each old address to the page it became, in its own locale', () => {
     for (const locale of routing.locales) {
       expect(renamedDestination(`/${locale}/satu-klien-tiga-unit`)).toBe(
-        `/${locale}/layanan-terpadu`
+        `/${locale}/layanan`
       )
       expect(renamedDestination(`/${locale}/cara-kami-dibayar`)).toBe(
-        `/${locale}/ketentuan-pembayaran`
+        `/${locale}/pembayaran`
       )
       expect(renamedDestination(`/${locale}/cara-kerja`)).toBe(
-        `/${locale}/metode-kerja`
+        `/${locale}/metode`
       )
-      expect(renamedDestination(`/${locale}/studio`)).toBe(
-        `/${locale}/metode-kerja`
-      )
+      expect(renamedDestination(`/${locale}/studio`)).toBe(`/${locale}/metode`)
     }
   })
 
   it('moves the Markdown mirror with its page', () => {
-    expect(renamedDestination('/id/cara-kerja.md')).toBe('/id/metode-kerja.md')
+    expect(renamedDestination('/id/cara-kerja.md')).toBe('/id/metode.md')
     expect(renamedDestination('/id/satu-klien-tiga-unit.md')).toBe(
-      '/id/layanan-terpadu.md'
+      '/id/layanan.md'
     )
   })
 
   it('leaves new addresses, deeper paths and unknown locales alone', () => {
-    expect(renamedDestination('/id/metode-kerja')).toBeNull()
-    expect(renamedDestination('/id/layanan-terpadu.md')).toBeNull()
+    expect(renamedDestination('/id/metode')).toBeNull()
+    expect(renamedDestination('/id/layanan.md')).toBeNull()
     expect(renamedDestination('/id/cara-kerja/lebih')).toBeNull()
     expect(renamedDestination('/xx/cara-kerja')).toBeNull()
     expect(renamedDestination('/cara-kerja')).toBeNull()

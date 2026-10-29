@@ -91,7 +91,7 @@ contoh yang terlihat hari ini adalah dummy—bukan alamat atau lokasi nyata—da
 harus diganti sebelum halaman kontak boleh diterbitkan.
 
 **Metode kerja** juga singleton; medan **Pembuka**-nya adalah kalimat di
-bawah judul halaman `/metode-kerja`. **Rangkaian tiga unit**, **Tanya jawab**,
+bawah judul halaman `/metode`. **Rangkaian tiga unit**, **Tanya jawab**,
 dan **Halaman tetap** ada di bagian Isi pendukung. Page memakai `judul` dan
 `isi` berbahasa; medan lama tetap terlihat hanya-baca selama migrasi yang
 disetujui belum terjadi. Jangan menghapus atau mengosongkan medan lama tanpa

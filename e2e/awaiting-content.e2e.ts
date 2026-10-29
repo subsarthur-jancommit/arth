@@ -7,7 +7,7 @@ import { AWAITING_CONTENT } from '../lib/seo/awaiting-content'
  * a page without published content answers a real 404 and is linked from
  * nowhere, and Arthur's untranslated English pages answer 307 to `/id` (K2).
  *
- * Before R0, `/id/metode-kerja` — a primary navigation item — rendered the
+ * Before R0, `/id/metode` — a primary navigation item — rendered the
  * not-found view over HTTP 200 (`docs/TINJAUAN-F01-F03.md` E3.1).
  */
 test.describe('a page awaiting content is not a page yet', () => {
@@ -55,9 +55,9 @@ test.describe('English is offered only where it is written', () => {
     ['/en/konstruksi/pelaku-proyek', '/id/konstruksi/pelaku-proyek'],
     ['/en/peekabo/jaringan', '/id/peekabo/jaringan'],
     ['/en/kontak', '/id/kontak'],
-    ['/en/layanan-terpadu', '/id/layanan-terpadu'],
+    ['/en/layanan', '/id/layanan'],
     ['/en/kebijakan', '/id/kebijakan'],
-    ['/en/ketentuan-pembayaran', '/id/ketentuan-pembayaran'],
+    ['/en/pembayaran', '/id/pembayaran'],
   ] as const) {
     test(`${from} answers 307 to ${to}`, async ({ request }) => {
       const response = await request.get(from, { maxRedirects: 0 })

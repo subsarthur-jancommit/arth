@@ -41,7 +41,7 @@ describe('sanity.config.ts locale wiring', () => {
       '/:locale/kebijakan',
       '/:locale/work/:slug',
       '/:locale/kontak',
-      '/:locale/layanan-terpadu',
+      '/:locale/layanan',
       '/:locale/:unit',
       '/:locale/:unit/:side',
       '/:locale/:unit/:side/:chapter',
@@ -146,8 +146,6 @@ describe('sanity.config.ts singleton structure', () => {
     // the payment page's preview follows its address, not its slug.
     expect(source).toContain('previewPath(pageDocumentPath(slug))')
     expect(FIXED_PAGE_ROUTES.get('kebijakan')).toBe('/kebijakan')
-    expect(FIXED_PAGE_ROUTES.get('cara-kami-dibayar')).toBe(
-      '/ketentuan-pembayaran'
-    )
+    expect(FIXED_PAGE_ROUTES.get('cara-kami-dibayar')).toBe('/pembayaran')
   })
 })

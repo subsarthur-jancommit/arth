@@ -15,7 +15,7 @@ crawlable/citable, or change how a page negotiates HTML vs. Markdown.
 - `route-catalog.ts` — `STATIC_ROUTES`: code-owned pages with no CMS
   backing (label, description, sitemap metadata).
 - `page-descriptions.ts` — the rule a page head uses when it reads its meta
-  description from the CMS (`/metode-kerja`, `/layanan-terpadu`). It
+  description from the CMS (`/metode`, `/layanan`). It
   keeps no sentence of its own: with nothing written in the Studio the head
   gives no description, and the catalog keeps no line for those pages.
 - `route-descriptions.ts` — `resolveRouteDescriptions()`: applies that rule

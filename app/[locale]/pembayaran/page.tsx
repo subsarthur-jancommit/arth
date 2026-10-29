@@ -31,7 +31,7 @@ async function paymentForRequest(locale: Locale, stega = true) {
  * The reading template for one fixed `page` document, like `/kebijakan`
  * without its legal-review note. Every sentence is the Sanity document's
  * (V6); the code holds only the eyebrow and the contact action, the same
- * header action the home and `/layanan-terpadu` use.
+ * header action the home and `/layanan` use.
  */
 export default async function PaymentPage() {
   const requested = await localeRootParam()
@@ -85,7 +85,7 @@ export async function generateMetadata() {
   const { content } = await paymentForRequest(locale, false)
 
   return generatePageMetadata({
-    title: content?.metadata.title ?? content?.title ?? 'Ketentuan pembayaran',
+    title: content?.metadata.title ?? content?.title ?? 'Pembayaran',
     ...(content?.metadata.description && {
       description: content.metadata.description,
     }),

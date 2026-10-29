@@ -172,6 +172,6 @@ export async function generateMetadata() {
     ...(description && { description }),
     ...(keywords && { keywords }),
     noIndex: isDraftMode || data.metadata?.noIndex === true,
-    url: `/${locale}/metode-kerja`,
+    url: `/${locale}/metode`,
   })
 }

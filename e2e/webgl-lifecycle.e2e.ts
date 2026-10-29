@@ -61,7 +61,7 @@ const CYCLES = 4
 /** A route with a canvas, and one without, to navigate between. */
 const HOME = '/id'
 // A page `/id` links to (header and first-step action) that mounts no
-// canvas. `/en/metode-kerja` before R0 was never linked from `/id`, so
+// canvas. `/en/metode` before R0 was never linked from `/id`, so
 // `cycle()` could not find its link and the test timed out.
 const AWAY = '/id/kontak'
 

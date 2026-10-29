@@ -12,9 +12,9 @@ for (const [path, name] of [
   ['/id/konstruksi', 'Konstruksi'],
   ['/id/teknologi', 'Teknologi'],
   // Every fixed page is in the index since R4 (route names, 2026-10-30).
-  ['/id/metode-kerja', 'Metode kerja'],
-  ['/id/layanan-terpadu', 'Layanan terpadu'],
-  ['/id/ketentuan-pembayaran', 'Ketentuan pembayaran'],
+  ['/id/metode', 'Metode kerja'],
+  ['/id/layanan', 'Layanan'],
+  ['/id/pembayaran', 'Pembayaran'],
 ] as const) {
   test(`${path}: the footer marks its own line, and only it`, async ({
     page,

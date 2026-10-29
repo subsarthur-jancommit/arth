@@ -77,7 +77,7 @@ describe('urlForReference — internal document resolution', () => {
         linkType: 'internal',
         internalLink: { _type: 'page', slug: { current: 'cara-kami-dibayar' } },
       })
-    ).toBe('/ketentuan-pembayaran')
+    ).toBe('/pembayaran')
   })
 
   test('projects resolve under /work', () => {

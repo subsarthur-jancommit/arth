@@ -104,10 +104,8 @@ test.describe('the pages that do answer are untouched by all of it', () => {
    * view over 200 (`docs/TINJAUAN-F01-F03.md` E3.2), so the status alone
    * would pass against that; the heading and a sequence are asserted too.
    */
-  test('/id/layanan-terpadu answers 200 with its sequences', async ({
-    request,
-  }) => {
-    const response = await request.get('/id/layanan-terpadu', {
+  test('/id/layanan answers 200 with its sequences', async ({ request }) => {
+    const response = await request.get('/id/layanan', {
       maxRedirects: 0,
     })
     expect(response.status()).toBe(200)
@@ -138,10 +136,10 @@ test.describe('the pages that do answer are untouched by all of it', () => {
    * one published `page` document; the not-found view would pass the status
    * alone, so a section heading and the contact action's origin are asserted.
    */
-  test('/id/ketentuan-pembayaran answers 200 with its payment ways', async ({
+  test('/id/pembayaran answers 200 with its payment ways', async ({
     request,
   }) => {
-    const response = await request.get('/id/ketentuan-pembayaran', {
+    const response = await request.get('/id/pembayaran', {
       maxRedirects: 0,
     })
     expect(response.status()).toBe(200)
@@ -159,10 +157,10 @@ test.describe('the pages that do answer are untouched by all of it', () => {
     expect(response.status()).toBe(308)
     expect(
       new URL(response.headers().location ?? '', 'http://x').pathname
-    ).toBe('/id/ketentuan-pembayaran')
+    ).toBe('/id/pembayaran')
   })
 
-  test('a Teknologi work page links to Ketentuan pembayaran', async ({
+  test('a Teknologi work page links to the payment page', async ({
     request,
   }) => {
     const html = await (
@@ -173,7 +171,7 @@ test.describe('the pages that do answer are untouched by all of it', () => {
     // Next's Link writes `href` after the other props, so attribute order is
     // not fixed: find the tag that carries the marker, then check its target.
     const link = html.match(/<a\b[^>]*\bdata-payment-link\b[^>]*>/)?.[0]
-    expect(link).toContain('href="/id/ketentuan-pembayaran"')
+    expect(link).toContain('href="/id/pembayaran"')
   })
 
   /*

@@ -37,8 +37,8 @@ import { isLocale } from './routing'
  *
  * ## What is deliberately absent
  *
- * The addresses pages had before they were renamed — `studio`, `cara-kerja`,
- * `cara-kami-dibayar`, `satu-klien-tiga-unit` — are not guesses. They were
+ * The addresses pages had before they were renamed (`studio`, `cara-kerja`,
+ * `cara-kami-dibayar`, `satu-klien-tiga-unit`) are not guesses. They were
  * real, and `lib/i18n/renamed-paths.ts` answers them before this table runs;
  * `guessed-paths.test.ts` asserts the two tables never name the same segment.
  *
@@ -74,14 +74,10 @@ const GUESSED_SEGMENTS = new Map([
    */
   ['karya', '/work'],
   /*
-   * The short word for each formal page name — R4 route names, 2026-10-30.
-   * The owner asked that a customer can reach these pages, so a reader who
-   * remembers "pembayaran" rather than "ketentuan pembayaran", or types
-   * "tentang" for the page titled "Tentang dan kontak", lands on the page
-   * instead of a 404.
+   * R4 route names, 2026-10-30: the owner asked that a customer can reach
+   * every page. A reader who types "tentang" for the page titled "Tentang
+   * dan kontak" lands on it instead of a 404.
    */
-  ['layanan', '/layanan-terpadu'],
-  ['pembayaran', '/ketentuan-pembayaran'],
   ['tentang', '/kontak'],
 ])
 
@@ -105,10 +101,10 @@ const GUESSED_SEGMENTS = new Map([
 export const REAL_SEGMENTS = new Set([
   ...UNITS,
   'kebijakan',
-  'ketentuan-pembayaran',
   'kontak',
-  'layanan-terpadu',
-  'metode-kerja',
+  'layanan',
+  'metode',
+  'pembayaran',
   'work',
   'journal',
 ])

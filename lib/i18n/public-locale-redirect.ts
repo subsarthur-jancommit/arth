@@ -18,10 +18,10 @@ export const UNTRANSLATED_SEGMENTS: readonly string[] = [
   ...UNITS,
   'halaman',
   'kebijakan',
-  'ketentuan-pembayaran',
   'kontak',
-  'layanan-terpadu',
-  'metode-kerja',
+  'layanan',
+  'metode',
+  'pembayaran',
   /*
    * Not a page: the search palette's index (`app/[locale]/search.json`).
    * It lists the pages above, so in English it could only describe them in

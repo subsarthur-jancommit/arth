@@ -83,10 +83,10 @@ describe("the catalog's own line for a head-described page", () => {
 
   it('does not exist', () => {
     // Anti-vacuum: a route missing from the catalog has no description either.
-    expect(paths).toContain('/metode-kerja')
-    expect(paths).toContain('/layanan-terpadu')
+    expect(paths).toContain('/metode')
+    expect(paths).toContain('/layanan')
 
-    expect(catalog('/metode-kerja')).toBeUndefined()
-    expect(catalog('/layanan-terpadu')).toBeUndefined()
+    expect(catalog('/metode')).toBeUndefined()
+    expect(catalog('/layanan')).toBeUndefined()
   })
 })

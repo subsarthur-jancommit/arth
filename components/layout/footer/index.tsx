@@ -83,15 +83,15 @@ const CONTACT_IS_PLACEHOLDER = isPlaceholderEmail(EMAIL)
  * (`lib/seo/awaiting-content.ts`): the footer is on every page, so a link
  * here to a 404 would be on every page too.
  *
- * Every fixed page is listed — R4 route names, 2026-10-30. Layanan terpadu
- * and Ketentuan pembayaran were reachable only from inside other pages, and
- * the owner asked that a customer can reach each page from anywhere.
+ * Every fixed page is listed (R4 route names, 2026-10-30). Layanan and
+ * Pembayaran were reachable only from inside other pages, and the owner
+ * asked that a customer can reach each page from anywhere.
  */
 const INDEX_PAGES = (
   [
-    { href: '/metode-kerja', labelKey: 'studio' },
-    { href: '/layanan-terpadu', labelKey: 'services' },
-    { href: '/ketentuan-pembayaran', labelKey: 'payment' },
+    { href: '/metode', labelKey: 'studio' },
+    { href: '/layanan', labelKey: 'services' },
+    { href: '/pembayaran', labelKey: 'payment' },
     { href: '/kebijakan', labelKey: 'policy' },
   ] as const
 ).filter(({ href }) => !isAwaitingContent(href))

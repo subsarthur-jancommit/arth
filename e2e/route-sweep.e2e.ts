@@ -60,7 +60,7 @@ import { axeTags } from './axe-tags'
 const OPT_OUT = new Map<string, string>([
   /*
    * Empty since R5 published the work-method page: `/studio` used to be
-   * opted out because its redirect target, `/metode-kerja`, answered 404.
+   * opted out because its redirect target, `/metode`, answered 404.
    */
 ])
 
@@ -84,7 +84,7 @@ function findPageFiles(dir: string, base = dir): string[] {
 }
 
 /**
- * `/[locale]/metode-kerja/page.tsx` -> `['/en/metode-kerja', '/id/metode-kerja']`; returns `[]` for a route
+ * `/[locale]/metode/page.tsx` -> `['/en/metode', '/id/metode']`; returns `[]` for a route
  * with any other dynamic segment.
  *
  * `[locale]` is expanded rather than skipped. Every page in this app now lives

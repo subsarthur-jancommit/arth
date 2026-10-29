@@ -135,7 +135,7 @@ export async function Catalogue({ locale, practice }: CatalogueProps) {
         title: t('emptyAllTitle'),
         body: t('emptyAllBody'),
         action: t('emptyAllAction'),
-        href: localizedPath(locale, '/metode-kerja'),
+        href: localizedPath(locale, '/metode'),
       }
 
   /*

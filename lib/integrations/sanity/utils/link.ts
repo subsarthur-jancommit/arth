@@ -116,14 +116,14 @@ export const urlForReference = (link: LinkLike): string => {
  * document's slug.
  *
  * The route is not always the slug. The payment page kept its slug
- * `cara-kami-dibayar` when its address became `/ketentuan-pembayaran` (R4
+ * `cara-kami-dibayar` when its address became `/pembayaran` (R4
  * route names, `lib/i18n/renamed-paths.ts`): the slug is the document's
  * identity in the dataset, and changing it is a Sanity write, which
  * `docs/PROSEDUR-KERJA.md` §6 keeps out of a code change.
  */
 export const FIXED_PAGE_ROUTES: ReadonlyMap<string, string> = new Map([
   ['kebijakan', '/kebijakan'],
-  ['cara-kami-dibayar', '/ketentuan-pembayaran'],
+  ['cara-kami-dibayar', '/pembayaran'],
 ])
 
 /** The address a `page` document is read at, by its slug. */
@@ -136,7 +136,7 @@ function resolveDocumentUrl(documentType?: string, slug?: string): string {
 
   switch (documentType) {
     // Fixed CMS pages live under /halaman so they cannot collide with the
-    // dynamic unit route. Kebijakan and Ketentuan pembayaran have their own
+    // dynamic unit route. Kebijakan and Pembayaran have their own
     // routes, and `proxy.ts` redirects their generic form.
     case 'page':
       return pageDocumentPath(slug)

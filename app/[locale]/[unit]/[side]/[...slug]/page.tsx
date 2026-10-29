@@ -687,11 +687,11 @@ export default async function ArthurDetailPage({
            */}
           {values.unit === 'teknologi' ? (
             <Link
-              href="/ketentuan-pembayaran"
+              href="/pembayaran"
               className={cn('caption', s.actionLink)}
               data-payment-link=""
             >
-              Ketentuan pembayaran
+              Pembayaran
             </Link>
           ) : null}
         </section>

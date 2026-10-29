@@ -59,8 +59,8 @@ describe('page entries', () => {
     const paths = pageEntries('id').map((entry) => entry.href)
     // Published and approved on 2026-10-17, so R5 removed them from
     // `lib/seo/awaiting-content.ts` and the index offers them.
-    expect(paths).toContain('/id/metode-kerja')
-    expect(paths).toContain('/id/layanan-terpadu')
+    expect(paths).toContain('/id/metode')
+    expect(paths).toContain('/id/layanan')
     expect(paths).toContain('/id/kontak')
     for (const unit of UNITS) expect(paths).toContain(`/id/${unit}`)
     expect(paths).not.toContain('/id/work')
@@ -72,8 +72,8 @@ describe('page entries', () => {
       // The two pages whose head reads its description from the CMS get it
       // from the route handler's read; the catalog keeps no copy.
       const descriptions = new Map([
-        [`/${locale}/metode-kerja`, 'Lingkup disepakati tertulis.'],
-        [`/${locale}/layanan-terpadu`, 'Rangkaian yang mungkin.'],
+        [`/${locale}/metode`, 'Lingkup disepakati tertulis.'],
+        [`/${locale}/layanan`, 'Rangkaian yang mungkin.'],
       ])
       for (const entry of pageEntries(locale, descriptions)) {
         expect(entry.label.trim()).not.toBe('')
@@ -356,7 +356,7 @@ describe('an unreachable content source', () => {
  */
 describe('a description the page head resolved', () => {
   const descriptions = new Map([
-    ['/id/metode-kerja', 'Cara kerja, seperti ditulis di Studio.'],
+    ['/id/metode', 'Cara kerja, seperti ditulis di Studio.'],
   ])
   const row = (entries: readonly SearchEntry[], href: string) =>
     entries.find((entry) => entry.href === href)
@@ -365,17 +365,17 @@ describe('a description the page head resolved', () => {
     const plain = pageEntries('id')
     const described = pageEntries('id', descriptions)
 
-    expect(row(described, '/id/metode-kerja')?.description).toBe(
+    expect(row(described, '/id/metode')?.description).toBe(
       'Cara kerja, seperti ditulis di Studio.'
     )
-    expect(
-      described.filter((entry) => entry.href !== '/id/metode-kerja')
-    ).toEqual(plain.filter((entry) => entry.href !== '/id/metode-kerja'))
+    expect(described.filter((entry) => entry.href !== '/id/metode')).toEqual(
+      plain.filter((entry) => entry.href !== '/id/metode')
+    )
   })
 
   test('belongs to one locale: the other keeps its own', () => {
-    expect(row(pageEntries('en', descriptions), '/en/metode-kerja')).toEqual(
-      row(pageEntries('en'), '/en/metode-kerja')
+    expect(row(pageEntries('en', descriptions), '/en/metode')).toEqual(
+      row(pageEntries('en'), '/en/metode')
     )
   })
 
@@ -396,7 +396,7 @@ describe('a description the page head resolved', () => {
     )
 
     for (const index of [answered, unreachable]) {
-      expect(row(index, '/id/metode-kerja')?.description).toBe(
+      expect(row(index, '/id/metode')?.description).toBe(
         'Cara kerja, seperti ditulis di Studio.'
       )
     }

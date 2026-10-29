@@ -255,9 +255,9 @@ describe('fixed public page redirects', () => {
 
   it('sends the payment document to its route, which is not its slug', () => {
     expect(fixedPageDestination('/id/halaman/cara-kami-dibayar')).toBe(
-      '/id/ketentuan-pembayaran'
+      '/id/pembayaran'
     )
-    expect(fixedPageDestination('/id/halaman/ketentuan-pembayaran')).toBeNull()
+    expect(fixedPageDestination('/id/halaman/pembayaran')).toBeNull()
   })
 
   it('does not claim unrelated or malformed paths', () => {

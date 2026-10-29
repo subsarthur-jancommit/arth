@@ -20,7 +20,7 @@ import { join } from 'node:path'
  * retires it, so a new one cannot arrive unnoticed.
  *
  * The group A fixes (2026-10-23) removed what V6 left: the chapter answer
- * sheet `lib/content/situation-overrides.ts`, the `/metode-kerja` lead and a
+ * sheet `lib/content/situation-overrides.ts`, the `/metode` lead and a
  * description in `lib/seo/page-descriptions.ts`, and interface strings no
  * page read. Their sentences joined the list, and the answer sheet may not
  * come back under its own name.
@@ -65,8 +65,8 @@ const SENTINELS = [
   'Anda bisa live berjam-jam, tetapi penghasilannya belum menentu.',
   'Ide Anda dipetakan dalam satu jam, lalu bot, dasbor, atau portofolionya dapat dibangun.',
   'Untuk kafe yang belum buka, unit Konstruksi menyiapkan lokasi sewa sampai alur pelanggan dan dapurnya bekerja.',
-  // The `/metode-kerja` lead, now `howWeWork.pembuka`, and the line
-  // `/layanan-terpadu` printed with no SEO description written, retired.
+  // The `/metode` lead, now `howWeWork.pembuka`, and the line
+  // `/layanan` printed with no SEO description written, retired.
   'Lingkup, harga, target, dan laporan disepakati tertulis sebelum kerja dimulai.',
   'Rangkaian kerja yang mungkin lintas Konstruksi, Teknologi, dan Peekabo.',
   // Interface strings no page read, retired: the home page's sequence and

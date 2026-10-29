@@ -36,7 +36,7 @@ function canonicalOf(metadata: ReturnType<typeof generatePageMetadata>) {
   return canonical
 }
 
-const PATHS = ['/', '/metode-kerja', '/work/mural-panas-sore']
+const PATHS = ['/', '/metode', '/work/mural-panas-sore']
 
 describe('generatePageMetadata', () => {
   it('resolves og:url to the same page as the canonical', () => {
@@ -75,11 +75,11 @@ describe('generatePageMetadata', () => {
   })
 
   it('declares hreflang only for approved translations on a localized path', () => {
-    const languages = generatePageMetadata({ url: '/id/metode-kerja' })
-      .alternates?.languages
+    const languages = generatePageMetadata({ url: '/id/metode' }).alternates
+      ?.languages
     expect(languages).toMatchObject({
-      'id-ID': '/id/metode-kerja',
-      'x-default': '/id/metode-kerja',
+      'id-ID': '/id/metode',
+      'x-default': '/id/metode',
     })
   })
 })

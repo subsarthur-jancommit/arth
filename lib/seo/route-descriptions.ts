@@ -64,21 +64,21 @@ interface HeadDescribedRoute {
  */
 const HEAD_DESCRIBED_ROUTES: readonly HeadDescribedRoute[] = [
   {
-    template: '/metode-kerja',
+    template: '/metode',
     describe: async (locale, sources) => {
       const content = await sources.howWeWork(locale)
       return content ? howWeWorkDescription(content) : null
     },
   },
   {
-    template: '/layanan-terpadu',
+    template: '/layanan',
     describe: async (locale, sources) => {
       const [first] = await sources.sequences(locale)
       return first ? threeUnitsDescription(first) : null
     },
   },
   {
-    template: '/ketentuan-pembayaran',
+    template: '/pembayaran',
     describe: async (locale, sources) => {
       const content = await sources.fixedPage?.(locale, 'cara-kami-dibayar')
       return content?.metadata.description ?? null

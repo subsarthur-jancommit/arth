@@ -3,20 +3,26 @@ import { isLocale } from './routing'
 /**
  * Addresses a page had before it was renamed, and the address it has now.
  *
- * ## Why these moved — R4 route names, 2026-10-30
+ * ## Why these moved (R4 route names, 2026-10-30)
  *
  * The owner asked for page addresses in "konteks yang formal", naming
- * `satu-klien-tiga-unit` as the example of what they should not be, and for
- * every page to stay reachable by a customer. A slogan is a poor address: it
- * cannot be guessed, it reads as a campaign line rather than a page, and it
- * ages with the campaign. Each new segment names what the page is.
+ * `satu-klien-tiga-unit` as the example of what they should not be, for
+ * every page to stay reachable by a customer, and then for no hyphen in
+ * them: a run of hyphenated words reads as a generated slug. A slogan is a
+ * poor address: it cannot be guessed, it reads as a campaign line rather
+ * than a page, and it ages with the campaign. Each new segment is one word
+ * that names what the page is.
  *
- * | before                 | now                    | the page                                   |
- * | ---------------------- | ---------------------- | ------------------------------------------ |
- * | `satu-klien-tiga-unit` | `layanan-terpadu`      | the three units in one order of work       |
- * | `cara-kami-dibayar`    | `ketentuan-pembayaran` | how Arthur is paid, written before work    |
- * | `cara-kerja`           | `metode-kerja`         | scope, price, target and report agreed     |
- * | `studio`               | `metode-kerja`         | the same page, under its address before F3 |
+ * | before                 | now          | the page                                   |
+ * | ---------------------- | ------------ | ------------------------------------------ |
+ * | `satu-klien-tiga-unit` | `layanan`    | the three units in one order of work       |
+ * | `cara-kami-dibayar`    | `pembayaran` | how Arthur is paid, written before work    |
+ * | `cara-kerja`           | `metode`     | scope, price, target and report agreed     |
+ * | `studio`               | `metode`     | the same page, under its address before F3 |
+ *
+ * The side segments (`pelaku-proyek`, `siap-pakai`, …) keep their hyphens:
+ * they are keys the Studio validates in Sanity, and the owner left them as
+ * they are on 2026-10-30.
  *
  * ## Why a 308 at the proxy
  *
@@ -29,13 +35,13 @@ import { isLocale } from './routing'
  * this table so that one place knows every old address.
  *
  * The Markdown mirror moves with its page: `/id/cara-kerja.md` answers with
- * `/id/metode-kerja.md`, so an agent holding the old mirror finds the new one.
+ * `/id/metode.md`, so an agent holding the old mirror finds the new one.
  */
 export const RENAMED_SEGMENTS: ReadonlyMap<string, string> = new Map([
-  ['satu-klien-tiga-unit', 'layanan-terpadu'],
-  ['cara-kami-dibayar', 'ketentuan-pembayaran'],
-  ['cara-kerja', 'metode-kerja'],
-  ['studio', 'metode-kerja'],
+  ['satu-klien-tiga-unit', 'layanan'],
+  ['cara-kami-dibayar', 'pembayaran'],
+  ['cara-kerja', 'metode'],
+  ['studio', 'metode'],
 ])
 
 const MARKDOWN = '.md'

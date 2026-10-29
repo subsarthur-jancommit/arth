@@ -31,7 +31,7 @@ function alternates(path: string) {
 describe('routeAlternates', () => {
   it('is self-referential — canonical is the path passed in', () => {
     expect(alternates('/en').canonical).toBe('/en')
-    expect(alternates('/id/metode-kerja').canonical).toBe('/id/metode-kerja')
+    expect(alternates('/id/metode').canonical).toBe('/id/metode')
   })
 
   it('matches the URL the sitemap submits, for every advertised route', () => {
@@ -44,14 +44,14 @@ describe('routeAlternates', () => {
   })
 
   it('advertises only approved translations plus x-default', () => {
-    const languages = alternates('/id/metode-kerja').languages
+    const languages = alternates('/id/metode').languages
 
     for (const locale of PUBLISHED_LOCALES) {
-      expect(languages?.[LOCALE_TAGS[locale]]).toBe(`/${locale}/metode-kerja`)
+      expect(languages?.[LOCALE_TAGS[locale]]).toBe(`/${locale}/metode`)
     }
 
-    expect(languages?.['x-default']).toBe('/id/metode-kerja')
-    expect(alternates('/en/metode-kerja').languages).toBeUndefined()
+    expect(languages?.['x-default']).toBe('/id/metode')
+    expect(alternates('/en/metode').languages).toBeUndefined()
   })
 
   it('does not present an unapproved locale as a translation', () => {
@@ -74,7 +74,7 @@ describe('routeAlternates', () => {
         'application/atom+xml'
       ]
     ).toEqual([{ url: '/id/journal/feed.xml', title: FEED_TITLES.id }])
-    expect(alternates('/en/metode-kerja').types?.['application/atom+xml']).toBe(
+    expect(alternates('/en/metode').types?.['application/atom+xml']).toBe(
       undefined
     )
   })

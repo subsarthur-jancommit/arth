@@ -198,7 +198,7 @@ export default projectId && dataset
                 filter: `_type == "page" && slug.current == "kebijakan"`,
               },
               {
-                route: '/:locale/ketentuan-pembayaran',
+                route: '/:locale/pembayaran',
                 filter: `_type == "page" && slug.current == "cara-kami-dibayar"`,
               },
               {
@@ -206,7 +206,7 @@ export default projectId && dataset
                 filter: `_type == "page" && slug.current == $slug`,
               },
               {
-                route: '/:locale/layanan-terpadu',
+                route: '/:locale/layanan',
                 filter: `_type == "sequence"`,
               },
               {
@@ -277,7 +277,7 @@ export default projectId && dataset
                   locations: [
                     {
                       title: 'Metode kerja',
-                      href: previewPath('/metode-kerja'),
+                      href: previewPath('/metode'),
                     },
                   ],
                 }),
@@ -287,8 +287,8 @@ export default projectId && dataset
                 resolve: () => ({
                   locations: [
                     {
-                      title: 'Layanan terpadu',
-                      href: previewPath('/layanan-terpadu'),
+                      title: 'Layanan',
+                      href: previewPath('/layanan'),
                     },
                   ],
                 }),

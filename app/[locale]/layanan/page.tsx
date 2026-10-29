@@ -30,7 +30,7 @@ export default async function ThreeUnitsPage() {
     <Wrapper theme="light">
       <article className={s.page}>
         <header className={s.hero}>
-          <p className={cn('caption', s.eyebrow)}>Layanan terpadu</p>
+          <p className={cn('caption', s.eyebrow)}>Layanan</p>
           <h1 className={cn('h1', s.title)}>Tiga unit. Satu urutan kerja.</h1>
           <p className={cn('p-big', s.lead)}>
             Mulai dari situasi Anda. Baca pekerjaan setiap unit dalam urutan
@@ -84,10 +84,10 @@ export async function generateMetadata() {
   const description = threeUnitsDescription(first)
 
   return generatePageMetadata({
-    title: first.metadata?.title ?? 'Layanan terpadu',
+    title: first.metadata?.title ?? 'Layanan',
     ...(description && { description }),
     ...(first.metadata?.keywords && { keywords: first.metadata.keywords }),
     noIndex: isDraftMode || first.metadata?.noIndex === true,
-    url: `/${locale}/layanan-terpadu`,
+    url: `/${locale}/layanan`,
   })
 }

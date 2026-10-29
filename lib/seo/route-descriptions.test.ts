@@ -64,8 +64,8 @@ describe('resolveRouteDescriptions', () => {
     const descriptions = await resolveRouteDescriptions(['id'], sources())
 
     expect([...descriptions]).toEqual([
-      ['/id/metode-kerja', 'Cara kerja, seperti ditulis di Studio.'],
-      ['/id/layanan-terpadu', 'Rangkaian, seperti ditulis di Studio.'],
+      ['/id/metode', 'Cara kerja, seperti ditulis di Studio.'],
+      ['/id/layanan', 'Rangkaian, seperti ditulis di Studio.'],
     ])
   })
 
@@ -80,8 +80,8 @@ describe('resolveRouteDescriptions', () => {
 
     // The first written promise, and nothing for the sequence page: what
     // the two heads print in that state.
-    expect(descriptions.get('/id/metode-kerja')).toBe('Lingkup disepakati.')
-    expect(descriptions.has('/id/layanan-terpadu')).toBe(false)
+    expect(descriptions.get('/id/metode')).toBe('Lingkup disepakati.')
+    expect(descriptions.has('/id/layanan')).toBe(false)
   })
 
   it('reads every locale it is asked for, in that locale', async () => {
@@ -98,10 +98,10 @@ describe('resolveRouteDescriptions', () => {
 
     expect(asked.toSorted()).toEqual(['en', 'id'])
     expect([...descriptions.keys()].toSorted()).toEqual([
-      '/en/layanan-terpadu',
-      '/en/metode-kerja',
-      '/id/layanan-terpadu',
-      '/id/metode-kerja',
+      '/en/layanan',
+      '/en/metode',
+      '/id/layanan',
+      '/id/metode',
     ])
   })
 
@@ -141,8 +141,8 @@ describe('resolveRouteDescriptions', () => {
         })
       )
 
-      expect(descriptions.has('/id/metode-kerja')).toBe(false)
-      expect(descriptions.get('/id/layanan-terpadu')).toBe(
+      expect(descriptions.has('/id/metode')).toBe(false)
+      expect(descriptions.get('/id/layanan')).toBe(
         'Rangkaian, seperti ditulis di Studio.'
       )
       expect(warn).toHaveBeenCalledTimes(1)
