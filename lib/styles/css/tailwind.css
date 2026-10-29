@@ -27,6 +27,8 @@
 
   --font-*: initial;
   --font-display: var(--next-font-display);
+	--font-text: var(--next-font-text);
+	--font-serif: var(--next-font-serif);
 	--font-mono: var(--next-font-mono);
 }
 
@@ -48,36 +50,44 @@
   font-family: var(--next-font-display);
 	font-style: normal;
 	font-weight: 700;
-	line-height: 85%;
-	letter-spacing: -0.04em;
+	line-height: 92%;
+	letter-spacing: -0.03em;
 	font-size: clamp(38px, calc(9.127px + 7.7vw), 156.958px);
 }
 @utility h2 {
   font-family: var(--next-font-display);
 	font-style: normal;
 	font-weight: 600;
-	line-height: 90%;
-	letter-spacing: -0.025em;
+	line-height: 96%;
+	letter-spacing: -0.02em;
 	font-size: clamp(32px, calc(26.366px + 1.502vw), 55.211px);
 }
 @utility h3 {
   font-family: var(--next-font-display);
 	font-style: normal;
 	font-weight: 600;
-	line-height: 100%;
-	letter-spacing: -0.02em;
+	line-height: 105%;
+	letter-spacing: -0.015em;
 	font-size: clamp(24px, calc(21.183px + 0.751vw), 35.606px);
 }
+@utility quote {
+  font-family: var(--next-font-serif);
+	font-style: italic;
+	font-weight: 400;
+	line-height: 112%;
+	letter-spacing: -0.005em;
+	font-size: clamp(28px, calc(20.254px + 2.066vw), 59.915px);
+}
 @utility p-big {
-  font-family: var(--next-font-display);
+  font-family: var(--next-font-text);
 	font-style: normal;
 	font-weight: 400;
-	line-height: 125%;
-	letter-spacing: -0.02em;
+	line-height: 135%;
+	letter-spacing: -0.01em;
 	font-size: clamp(16px, calc(14.592px + 0.376vw), 21.803px);
 }
 @utility p {
-  font-family: var(--next-font-display);
+  font-family: var(--next-font-text);
 	font-style: normal;
 	font-weight: 400;
 	line-height: 150%;

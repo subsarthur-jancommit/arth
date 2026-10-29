@@ -246,15 +246,40 @@ not from weight count.
 
 **Rules**
 
-- **Two families.** A display face and a mono. A third only with a reason.
-  Locked to **Syne + Geist Mono**.
-- **Two to three weights.** More than three is a smell. The scale below uses
-  400 / 600 / 700.
+- **Four roles, three families — R4, 2026-10-24.** Archivo for headings,
+  Geist for running text and navigation, Instrument Serif for the buyer's
+  quote only, Geist Mono for labels. Geist and Geist Mono are one family.
+  Chosen with the owner when the site became two registers: a dark stage
+  (home, unit openings, one client three units, contact) and light documents
+  (sides, situations, work pages, how we work, payment, policy). The record
+  is `docs/r4-arah-visual/README.md`.
+- **Two to three weights per family.** More than three is a smell. The scale
+  below uses 400 / 600 / 700.
 - **The mono is not decoration.** On Lusion, basement.studio, By-Kin and
   darkroom the mono carries labels, captions, and metadata. It is what makes
   a site read as engineered.
+- **A font axis is not animated.** Archivo's width axis sets the stage wide
+  and the documents at normal width, but changing `wdth` or `wght` on scroll
+  re-lays out the text every frame (`CLAUDE.md` #4). Motion morphs the plates,
+  not the type.
 
-### Why Syne
+### Why Archivo, Geist and Instrument Serif — R4
+
+**Archivo** is a grotesque drawn for headlines, with a width axis from 62 to 125. Wide, it reads as a slide in a pitch; at normal width it heads a
+document. One family across both registers is what keeps the stage and the
+documents one site.
+
+**Geist** carries prose because Archivo is a heading face first, and the
+document pages are read at length.
+
+**Instrument Serif**, italic, appears once per situation page: the buyer's
+own sentence, the one human voice among technical drawings. It is not
+preloaded, since no other page uses it.
+
+All four are SIL Open Font License 1.1, verified from each family's
+`OFL.txt` (`docs/PROVENANCE.md` §2).
+
+### Why Syne, until R4
 
 `Syne` was drawn for **Synesthésie**, a French art centre, and is widely used
 in contemporary-art contexts. That provenance is the point: this site sits
@@ -266,9 +291,9 @@ it. Geist is a fine face, but it is a neutral technology sans — and
 neutrality is what this site cannot afford once the palette gives up its
 accent. With no colour carrying identity, the typography has to.
 
-Both families ship a variable `wght` axis (Syne 400–800, Geist Mono 100–900),
-so `fonts.ts` declares no explicit `weight`: one file per family covers every
-weight the styles use.
+Archivo, Geist and Geist Mono ship a variable `wght` axis, so `fonts.ts`
+declares no explicit `weight` for them: one file per family covers every
+weight the styles use. Instrument Serif ships a single 400 and names it.
 
 ### The scale
 
@@ -276,23 +301,26 @@ From `lib/styles/typography.ts` (mobile → desktop):
 
 | Style     | Family  | Size     | Weight | Line-height | Tracking |
 | --------- | ------- | -------- | ------ | ----------- | -------- |
-| `h1`      | display | 38 → 120 | 700    | 85%         | −0.04em  |
-| `h2`      | display | 32 → 48  | 600    | 90%         | −0.025em |
-| `p-big`   | display | 16 → 20  | 400    | 125%        | −0.02em  |
-| `p`       | display | 12 → 14  | 400    | 125% → 120% | −0.01em  |
+| `h1`      | display | 38 → 120 | 700    | 92%         | −0.03em  |
+| `h2`      | display | 32 → 48  | 600    | 96%         | −0.02em  |
+| `h3`      | display | 24 → 32  | 600    | 105%        | −0.015em |
+| `quote`   | serif   | 28 → 50  | 400    | 112%        | −0.005em |
+| `p-big`   | text    | 16 → 20  | 400    | 135%        | −0.01em  |
+| `p`       | text    | 16 → 18  | 400    | 150% → 145% | 0em      |
 | `caption` | mono    | 11 → 12  | 400    | 125% → 120% | −0.01em  |
 | `cta`     | mono    | 12 → 14  | 400    | 100%        | −0.01em  |
 | `link`    | mono    | 12 → 14  | 400    | 125% → 120% | −0.01em  |
 
-The split is the design: **display carries what is read** (headings, prose),
-**mono carries what is scanned** (captions, labels, calls to action).
+The split is the design: **display carries headings, text carries what is
+read at length, mono carries what is scanned** (captions, labels, calls to
+action), and the serif carries one voice, the buyer's.
 
 Three details are deliberate and should not be "fixed":
 
 - **Display line-height below 100%.** Sub-100% leading on large type is the
   signature of considered typography. Default 1.5 on a 120px heading looks
-  like a document, not a design. 85% rather than 80% because Syne has taller
-  forms than the neutral sans it replaced — at 80% the lines collide.
+  like a document, not a design. Syne sat at 85%; Archivo sits at 92%, the
+  value the R4 mockups were drawn with, to be judged on the preview.
 - **Negative tracking that scales with size.** −0.04em at h1, −0.01em at
   body. Large type needs tightening; small type needs air. A single global
   letter-spacing is wrong at both ends.

@@ -302,9 +302,11 @@ body {
    * almost everything in the starter carried a class; the home page's `<h1>`
    * did not, and rendered the studio's headline in a serif nobody chose.
    * Setting it here makes the fallback the design system rather than the
-   * browser's.
+   * browser's. Since R4 that fallback is the text face (Geist), not the
+   * display face: an element without a type class is more often a sentence
+   * than a heading.
    */
-  font-family: var(--font-display);
+  font-family: var(--font-text);
   /*
    * `svh`, not `vh` — the small viewport height, measured with the mobile
    * browser's chrome visible.
@@ -617,10 +619,14 @@ html.screenshot {
  * (`lib/utils/display-fit.ts`), sizes it:
  *
  * - `100cqi / (chars × 0.72)` fills the container on one line. 0.72em per
- *   character is the widest of every nameplate string in both locales,
+ *   character was the widest of every nameplate string in both locales,
  *   measured in Syne 700 at -0.04em: "Work" 0.707, "Pesanan" 0.652,
  *   "Commission" 0.650 … "Konsultasi" 0.523. A narrower word underfills
- *   rather than any word overflowing.
+ *   rather than any word overflowing. Re-measured for Archivo 700 at -0.03em
+ *   in R4 (headless Chrome, 2026-10-24): "Work" 0.589, "Commission" 0.569,
+ *   "Pesanan" 0.566 … "Konsultasi" 0.477, so 0.72 still never overflows at
+ *   normal width. Archivo set wide (125) reaches 0.744 ("Work"); a nameplate
+ *   that uses the wide setting needs its own, larger factor.
  * - capped at `--fit-cap` (default 34svh), so a four-letter word does not
  *   become a wall.
  * - never smaller than the `h1` curve — copied from the `h1` utility in
