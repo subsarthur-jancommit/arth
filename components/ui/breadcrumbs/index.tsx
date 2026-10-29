@@ -82,7 +82,7 @@ export function Breadcrumbs({ label, trail, className }: BreadcrumbsProps) {
                    * A drawn caret, not a `/` character — Tahap 43.
                    *
                    * The slash was a text glyph, so it took the display face's
-                   * metrics and sat at whatever height Syne puts a solidus,
+                   * metrics and sat at whatever height the face puts a solidus,
                    * which is not the optical centre of the labels beside it.
                    * `Icon` is a box at `1em` with `aria-hidden` already on
                    * it, so the trail still reads as "Work, Arus Balik" rather
