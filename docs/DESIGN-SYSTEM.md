@@ -142,6 +142,22 @@ theme no page applied, and with no chromatic accent it described nothing.
 | `light` | paper     | ink         | ink        |
 | `dark`  | ink       | paper       | paper      |
 
+#### Which pages are dark — R4, 2026-10-24
+
+The two themes are now two registers (`docs/r4-arah-visual/README.md`):
+
+- **Stage, `dark`:** the home page, the opening of each unit page (a dark
+  band around `UnitHero`; the rest of the page stays light), one client three
+  units, and contact. The display face is set wide where a heading sits on
+  the stage.
+- **Documents, `light`:** the unit page below its opening, the six reader
+  pages, situations, work pages, how we work, how we are paid, policy, and
+  print.
+
+A section can switch register on its own: `data-theme` on any element
+re-resolves the colour tokens beneath it, which is how the unit opening is
+dark inside a light page.
+
 Semantic roles (`var(--color-primary)`) are the default, because they are what
 theming switches — a literal stays the same colour in both themes. That was
 `CLAUDE.md` #9; it is retired as a rule in the fork, and a literal is allowed

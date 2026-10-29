@@ -36,9 +36,17 @@
   }
 }
 
+/*
+ * The stage setting — R4. The unit hero always sits on the dark band of the
+ * unit page, so its name is set wide and heavy. Measured in headless Chrome
+ * (2026-10-24): "Konstruksi" is 6.15em wide at width 125, 234px at the 38px
+ * mobile size, inside the 280px column of a 320px phone.
+ */
 .name {
   margin: 0;
   overflow-wrap: anywhere;
+  font-weight: 800;
+  font-stretch: 125%;
 
   @media (--desktop) {
     grid-column: 3 / -1;
@@ -70,6 +78,10 @@
 .subtitle,
 .copy {
   margin: 0;
+}
+
+.title {
+  font-stretch: 112%;
 }
 
 .subtitle {

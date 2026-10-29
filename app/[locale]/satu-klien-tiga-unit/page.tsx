@@ -26,8 +26,10 @@ export default async function ThreeUnitsPage() {
 
   if (sequences.length === 0) return <LocalizedNotFound />
 
+  // Dark: the three units presented in order, the way a pitch shows them, so
+  // it is a stage page (R4, page map in `docs/DESIGN-SYSTEM.md` §1).
   return (
-    <Wrapper theme="light">
+    <Wrapper theme="dark">
       <article className={s.page}>
         <header className={s.hero}>
           <p className={cn('caption', s.eyebrow)}>Satu klien, tiga unit</p>
