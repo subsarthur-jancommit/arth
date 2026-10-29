@@ -302,7 +302,7 @@ body {
    * almost everything in the starter carried a class; the home page's `<h1>`
    * did not, and rendered the studio's headline in a serif nobody chose.
    * Setting it here makes the fallback the design system rather than the
-   * browser's. Since R4 that fallback is the text face (Geist), not the
+   * browser's. Since R4 that fallback is the text face (Inter), not the
    * display face: an element without a type class is more often a sentence
    * than a heading.
    */
@@ -607,40 +607,6 @@ html.screenshot {
 }
 
 /*
- * The heading face follows the register — R4, 2026-10-30.
- *
- * The owner's page split (`docs/DESIGN-SYSTEM.md` §1) makes the dark theme
- * the stage and the light theme the document, so a heading takes its face
- * from the theme it sits in rather than from its route: Mona Sans on the
- * stage, set expanded; Instrument Sans in the document, set narrow. A dark
- * band inside a light page gets the stage face with no rule of its own,
- * because these properties resolve per element.
- *
- * `--display-stretch` is the h1's width and `--heading-stretch` the h2's and
- * h3's (`lib/styles/typography.ts`). Mona Sans takes 75–125, Instrument Sans
- * 75–100.
- *
- * `--mono-stretch` sets Martian Mono to width 75 wherever a stylesheet names
- * the mono face: 0.590em a character, Geist Mono's advance, so no label is
- * wider than the layout it was drawn for (headless Chrome, 2026-10-30).
- */
-:root {
-  --mono-stretch: 75%;
-}
-
-[data-theme='dark'] {
-  --font-display: var(--font-stage);
-  --display-stretch: 125%;
-  --heading-stretch: 112%;
-}
-
-[data-theme='light'] {
-  --font-display: var(--font-document);
-  --display-stretch: 87.5%;
-  --heading-stretch: 87.5%;
-}
-
-/*
  * Nameplates — the fork (`docs/FORK.md` §3.2).
  *
  * The inner routes' one-word names (Work, Studio, Journal, a practice) sat at
@@ -661,10 +627,8 @@ html.screenshot {
  *   "Pesanan" 0.566 … "Konsultasi" 0.477, so 0.72 still never overflows at
  *   normal width. Archivo set wide (125) reaches 0.744 ("Work"); a nameplate
  *   that uses the wide setting needs its own, larger factor. Re-measured for
- *   the register faces at their h1 settings (700, -0.025em, 2026-10-30) over
- *   the nameplate strings and the longest headline words: Mona Sans at 125
- *   reaches 0.704 ("pengembangan"), Instrument Sans at 87.5 reaches 0.529
- *   ("Work"), so 0.72 holds on both themes.
+ *   Onest 500 at -0.04em (2026-10-30) over the nameplate strings and the
+ *   longest headline words: at most 0.585 ("Work"), so 0.72 holds.
  * - capped at `--fit-cap` (default 34svh), so a four-letter word does not
  *   become a wall.
  * - never smaller than the `h1` curve — copied from the `h1` utility in

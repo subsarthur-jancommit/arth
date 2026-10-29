@@ -53,7 +53,6 @@
 
 .label {
   font-family: var(--font-mono);
-  font-stretch: var(--mono-stretch);
   font-size: calc(9 / 375 * 100vw);
   font-weight: 400;
   letter-spacing: 0.15em;
@@ -72,7 +71,6 @@
 
 .title {
   font-family: var(--font-mono);
-  font-stretch: var(--mono-stretch);
   font-size: calc(22 / 375 * 100vw);
   font-weight: 400;
   letter-spacing: 0.08em;
@@ -93,7 +91,6 @@
 
 .description {
   font-family: var(--font-mono);
-  font-stretch: var(--mono-stretch);
   font-size: calc(11 / 375 * 100vw);
   line-height: 1.6;
   /* Same fix as .label above: 0.45 was 3.29:1 on --surface, 0.56 is 4.83:1. */
@@ -123,7 +120,6 @@
 
 .instructionsLabel {
   font-family: var(--font-mono);
-  font-stretch: var(--mono-stretch);
   font-size: calc(9 / 375 * 100vw);
   font-weight: 400;
   letter-spacing: 0.15em;
@@ -143,7 +139,6 @@
   padding-left: calc(18 / 375 * 100vw);
   margin: 0;
   font-family: var(--font-mono);
-  font-stretch: var(--mono-stretch);
   font-size: calc(11 / 375 * 100vw);
   line-height: 1.6;
   opacity: 0.7;
@@ -192,7 +187,6 @@
 
 .envVar {
   font-family: var(--font-mono);
-  font-stretch: var(--mono-stretch);
   font-size: calc(10 / 375 * 100vw);
   /* --accent-readable now resolves to --color-contrast; see .instructions. */
   color: var(--accent-readable);
@@ -204,7 +198,6 @@
 
 .code {
   font-family: var(--font-mono);
-  font-stretch: var(--mono-stretch);
   font-size: 0.9em;
   background: var(--surface-2);
   padding: 0.1em 0.3em;
@@ -229,7 +222,6 @@
 
 .hint {
   font-family: var(--font-mono);
-  font-stretch: var(--mono-stretch);
   font-size: calc(10 / 375 * 100vw);
   /* Sits on .footer's --surface-2 (#e4e4e4), darker than the --surface
      (#f2f2f2) .label/.description are tuned against above — 0.45 rendered
@@ -252,7 +244,6 @@
   align-items: center;
   gap: calc(5 / 375 * 100vw);
   font-family: var(--font-mono);
-  font-stretch: var(--mono-stretch);
   font-size: calc(10 / 375 * 100vw);
   font-weight: 400;
   letter-spacing: 0.1em;

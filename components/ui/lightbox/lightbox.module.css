@@ -81,7 +81,6 @@
    run. Here it answers which of the works is on screen. */
 .count {
   font-family: var(--font-mono);
-  font-stretch: var(--mono-stretch);
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
   margin: 0;
@@ -117,7 +116,6 @@
   background: transparent;
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-stretch: var(--mono-stretch);
   cursor: pointer;
   transition:
     opacity var(--duration-fast) var(--ease-out-quart),

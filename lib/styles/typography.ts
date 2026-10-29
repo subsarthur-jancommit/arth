@@ -1,43 +1,32 @@
 import type { CSSProperties } from 'react'
 
 /*
- * Four roles — R4, revised 2026-10-30 (`lib/styles/fonts.ts` has the reasons).
+ * Three roles: R4, revised 2026-10-30 (`lib/styles/fonts.ts` has the reasons).
  *
- * Headings take the register's face through `--font-display`, which
- * `global.css` sets per theme: Mona Sans on the dark stage, Instrument Sans on
- * the light document, each at its own width (`--display-stretch` for h1,
- * `--heading-stretch` for h2 and h3). `text` (Geist) carries what a reader
- * reads at length: prose, leads, navigation. `document` also carries the
- * buyer's quote, in its italic. `mono` (Martian Mono) carries everything a
- * reader scans: captions, labels, calls to action. The display/mono split is
- * the pattern measured across Lusion, basement.studio, By-Kin and darkroom in
- * `docs/TEARDOWN.md` §4 — the mono is never decoration, it is the metadata
- * voice.
+ * `display` (Onest) carries headings, set the way framer.com sets its own:
+ * medium weight, tracked to -0.04em, on a line-height near 1. `text` (Inter)
+ * carries everything else a reader meets: prose, leads, navigation, labels,
+ * calls to action, and the buyer's quote in its italic. Framer's labels are
+ * Inter too; this site's labels sat in a monospace until this revision.
+ * `mono` (Geist Mono) stays for the few places that set measurements or codes
+ * in a monospace (`var(--font-mono)` in their own stylesheets).
  */
 const fonts = {
-  // The heading face outside any theme; `global.css` sets it per register.
-  display: '--next-font-stage',
-  stage: '--next-font-stage',
-  document: '--next-font-document',
+  display: '--next-font-display',
   text: '--next-font-text',
   mono: '--next-font-mono', // this should be the variable name defined in fonts.ts
 } as const
 
-/** The heading face of the register an element sits in (`global.css`). */
-const heading = 'var(--font-display)'
-
 const typography = {
   h1: {
-    'font-family': heading,
+    'font-family': `var(${fonts.display})`,
     'font-style': 'normal',
-    'font-weight': 700,
-    'font-stretch': 'var(--display-stretch, 100%)',
-    // 94%. Sub-100% leading on display type is the signature of considered
-    // typography. Syne sat at 85% and Archivo at 92%; 94% is the value the
-    // 2026-10-30 comparison sheet was drawn with in both register faces, and
-    // it is checked on the preview, not measured here.
-    'line-height': '94%',
-    'letter-spacing': '-0.025em',
+    'font-weight': 500,
+    // 100%. Sub-100% leading on display type was this site's signature (Syne
+    // 85%, Archivo 92%); framer.com sets its headings on a line-height of 1
+    // (read in the browser, 2026-10-30). To be judged on the preview.
+    'line-height': '100%',
+    'letter-spacing': '-0.04em',
     /*
      * 38 on mobile, not 42, and not 72.
      *
@@ -67,27 +56,21 @@ const typography = {
      * 282.7 / (7.07 × 0.853) = 46.9. 38 stays, now with room. At width 125
      * the same word is 9.15em; a heading set wide must re-measure.
      *
-     * Re-measured for the register faces (700, -0.025em, headless Chrome,
-     * 2026-10-30). The stage sets Mona Sans at width 125, where
-     * "memperhatikan" is 8.49em: cap 282.7 / (8.49 × 0.853) = 39.0, so 38
-     * holds with 2.6% to spare — the least room this token has had, and a
-     * longer word in a stage h1 must be measured before it ships. The
-     * document sets Instrument Sans at 87.5, where the word is 6.33em (cap
-     * 52.4).
+     * Re-measured for Onest (500, -0.04em, headless Chrome, 2026-10-30):
+     * "memperhatikan" is 6.72em, so the cap is 282.7 / (6.72 × 0.853) = 49.3.
      */
     'font-size': { mobile: 38, desktop: 120 },
   },
   h2: {
-    'font-family': heading,
+    'font-family': `var(${fonts.display})`,
     'font-style': 'normal',
-    'font-weight': 600,
-    'font-stretch': 'var(--heading-stretch, 100%)',
-    'line-height': '96%',
-    'letter-spacing': '-0.02em',
+    'font-weight': 500,
+    'line-height': '110%',
+    'letter-spacing': '-0.04em',
     'font-size': { mobile: 32, desktop: 48 },
   },
   /*
-   * h3 — added in Tahap 37 to close a hole, not to add a size.
+   * h3: added in Tahap 37 to close a hole, not to add a size.
    *
    * The scale ran p-big (20 desktop) straight to h2 (48). Anything a section
    * needed between those had to be invented locally, and four ad-hoc
@@ -98,31 +81,27 @@ const typography = {
    * tightens, small type breathes.
    */
   h3: {
-    'font-family': heading,
+    'font-family': `var(${fonts.display})`,
     'font-style': 'normal',
-    'font-weight': 600,
-    'font-stretch': 'var(--heading-stretch, 100%)',
-    'line-height': '105%',
-    'letter-spacing': '-0.015em',
+    'font-weight': 500,
+    'line-height': '115%',
+    'letter-spacing': '-0.03em',
     'font-size': { mobile: 24, desktop: 32 },
   },
   /*
-   * The buyer's quote that opens a situation page — R4. Instrument Sans in
-   * its true italic: the document face in a person's voice, at a size between
-   * h2 and h1 so the quote leads the page without competing with a heading.
-   *
-   * It was Instrument Serif until 2026-10-30. The taste skill bans that face
-   * as a default, and its emphasis rule asks for the italic of a family the
-   * page already uses rather than a further family. The italic is wider than
-   * the serif was, so the size comes down from 28/50 to 26/44.
+   * The buyer's quote that opens a situation page: R4. Inter in its true
+   * italic, which the optical size axis draws as Inter Display at this size,
+   * between h2 and h1 so the quote leads the page without competing with a
+   * heading. Onest has no italic, and the taste skill's emphasis rule asks
+   * for the italic of a family the page already uses. It was Instrument Serif
+   * until 2026-10-30, one of the two display serifs that skill bans.
    */
   quote: {
-    'font-family': `var(${fonts.document})`,
+    'font-family': `var(${fonts.text})`,
     'font-style': 'italic',
     'font-weight': 400,
-    'font-stretch': '100%',
     'line-height': '115%',
-    'letter-spacing': '-0.01em',
+    'letter-spacing': '-0.02em',
     'font-size': { mobile: 26, desktop: 44 },
   },
   'p-big': {
@@ -134,50 +113,49 @@ const typography = {
     'font-size': { mobile: 16, desktop: 20 },
   },
   /*
-   * Running text at reading size — the fork. It was 12px on a phone and 14px
+   * Running text at reading size: the fork. It was 12px on a phone and 14px
    * on desktop at a 120% line: the case study's argument was the quietest
    * text on its page, smaller than the mono facts beside it (the
    * design-critique workflow). 16/18 at 150/145% is a reading size; it stays
    * at or under `p-big` (16/20) so the order of the two holds. The only
-   * consumer is `RichText` — CMS body text.
+   * consumer is `RichText`, CMS body text.
    */
   p: {
     'font-family': `var(${fonts.text})`,
     'font-style': 'normal',
     'font-weight': 400,
     'line-height': { mobile: '150%', desktop: '145%' },
-    'letter-spacing': '0em',
+    'letter-spacing': '-0.01em',
     'font-size': { mobile: 16, desktop: 18 },
   },
+  /*
+   * Labels, calls to action and inline links: Inter at medium weight, as
+   * framer.com sets its own (12 to 14px, weight 500). Proportional where the
+   * monospace was, so a label is never wider than the layout it was drawn for.
+   */
   caption: {
-    'font-family': `var(${fonts.mono})`,
+    'font-family': `var(${fonts.text})`,
     'font-style': 'normal',
-    'font-weight': 400,
-    // Martian Mono at width 75 advances 0.590em a character, as Geist Mono
-    // did (headless Chrome, 2026-10-30), so every label keeps the width it
-    // was laid out at. The same on `cta` and `link`.
-    'font-stretch': 'var(--mono-stretch, 75%)',
+    'font-weight': 500,
     'line-height': { mobile: '125%', desktop: '120%' },
-    'letter-spacing': '-0.01em',
+    'letter-spacing': '0em',
     // Raised from 8/10. The first Tahap 1 shipped 8px on mobile and flagged it
     // as below any readable floor — a flag is not a fix. 11px is still clearly
     // metadata, and legible.
     'font-size': { mobile: 11, desktop: 12 },
   },
   cta: {
-    'font-family': `var(${fonts.mono})`,
+    'font-family': `var(${fonts.text})`,
     'font-style': 'normal',
-    'font-weight': 400,
-    'font-stretch': 'var(--mono-stretch, 75%)',
+    'font-weight': 500,
     'line-height': '100%',
     'letter-spacing': '-0.01em',
     'font-size': { mobile: 12, desktop: 14 },
   },
   link: {
-    'font-family': `var(${fonts.mono})`,
+    'font-family': `var(${fonts.text})`,
     'font-style': 'normal',
-    'font-weight': 400,
-    'font-stretch': 'var(--mono-stretch, 75%)',
+    'font-weight': 500,
     'line-height': { mobile: '125%', desktop: '120%' },
     'letter-spacing': '-0.01em',
     'font-size': { mobile: 12, desktop: 14 },
@@ -193,7 +171,6 @@ type TypeStyles = Record<
     'font-family': string
     'font-style': CSSProperties['fontStyle']
     'font-weight': CSSProperties['fontWeight']
-    'font-stretch'?: string
     'line-height':
       | `${number}%`
       | { mobile: `${number}%`; desktop: `${number}%` }

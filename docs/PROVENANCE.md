@@ -114,27 +114,26 @@ Stated precisely, per §7: what is closed is _"this was never checked"_. The
 evidence above is dated, and a licence can change — so the pre-launch checklist
 keeps a line for re-reading it, not for discovering it.
 
-### Fonts — `next/font/google`, R4 (revised 2026-10-30)
+### Fonts: `next/font/google`, R4 (revised 2026-10-30)
 
-`lib/styles/fonts.ts` loads four families through `next/font/google`, which
+`lib/styles/fonts.ts` loads three families through `next/font/google`, which
 downloads the files at build time and serves them from the site itself. No
 font file is committed to this repository. Licences read from each family's
 own `OFL.txt` in github.com/google/fonts on 2026-10-30, not from a badge or a
 listing page:
 
-| Family          | Licence     | Copyright                                                          |
-| --------------- | ----------- | ------------------------------------------------------------------ |
-| Mona Sans       | SIL OFL 1.1 | 2022 The Mona Sans Project Authors, with Reserved Font Name "Mona" |
-| Instrument Sans | SIL OFL 1.1 | 2022 The Instrument Sans Project Authors                           |
-| Geist           | SIL OFL 1.1 | 2024 The Geist Project Authors                                     |
-| Martian Mono    | SIL OFL 1.1 | 2021 The Martian Mono Project Authors                              |
+| Family     | Licence     | Copyright                      |
+| ---------- | ----------- | ------------------------------ |
+| Onest      | SIL OFL 1.1 | 2021 The Onest Project Authors |
+| Inter      | SIL OFL 1.1 | 2020 The Inter Project Authors |
+| Geist Mono | SIL OFL 1.1 | 2024 The Geist Project Authors |
 
 OFL permits use, embedding and commercial work; it forbids selling the fonts
-on their own, and none of that is done here. The Reserved Font Name binds
-modified versions only; the site serves Mona Sans unmodified, under its own
-name. Archivo, Instrument Serif and Geist Mono (all SIL OFL 1.1, read
-2026-10-24) left the site on 2026-10-30, and Syne (SIL OFL 1.1, 2017 The Syne
-Project Authors) in R4. `lib/scripts/generate-brand-assets.ts`
+on their own, and none of that is done here. The type follows framer.com,
+studied in the browser: no Framer file, font or code is copied, and GT
+Walsheim, the commercial face its headings use, is not shipped. Archivo,
+Geist and Instrument Serif (all SIL OFL 1.1, read 2026-10-24) left the site
+on 2026-10-30, and Syne (SIL OFL 1.1, 2017 The Syne Project Authors) in R4. `lib/scripts/generate-brand-assets.ts`
 still renders the favicon and share images with Syne until they are
 regenerated.
 

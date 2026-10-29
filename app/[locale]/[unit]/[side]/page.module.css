@@ -38,7 +38,6 @@
 .switcherLink {
   color: inherit;
   font-family: var(--font-mono, monospace);
-  font-stretch: var(--mono-stretch);
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-decoration: none;

@@ -72,7 +72,6 @@
 .triggerKey {
   display: none;
   font-family: var(--font-mono);
-  font-stretch: var(--mono-stretch);
   color: var(--text-muted);
   border: 1px solid var(--line);
   padding-inline: desktop-vw(4px);
@@ -257,7 +256,6 @@
  */
 .count {
   font-family: var(--font-mono);
-  font-stretch: var(--mono-stretch);
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -499,7 +497,6 @@
  */
 .footKeys {
   font-family: var(--font-mono);
-  font-stretch: var(--mono-stretch);
 }
 
 /*
