@@ -9,6 +9,7 @@ import { Link } from '@/components/ui/link'
 import { fixedPageContent } from '@/lib/content/fixed-page-content'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { RichText } from '@/lib/integrations/sanity/components/rich-text'
+import { pageDocumentPath } from '@/lib/integrations/sanity/utils/link'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 
 import s from './page.module.css'
@@ -90,6 +91,8 @@ export async function generateMetadata() {
       description: content.metadata.description,
     }),
     noIndex: !content || content.metadata.noIndex,
-    url: `/${locale}/${PAYMENT_SLUG}`,
+    // The route, not the slug: the document kept `cara-kami-dibayar` when
+    // its address became `/pembayaran` (`FIXED_PAGE_ROUTES`).
+    url: `/${locale}${pageDocumentPath(PAYMENT_SLUG)}`,
   })
 }
