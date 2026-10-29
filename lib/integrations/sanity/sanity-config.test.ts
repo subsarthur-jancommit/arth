@@ -18,6 +18,8 @@ import { join } from 'node:path'
 
 import { routing } from '@/lib/i18n/routing'
 
+import { FIXED_PAGE_ROUTES } from './utils/link'
+
 const CONFIG_PATH = join(import.meta.dir, 'sanity.config.ts')
 const readConfig = () => Bun.file(CONFIG_PATH).text()
 
@@ -140,6 +142,12 @@ describe('sanity.config.ts singleton structure', () => {
     }
 
     expect(source).toContain("href: previewPath('/kontak')")
-    expect(source).toContain("previewPath('/kebijakan')")
+    // A fixed page previews at its route through the map that links use, so
+    // the payment page's preview follows its address, not its slug.
+    expect(source).toContain('previewPath(pageDocumentPath(slug))')
+    expect(FIXED_PAGE_ROUTES.get('kebijakan')).toBe('/kebijakan')
+    expect(FIXED_PAGE_ROUTES.get('cara-kami-dibayar')).toBe(
+      '/ketentuan-pembayaran'
+    )
   })
 })

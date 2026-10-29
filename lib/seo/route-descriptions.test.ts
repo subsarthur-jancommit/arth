@@ -98,10 +98,10 @@ describe('resolveRouteDescriptions', () => {
 
     expect(asked.toSorted()).toEqual(['en', 'id'])
     expect([...descriptions.keys()].toSorted()).toEqual([
-      '/en/metode-kerja',
       '/en/layanan-terpadu',
-      '/id/metode-kerja',
+      '/en/metode-kerja',
       '/id/layanan-terpadu',
+      '/id/metode-kerja',
     ])
   })
 
