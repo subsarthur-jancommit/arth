@@ -95,6 +95,7 @@
 
 .intro {
   font-family: var(--font-mono, monospace);
+  font-stretch: var(--mono-stretch);
   /* scale-exempt: 14-16px, between `p` and `p-big`, same class of gap as the
      hero subline. Recorded, not converted. */
   font-size: clamp(0.875rem, 1vw, 1rem);

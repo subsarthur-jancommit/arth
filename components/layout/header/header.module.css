@@ -122,10 +122,13 @@
 .brand {
   /*
    * The wordmark is display type, not a nav item, and it is the only place on
-   * the header where the display face (Archivo since R4) appears — which is
-   * what makes it read as the mark rather than as another link.
+   * the header where a heading face appears — which is what makes it read as
+   * the mark rather than as another link. Always the stage face, Mona Sans,
+   * not the register's: headings change face with the theme since R4, and a
+   * mark that changed face between the home and a document page would read
+   * as two marks.
    */
-  font-family: var(--font-display);
+  font-family: var(--font-stage);
   font-weight: 700;
   letter-spacing: -0.03em;
   /*
@@ -304,6 +307,12 @@
    * character. "Journal" is 71px on a 390px phone, "Jurnal" 83; `14svh` caps
    * a phone on its side, where width is plentiful and height is not.
    *
+   * The stage face on every theme, like the wordmark, so the sheet reads the
+   * same from any page. Mona Sans at 700, normal width and no tracking
+   * reaches at most 0.652em a character over the route words and the
+   * nameplate strings (headless Chrome, 2026-10-30), inside the 0.72 the fit
+   * assumes.
+   *
    * `12vw` for a browser with neither `cqi` nor `svh` — behind `@supports`,
    * because a declaration that holds a `var()` is never dropped at parse
    * time: written as two lines, the fitted one always won and, invalid only
@@ -312,7 +321,7 @@
   @media (--mobile) {
     display: block;
     padding-block: mobile-vw(4px);
-    font-family: var(--font-display);
+    font-family: var(--font-stage);
     font-weight: 700;
     font-size: 12vw;
 

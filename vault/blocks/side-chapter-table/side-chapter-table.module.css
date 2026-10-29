@@ -49,6 +49,7 @@
 .table thead th {
   color: var(--text-muted);
   font-family: var(--font-mono, monospace);
+  font-stretch: var(--mono-stretch);
   font-size: 0.6875rem;
   font-weight: 400;
   letter-spacing: 0.12em;

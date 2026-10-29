@@ -20,6 +20,7 @@
 
 .label {
   font-family: var(--font-mono);
+  font-stretch: var(--mono-stretch);
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--color-secondary);

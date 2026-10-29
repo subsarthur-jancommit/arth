@@ -246,38 +246,64 @@ not from weight count.
 
 **Rules**
 
-- **Four roles, three families — R4, 2026-10-24.** Archivo for headings,
-  Geist for running text and navigation, Instrument Serif for the buyer's
-  quote only, Geist Mono for labels. Geist and Geist Mono are one family.
-  Chosen with the owner when the site became two registers: a dark stage
-  (home, unit openings, one client three units, contact) and light documents
-  (sides, situations, work pages, how we work, payment, policy). The record
-  is `docs/r4-arah-visual/README.md`.
+- **Four roles, four families — R4, revised 2026-10-30.** Mona Sans for
+  headings on the dark stage (home, unit openings, Layanan terpadu, Kontak),
+  Instrument Sans for headings on the light documents (sides, situations,
+  work pages, Metode kerja, Ketentuan pembayaran, Kebijakan) and for the
+  buyer's quote in its italic, Geist for running text and navigation,
+  Martian Mono for labels. The heading face follows the theme, not the
+  route (`global.css`, "The heading face follows the register"). The first
+  R4 set (Archivo, Geist, Instrument Serif, Geist Mono, 2026-10-24) is in
+  `docs/r4-arah-visual/README.md`; the owner then asked for type that is
+  "lebih VARIATIF dan MODERN".
 - **Two to three weights per family.** More than three is a smell. The scale
   below uses 400 / 600 / 700.
 - **The mono is not decoration.** On Lusion, basement.studio, By-Kin and
   darkroom the mono carries labels, captions, and metadata. It is what makes
   a site read as engineered.
-- **A font axis is not animated.** Archivo's width axis sets the stage wide
-  and the documents at normal width, but changing `wdth` or `wght` on scroll
-  re-lays out the text every frame (`CLAUDE.md` #4). Motion morphs the plates,
-  not the type.
+- **A font axis is not animated.** The width axes set the stage expanded
+  and the documents narrow, but changing `wdth` or `wght` on scroll re-lays
+  out the text every frame (`CLAUDE.md` #4). Motion morphs the plates, not
+  the type.
 
-### Why Archivo, Geist and Instrument Serif — R4
+### Why Mona Sans, Instrument Sans, Geist and Martian Mono — R4, revised
 
-**Archivo** is a grotesque drawn for headlines, with a width axis from 62 to 125. Wide, it reads as a slide in a pitch; at normal width it heads a
-document. One family across both registers is what keeps the stage and the
-documents one site.
+The first R4 set read as one sans on the page: Archivo and Geist are both
+upright grotesques, the serif appeared once per situation page, and the mono
+is small. Instrument Serif is also one of the two display serifs the vendored
+taste skill bans as an AI tell (`.claude/skills/taste-skill/SKILL.md` §4.1).
+Four sets were compared on the live copy in headless Chrome on 2026-10-30
+(the current set; Mona Sans with Hubot Sans; Mona Sans with Instrument Sans;
+Mona Sans with Big Shoulders; Bricolage Grotesque with Instrument Sans).
+Hubot Sans was too close to Mona Sans to read as a second voice, Big
+Shoulders read as signage, and Bricolage crowded at display size.
 
-**Geist** carries prose because Archivo is a heading face first, and the
-document pages are read at length.
+**Mona Sans** (GitHub, 2022) heads the stage, set expanded (125 for `h1`,
+112 for `h2` and `h3`): the slide-in-a-pitch register the owner chose
+direction B for.
 
-**Instrument Serif**, italic, appears once per situation page: the buyer's
-own sentence, the one human voice among technical drawings. It is not
-preloaded, since no other page uses it.
+**Instrument Sans** (Instrument, 2022) heads the documents, set narrow
+(87.5): precise rather than loud, the drawing register of direction A. Its
+true italic carries the buyer's quote, which the taste skill's emphasis rule
+prefers to a further family.
+
+**Geist** carries prose, unchanged.
+
+**Martian Mono** (Evil Martians, 2021) carries labels at width 75, where it
+advances 0.590em a character, exactly as Geist Mono did, so no label is wider
+than the layout it was drawn for.
 
 All four are SIL Open Font License 1.1, verified from each family's
 `OFL.txt` (`docs/PROVENANCE.md` §2).
+
+### Why Archivo, Geist and Instrument Serif — R4, 2026-10-24 to 2026-10-30
+
+**Archivo** is a grotesque drawn for headlines, with a width axis from 62 to 125. Wide, it reads as a slide in a pitch; at normal width it heads a
+document. One family across both registers was meant to keep the stage and
+the documents one site.
+
+**Instrument Serif**, italic, appeared once per situation page: the buyer's
+own sentence.
 
 ### Why Syne, until R4
 
@@ -291,36 +317,41 @@ it. Geist is a fine face, but it is a neutral technology sans — and
 neutrality is what this site cannot afford once the palette gives up its
 accent. With no colour carrying identity, the typography has to.
 
-Archivo, Geist and Geist Mono ship a variable `wght` axis, so `fonts.ts`
-declares no explicit `weight` for them: one file per family covers every
-weight the styles use. Instrument Serif ships a single 400 and names it.
+Mona Sans, Instrument Sans, Geist and Martian Mono all ship a variable `wght`
+axis, so `fonts.ts` declares no explicit `weight` for them: one file per
+family covers every weight the styles use.
 
 ### The scale
 
 From `lib/styles/typography.ts` (mobile → desktop):
 
-| Style     | Family  | Size     | Weight | Line-height | Tracking |
-| --------- | ------- | -------- | ------ | ----------- | -------- |
-| `h1`      | display | 38 → 120 | 700    | 92%         | −0.03em  |
-| `h2`      | display | 32 → 48  | 600    | 96%         | −0.02em  |
-| `h3`      | display | 24 → 32  | 600    | 105%        | −0.015em |
-| `quote`   | serif   | 28 → 50  | 400    | 112%        | −0.005em |
-| `p-big`   | text    | 16 → 20  | 400    | 135%        | −0.01em  |
-| `p`       | text    | 16 → 18  | 400    | 150% → 145% | 0em      |
-| `caption` | mono    | 11 → 12  | 400    | 125% → 120% | −0.01em  |
-| `cta`     | mono    | 12 → 14  | 400    | 100%        | −0.01em  |
-| `link`    | mono    | 12 → 14  | 400    | 125% → 120% | −0.01em  |
+| Style     | Family           | Width      | Size     | Weight | Line-height | Tracking |
+| --------- | ---------------- | ---------- | -------- | ------ | ----------- | -------- |
+| `h1`      | register heading | 125 / 87.5 | 38 → 120 | 700    | 94%         | −0.025em |
+| `h2`      | register heading | 112 / 87.5 | 32 → 48  | 600    | 96%         | −0.02em  |
+| `h3`      | register heading | 112 / 87.5 | 24 → 32  | 600    | 105%        | −0.015em |
+| `quote`   | document, italic | 100        | 26 → 44  | 400    | 115%        | −0.01em  |
+| `p-big`   | text             | —          | 16 → 20  | 400    | 135%        | −0.01em  |
+| `p`       | text             | —          | 16 → 18  | 400    | 150% → 145% | 0em      |
+| `caption` | mono             | 75         | 11 → 12  | 400    | 125% → 120% | −0.01em  |
+| `cta`     | mono             | 75         | 12 → 14  | 400    | 100%        | −0.01em  |
+| `link`    | mono             | 75         | 12 → 14  | 400    | 125% → 120% | −0.01em  |
 
-The split is the design: **display carries headings, text carries what is
-read at length, mono carries what is scanned** (captions, labels, calls to
-action), and the serif carries one voice, the buyer's.
+"Register heading" is Mona Sans on the dark theme and Instrument Sans on the
+light one; the width column reads stage / document.
+
+The split is the design: **the register's face carries headings, text
+carries what is read at length, mono carries what is scanned** (captions,
+labels, calls to action), and the document face's italic carries one voice,
+the buyer's.
 
 Three details are deliberate and should not be "fixed":
 
 - **Display line-height below 100%.** Sub-100% leading on large type is the
   signature of considered typography. Default 1.5 on a 120px heading looks
-  like a document, not a design. Syne sat at 85%; Archivo sits at 92%, the
-  value the R4 mockups were drawn with, to be judged on the preview.
+  like a document, not a design. Syne sat at 85% and Archivo at 92%; the
+  register faces sit at 94%, the value the 2026-10-30 comparison was drawn
+  with, to be judged on the preview.
 - **Negative tracking that scales with size.** −0.04em at h1, −0.01em at
   body. Large type needs tightening; small type needs air. A single global
   letter-spacing is wrong at both ends.

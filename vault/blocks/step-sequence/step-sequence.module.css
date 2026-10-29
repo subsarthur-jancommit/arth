@@ -131,6 +131,7 @@
 .total {
   color: var(--text-muted);
   font-family: var(--font-mono, monospace);
+  font-stretch: var(--mono-stretch);
   /* scale-exempt: 12-14px is exactly `p`, but this label sits inside a
      sticky column whose width the scale's tracking would change. Recorded
      rather than silently converted; it is one of four ad-hoc clamps the new

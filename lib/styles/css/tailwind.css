@@ -26,9 +26,10 @@
 	--spacing-section-lead: var(--section-lead);
 
   --font-*: initial;
-  --font-display: var(--next-font-display);
+  --font-display: var(--next-font-stage);
+	--font-stage: var(--next-font-stage);
+	--font-document: var(--next-font-document);
 	--font-text: var(--next-font-text);
-	--font-serif: var(--next-font-serif);
 	--font-mono: var(--next-font-mono);
 }
 
@@ -47,36 +48,40 @@
 
 /** Custom static utilities **/
 @utility h1 {
-  font-family: var(--next-font-display);
+  font-family: var(--font-display);
 	font-style: normal;
 	font-weight: 700;
-	line-height: 92%;
-	letter-spacing: -0.03em;
+	font-stretch: var(--display-stretch, 100%);
+	line-height: 94%;
+	letter-spacing: -0.025em;
 	font-size: clamp(38px, calc(9.127px + 7.7vw), 156.958px);
 }
 @utility h2 {
-  font-family: var(--next-font-display);
+  font-family: var(--font-display);
 	font-style: normal;
 	font-weight: 600;
+	font-stretch: var(--heading-stretch, 100%);
 	line-height: 96%;
 	letter-spacing: -0.02em;
 	font-size: clamp(32px, calc(26.366px + 1.502vw), 55.211px);
 }
 @utility h3 {
-  font-family: var(--next-font-display);
+  font-family: var(--font-display);
 	font-style: normal;
 	font-weight: 600;
+	font-stretch: var(--heading-stretch, 100%);
 	line-height: 105%;
 	letter-spacing: -0.015em;
 	font-size: clamp(24px, calc(21.183px + 0.751vw), 35.606px);
 }
 @utility quote {
-  font-family: var(--next-font-serif);
+  font-family: var(--next-font-document);
 	font-style: italic;
 	font-weight: 400;
-	line-height: 112%;
-	letter-spacing: -0.005em;
-	font-size: clamp(28px, calc(20.254px + 2.066vw), 59.915px);
+	font-stretch: 100%;
+	line-height: 115%;
+	letter-spacing: -0.01em;
+	font-size: clamp(26px, calc(19.662px + 1.69vw), 52.113px);
 }
 @utility p-big {
   font-family: var(--next-font-text);
@@ -99,6 +104,7 @@
   font-family: var(--next-font-mono);
 	font-style: normal;
 	font-weight: 400;
+	font-stretch: var(--mono-stretch, 75%);
 	line-height: 125%;
 	@variant dt { line-height: 120%; }
 	letter-spacing: -0.01em;
@@ -108,6 +114,7 @@
   font-family: var(--next-font-mono);
 	font-style: normal;
 	font-weight: 400;
+	font-stretch: var(--mono-stretch, 75%);
 	line-height: 100%;
 	letter-spacing: -0.01em;
 	font-size: clamp(12px, calc(11.296px + 0.188vw), 14.901px);
@@ -116,6 +123,7 @@
   font-family: var(--next-font-mono);
 	font-style: normal;
 	font-weight: 400;
+	font-stretch: var(--mono-stretch, 75%);
 	line-height: 125%;
 	@variant dt { line-height: 120%; }
 	letter-spacing: -0.01em;

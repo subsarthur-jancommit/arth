@@ -366,6 +366,7 @@
   flex-wrap: wrap;
   gap: mobile-vw(12px);
   font-family: var(--font-mono, monospace);
+  font-stretch: var(--mono-stretch);
 
   @media (--desktop) {
     flex-direction: column;
@@ -379,6 +380,7 @@
 
 .subline {
   font-family: var(--font-mono, monospace);
+  font-stretch: var(--mono-stretch);
   /* scale-exempt: 14-18px, between `p` (12-14) and `p-big` (16-20). One of
      the four ad-hoc clamps the audit found; converting it changes the hero's
      balance, which Tahap 12 measured. Left as a recorded decision. */
