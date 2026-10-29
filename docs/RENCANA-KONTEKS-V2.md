@@ -106,9 +106,9 @@ Angka dari master brief: 55 bab (Konstruksi 19, Teknologi 23, Peekabo 13).
 | Jaringan (Peekabo Sisi B) | `/id/peekabo/jaringan`            | 1                                       | Unik               | Sisi B Agency, Cara bergabung; aturan jaringan       |
 | Bab                       | `/id/{unit}/{sisi}/{bab}`         | 55 (52 bab + 3 jalur jaringan)          | Template bab       | Kutipan, pembeli, 3 sampai 7 offer terpilih          |
 | Pekerjaan (offer)         | `/id/{unit}/{sisi}/{bab}/{offer}` | 1 per bab sebagai awal, paling banyak 2 | Template pekerjaan | Baris offer; alur kerja sisi; aturan unit            |
-| Satu klien, tiga unit     | `/id/satu-klien-tiga-unit`        | 1 (empat rangkaian di dalamnya)         | Unik               | Rangkaian tiga unit                                  |
-| Cara kami bekerja         | `/id/cara-kerja`                  | 1                                       | Unik               | Header Arthur, Cara kami bekerja; pembeda yang boleh |
-| Cara kami dibayar         | `/id/cara-kami-dibayar`           | 1 (sudah disetujui sebagai copy, R1)    | Template baca      | `docs/R1-SERAH-CARA-KAMI-DIBAYAR.md`                 |
+| Layanan terpadu           | `/id/layanan-terpadu`             | 1 (empat rangkaian di dalamnya)         | Unik               | Rangkaian tiga unit                                  |
+| Metode kerja              | `/id/metode-kerja`                | 1                                       | Unik               | Header Arthur, Cara kami bekerja; pembeda yang boleh |
+| Ketentuan pembayaran      | `/id/ketentuan-pembayaran`        | 1 (sudah disetujui sebagai copy, R1)    | Template baca      | `docs/R1-SERAH-CARA-KAMI-DIBAYAR.md`                 |
 | Kontak                    | `/id/kontak`                      | 1                                       | Unik               | siteSettings                                         |
 | Kebijakan                 | `/id/kebijakan`                   | 1 (tiga bagian)                         | Template baca      | Aturan main gabungan 4, 6, 9                         |
 | 404 / 410                 | -                                 | 1 template                              | Unik               | messages                                             |
@@ -117,6 +117,8 @@ Angka dari master brief: 55 bab (Konstruksi 19, Teknologi 23, Peekabo 13).
 **55 sampai 110 halaman pekerjaan** yang dibuat bertahap; dua di antaranya sudah
 terbit (Kuliner). Kartu offer di bab: paling banyak 55 × 7 = 385; perkiraan
 realistis sekitar 275 (rata-rata 5 per bab).
+
+**Nama dan alamat formal, 2026-10-30.** Atas permintaan pemilik, tiga halaman tetap memakai nama formal: `satu-klien-tiga-unit` menjadi `layanan-terpadu` (Layanan terpadu), `cara-kami-dibayar` menjadi `ketentuan-pembayaran` (Ketentuan pembayaran), dan `cara-kerja` menjadi `metode-kerja` (Metode kerja). Alamat lama, juga `/studio`, menjawab 308 ke alamat baru (`lib/i18n/renamed-paths.ts`), dan keempat halaman tetap ada di indeks footer. Slug Sanity halaman pembayaran tetap `cara-kami-dibayar`; judul yang tersimpan di Sanity belum diubah.
 
 ---
 

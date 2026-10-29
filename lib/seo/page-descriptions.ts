@@ -12,7 +12,7 @@ import type { SequenceContent } from '@/lib/content/sequence-content'
  * these pages, and `/llms.txt`, the Markdown mirrors and the search palette
  * printed it. Nothing compared it with `<meta name="description">`, so an
  * edit in the Studio changed the head and left the copy behind. That is how
- * `/cara-kerja` kept saying "menunggu tinjauan pemilik" for five days after
+ * `/metode-kerja` kept saying "menunggu tinjauan pemilik" for five days after
  * it was approved (#35).
  *
  * Now the page head calls these functions, and so does
@@ -22,8 +22,8 @@ import type { SequenceContent } from '@/lib/content/sequence-content'
  * ## No sentence of its own
  *
  * Until 2026-10-23 this module also kept a sentence for each page, printed
- * when the CMS had none: the `/cara-kerja` lead and a line for
- * `/satu-klien-tiga-unit`. The lead now lives in the `howWeWork` document's
+ * when the CMS had none: the `/metode-kerja` lead and a line for
+ * `/layanan-terpadu`. The lead now lives in the `howWeWork` document's
  * `pembuka`, and a head with nothing written gives no description of its
  * own. No editorial sentence is left in code
  * (`lib/content/editorial-copy.test.ts`).
@@ -42,7 +42,7 @@ function written(value: string | null | undefined): string | null {
 }
 
 /**
- * `/cara-kerja`: its own SEO description, else its first written promise.
+ * `/metode-kerja`: its own SEO description, else its first written promise.
  *
  * The published document always has a first promise — the schema requires at
  * least one, each with a sentence — so `null` is reached only by a value
@@ -57,7 +57,7 @@ export function howWeWorkDescription(
 }
 
 /**
- * `/satu-klien-tiga-unit`: the first sequence's SEO description, or none.
+ * `/layanan-terpadu`: the first sequence's SEO description, or none.
  * The page reads its metadata from the first sequence only.
  */
 export function threeUnitsDescription(

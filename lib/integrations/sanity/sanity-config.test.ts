@@ -39,7 +39,7 @@ describe('sanity.config.ts locale wiring', () => {
       '/:locale/kebijakan',
       '/:locale/work/:slug',
       '/:locale/kontak',
-      '/:locale/satu-klien-tiga-unit',
+      '/:locale/layanan-terpadu',
       '/:locale/:unit',
       '/:locale/:unit/:side',
       '/:locale/:unit/:side/:chapter',

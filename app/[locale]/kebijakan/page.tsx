@@ -37,7 +37,7 @@ export default async function PolicyPage() {
   /*
    * The page is public since V5 left `lib/seo/awaiting-content.ts`, so an
    * unpublished or withheld document shows the not-found view, as
-   * `/cara-kerja` does, rather than an empty state written for the editor.
+   * `/metode-kerja` does, rather than an empty state written for the editor.
    */
   if (!content) return <LocalizedNotFound />
 

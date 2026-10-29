@@ -3,10 +3,10 @@ import { expect, test } from '@playwright/test'
 /**
  * The machine surfaces describe a page the way its own head does.
  *
- * `/cara-kerja` and `/satu-klien-tiga-unit` read their meta description from
+ * `/metode-kerja` and `/layanan-terpadu` read their meta description from
  * Sanity. `/llms.txt` and the search index used to print a sentence copied
  * into `lib/seo/route-catalog.ts` instead, and nothing compared the two:
- * `/cara-kerja` kept saying "menunggu tinjauan pemilik" for five days after
+ * `/metode-kerja` kept saying "menunggu tinjauan pemilik" for five days after
  * the page was approved (#35). Both surfaces now resolve the description with
  * the head's own rule on the head's own read (`lib/seo/route-descriptions.ts`),
  * so a Studio edit moves them together. This spec is what notices a surface
@@ -27,8 +27,8 @@ import { expect, test } from '@playwright/test'
  */
 
 const HEAD_DESCRIBED_PAGES = [
-  '/id/cara-kerja',
-  '/id/satu-klien-tiga-unit',
+  '/id/metode-kerja',
+  '/id/layanan-terpadu',
 ] as const
 
 /** Undoes the five escapes React writes into an attribute value. */
@@ -64,7 +64,7 @@ test.describe('catalog descriptions follow the page head', () => {
         `/id/search.json row for ${path}`
       ).toBe(head)
 
-      // `- [label](https://…/id/cara-kerja): description`, one line per page.
+      // `- [label](https://…/id/metode-kerja): description`, one line per page.
       const marker = `${path}): `
       const line = (await (await request.get('/llms.txt')).text())
         .split('\n')

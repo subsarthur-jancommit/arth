@@ -82,10 +82,16 @@ const CONTACT_IS_PLACEHOLDER = isPlaceholderEmail(EMAIL)
  * Fixed pages in the index, minus any still awaiting published content
  * (`lib/seo/awaiting-content.ts`): the footer is on every page, so a link
  * here to a 404 would be on every page too.
+ *
+ * Every fixed page is listed — R4 route names, 2026-10-30. Layanan terpadu
+ * and Ketentuan pembayaran were reachable only from inside other pages, and
+ * the owner asked that a customer can reach each page from anywhere.
  */
 const INDEX_PAGES = (
   [
-    { href: '/cara-kerja', labelKey: 'studio' },
+    { href: '/metode-kerja', labelKey: 'studio' },
+    { href: '/layanan-terpadu', labelKey: 'services' },
+    { href: '/ketentuan-pembayaran', labelKey: 'payment' },
     { href: '/kebijakan', labelKey: 'policy' },
   ] as const
 ).filter(({ href }) => !isAwaitingContent(href))
@@ -193,9 +199,10 @@ export function Footer() {
           )}
         </section>
 
-        {/* The footer index keeps the three units, work method, and policy
-            status reachable everywhere. Catalogue and journal indexes remain
-            addressable but are intentionally not promoted in navigation. */}
+        {/* The footer index keeps every fixed page and the three units
+            reachable everywhere. Catalogue and journal indexes remain
+            addressable but are intentionally not promoted in navigation:
+            their entries are still seeded fixtures, not Arthur's work. */}
         <section className={s.column}>
           <h2 className={cn('caption', s.heading)}>{t('index')}</h2>
           <ul className={s.list}>

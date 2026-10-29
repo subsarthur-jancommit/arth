@@ -20,7 +20,7 @@ import { FEATURED_WORK } from './fixtures'
  * says it is?** It did not:
  *
  *   light  /en/journal   paper #f4f3ef (244) painted as 232.7   -11.1
- *   dark   /en/cara-kerja    ink   #110f0d  (17) painted as  21.6    +4.5
+ *   dark   /en/metode-kerja    ink   #110f0d  (17) painted as  21.6    +4.5
  *
  * The cause was `vault/magic/noise-texture`, whose filter chain produced a
  * mid-grey #4d4d4d veil rather than zero-mean grain, so every ground on the

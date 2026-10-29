@@ -56,10 +56,25 @@ const GUESSED: [typed: string, lands: string][] = [
   // single-hop guess is the Indonesian one.
   ['/id/contact', '/id/kontak'],
   ['/id/karya', '/id/work'],
+  // The short word for a formal page name (R4 route names, 2026-10-30).
+  ['/id/layanan', '/id/layanan-terpadu'],
+  ['/id/pembayaran', '/id/ketentuan-pembayaran'],
+  ['/id/tentang', '/id/kontak'],
 ]
 
-test.describe('a URL guessed from a nav label goes somewhere', () => {
-  for (const [typed, lands] of GUESSED) {
+/*
+ * An address a page had before R4 renamed it (`lib/i18n/renamed-paths.ts`).
+ * A shared or printed link to it must still land on the page, in one 308.
+ */
+const RENAMED: [typed: string, lands: string][] = [
+  ['/id/satu-klien-tiga-unit', '/id/layanan-terpadu'],
+  ['/id/cara-kami-dibayar', '/id/ketentuan-pembayaran'],
+  ['/id/cara-kerja', '/id/metode-kerja'],
+  ['/id/studio', '/id/metode-kerja'],
+]
+
+test.describe('a URL guessed from a nav label, or an old one, goes somewhere', () => {
+  for (const [typed, lands] of [...GUESSED, ...RENAMED]) {
     test(`${typed} redirects to ${lands}`, async ({ page }) => {
       const response = await page.goto(typed)
 
@@ -122,7 +137,7 @@ test.describe('a URL guessed from a nav label goes somewhere', () => {
  * in its place in the sweep below. A unit page offers two sibling units and
  * nothing else yet, which is why the floor this file asserts is what it is
  * rather than what that row measured.
- * | `/en/cara-kerja`           |         **1** |                     0 |
+ * | `/en/metode-kerja`           |         **1** |                     0 |
  * | `/en/journal`          |             3 |                     0 |
  * | `/en/journal/<slug>`   |         **1** |                     0 |
  * | 404                    |             4 |                     0 |
@@ -167,7 +182,7 @@ test.describe('every page offers a way onward', () => {
 
       /*
        * Not a dead end. This used to name the destinations — `/work`,
-       * `/cara-kerja`, `/journal` — which fixed the site's information
+       * `/metode-kerja`, `/journal` — which fixed the site's information
        * architecture; the fork removed that list (`docs/FORK.md`, step 5).
        */
       expect(
@@ -277,26 +292,26 @@ test.describe('every page offers a way onward', () => {
    * ## The defect this exists for, measured
    *
    * `site-reach`'s header assertion above matched hrefs by suffix, so
-   * `href="/cara-kerja"` satisfied "there is a header link to /cara-kerja" while
+   * `href="/metode-kerja"` satisfied "there is a header link to /metode-kerja" while
    * serving something else entirely. On the production build, before this:
    *
    * ```
    * curl -s localhost:3000/en | grep -o 'href="[^"]*studio[^"]*"'
    *   href="#studio"
-   *   href="/cara-kerja"          <- the footer's link to the studio page
-   * curl -s -o /dev/null -w '%{http_code}' localhost:3000/cara-kerja  ->  200
-   * curl -s localhost:3000/cara-kerja | grep -o '<title>[^<]*</title>'
+   *   href="/metode-kerja"          <- the footer's link to the studio page
+   * curl -s -o /dev/null -w '%{http_code}' localhost:3000/metode-kerja  ->  200
+   * curl -s localhost:3000/metode-kerja | grep -o '<title>[^<]*</title>'
    *   <title>Sanity Studio</title>
    * ```
    *
    * A reader who pressed "Studio" in the footer — the site's only route
    * navigation until this stage — landed on the CMS login. It had shipped
    * that way since Tahap 24, and `docs/stages/TAHAP-15.md` §1.3 had already
-   * written down that `/cara-kerja` was taken.
+   * written down that `/metode-kerja` was taken.
    *
    * ## Why the locale prefix is the thing asserted
    *
-   * The cause was not a typo. `lib/i18n/paths.ts` listed `/cara-kerja` as
+   * The cause was not a typo. `lib/i18n/paths.ts` listed `/metode-kerja` as
    * deliberately locale-free (it was Sanity Studio's base path), so
    * `components/ui/link` correctly declined to prefix it — and a correct
    * refusal to localize is indistinguishable, in the rendered href, from a
@@ -339,13 +354,13 @@ test.describe('every page offers a way onward', () => {
     // The old public URL permanently redirects to the work-method page.
     const legacy = await request.get('/en/studio', { maxRedirects: 0 })
     expect(legacy.status()).toBe(308)
-    expect(legacy.headers().location).toBe('/en/cara-kerja')
+    expect(legacy.headers().location).toBe('/en/metode-kerja')
 
     // Its destination is published since R5 and, untranslated, lands on the
     // Indonesian page (K2); it is still not Sanity Studio.
-    const workMethod = await request.get('/en/cara-kerja')
+    const workMethod = await request.get('/en/metode-kerja')
     expect(workMethod.status()).toBe(200)
-    expect(new URL(workMethod.url()).pathname).toBe('/id/cara-kerja')
+    expect(new URL(workMethod.url()).pathname).toBe('/id/metode-kerja')
     expect(await workMethod.text()).not.toContain(
       '<title>Sanity Studio</title>'
     )

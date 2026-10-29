@@ -16,12 +16,12 @@ import { UNITS } from '@/lib/content/units'
  */
 export const UNTRANSLATED_SEGMENTS: readonly string[] = [
   ...UNITS,
-  'cara-kami-dibayar',
-  'cara-kerja',
   'halaman',
   'kebijakan',
+  'ketentuan-pembayaran',
   'kontak',
-  'satu-klien-tiga-unit',
+  'layanan-terpadu',
+  'metode-kerja',
   /*
    * Not a page: the search palette's index (`app/[locale]/search.json`).
    * It lists the pages above, so in English it could only describe them in

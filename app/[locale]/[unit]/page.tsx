@@ -89,7 +89,7 @@ export default async function UnitPage({ params }: UnitPageProps) {
   /*
    * Sanity is the only home of a unit's words since V6
    * (docs/RENCANA-KONTEKS-V2.md). Without a published header the route shows
-   * the not-found view, as /cara-kerja does, instead of a copy kept in code
+   * the not-found view, as /metode-kerja does, instead of a copy kept in code
    * that a Studio edit could never reach. Every block below it renders only
    * when its own field is filled.
    */

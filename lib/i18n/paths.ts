@@ -6,24 +6,24 @@ import { type Locale, isLocale } from './routing'
  * Two vocabularies exist in this codebase and conflating them is the easy
  * mistake:
  *
- * - a **template** is locale-free (`/`, `/cara-kerja`, `/work/mural`). It is what the
+ * - a **template** is locale-free (`/`, `/metode-kerja`, `/work/mural`). It is what the
  *   route catalogue and CMS slugs deal in, and what deduplication compares.
  * - a **localized path** is what a browser actually requests (`/en`,
- *   `/id/cara-kerja`). It is what the sitemap emits and what a canonical URL must be.
+ *   `/id/metode-kerja`). It is what the sitemap emits and what a canonical URL must be.
  *
  * `localePrefix` is 'always', so every localized path carries a prefix and
  * there is exactly one canonical form per page — the property
  * `lib/seo/alternates.ts` depends on.
  */
 
-/** `('en', '/cara-kerja')` -> `/en/cara-kerja`; `('en', '/')` -> `/en`. */
+/** `('en', '/metode-kerja')` -> `/en/metode-kerja`; `('en', '/')` -> `/en`. */
 export function localizedPath(locale: Locale, template: string): string {
   if (template === '/') return `/${locale}`
   return `/${locale}${template}`
 }
 
 /**
- * Inverse of {@link localizedPath}: `/en/cara-kerja` -> `/cara-kerja`, `/en` -> `/`.
+ * Inverse of {@link localizedPath}: `/en/metode-kerja` -> `/metode-kerja`, `/en` -> `/`.
  *
  * Returns `null` when the path carries no known locale prefix, which is how
  * callers tell a localized page apart from an unlocalized one (`/cms`,
@@ -62,8 +62,8 @@ export const UNLOCALIZED_ROUTE_PREFIXES = [
   /*
    * Sanity Studio. `/cms` since Tahap 38, and the rename is the whole point:
    * while this list said `/studio`, `components/ui/link` correctly refused to
-   * localize `/studio` — and `/[locale]/cara-kerja` is a real public page, so
-   * every link to it rendered unprefixed and landed on the CMS.
+   * localize `/studio` — and `/[locale]/studio` was then a real public page,
+   * so every link to it rendered unprefixed and landed on the CMS.
    */
   '/cms',
   '/api',

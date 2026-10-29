@@ -233,6 +233,17 @@ describe('proxy.ts locale wiring', () => {
     expect(source).toMatch(/from ['"]next-intl\/middleware['"]/)
     expect(source).toMatch(/\bhandleI18nRouting\s*\(/)
   })
+
+  it('answers a renamed address before the guess table can claim it', async () => {
+    const source = await readProxy()
+    const renamed = source.indexOf('renamedDestination(request')
+    const guessed = source.indexOf('guessedDestination(request')
+
+    expect(renamed, 'proxy.ts never calls renamedDestination').toBeGreaterThan(
+      -1
+    )
+    expect(renamed).toBeLessThan(guessed)
+  })
 })
 
 describe('fixed public page redirects', () => {
@@ -240,9 +251,13 @@ describe('fixed public page redirects', () => {
     expect(fixedPageDestination('/id/halaman/kebijakan')).toBe('/id/kebijakan')
     expect(fixedPageDestination('/id/halaman/kebijakan/')).toBe('/id/kebijakan')
     expect(fixedPageDestination('/en/halaman/kebijakan')).toBe('/en/kebijakan')
+  })
+
+  it('sends the payment document to its route, which is not its slug', () => {
     expect(fixedPageDestination('/id/halaman/cara-kami-dibayar')).toBe(
-      '/id/cara-kami-dibayar'
+      '/id/ketentuan-pembayaran'
     )
+    expect(fixedPageDestination('/id/halaman/ketentuan-pembayaran')).toBeNull()
   })
 
   it('does not claim unrelated or malformed paths', () => {

@@ -985,7 +985,7 @@ test.describe('the studio process is a held index', () => {
   test('the held index reports the step being read', async ({ page }) => {
     test.setTimeout(120_000)
     await page.setViewportSize({ width: 1280, height: 800 })
-    await page.goto('/en/cara-kerja')
+    await page.goto('/en/metode-kerja')
     await page.waitForTimeout(2600)
 
     const section = page.locator('[data-step-sequence]')
@@ -1039,7 +1039,9 @@ test.describe('the studio process is a held index', () => {
       }
     }
 
-    console.log(`HELD /en/cara-kerja step index held for ${Math.round(held)}px`)
+    console.log(
+      `HELD /en/metode-kerja step index held for ${Math.round(held)}px`
+    )
 
     expect(
       reported.size,
@@ -1051,7 +1053,7 @@ test.describe('the studio process is a held index', () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 })
-    await page.goto('/en/cara-kerja')
+    await page.goto('/en/metode-kerja')
     await page.waitForTimeout(2600)
 
     const opacities = await page.evaluate(() => {
@@ -1097,7 +1099,7 @@ test.describe('the studio process is a held index', () => {
 test.describe('the studio sequence is audited where it happens', () => {
   test.fixme(true, REMOVED_IN_F3.studio)
 
-  for (const route of ['/en/cara-kerja', '/id/cara-kerja']) {
+  for (const route of ['/en/metode-kerja', '/id/metode-kerja']) {
     test(`${route} passes axe with a step receded`, async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 800 })
       await page.goto(route)

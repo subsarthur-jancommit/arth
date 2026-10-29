@@ -111,21 +111,35 @@ export const urlForReference = (link: LinkLike): string => {
   return '#'
 }
 
-/** Fixed `page` documents served at their own top-level route. */
-export const FIXED_PAGE_SLUGS: ReadonlySet<string> = new Set([
-  'kebijakan',
-  'cara-kami-dibayar',
+/**
+ * Fixed `page` documents served at their own top-level route, keyed by the
+ * document's slug.
+ *
+ * The route is not always the slug. The payment page kept its slug
+ * `cara-kami-dibayar` when its address became `/ketentuan-pembayaran` (R4
+ * route names, `lib/i18n/renamed-paths.ts`): the slug is the document's
+ * identity in the dataset, and changing it is a Sanity write, which
+ * `docs/PROSEDUR-KERJA.md` §6 keeps out of a code change.
+ */
+export const FIXED_PAGE_ROUTES: ReadonlyMap<string, string> = new Map([
+  ['kebijakan', '/kebijakan'],
+  ['cara-kami-dibayar', '/ketentuan-pembayaran'],
 ])
+
+/** The address a `page` document is read at, by its slug. */
+export function pageDocumentPath(slug: string): string {
+  return FIXED_PAGE_ROUTES.get(slug) ?? `/halaman/${slug}`
+}
 
 function resolveDocumentUrl(documentType?: string, slug?: string): string {
   if (!slug || !isSafeInternalSlug(slug)) return '#'
 
   switch (documentType) {
     // Fixed CMS pages live under /halaman so they cannot collide with the
-    // dynamic unit route. Kebijakan and Cara kami dibayar have their own
+    // dynamic unit route. Kebijakan and Ketentuan pembayaran have their own
     // routes, and `proxy.ts` redirects their generic form.
     case 'page':
-      return FIXED_PAGE_SLUGS.has(slug) ? `/${slug}` : `/halaman/${slug}`
+      return pageDocumentPath(slug)
     // Projects get their own namespace rather than sharing the `page`
     // catch-all: slugs are unique per type in Sanity, not across types, so a
     // work called "About" and a page called "About" would otherwise both

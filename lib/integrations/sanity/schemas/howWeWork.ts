@@ -16,7 +16,7 @@ const localizedLine = (name: string, title: string) =>
 /** The single Arthur document explaining how work is agreed and delivered. */
 export const howWeWork = defineType({
   name: 'howWeWork',
-  title: 'Cara kami bekerja',
+  title: 'Metode kerja',
   type: 'document',
   groups: [
     { name: 'isi', title: 'Isi', default: true },
