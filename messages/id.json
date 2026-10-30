@@ -2,7 +2,9 @@
   "nav": {
     "primary": "Utama",
     "work": "Karya",
-    "studio": "Cara kami bekerja",
+    "studio": "Metode kerja",
+    "services": "Layanan",
+    "payment": "Pembayaran",
     "journal": "Jurnal",
     "contact": "Kontak",
     "policy": "Kebijakan",

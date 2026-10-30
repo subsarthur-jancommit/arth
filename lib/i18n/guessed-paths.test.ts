@@ -32,6 +32,7 @@ describe('guessed paths', () => {
     for (const locale of routing.locales) {
       expect(guessedDestination(`/${locale}/contact`)).toBe(`/${locale}/kontak`)
       expect(guessedDestination(`/${locale}/karya`)).toBe(`/${locale}/work`)
+      expect(guessedDestination(`/${locale}/tentang`)).toBe(`/${locale}/kontak`)
     }
   })
 
@@ -65,7 +66,7 @@ describe('guessed paths', () => {
     expect(guessedDestination('/id/kontak')).toBeNull()
     // The machine view.
     expect(guessedDestination('/en/studio')).toBeNull()
-    expect(guessedDestination('/en/cara-kerja')).toBeNull()
+    expect(guessedDestination('/en/metode')).toBeNull()
     // Three segments: a real project page.
     expect(guessedDestination('/en/work/arus-balik')).toBeNull()
   })
@@ -78,10 +79,13 @@ describe('guessed paths', () => {
     expect(guessedDestination('')).toBeNull()
   })
 
-  it('does not redirect studio, which becomes a real route in Tahap 24', () => {
+  it('leaves old addresses to the renamed table', () => {
+    // `lib/i18n/renamed-paths.ts` answers these before this table runs.
     // Stated as a test so the omission reads as a decision rather than a gap.
     expect(guessedDestination('/en/studio')).toBeNull()
-    expect(guessedDestination('/id/cara-kerja')).toBeNull()
+    expect(guessedDestination('/id/metode')).toBeNull()
     expect(guessedDestination('/id/studio')).toBeNull()
+    expect(guessedDestination('/id/cara-kerja')).toBeNull()
+    expect(guessedDestination('/id/satu-klien-tiga-unit')).toBeNull()
   })
 })

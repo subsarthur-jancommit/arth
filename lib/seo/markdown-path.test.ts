@@ -18,10 +18,10 @@ describe('Markdown route aliases', () => {
   })
 
   it('normalizes a trailing slash before adding the Markdown suffix', () => {
-    expect(markdownPathForRoute('/cara-kerja/')).toBe('/cara-kerja.md')
+    expect(markdownPathForRoute('/metode/')).toBe('/metode.md')
   })
 
   it('does not mistake an ordinary route for a Markdown alias', () => {
-    expect(routePathFromMarkdown('/cara-kerja')).toBeNull()
+    expect(routePathFromMarkdown('/metode')).toBeNull()
   })
 })

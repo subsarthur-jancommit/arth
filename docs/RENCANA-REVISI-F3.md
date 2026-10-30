@@ -282,6 +282,48 @@ untuk label (Syne pensiun); panggung gelap untuk beranda, pembuka unit, Satu
 klien tiga unit, dan Kontak, dokumen terang untuk halaman lainnya. Rinciannya di
 `docs/r4-arah-visual/hasil-akhir.html`.
 
+**Nama alamat, 30 Oktober 2026.** Atas permintaan pemilik, tiga halaman tetap
+memakai alamat formal satu kata tanpa tanda hubung: `/layanan` (dulu
+`/satu-klien-tiga-unit`), `/pembayaran` (dulu `/cara-kami-dibayar`), dan
+`/metode` (dulu `/cara-kerja`). Alamat lama menjawab 308. Alamat sisi dan
+`/work`, `/journal` tidak diubah, atas keputusan pemilik. Rinciannya di
+`docs/RENCANA-KONTEKS-V2.md` dan `lib/i18n/renamed-paths.ts`.
+
+#### Navbar interaktif: rencana, belum dieksekusi
+
+Pemilik, 30 Oktober 2026: "untuk navbar tulis rencana (untuk nanti di
+eksekusi) bahwa Kedepannya akan dibuat Dengan sistem animasi yang interaktif."
+Bagian ini adalah rencana itu. Belum ada kode yang dibuat untuknya.
+
+**Isi navbar.** Tiga unit (Konstruksi, Teknologi, Peekabo), lalu Layanan,
+Metode kerja, Pembayaran, dan Kontak, karena pemilik meminta halaman tetap
+bisa dicapai dari navbar atas, bukan hanya dari footer. Di sisi kanan: Cari
+(⌘K), ajakan "Ceritakan masalahnya", dan tempat pengalih ID/EN untuk R7.
+
+**Gerak yang direncanakan.**
+
+| Momen               | Perilaku                                                                                       |
+| ------------------- | ---------------------------------------------------------------------------------------------- |
+| Penanda aktif       | Satu penanda bergeser mengikuti tautan yang disorot dan kembali ke halaman aktif               |
+| Ikut latar          | Navbar berganti tema saat melewati bagian gelap dan terang halaman yang sama                   |
+| Sembunyi dan muncul | Navbar menyingkir saat pembaca menggulir turun, kembali saat menggulir naik                    |
+| Lembar menu ponsel  | Kata rute masuk berurutan; tombol Tutup muat di kolomnya (E8.5); Esc dan ketuk di luar menutup |
+| Pratinjau unit      | Di desktop, menyorot unit menampilkan pelat datarnya kecil di bawah tautan                     |
+
+**Batas yang tidak berubah.** Hanya `transform` dan `opacity` yang dianimasikan
+(aturan #4). Di bawah `prefers-reduced-motion` tidak ada gerak dan semua tautan
+tampil penuh (#5). Pergantian tema serta gerak menyingkir dan kembali memakai
+ScrollTrigger di RAF bersama, tanpa loop kedua (#6), dan dibersihkan saat
+unmount (#7). Menu tetap `popover`, jadi tetap bekerja tanpa JavaScript.
+`aria-current`, fokus yang terlihat, dan kontras di kedua tema diuji dengan axe
+dan `contrast-situ` (#11, #20).
+
+**Urutan kerja.** Pertama gambar diam dan satu rekaman gerak untuk dipilih
+pemilik. Lalu satu PR sesudah tema per halaman (#48) dan huruf (#50) masuk,
+diuji `phone-menu`, `site-reach`, `interaction-grammar`, `motion`, dan e2e baru
+untuk penanda dan pergantian tema. Pemilik melihatnya di 1440 × 900 dan
+390 × 844 sebelum merge.
+
 ### R5 Bangun ulang halaman
 
 Bergantung pada R3 dan R4. Satu PR per kelompok halaman: beranda; unit dan

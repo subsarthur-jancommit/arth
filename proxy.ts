@@ -18,8 +18,9 @@ import { NextResponse } from 'next/server'
 
 import { guessedDestination } from '@/lib/i18n/guessed-paths'
 import { publicLocaleRedirect } from '@/lib/i18n/public-locale-redirect'
+import { renamedDestination } from '@/lib/i18n/renamed-paths'
 import { isLocale, routing } from '@/lib/i18n/routing'
-import { FIXED_PAGE_SLUGS } from '@/lib/integrations/sanity/utils/link'
+import { FIXED_PAGE_ROUTES } from '@/lib/integrations/sanity/utils/link'
 import {
   type DocumentMediaType,
   HTML_FORMAT_OVERRIDE_PARAM,
@@ -119,16 +120,13 @@ export function fixedPageDestination(pathname: string): string | null {
   if (segments.length !== 3) return null
 
   const [locale, route, slug] = segments
-  if (
-    !isLocale(locale) ||
-    route !== 'halaman' ||
-    slug === undefined ||
-    !FIXED_PAGE_SLUGS.has(slug)
-  ) {
+  const fixedRoute =
+    slug === undefined ? undefined : FIXED_PAGE_ROUTES.get(slug)
+  if (!isLocale(locale) || route !== 'halaman' || fixedRoute === undefined) {
     return null
   }
 
-  return `/${locale}/${slug}`
+  return `/${locale}${fixedRoute}`
 }
 // Proxy response headers are applied to the rendered response. Include the
 // router cache keys that Next emits so adding Accept cannot replace them.
@@ -250,6 +248,19 @@ export function proxy(request: NextRequest) {
   if (fixedPage) {
     const destination = request.nextUrl.clone()
     destination.pathname = fixedPage
+    return NextResponse.redirect(destination, 308)
+  }
+
+  /*
+   * An address a page had before it was renamed, sent to the address it has
+   * now, with the query kept. Before the guess table, which must never claim
+   * an old address. The table and its reasoning live in
+   * `lib/i18n/renamed-paths.ts`.
+   */
+  const renamed = renamedDestination(request.nextUrl.pathname)
+  if (renamed) {
+    const destination = request.nextUrl.clone()
+    destination.pathname = renamed
     return NextResponse.redirect(destination, 308)
   }
 

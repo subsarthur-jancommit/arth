@@ -58,7 +58,7 @@ async function buildIndex(locale: Locale): Promise<SearchEntry[]> {
   'use cache'
 
   /*
-   * What `/cara-kerja` and `/satu-klien-tiga-unit` say in their own head,
+   * What `/metode` and `/layanan` say in their own head,
    * read through the pages' own loaders, so the rows cannot fall behind a
    * Studio edit. It never throws: a page it cannot read keeps the catalog's
    * own description, so both branches below get the same rows.

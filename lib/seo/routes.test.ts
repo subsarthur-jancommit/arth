@@ -25,7 +25,7 @@ describe('the static route catalogue', () => {
   it('advertises only approved public locales', () => {
     expect(PUBLISHED_LOCALES).toEqual(['id'])
     expect(STATIC_ROUTES.every((route) => route.locale === 'id')).toBe(true)
-    expect(STATIC_ROUTES.some((route) => route.path === '/en/cara-kerja')).toBe(
+    expect(STATIC_ROUTES.some((route) => route.path === '/en/metode')).toBe(
       false
     )
   })
@@ -129,14 +129,14 @@ describe('buildRoutesFromDocuments', () => {
     const docs = [
       {
         _type: 'page',
-        title: 'Cara kami bekerja',
-        slug: { current: 'cara-kerja' },
+        title: 'Metode kerja',
+        slug: { current: 'metode' },
         _updatedAt: '2026-01-01T00:00:00.000Z',
       },
     ]
 
     expect(buildRoutesFromDocuments(docs).map((route) => route.path)).toEqual([
-      '/halaman/cara-kerja',
+      '/halaman/metode',
     ])
   })
 

@@ -1105,7 +1105,7 @@ export const sequencesPreviewQuery = defineQuery(`
   }
 `)
 
-/** The Arthur singleton behind the future Cara kami bekerja route. */
+/** The Arthur singleton behind the Metode kerja route. */
 export const howWeWorkQuery = defineQuery(`
   *[_type == "howWeWork" && statusTinjauan == "disetujui"][0] {
     _id,

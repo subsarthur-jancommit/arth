@@ -22,14 +22,10 @@ describe('public locale redirect', () => {
     expect(publicLocaleRedirect('/en/peekabo/jaringan/perujuk')).toBe(
       '/id/peekabo/jaringan/perujuk'
     )
-    expect(publicLocaleRedirect('/en/cara-kerja')).toBe('/id/cara-kerja')
-    expect(publicLocaleRedirect('/en/satu-klien-tiga-unit')).toBe(
-      '/id/satu-klien-tiga-unit'
-    )
+    expect(publicLocaleRedirect('/en/metode')).toBe('/id/metode')
+    expect(publicLocaleRedirect('/en/layanan')).toBe('/id/layanan')
     expect(publicLocaleRedirect('/en/kebijakan')).toBe('/id/kebijakan')
-    expect(publicLocaleRedirect('/en/cara-kami-dibayar')).toBe(
-      '/id/cara-kami-dibayar'
-    )
+    expect(publicLocaleRedirect('/en/pembayaran')).toBe('/id/pembayaran')
     expect(publicLocaleRedirect('/en/kontak')).toBe('/id/kontak')
     expect(publicLocaleRedirect('/en/halaman/tentang')).toBe(
       '/id/halaman/tentang'

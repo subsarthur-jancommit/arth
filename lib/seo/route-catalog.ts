@@ -43,14 +43,14 @@ export interface LocalizedStaticRoute extends Omit<
 > {
   label: string
   description: string | null
-  /** The locale-free path this entry was expanded from (`/`, `/cara-kerja`). */
+  /** The locale-free path this entry was expanded from (`/`, `/metode`). */
   template: string
   locale: Locale
 }
 
 /**
  * What a page head says about itself, keyed by localized path
- * (`/id/cara-kerja`), for the pages whose head reads its description from
+ * (`/id/metode`), for the pages whose head reads its description from
  * the CMS.
  *
  * `lib/seo/route-descriptions.ts` resolves it from the same published read
@@ -182,16 +182,16 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = (
      * code.
      */
     {
-      path: '/cara-kerja',
-      label: { en: 'How we work', id: 'Cara kami bekerja' },
+      path: '/metode',
+      label: { en: 'Working method', id: 'Metode kerja' },
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     // Resolved the same way, from the first published sequence's SEO
     // description.
     {
-      path: '/satu-klien-tiga-unit',
-      label: { en: 'One client, three units', id: 'Satu klien, tiga unit' },
+      path: '/layanan',
+      label: { en: 'Services', id: 'Layanan' },
       changeFrequency: 'monthly',
       priority: 0.6,
     },
@@ -201,11 +201,11 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = (
      * fails; the page's own words stay in Sanity (V6).
      */
     {
-      path: '/cara-kami-dibayar',
-      label: { en: 'How we are paid', id: 'Cara kami dibayar' },
+      path: '/pembayaran',
+      label: { en: 'Payment', id: 'Pembayaran' },
       description: {
-        en: 'How Arthur is paid.',
-        id: 'Cara Arthur dibayar.',
+        en: "Arthur's payment terms.",
+        id: 'Ketentuan pembayaran Arthur.',
       },
       changeFrequency: 'monthly',
       priority: 0.6,

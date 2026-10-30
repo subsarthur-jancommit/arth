@@ -2,7 +2,9 @@
   "nav": {
     "primary": "Primary",
     "work": "Work",
-    "studio": "How we work",
+    "studio": "Working method",
+    "services": "Services",
+    "payment": "Payment",
     "journal": "Journal",
     "contact": "Contact",
     "policy": "Policy",

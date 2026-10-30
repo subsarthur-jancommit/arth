@@ -71,6 +71,15 @@ describe('urlForReference — internal document resolution', () => {
     ).toBe('/kebijakan')
   })
 
+  test('the payment document links to its formal route, not its slug', () => {
+    expect(
+      urlForReference({
+        linkType: 'internal',
+        internalLink: { _type: 'page', slug: { current: 'cara-kami-dibayar' } },
+      })
+    ).toBe('/pembayaran')
+  })
+
   test('projects resolve under /work', () => {
     expect(
       urlForReference({

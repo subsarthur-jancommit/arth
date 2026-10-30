@@ -37,9 +37,10 @@ import { isLocale } from './routing'
  *
  * ## What is deliberately absent
  *
- * `studio` remains a real legacy route that permanently redirects to
- * `/cara-kerja`; both it and the destination are in `REAL_SEGMENTS` below so
- * the guess table can never shadow either route.
+ * The addresses pages had before they were renamed (`studio`, `cara-kerja`,
+ * `cara-kami-dibayar`, `satu-klien-tiga-unit`) are not guesses. They were
+ * real, and `lib/i18n/renamed-paths.ts` answers them before this table runs;
+ * `guessed-paths.test.ts` asserts the two tables never name the same segment.
  *
  * `kontak` is now a real fixed page. The English label remains a guess that
  * redirects to that page instead of the old home-page anchor.
@@ -72,14 +73,20 @@ const GUESSED_SEGMENTS = new Map([
    * only ever redirect the catalogue to itself.
    */
   ['karya', '/work'],
+  /*
+   * R4 route names, 2026-10-30: the owner asked that a customer can reach
+   * every page. A reader who types "tentang" for the page titled "Tentang
+   * dan kontak" lands on it instead of a 404.
+   */
+  ['tentang', '/kontak'],
 ])
 
 /**
  * Single segments that already resolve, so a guess must never shadow them.
  *
- * `work`, `studio` (Tahap 24), `journal` (Tahap 26) and, since F1-03, the
- * three units — each of which is a one-segment page, which is exactly the
- * depth this function matches.
+ * `work`, `journal` (Tahap 26), the fixed pages and, since F1-03, the three
+ * units — each of which is a one-segment page, which is exactly the depth
+ * this function matches.
  *
  * `ai` was in this list for a machine view Tahap 84 removed, so for several
  * stages it protected a route that did not exist. Removed: nothing answers
@@ -93,11 +100,11 @@ const GUESSED_SEGMENTS = new Map([
  */
 export const REAL_SEGMENTS = new Set([
   ...UNITS,
-  'cara-kami-dibayar',
-  'cara-kerja',
   'kebijakan',
   'kontak',
-  'studio',
+  'layanan',
+  'metode',
+  'pembayaran',
   'work',
   'journal',
 ])
