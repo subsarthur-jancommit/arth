@@ -113,6 +113,16 @@
   }
 }
 
+/*
+ * Lit plates are drawn by the root canvas, which sits behind the page, so a
+ * plate's ground would hide them. Once any of them has drawn, the grounds
+ * clear; the plate before fades as the next arrives, so nothing shows
+ * through that should not.
+ */
+.withReel:has([data-plate-live]) .plate {
+  background-color: transparent;
+}
+
 .plate:not(:first-child) {
   transform: translateY(101%);
 }
@@ -127,7 +137,7 @@
   min-height: 0;
   will-change: transform;
 
-  & > svg {
+  & svg {
     height: 100%;
   }
 
@@ -230,7 +240,7 @@
     transform: none;
   }
 
-  .drawing > svg {
+  .drawing svg {
     height: auto;
     max-height: 75svh;
   }

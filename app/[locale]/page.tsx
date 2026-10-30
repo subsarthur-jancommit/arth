@@ -35,6 +35,7 @@ import { PracticeList } from '@/vault/blocks/practice-list'
 import { SituationLinks } from '@/vault/blocks/situation-links'
 import { StudioNote } from '@/vault/blocks/studio-note'
 import { Reveal } from '@/vault/motion/reveal'
+import { PlateMaterial } from '@/vault/webgl/plate-material'
 
 import s from './page.module.css'
 
@@ -208,12 +209,19 @@ export default async function Home() {
     unit: unit.label,
     title: tPlate(`${unit.value}.job`),
     meta: tPlate(`${unit.value}.drawing`),
+    /*
+     * The flat plate inside its WebGL material: on a desktop with WebGL the
+     * plate is lit as direction B's model and turns as the reader scrolls;
+     * everywhere else the flat plate is all there is, and the whole drawing.
+     */
     media: (
-      <Plate
-        unit={unit.value}
-        title={tPlate(`${unit.value}.title`)}
-        description={tPlate(`${unit.value}.description`)}
-      />
+      <PlateMaterial unit={unit.value}>
+        <Plate
+          unit={unit.value}
+          title={tPlate(`${unit.value}.title`)}
+          description={tPlate(`${unit.value}.description`)}
+        />
+      </PlateMaterial>
     ),
   }))
 
@@ -222,9 +230,11 @@ export default async function Home() {
 
   return (
     /*
-     * `webgl` for the hero's SceneShell, `gsap` for its timeline. No
-     * `simTypes`: the flowmap's reader was the work grid's material, removed
-     * here with the grid (`docs/TINJAUAN-F01-F03.md` B5).
+     * `webgl` for the hero's SceneShell and the passage's lit plates, `gsap`
+     * for their timelines. No `simTypes`: the flowmap's reader was the work
+     * grid's material, removed here with the grid
+     * (`docs/TINJAUAN-F01-F03.md` B5), and the plates read the reader's
+     * scroll, not the pointer.
      */
     <Wrapper theme="dark" lenis={{ anchors: true }} webgl gsap>
       <Hero

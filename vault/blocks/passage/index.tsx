@@ -31,10 +31,15 @@ import s from './passage.module.css'
  *
  * | Fraction | Movement |
  * | --- | --- |
- * | 0 → 0.15 | The ground sharpens (`scale 1.5 → 1`), the frame lifts in |
- * | 0.15 → 0.75 | Each plate wipes up through the frame, its caption with it; the drawing inside counter-moves and settles from `scale 1.2` |
- * | 0.72 → 0.88 | The section title rises through its mask |
- * | 0.85 → 1 | The stage drifts up as the pin releases |
+ * | 0 → 0.15 | The ground sharpens (`scale 1.5 → 1`), the frame settles |
+ * | 0.08 → 0.8 | One share per plate. Each after the first wipes up through the frame with its caption while the one before fades, its drawing counter-moving from `scale 1.2`; then the plate rests, and its `data-plate-progress` runs from 0 to 1 |
+ * | 0.78 → 0.94 | The section title rises through its mask |
+ * | 0.88 → 1 | The stage drifts up as the pin releases |
+ *
+ * The rest is for reading, and on a desktop with WebGL it is also the turn:
+ * `vault/webgl/plate-material` reads the progress and lights the plate as a
+ * model that turns as the reader scrolls (direction B). Without the material
+ * a plate simply holds still for its share.
  *
  * ## The plates are content now, and read as content
  *
@@ -78,8 +83,11 @@ export interface PassagePlate {
   media: ReactNode
 }
 
-/** Screens of scroll per plate, on top of the intro and the title's rise. */
-const SCREENS_PER_PLATE = 0.7
+/**
+ * Screens of scroll per plate, on top of the intro and the title's rise:
+ * enough for a plate to arrive, be read, and turn.
+ */
+const SCREENS_PER_PLATE = 0.9
 
 /** Screens of scroll the passage spends before and after the plates. */
 const SCREENS_AROUND = 1.2
@@ -93,6 +101,13 @@ const TITLE_RISE = 40
 /** How far into the frame a drawing starts, and how much larger. */
 const PLATE_COUNTER = -30
 const PLATE_ENTRY_SCALE = 1.2
+
+/** Where the plates' shares begin and end, as fractions of the pin. */
+const PLATES_FROM = 0.08
+const PLATES_TO = 0.8
+
+/** The share of a plate's time spent arriving; the rest is its progress. */
+const ARRIVAL = 0.3
 
 /** Stable across renders, so a page that passes no plates re-renders nothing. */
 const NO_PLATES: readonly PassagePlate[] = []
@@ -122,7 +137,7 @@ const NOSCRIPT_STYLE =
   '[data-passage-stage]{padding-block:0!important}' +
   '[data-passage-frame]{display:grid!important;gap:calc(var(--section-lead) * 2)!important;height:auto!important;overflow:visible!important}' +
   '[data-passage-plate]{position:relative!important;inset:auto!important;transform:none!important}' +
-  '[data-passage-drawing]>svg{height:auto!important;max-height:75svh!important}'
+  '[data-passage-drawing] svg{height:auto!important;max-height:75svh!important}'
 
 interface PassageProps {
   /**
@@ -227,42 +242,67 @@ export function Passage({
         )
 
       /*
-       * The plates. The first rests in the frame already; each one after it
-       * wipes up over the last, on a ground of its own so it covers what it
-       * replaces, while its drawing moves the other way and settles from a
-       * larger scale: two transforms in opposite directions, which is what
-       * makes a flat wipe read as depth.
+       * The plates, one share each. The first rests in the frame already;
+       * each one after it wipes up while the one before fades, and its
+       * drawing moves the other way and settles from a larger scale: two
+       * transforms in opposite directions, which is what makes a flat wipe
+       * read as depth. Then the plate rests for the rest of its share, and
+       * its progress runs, for the material to turn it by.
        */
       const plateNodes = [...element.querySelectorAll(`.${s.plate}`)]
       const drawingNodes = [...element.querySelectorAll(`.${s.drawing}`)]
-      const span = 0.6 / (count - 1)
-      for (let i = 1; i < count; i += 1) {
-        const at = 0.15 + span * (i - 1)
+      const share = (PLATES_TO - PLATES_FROM) / count
+      for (let i = 0; i < count; i += 1) {
+        const from = PLATES_FROM + share * i
         const plate = plateNodes[i]
         const drawing = drawingNodes[i]
         if (!plate || !drawing) continue
 
-        timeline
-          /*
-           * `y: 0` on both ends, and it is load-bearing. At rest the
-           * stylesheet parks this plate with `translateY(101%)`; GSAP reads
-           * that computed matrix back as a **pixel** `y`, and a tween of
-           * `yPercent` alone would stack on top of it — the plate would
-           * travel from 202% to 101% and never enter the frame. Measured in
-           * Tahap 49: the first build showed one cover under every index.
-           */
-          .fromTo(
-            plate,
-            { y: 0, yPercent: 101 },
-            { y: 0, yPercent: 0, duration: span * 0.85 },
-            at
+        const arrival = i === 0 ? 0 : share * ARRIVAL
+        const previous = plateNodes[i - 1]
+        if (i > 0) {
+          timeline
+            /*
+             * `y: 0` on both ends, and it is load-bearing. At rest the
+             * stylesheet parks this plate with `translateY(101%)`; GSAP
+             * reads that computed matrix back as a **pixel** `y`, and a tween
+             * of `yPercent` alone would stack on top of it — the plate would
+             * travel from 202% to 101% and never enter the frame. Measured
+             * in Tahap 49: the first build showed one cover under every
+             * index.
+             */
+            .fromTo(
+              plate,
+              { y: 0, yPercent: 101 },
+              { y: 0, yPercent: 0, duration: arrival },
+              from
+            )
+            .fromTo(
+              drawing,
+              { yPercent: PLATE_COUNTER, scale: PLATE_ENTRY_SCALE },
+              { yPercent: 0, scale: 1, duration: arrival },
+              from
+            )
+        }
+        if (i > 0 && previous) {
+          timeline.fromTo(
+            previous,
+            { opacity: 1 },
+            { opacity: 0, duration: arrival },
+            from
           )
-          .fromTo(
-            drawing,
-            { yPercent: PLATE_COUNTER, scale: PLATE_ENTRY_SCALE },
-            { yPercent: 0, scale: 1, duration: span * 0.85 },
-            at
+        }
+
+        // The rest of the share: progress for the material, if there is one.
+        const material = plate.querySelector('[data-plate-material]')
+        if (material) {
+          timeline.fromTo(
+            material,
+            { attr: { 'data-plate-progress': 0 } },
+            { attr: { 'data-plate-progress': 1 }, duration: share - arrival },
+            from + arrival
           )
+        }
       }
 
       timeline
@@ -270,14 +310,14 @@ export function Passage({
           title,
           { yPercent: TITLE_RISE, opacity: 0 },
           { yPercent: 0, opacity: 1, duration: 0.16 },
-          0.72
+          0.78
         )
         /*
          * The release. The stage drifts up as the pin lets go, so the passage
          * reads as lifting away rather than as the page jumping past it —
          * the same asymmetry `page-transition` uses on its way out.
          */
-        .fromTo(stage, { yPercent: 0 }, { yPercent: -6, duration: 0.15 }, 0.85)
+        .fromTo(stage, { yPercent: 0 }, { yPercent: -6, duration: 0.12 }, 0.88)
 
       return () => {
         timeline.scrollTrigger?.kill()
@@ -330,12 +370,13 @@ export function Passage({
       <div className={s.stage} data-passage-stage="">
         {count > 0 && (
           <div className={s.reel}>
-            <div className={s.frame} data-passage-frame="">
+            <div className={s.frame} data-passage-frame="" data-plate-clip="">
               {reel.map((plate, position) => (
                 <figure
                   key={plate.id}
                   className={s.plate}
                   data-passage-plate=""
+                  data-plate-fade=""
                 >
                   <div className={s.drawing} data-passage-drawing="">
                     {plate.media}

@@ -308,6 +308,19 @@ dikerjakan tiga unit." naik dan pin lepas ke daftar unit. Setiap pelat kini
 JavaScript ketiga pelat tersusun berurutan, semuanya tampil, tanpa pin. Uji
 `journey` untuk pin dan reduced motion dihidupkan lagi.
 
+**WebGL di panggung, 30 Oktober 2026.** `vault/webgl/plate-material` menyalakan
+pelat lintasan beranda sebagai material di kanvas root (arah B, "maket
+cahaya"): pelat digambar ulang ke tekstur dari data yang sama
+(`lib/plates/canvas.ts`), lalu saat pembaca menggulir, denah Konstruksi rebah
+dan potongannya berdiri di belakangnya, diagram Teknologi dan papan Peekabo
+bersandar seperti lembar di meja, dan kamera berputar pelan melewatinya.
+Pelat datar SVG tetap ada di bawahnya: tampil di ponsel, di bawah reduced
+motion, tanpa WebGL2, dan sampai bingkai pertama tergambar; ia juga tetap
+membawa alt teks. Halaman unit sengaja tetap memakai pelat datar: kanvas root
+digambar di belakang `<main>`, sedangkan pembuka unit adalah pita gelap di
+halaman terang, jadi pelat bercahaya di sana harus ikut menggambar pita itu
+di WebGL dan akan memunculkan sambungan DOM dan kanvas saat digulir.
+
 #### Navbar interaktif: rencana, belum dieksekusi
 
 Pemilik, 30 Oktober 2026: "untuk navbar tulis rencana (untuk nanti di

@@ -220,6 +220,18 @@ export interface PlateText {
   weight?: number
 }
 
+/**
+ * A region of a plate that moves on its own when the plate is lit as a model:
+ * Konstruksi's plan lies down and its section stands up behind it. A flat
+ * plate draws its parts where they are; only the WebGL material separates
+ * them.
+ */
+export interface PlatePart {
+  id: 'sheet' | 'plan' | 'section'
+  /** `[x, y, width, height]` in plate units, inside the view box. */
+  rect: readonly [number, number, number, number]
+}
+
 /** One unit's working drawing, in its own units. */
 export interface Plate {
   unit: Unit
@@ -227,4 +239,6 @@ export interface Plate {
   viewBox: readonly [number, number, number, number]
   marks: readonly PlateMark[]
   texts: readonly PlateText[]
+  /** At least one; together they cover the view box. */
+  parts: readonly PlatePart[]
 }

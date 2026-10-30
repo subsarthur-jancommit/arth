@@ -23,6 +23,7 @@ export type {
   MarkStyle,
   Plate,
   PlateMark,
+  PlatePart,
   PlateText,
   TextRole,
   TextStyle,

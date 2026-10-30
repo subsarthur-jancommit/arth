@@ -1,0 +1,17 @@
+/*
+ * The flat plate's box, which the lit one is drawn in. As tall as its
+ * container, so a plate set to fill a cell (the home page's reel) still does.
+ */
+.root {
+  position: relative;
+  height: 100%;
+}
+
+/*
+ * Once the lit plate has drawn a frame, the flat one steps aside, by opacity
+ * alone: it keeps its box, which is what the lit plate measures, and its
+ * place in the accessibility tree.
+ */
+.root[data-plate-live] > svg {
+  opacity: 0;
+}

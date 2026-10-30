@@ -546,7 +546,19 @@ function build(): Plate {
   drawLabels(draw, SECTION_LABELS, section)
   draw.text('title', 80, 512, 'DENAH LANTAI 1')
   draw.text('title', 80, 1066, 'POTONGAN A-A')
-  return draw.done('konstruksi', [50, 50, 1080, 1050])
+  /*
+   * Where the plan's sheet ends and the section's begins: under the plan's
+   * title (its baseline is 512) and above the flue's cap (549). The lit model
+   * lays the first down and stands the second up behind it.
+   */
+  return draw.done(
+    'konstruksi',
+    [50, 50, 1080, 1050],
+    [
+      { id: 'plan', rect: [50, 50, 1080, 480] },
+      { id: 'section', rect: [50, 530, 1080, 570] },
+    ]
+  )
 }
 
 export const KONSTRUKSI_PLATE: Plate = build()

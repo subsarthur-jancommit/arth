@@ -153,12 +153,17 @@ export function sheet() {
     if (tip && from) mark('arrow', polygon(arrowhead(from, tip, size)))
   }
 
-  function done(unit: Plate['unit'], viewBox: Plate['viewBox']): Plate {
+  /** The plate, as one sheet unless it names its parts. */
+  function done(
+    unit: Plate['unit'],
+    viewBox: Plate['viewBox'],
+    parts: Plate['parts'] = [{ id: 'sheet', rect: viewBox }]
+  ): Plate {
     const merged: PlateMark[] = [...marks].map(([role, paths]) => ({
       role,
       d: paths.join(''),
     }))
-    return { unit, viewBox, marks: merged, texts }
+    return { unit, viewBox, marks: merged, texts, parts }
   }
 
   return { mark, text, arrow, done }
