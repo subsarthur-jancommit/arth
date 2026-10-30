@@ -7,7 +7,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { type ReactNode, useRef } from 'react'
 
 import { usePreferredReducedMotion } from '@/lib/hooks/use-sync-external'
-import { GridPattern } from '@/vault/magic/grid-pattern'
 
 import s from './passage.module.css'
 
@@ -16,8 +15,6 @@ import s from './passage.module.css'
  * plate at a time, then the section they open.
  *
  * Provenance: original work for this project. No third-party code copied.
- * The ground it draws is `vault/magic/grid-pattern` (Magic UI, MIT — see that
- * file's header).
  *
  * ## What it carries now — R4
  *
@@ -31,10 +28,19 @@ import s from './passage.module.css'
  *
  * | Fraction | Movement |
  * | --- | --- |
- * | 0 → 0.15 | The ground sharpens (`scale 1.5 → 1`), the frame lifts in |
+ * | 0 → 0.15 | The frame settles (`yPercent 8 → 0`, `scale 0.94 → 1`) |
  * | 0.15 → 0.75 | Each plate wipes up through the frame, its caption with it; the drawing inside counter-moves and settles from `scale 1.2` |
  * | 0.72 → 0.88 | The section title rises through its mask |
  * | 0.85 → 1 | The stage drifts up as the pin releases |
+ *
+ * ## No grid behind it any more
+ *
+ * The covers' reel sat on the site's twelve-column grid (`vault/magic/
+ * grid-pattern`). The plates are drawings on their own grid lines, and the
+ * field behind them only made them busier; it also ran under the passage's
+ * own words, where `e2e/contrast-situ.e2e.ts` found the eyebrow at 4.45:1 on
+ * a phone, one line of the grid under an 11px caption (CI #53, first run).
+ * The passage stands on the page's ground alone.
  *
  * ## The plates are content now, and read as content
  *
@@ -83,9 +89,6 @@ const SCREENS_PER_PLATE = 0.7
 
 /** Screens of scroll the passage spends before and after the plates. */
 const SCREENS_AROUND = 1.2
-
-/** How much coarser the grid starts than it ends. */
-const GROUND_ENTRY_SCALE = 1.5
 
 /** The title's travel through its mask, as a percentage of its own height. */
 const TITLE_RISE = 40
@@ -180,11 +183,10 @@ export function Passage({
 
       gsap.registerPlugin(ScrollTrigger)
 
-      const ground = element.querySelector(`.${s.ground}`)
       const title = element.querySelector(`.${s.title}`)
       const stage = element.querySelector(`.${s.stage}`)
       const frame = element.querySelector(`.${s.frame}`)
-      if (!ground || !title || !stage || !frame) return
+      if (!title || !stage || !frame) return
 
       const screens = SCREENS_AROUND + SCREENS_PER_PLATE * count
 
@@ -207,12 +209,6 @@ export function Passage({
       })
 
       timeline
-        .fromTo(
-          ground,
-          { scale: GROUND_ENTRY_SCALE, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 0.15 },
-          0
-        )
         /*
          * The frame settles, but is never hidden. The covers used to fade in
          * with the pin; a plate is the content of this section, and a reader
@@ -321,12 +317,6 @@ export function Passage({
           <style dangerouslySetInnerHTML={{ __html: NOSCRIPT_STYLE }} />
         </noscript>
       )}
-      {/*
-        The ground, across the whole pinned screen: the twelve-column grid
-        this site lays everything on, held still behind the reel.
-        `aria-hidden` and inert — `vault/magic/README.md` house rule 4.
-      */}
-      <GridPattern width={48} height={48} className={s.ground} />
       <div className={s.stage} data-passage-stage="">
         {count > 0 && (
           <div className={s.reel}>

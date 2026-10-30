@@ -28,22 +28,6 @@
   min-height: 100svh;
 }
 
-/*
- * The ground, across the whole section rather than behind the title. A
- * radial mask so the grid reads as a field the reel sits in, not a sheet of
- * graph paper cut off at the viewport's edge. The mask is static; only
- * `transform` and `opacity` are animated.
- */
-.ground {
-  transform-origin: center;
-  will-change: transform, opacity;
-  mask-image: radial-gradient(
-    ellipse 70% 65% at 50% 55%,
-    black 35%,
-    transparent 100%
-  );
-}
-
 .stage {
   position: relative;
   z-index: 1;
@@ -235,7 +219,6 @@
     max-height: 75svh;
   }
 
-  .ground,
   .frame,
   .title,
   .stage {
