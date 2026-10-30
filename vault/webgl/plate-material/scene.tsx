@@ -32,6 +32,7 @@ import {
   LinearMipmapLinearFilter,
   Matrix4,
   type Mesh,
+  type ShaderMaterial,
   type Texture,
   Vector2,
   Vector4,
@@ -106,6 +107,16 @@ function createUniforms(): PlateUniforms {
     uOpacity: { value: 1 },
     uScan: { value: -1 },
   }
+}
+
+/**
+ * A mesh's live uniforms, read through the mesh rather than from the state
+ * they were made in: three holds the same object, and writing it through a
+ * ref is the write the React Compiler allows.
+ */
+function uniformsOf(mesh: Mesh | null | undefined): PlateUniforms | null {
+  const material = mesh?.material as ShaderMaterial | undefined
+  return (material?.uniforms as PlateUniforms | undefined) ?? null
 }
 
 const clamp01 = (value: number) => Math.min(1, Math.max(0, value))
@@ -220,8 +231,11 @@ export function PlateMaterialScene({
   }, [plate, element, gl])
 
   useEffect(() => {
-    for (const set of uniforms) set.uTexture.value = texture
-  }, [texture, uniforms])
+    for (const mesh of meshes.current) {
+      const set = uniformsOf(mesh)
+      if (set) set.uTexture.value = texture
+    }
+  }, [texture])
 
   useFrame(() => {
     const svg = element.querySelector('svg')
@@ -257,12 +271,13 @@ export function PlateMaterialScene({
      * section rises along its far wall, so the model is seen being put
      * together rather than two sheets passing through each other.
      */
-    const turnOf = (part: PlatePart) =>
-      part.id === 'plan'
-        ? easeInOut(clamp01(assembly / STAGGER))
-        : part.id === 'section'
-          ? easeInOut(clamp01((assembly - (1 - STAGGER)) / STAGGER))
-          : turn
+    const turnOf = (part: PlatePart) => {
+      if (part.id === 'plan') return easeInOut(clamp01(assembly / STAGGER))
+      if (part.id === 'section') {
+        return easeInOut(clamp01((assembly - (1 - STAGGER)) / STAGGER))
+      }
+      return turn
+    }
 
     // The drawing inside the box, as `preserveAspectRatio` fits it.
     const [viewX, viewY, viewWidth, viewHeight] = plate.viewBox
@@ -291,8 +306,8 @@ export function PlateMaterialScene({
       : null
 
     parts.forEach((part, index) => {
-      const set = uniforms[index]
       const mesh = meshes.current[index]
+      const set = uniformsOf(mesh)
       if (!set || !mesh) return
       const [x, y, w, h] = part.rect
 

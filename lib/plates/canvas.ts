@@ -30,6 +30,9 @@ export interface PlateFaces {
   display: string
 }
 
+/** The canvas's word for each of a run's anchors. */
+const ALIGN = { start: 'left', middle: 'center', end: 'right' } as const
+
 const INK = (alpha = 1) => `rgba(255, 255, 255, ${alpha})`
 const GROUND = '#000'
 
@@ -42,12 +45,7 @@ function setText(
   const size = text.size ?? style.size
   const weight = text.weight ?? style.weight
   context.font = `${weight} ${size}px ${style.face === 'mono' ? faces.mono : faces.display}`
-  context.textAlign =
-    text.anchor === 'middle'
-      ? 'center'
-      : text.anchor === 'end'
-        ? 'right'
-        : 'left'
+  context.textAlign = ALIGN[text.anchor ?? 'start']
   context.textBaseline = text.central ? 'middle' : 'alphabetic'
   // Tracking is a recent addition to the 2D context; without it a label is
   // set a pixel tighter, which no reader of a lit model will miss.
