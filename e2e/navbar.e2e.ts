@@ -4,9 +4,8 @@ import { expect, test } from '@playwright/test'
 /**
  * The header as R4 built it (`docs/RENCANA-REVISI-F3.md`, the navbar plan):
  * the rule previews what is pointed at and comes back, the bar takes the
- * ground of the section under it, it steps aside going down and returns going
- * up — and not at all under reduced motion — and on a phone each route word
- * is its own size (E8.1) and Close fits its box (E8.5).
+ * ground of the section under it, and on a phone each route word is its own
+ * size (E8.1) and Close fits its box (E8.5).
  *
  * `/id/konstruksi` because it is the page with both grounds: a dark opening
  * on a light document.
@@ -29,9 +28,13 @@ async function offFrom(page: Page, name: string) {
     : Number.POSITIVE_INFINITY
 }
 
-/** Where the bar's top edge is: 0 in place, below 0 stepped aside. */
-async function barTop(page: Page) {
-  return (await page.getByRole('banner').boundingBox())?.y ?? 0
+/** Which ground the bar shows: 1 the ink one, 0 the paper one. */
+function barGround(page: Page) {
+  return page
+    .getByRole('banner')
+    .evaluate((bar) =>
+      getComputedStyle(bar).getPropertyValue('--header-dark').trim()
+    )
 }
 
 test.describe('the desktop bar', () => {
@@ -60,61 +63,26 @@ test.describe('the desktop bar', () => {
 
   test('the bar takes the ground of the section under it', async ({ page }) => {
     await page.goto(UNIT)
-    const bar = page.getByRole('banner')
 
-    // The opening is a dark band; the bar over it is dark too.
-    await expect(bar).toHaveAttribute('data-theme', 'dark', {
-      timeout: 15_000,
-    })
+    // The opening is a dark band; the bar over it takes the ink ground.
+    await expect(page.getByRole('banner')).toHaveAttribute(
+      'data-theme',
+      'dark',
+      {
+        timeout: 15_000,
+      }
+    )
+    await expect.poll(() => barGround(page)).toBe('1')
 
-    // Past the band, into the light document.
+    // Past the band, into the light document: the bar goes back to the
+    // page's own theme (no attribute of its own) and its paper ground.
     await page.evaluate(() => {
       const band = document.querySelector('main [data-theme="dark"]')
       if (!band) return
       const bottom = band.getBoundingClientRect().bottom + window.scrollY
       window.scrollTo(0, bottom + 240)
     })
-    await expect(bar).toHaveAttribute('data-theme', 'light', {
-      timeout: 10_000,
-    })
-  })
-
-  test('the bar steps aside going down and returns going up', async ({
-    page,
-    isMobile,
-  }) => {
-    test.skip(isMobile, 'wheel scrolling, on the desktop row')
-    await page.goto(UNIT)
-    await page.mouse.move(720, 640)
-
-    await page.mouse.wheel(0, 1600)
-    await expect.poll(() => barTop(page)).toBeLessThan(-10)
-
-    await page.mouse.wheel(0, -400)
-    await expect.poll(() => barTop(page)).toBe(0)
-  })
-
-  test('under reduced motion the bar stays where it is', async ({
-    browser,
-  }) => {
-    const context = await browser.newContext({
-      reducedMotion: 'reduce',
-      viewport: { width: 1440, height: 900 },
-    })
-    const page = await context.newPage()
-    try {
-      await page.goto(UNIT)
-      await page.waitForTimeout(1000)
-      await page.evaluate(() => window.scrollTo(0, 1600))
-      await page.waitForTimeout(800)
-      expect(await barTop(page)).toBe(0)
-      await expect(page.getByRole('banner')).not.toHaveAttribute(
-        'data-hidden',
-        ''
-      )
-    } finally {
-      await context.close()
-    }
+    await expect.poll(() => barGround(page), { timeout: 10_000 }).toBe('0')
   })
 })
 

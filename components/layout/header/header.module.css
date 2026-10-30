@@ -25,12 +25,6 @@
   --header-dark: 0;
 
   /*
-   * Stepping aside going down the page (R4): a transform, so nothing is laid
-   * out again. Only the transition lives here; `[data-hidden]` below moves it.
-   */
-  transition: transform var(--duration) var(--ease-out-expo);
-
-  /*
    * Three zones on desktop, with the nav on the centre — Tahap 87.
    *
    * This was `space-between` on four items, which is not a layout but a
@@ -93,18 +87,6 @@
 .header[data-theme='dark'],
 :where([data-theme='dark']) .header:not([data-theme]) {
   --header-dark: 1;
-}
-
-/*
- * Out of the way, and its fading edge with it: the ground reaches below the
- * bar (`::before`), so the bar travels its own height and that edge.
- */
-.header[data-hidden] {
-  transform: translate3d(0, calc(-100% - mobile-vw(16px)), 0);
-
-  @media (--desktop) {
-    transform: translate3d(0, calc(-100% - desktop-vw(24px)), 0);
-  }
 }
 
 /*
@@ -488,7 +470,22 @@
     display: inline-flex;
   }
 
+  /*
+   * INTENT, one state reached two ways (`MOTION-SPEC.md` §9): the pill fills,
+   * under a pointer and under the keyboard's focus alike, the way the home
+   * page's own call to action does. A ring alone would acknowledge a cursor
+   * and not a keyboard (`e2e/interaction-grammar.e2e.ts`).
+   */
+  @media (--hover) {
+    &:hover {
+      background-color: var(--color-secondary);
+      color: var(--color-primary);
+    }
+  }
+
   &:focus-visible {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
     outline: 2px solid var(--color-contrast);
     outline-offset: 4px;
   }
@@ -525,7 +522,6 @@
    */
   .navLink,
   .cta,
-  .header,
   .header::before,
   .header::after,
   :is(.nav:popover-open, .nav[data-open]) .navItem {

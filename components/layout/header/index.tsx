@@ -93,10 +93,6 @@ import s from './header.module.css'
  *   theme of the section under it, read by an `IntersectionObserver` on a
  *   one-pixel line through its middle, and crossfades its ground by opacity.
  *   No frame loop: an observer is called only when a section crosses.
- * - **It steps aside.** Going down the page, the bar slides up out of the
- *   way; going up, it comes back. It stays while the sheet is open, while
- *   focus is in it, near the top of the page, and under reduced motion. A
- *   passive scroll listener, not a second loop (CLAUDE.md #6).
  * - **The sheet's words are measured, each its own.** E8.1: every route word
  *   is set as large as its own widest word allows, measured in the face it is
  *   drawn in; the per-character estimate stays as the size before a script
@@ -110,6 +106,16 @@ import s from './header.module.css'
  * The plan's list named seven destinations; this keeps five, the R4 row's
  * number and the one the brief for this build asked for. Two more entries in
  * `ROUTE_LINKS` add Layanan and Pembayaran.
+ *
+ * Not built: the plan's "sembunyi dan muncul", the bar stepping aside going
+ * down the page. It was, and CI took it back out. This site anchors more to
+ * the bar than the bar itself: the journal's reading progress sits on its
+ * edge (`vault/motion/reading-progress`), sticky plates and the project
+ * spine sit under it, the search palette hangs from it, and tests open the
+ * menu and the routes after scrolling. With the bar gone those were left
+ * floating over text — `e2e/contrast-situ.e2e.ts` measured the journal's
+ * words at 1:1 under the stranded progress bar. It comes back once every
+ * element anchored to `--header-height` follows the bar too.
  */
 
 // In local dev, link straight to the Storybook dev server. In deployed builds,
@@ -175,9 +181,6 @@ const SHEET_TRACKING = -0.04
  * advance, and a glyph's ink can reach a little past it.
  */
 const FIT_MARGIN = 0.96
-
-/** Scroll smaller than this, in either direction, changes nothing. */
-const SCROLL_NOISE = 4
 
 /**
  * Whether this browser has the popover API.
@@ -530,50 +533,6 @@ export function Header() {
       observer?.disconnect()
       window.removeEventListener('resize', watch)
       header.removeAttribute('data-theme')
-    }
-  }, [])
-
-  /*
-   * The bar steps aside going down and comes back going up — R4.
-   *
-   * Read from the page's own scroll events, which Lenis fires as it moves the
-   * page, so this adds no frame loop. It never hides near the top, while the
-   * sheet is open, while focus is in the bar (a keyboard reader must see
-   * where they are), or for a reader who asked for reduced motion.
-   */
-  useEffect(() => {
-    const header = bar.current
-    const element = nav.current
-    if (!header || !element) return
-
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
-    let last = window.scrollY
-    const show = () => header.removeAttribute('data-hidden')
-    const onScroll = () => {
-      const y = window.scrollY
-      const delta = y - last
-      last = y
-      if (
-        reduced.matches ||
-        isOpen(element) ||
-        header.contains(document.activeElement) ||
-        y < header.offsetHeight * 2
-      ) {
-        show()
-        return
-      }
-      if (delta > SCROLL_NOISE) header.setAttribute('data-hidden', '')
-      else if (delta < -SCROLL_NOISE) show()
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true })
-    header.addEventListener('focusin', show)
-    element.addEventListener('beforetoggle', show)
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      header.removeEventListener('focusin', show)
-      element.removeEventListener('beforetoggle', show)
-      show()
     }
   }, [])
 
