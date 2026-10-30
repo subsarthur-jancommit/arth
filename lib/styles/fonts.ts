@@ -1,57 +1,48 @@
-import { Archivo, Geist, Geist_Mono, Instrument_Serif } from 'next/font/google'
+import { Geist_Mono, Inter, Onest } from 'next/font/google'
 
 /*
- * Four roles, three families — R4, chosen with the owner on 2026-10-24
- * (`docs/r4-arah-visual/README.md`, "Huruf dan pembagian halaman").
+ * Three roles, three families: R4, revised 2026-10-30.
  *
- * - `display` — Archivo. Headings. A grotesque with a width axis (62–125):
- *   the stage pages (home, unit openings, one client three units, contact)
- *   set it wide, the document pages set it at normal width, so both themes
- *   read as one site. It replaces Syne, which was chosen for an art-world
- *   portfolio this site no longer is.
- * - `text` — Geist. Running text, navigation and buttons: neutral, and easy
- *   to read at length.
- * - `serif` — Instrument Serif. Only the buyer's quote that opens a situation
- *   page: the one human voice among technical drawings.
- * - `mono` — Geist Mono, unchanged. Labels, captions, measurements: the
- *   working-drawing voice. Every site measured in `docs/TEARDOWN.md` pairs its
- *   display face with a mono that carries metadata.
+ * The owner asked for the type of the Framer website to be the example to
+ * follow. Measured on framer.com in the browser on 2026-10-30: headings in
+ * GT Walsheim Medium (500) tracked to -0.04em on a line-height near 1, and
+ * running text in Inter, with optical sizes, near -0.01em.
  *
- * All four are SIL Open Font License 1.1, read from each family's own
- * `OFL.txt` in github.com/google/fonts on 2026-10-24 (`docs/PROVENANCE.md`).
+ * - `display`: Onest. Headings. GT Walsheim is a commercial face, so it
+ *   cannot ship here; of seven open faces set beside it on Arthur's own
+ *   headline, Onest broke the lines where GT Walsheim did and drew the
+ *   closest a, e, j, k and y (`docs/DESIGN-SYSTEM.md` §2).
+ * - `text`: Inter, as on framer.com. Running text, navigation, labels and
+ *   buttons, and the buyer's quote in its italic. `axes: ['opsz']` brings
+ *   the optical size axis, so the browser draws Inter Display at heading
+ *   sizes and the text cut at reading sizes. The vendored taste skill
+ *   discourages Inter as a default and lets it through when the brief names
+ *   it (`.claude/skills/taste-skill/SKILL.md` §4.1); here the brief is the
+ *   site that uses it.
+ * - `mono`: Geist Mono, unchanged. The few places that set measurements or
+ *   codes in a monospace.
  *
- * No `weight` on the variable families (Archivo, Geist and Geist Mono ship a
- * variable `wght` axis): one file covers every weight the styles use, and
- * pinning weights would download a static file each. Instrument Serif ships a
- * single 400, so it names it. `axes: ['wdth']` asks for Archivo's width axis
- * on top of weight.
+ * All three are SIL Open Font License 1.1, read from each family's own
+ * `OFL.txt` in github.com/google/fonts on 2026-10-30 (`docs/PROVENANCE.md`).
  *
- * The serif is not preloaded: it appears on situation pages only, and a
- * preload would fetch it on every route.
+ * No `weight` on any of them: each ships a variable `wght` axis, so one file
+ * covers every weight the styles use, and pinning weights would download a
+ * static file each.
  */
-const display = Archivo({
+const display = Onest({
   subsets: ['latin'],
   display: 'swap',
-  axes: ['wdth'],
   variable: '--next-font-display',
   fallback: ['system-ui', 'Helvetica Neue', 'Arial', 'sans-serif'],
 })
 
-const text = Geist({
+const text = Inter({
   subsets: ['latin'],
   display: 'swap',
+  axes: ['opsz'],
+  style: ['normal', 'italic'],
   variable: '--next-font-text',
   fallback: ['system-ui', 'Helvetica Neue', 'Arial', 'sans-serif'],
-})
-
-const serif = Instrument_Serif({
-  subsets: ['latin'],
-  display: 'swap',
-  weight: '400',
-  style: ['normal', 'italic'],
-  preload: false,
-  variable: '--next-font-serif',
-  fallback: ['Georgia', 'Times New Roman', 'serif'],
 })
 
 const mono = Geist_Mono({
@@ -61,7 +52,7 @@ const mono = Geist_Mono({
   fallback: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
 })
 
-const fonts = [display, text, serif, mono]
+const fonts = [display, text, mono]
 const fontsVariable = fonts.map((font) => font.variable).join(' ')
 
 export { fontsVariable }

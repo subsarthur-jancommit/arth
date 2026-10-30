@@ -262,38 +262,69 @@ not from weight count.
 
 **Rules**
 
-- **Four roles, three families — R4, 2026-10-24.** Archivo for headings,
-  Geist for running text and navigation, Instrument Serif for the buyer's
-  quote only, Geist Mono for labels. Geist and Geist Mono are one family.
-  Chosen with the owner when the site became two registers: a dark stage
-  (home, unit openings, one client three units, contact) and light documents
-  (sides, situations, work pages, how we work, payment, policy). The record
-  is `docs/r4-arah-visual/README.md`.
+- **Three roles, three families: R4, revised 2026-10-30.** Onest for
+  headings; Inter for running text, navigation, labels, calls to action and
+  the buyer's quote in its italic; Geist Mono for the few measurements and
+  codes set in a monospace. The owner chose the Framer website as the
+  example to follow (2026-10-30). The first R4 set (Archivo, Geist,
+  Instrument Serif, Geist Mono, 2026-10-24) is recorded in
+  `docs/r4-arah-visual/README.md`.
 - **Two to three weights per family.** More than three is a smell. The scale
-  below uses 400 / 600 / 700.
-- **The mono is not decoration.** On Lusion, basement.studio, By-Kin and
-  darkroom the mono carries labels, captions, and metadata. It is what makes
-  a site read as engineered.
-- **A font axis is not animated.** Archivo's width axis sets the stage wide
-  and the documents at normal width, but changing `wdth` or `wght` on scroll
-  re-lays out the text every frame (`CLAUDE.md` #4). Motion morphs the plates,
-  not the type.
+  below uses 400 / 500.
+- **Labels follow the example.** Lusion, basement.studio, By-Kin and
+  darkroom set labels in a mono; framer.com sets them in Inter at medium
+  weight, and that is the site the owner chose. The mono stays where a value
+  is read as a value: measurements, codes, the command palette's paths.
+- **A font axis is not animated.** Inter's optical size follows the font size
+  on its own, but changing `opsz` or `wght` on scroll re-lays out the text
+  every frame (`CLAUDE.md` #4). Motion morphs the plates, not the type.
+- **No hyphen splits a word.** `hyphens: auto` is gone from the two display
+  blocks that used it: the owner reads a word split by a hyphen at a line end
+  as the mark of generated text. A word too long for its line still breaks,
+  only where it must (`overflow-wrap`).
 
-### Why Archivo, Geist and Instrument Serif — R4
+### Why Onest and Inter: R4, revised 2026-10-30
+
+The owner asked for the Framer website's type to be the example. Read in the
+browser on framer.com on 2026-10-30: headings in **GT Walsheim Medium**
+(weight 500), tracked to −0.04em on a line-height near 1; running text in
+**Inter**, with optical sizes, near −0.01em; labels and buttons in Inter at
+medium weight.
+
+GT Walsheim is a commercial face (Grilli Type), so it cannot ship here. Seven
+open faces were set beside it on Arthur's own headline in headless Chrome:
+Inter Display, Figtree, Plus Jakarta Sans, Albert Sans, Onest, Hanken Grotesk
+and Urbanist. **Onest** broke the lines where GT Walsheim did, at both sizes
+tried, and looked closest at a, e, j, k and y. Plus Jakarta Sans came next and
+set wider.
+
+**Inter** is what framer.com sets its text in. The vendored taste skill
+discourages Inter as a default and lets it through when the brief names it
+(`.claude/skills/taste-skill/SKILL.md` §4.1); here the brief is the site that
+uses it. Its optical size axis draws Inter Display at heading sizes, which is
+how the buyer's quote is set: Inter in its true italic, since Onest has none.
+
+Two things from framer.com are not copied. Its Inter build turns on character
+variants (a single-storey a, a tailed l, round quotes); the Inter that
+`next/font/google` serves does not carry them, which was checked by rendering
+both settings. Bringing them back means committing Inter's own font files,
+which this repository does not do yet. And its colours are its own: Arthur
+stays monochrome.
+
+**Instrument Serif** left with this revision. It is one of the two display
+serifs the taste skill bans as an AI tell.
+
+### Why Archivo, Geist and Instrument Serif: R4, 2026-10-24 to 2026-10-30
 
 **Archivo** is a grotesque drawn for headlines, with a width axis from 62 to 125. Wide, it reads as a slide in a pitch; at normal width it heads a
-document. One family across both registers is what keeps the stage and the
-documents one site.
+document. One family across both registers was meant to keep the stage and
+the documents one site.
 
-**Geist** carries prose because Archivo is a heading face first, and the
+**Geist** carried prose because Archivo is a heading face first, and the
 document pages are read at length.
 
-**Instrument Serif**, italic, appears once per situation page: the buyer's
-own sentence, the one human voice among technical drawings. It is not
-preloaded, since no other page uses it.
-
-All four are SIL Open Font License 1.1, verified from each family's
-`OFL.txt` (`docs/PROVENANCE.md` §2).
+**Instrument Serif**, italic, appeared once per situation page: the buyer's
+own sentence. It was not preloaded, since no other page used it.
 
 ### Why Syne, until R4
 
@@ -307,9 +338,9 @@ it. Geist is a fine face, but it is a neutral technology sans — and
 neutrality is what this site cannot afford once the palette gives up its
 accent. With no colour carrying identity, the typography has to.
 
-Archivo, Geist and Geist Mono ship a variable `wght` axis, so `fonts.ts`
+Onest, Inter and Geist Mono ship a variable `wght` axis, so `fonts.ts`
 declares no explicit `weight` for them: one file per family covers every
-weight the styles use. Instrument Serif ships a single 400 and names it.
+weight the styles use.
 
 ### The scale
 
@@ -317,29 +348,29 @@ From `lib/styles/typography.ts` (mobile → desktop):
 
 | Style     | Family  | Size     | Weight | Line-height | Tracking |
 | --------- | ------- | -------- | ------ | ----------- | -------- |
-| `h1`      | display | 38 → 120 | 700    | 92%         | −0.03em  |
-| `h2`      | display | 32 → 48  | 600    | 96%         | −0.02em  |
-| `h3`      | display | 24 → 32  | 600    | 105%        | −0.015em |
-| `quote`   | serif   | 28 → 50  | 400    | 112%        | −0.005em |
+| `h1`      | display | 38 → 120 | 500    | 100%        | −0.04em  |
+| `h2`      | display | 32 → 48  | 500    | 110%        | −0.04em  |
+| `h3`      | display | 24 → 32  | 500    | 115%        | −0.03em  |
+| `quote`   | text    | 26 → 44  | 400    | 115%        | −0.02em  |
 | `p-big`   | text    | 16 → 20  | 400    | 135%        | −0.01em  |
-| `p`       | text    | 16 → 18  | 400    | 150% → 145% | 0em      |
-| `caption` | mono    | 11 → 12  | 400    | 125% → 120% | −0.01em  |
-| `cta`     | mono    | 12 → 14  | 400    | 100%        | −0.01em  |
-| `link`    | mono    | 12 → 14  | 400    | 125% → 120% | −0.01em  |
+| `p`       | text    | 16 → 18  | 400    | 150% → 145% | −0.01em  |
+| `caption` | text    | 11 → 12  | 500    | 125% → 120% | 0em      |
+| `cta`     | text    | 12 → 14  | 500    | 100%        | −0.01em  |
+| `link`    | text    | 12 → 14  | 500    | 125% → 120% | −0.01em  |
 
-The split is the design: **display carries headings, text carries what is
-read at length, mono carries what is scanned** (captions, labels, calls to
-action), and the serif carries one voice, the buyer's.
+The split is the design: **display carries headings, text carries
+everything a reader reads or scans** (prose, labels, calls to action, and the
+buyer's quote in its italic), and the mono carries measurements and codes.
 
 Three details are deliberate and should not be "fixed":
 
-- **Display line-height below 100%.** Sub-100% leading on large type is the
-  signature of considered typography. Default 1.5 on a 120px heading looks
-  like a document, not a design. Syne sat at 85%; Archivo sits at 92%, the
-  value the R4 mockups were drawn with, to be judged on the preview.
-- **Negative tracking that scales with size.** −0.04em at h1, −0.01em at
-  body. Large type needs tightening; small type needs air. A single global
-  letter-spacing is wrong at both ends.
+- **Display line-height at 100%.** framer.com sets its headings on a
+  line-height of 1. Default 1.5 on a 120px heading looks like a document,
+  not a design. Syne sat at 85% and Archivo at 92%; the value is judged on
+  the preview.
+- **Negative tracking that scales with size.** −0.04em at h1 and h2, −0.01em
+  at body, 0 on the smallest labels. Large type needs tightening; small type
+  needs air. A single global letter-spacing is wrong at both ends.
 - **`caption` is 11px on mobile, not 8px.** The previous scale shipped 8px
   and carried a written flag saying it was below any readable floor. A flag
   is not a fix. 11px still reads as metadata, and is legible.

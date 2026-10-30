@@ -28,7 +28,6 @@
   --font-*: initial;
   --font-display: var(--next-font-display);
 	--font-text: var(--next-font-text);
-	--font-serif: var(--next-font-serif);
 	--font-mono: var(--next-font-mono);
 }
 
@@ -49,34 +48,34 @@
 @utility h1 {
   font-family: var(--next-font-display);
 	font-style: normal;
-	font-weight: 700;
-	line-height: 92%;
-	letter-spacing: -0.03em;
+	font-weight: 500;
+	line-height: 100%;
+	letter-spacing: -0.04em;
 	font-size: clamp(38px, calc(9.127px + 7.7vw), 156.958px);
 }
 @utility h2 {
   font-family: var(--next-font-display);
 	font-style: normal;
-	font-weight: 600;
-	line-height: 96%;
-	letter-spacing: -0.02em;
+	font-weight: 500;
+	line-height: 110%;
+	letter-spacing: -0.04em;
 	font-size: clamp(32px, calc(26.366px + 1.502vw), 55.211px);
 }
 @utility h3 {
   font-family: var(--next-font-display);
 	font-style: normal;
-	font-weight: 600;
-	line-height: 105%;
-	letter-spacing: -0.015em;
+	font-weight: 500;
+	line-height: 115%;
+	letter-spacing: -0.03em;
 	font-size: clamp(24px, calc(21.183px + 0.751vw), 35.606px);
 }
 @utility quote {
-  font-family: var(--next-font-serif);
+  font-family: var(--next-font-text);
 	font-style: italic;
 	font-weight: 400;
-	line-height: 112%;
-	letter-spacing: -0.005em;
-	font-size: clamp(28px, calc(20.254px + 2.066vw), 59.915px);
+	line-height: 115%;
+	letter-spacing: -0.02em;
+	font-size: clamp(26px, calc(19.662px + 1.69vw), 52.113px);
 }
 @utility p-big {
   font-family: var(--next-font-text);
@@ -92,30 +91,30 @@
 	font-weight: 400;
 	line-height: 150%;
 	@variant dt { line-height: 145%; }
-	letter-spacing: 0em;
+	letter-spacing: -0.01em;
 	font-size: clamp(16px, calc(15.296px + 0.188vw), 18.901px);
 }
 @utility caption {
-  font-family: var(--next-font-mono);
+  font-family: var(--next-font-text);
 	font-style: normal;
-	font-weight: 400;
+	font-weight: 500;
 	line-height: 125%;
 	@variant dt { line-height: 120%; }
-	letter-spacing: -0.01em;
+	letter-spacing: 0em;
 	font-size: clamp(11px, calc(10.648px + 0.094vw), 12.451px);
 }
 @utility cta {
-  font-family: var(--next-font-mono);
+  font-family: var(--next-font-text);
 	font-style: normal;
-	font-weight: 400;
+	font-weight: 500;
 	line-height: 100%;
 	letter-spacing: -0.01em;
 	font-size: clamp(12px, calc(11.296px + 0.188vw), 14.901px);
 }
 @utility link {
-  font-family: var(--next-font-mono);
+  font-family: var(--next-font-text);
 	font-style: normal;
-	font-weight: 400;
+	font-weight: 500;
 	line-height: 125%;
 	@variant dt { line-height: 120%; }
 	letter-spacing: -0.01em;

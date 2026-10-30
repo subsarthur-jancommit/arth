@@ -158,8 +158,12 @@
   line-height: 0.95;
   letter-spacing: -0.02em;
   text-wrap: balance;
+  /*
+   * No `hyphens: auto` since R4 (2026-10-30): the owner reads a word split by
+   * a hyphen at a line end as the mark of generated text. A word too long for
+   * its line still breaks, only where it must (`overflow-wrap`).
+   */
   overflow-wrap: break-word;
-  hyphens: auto;
 
   @media (--desktop) {
     font-size: clamp(56px, 7.2vw, 128px);
