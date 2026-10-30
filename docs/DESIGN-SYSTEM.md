@@ -147,13 +147,13 @@ theme no page applied, and with no chromatic accent it described nothing.
 The two themes are now two registers (`docs/r4-arah-visual/README.md`):
 
 - **Stage, `dark`:** the home page, the opening of each unit page (a dark
-  band around `UnitHero`; the rest of the page stays light), one client three
-  units, and contact. The unit name on the band fills its line, fitted by the
-  global nameplate; the heading face has no width axis since the type after
-  framer.com (§2).
+  band around `UnitHero`; the rest of the page stays light), Layanan
+  (`/layanan`), and Kontak. The unit name on the band is fitted to its line
+  by the global nameplate; the heading face has no width axis since the type
+  after framer.com (§2).
 - **Documents, `light`:** the unit page below its opening, the six reader
-  pages, situations, work pages, how we work, how we are paid, policy, and
-  print.
+  pages, situations, work pages, Metode kerja (`/metode`), Pembayaran
+  (`/pembayaran`), Kebijakan, and print.
 
 A section can switch register on its own: `data-theme` on any element
 re-resolves the colour tokens beneath it, which is how the unit opening is
