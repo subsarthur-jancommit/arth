@@ -495,7 +495,7 @@ export function Header() {
 
     const crossing = new Set<Element>()
     const apply = () => {
-      const under = sections.filter((section) => crossing.has(section)).at(-1)
+      const under = sections.findLast((section) => crossing.has(section))
       const theme = under?.getAttribute('data-theme')
       if (theme === 'dark' || theme === 'light') {
         header.setAttribute('data-theme', theme)
