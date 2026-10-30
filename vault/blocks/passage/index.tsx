@@ -12,63 +12,50 @@ import { GridPattern } from '@/vault/magic/grid-pattern'
 import s from './passage.module.css'
 
 /**
- * Passage — the way the home page's work arrives: a pinned reel of the work
- * itself, then the section's own title.
+ * Passage — the home page's pinned path: the units' working drawings, one
+ * plate at a time, then the section they open.
  *
  * Provenance: original work for this project. No third-party code copied.
  * The ground it draws is `vault/magic/grid-pattern` (Magic UI, MIT — see that
  * file's header).
  *
- * ## What it used to be, and what was wrong with it on screen
+ * ## What it carries now — R4
  *
- * Tahap 49 built this as two and a half screens of scroll in which "the
- * studio's twelve-column grid sharpens" and the section title rises. Looked
- * at in the fork, frame by frame at 1440×900, it was **two and a half screens
- * of dark page with a strip of ticks across the middle.** The grid was
- * `position: absolute; inset: 0` inside the stage — and the stage was only as
- * tall as the title, so the ground the whole passage was about covered about
- * a hundred pixels. The narrative its doc comment argued for never reached a
- * reader. Then the pin released onto a screen-tall box with the title in its
- * middle, and the first card arrived five hundred pixels later.
- *
- * ## What it is now
- *
- * The page still has no spare words — `CLAUDE.md` forbids inventing content,
- * and every sentence on the home page has a home. But it has **pictures**:
- * the featured works' covers. So the passage becomes a reel of them. One
- * plate at a time wipes up through a fixed frame, its caption and index
- * change with it, the studio's grid holds still behind the whole screen, and
- * only then does the section's title rise and the pin let go — straight onto
- * the grid of the same works, now at their own sizes and one click away.
+ * Tahap 49 built this as a reel of the featured works' covers, and V1 of
+ * `docs/RENCANA-KONTEKS-V2.md` took it off the page with them: those works
+ * were never Arthur's (decision D1). R4 brings it back with what the home
+ * page was missing in their place, the three plates of direction B
+ * (`docs/r4-arah-visual/`): Konstruksi's plan and section of a café,
+ * Teknologi's order flow for it, Peekabo's campaign board for its opening.
+ * One café, three units, which is the order the unit list below reads in.
  *
  * | Fraction | Movement |
  * | --- | --- |
  * | 0 → 0.15 | The ground sharpens (`scale 1.5 → 1`), the frame lifts in |
- * | 0.15 → 0.75 | Each plate wipes up through the frame; the image inside counter-moves and settles from `scale 1.2`; index and caption roll to match |
+ * | 0.15 → 0.75 | Each plate wipes up through the frame, its caption with it; the drawing inside counter-moves and settles from `scale 1.2` |
  * | 0.72 → 0.88 | The section title rises through its mask |
  * | 0.85 → 1 | The stage drifts up as the pin releases |
  *
- * ## The reel is a preview, and it says so to assistive technology
+ * ## The plates are content now, and read as content
  *
- * `aria-hidden`, and nothing in it is focusable. Every plate is a duplicate
- * of a card that follows immediately in `ProjectGrid`, which carries the
- * link, the real alt text and the heading; announcing the same four works
- * twice in a row would be noise, and a link inside a pinned layer is a focus
- * target that can sit off screen. The accessible page is unchanged: title,
- * then the grid.
+ * The reel used to be `aria-hidden`: every cover in it was repeated by the
+ * card below it. A plate is not repeated anywhere on this page, so each one
+ * is a `<figure>`: the drawing names itself (`vault/blocks/plate`, `role="img"`
+ * with a title and a description) and its caption says which unit, which
+ * work and which drawing. A screen reader meets the three figures in order
+ * whether or not the reel is moving. Nothing in the reel is focusable, so
+ * no focus target can sit in a parked plate.
  *
- * ## Resting state — without JavaScript, and under reduced motion
+ * ## Whole without motion, and whole without JavaScript
  *
- * Without JavaScript the reel rests on its first plate: index `01`, the first
- * work's cover and caption, the title below. A readable composition rather
- * than a blank, because the stylesheet — not a tween — puts the other plates
- * below the frame.
- *
- * Under reduced motion the reel is not drawn at all and the passage is only
- * as tall as its title: no ScrollTrigger is created, so no pin spacer exists,
- * and a reader who asked for stillness does not get a screen of preview
- * before the work. That is `e2e/journey.e2e.ts`' "reduced motion adds no
- * empty scroll".
+ * A reel that rests on its first plate hides the other two, so the reel is
+ * only a reel when it can move. Under reduced motion the stylesheet lays the
+ * figures out one after another, every plate in the flow and fully visible,
+ * and no ScrollTrigger is created, so no pin spacer adds empty scroll
+ * (`e2e/journey.e2e.ts`). Without JavaScript the same unwrap comes from a
+ * `<noscript>` rule, the idiom `vault/motion/horizontal` uses, for the reason
+ * `vault/motion/curtain` records: `@media (scripting: none)` is not yet
+ * universal.
  *
  * ## This is not scroll hijacking
  *
@@ -77,18 +64,17 @@ import s from './passage.module.css'
  * is pinned is **what is visible**, not **how fast the page scrolls**.
  */
 
-/** A work as the reel shows it. */
+/** A plate as the reel shows it. */
 export interface PassagePlate {
-  /** Stable key — the work's id. */
+  /** Stable key: the unit. */
   id: string
+  /** The unit's name, over the caption. */
+  unit: string
+  /** The work the drawing belongs to. */
   title: string
-  /** One line of facts, already joined: engagement · client · year. */
-  meta?: string | undefined
-  /**
-   * The cover, rendered by the caller. Decorative here — the reel is
-   * `aria-hidden` — so the caller passes `alt=""`; the card below carries
-   * the real description.
-   */
+  /** Which drawing it is. */
+  meta: string
+  /** The drawing, which carries its own accessible name. */
   media: ReactNode
 }
 
@@ -104,7 +90,7 @@ const GROUND_ENTRY_SCALE = 1.5
 /** The title's travel through its mask, as a percentage of its own height. */
 const TITLE_RISE = 40
 
-/** How far into the frame an image starts, and how much larger. */
+/** How far into the frame a drawing starts, and how much larger. */
 const PLATE_COUNTER = -30
 const PLATE_ENTRY_SCALE = 1.2
 
@@ -114,18 +100,29 @@ const NO_PLATES: readonly PassagePlate[] = []
 /** A reel of one is a still, not a reel. */
 const REEL_MINIMUM = 2
 
-/**
- * The most plates the reel runs through. The pin grows by
- * `SCREENS_PER_PLATE` for each, and the grid right after shows every featured
- * work anyway; past six the reel stops previewing and starts withholding the
- * page. Measured: six plates pin for 5.4 screens.
- */
+/** Three units, three plates; past six the pin would start withholding the page. */
 const REEL_MAXIMUM = 6
 
 /** Index as the reel prints it: `01`, `02` … */
 function index(value: number) {
   return String(value).padStart(2, '0')
 }
+
+/**
+ * The reduced-motion unwrap, for a reader with scripting off.
+ *
+ * Static and self-authored, with no interpolation, the same terms as the
+ * `<noscript>` rules in `vault/motion/horizontal` and `vault/motion/curtain`.
+ * It targets the markers below rather than the module's hashed class names,
+ * which a string written here cannot know. Keep it in step with the
+ * stylesheet's `@media (--reduced-motion)` block.
+ */
+const NOSCRIPT_STYLE =
+  '[data-passage]{min-height:auto!important}' +
+  '[data-passage-stage]{padding-block:0!important}' +
+  '[data-passage-frame]{display:grid!important;gap:calc(var(--section-lead) * 2)!important;height:auto!important;overflow:visible!important}' +
+  '[data-passage-plate]{position:relative!important;inset:auto!important;transform:none!important}' +
+  '[data-passage-drawing]>svg{height:auto!important;max-height:75svh!important}'
 
 interface PassageProps {
   /**
@@ -136,14 +133,21 @@ interface PassageProps {
    * page owns the words; this block owns only when they arrive.
    */
   children: ReactNode
-  /** The works the reel runs through. Fewer than two draws no reel. */
+  /** The plates the reel runs through. Fewer than two draws no reel. */
   plates?: readonly PassagePlate[] | undefined
+  /**
+   * One line under the frame that holds for every plate: that each is a
+   * possible sequence, not a project done. Said once rather than three times
+   * to a screen reader.
+   */
+  note?: ReactNode | undefined
   className?: string | undefined
 }
 
 export function Passage({
   children,
   plates = NO_PLATES,
+  note,
   className,
 }: PassageProps) {
   const root = useRef<HTMLElement | null>(null)
@@ -168,11 +172,9 @@ export function Passage({
         window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
       /*
-       * No reel, no pin. A passage with nothing to run through used to pin
-       * for the Tahap 49 two and a half screens — and since the fork it is
-       * only as tall as its title, so that would hold a title-high strip
-       * under the fixed header while the reader scrolled past nothing. Found
-       * by review, not on screen: every seeded dataset has four covers.
+       * No reel, no pin. A passage with nothing to run through would hold a
+       * title-high strip under the fixed header while the reader scrolled
+       * past nothing.
        */
       if (reduced || count === 0) return
 
@@ -181,7 +183,8 @@ export function Passage({
       const ground = element.querySelector(`.${s.ground}`)
       const title = element.querySelector(`.${s.title}`)
       const stage = element.querySelector(`.${s.stage}`)
-      if (!ground || !title || !stage) return
+      const frame = element.querySelector(`.${s.frame}`)
+      if (!ground || !title || !stage || !frame) return
 
       const screens = SCREENS_AROUND + SCREENS_PER_PLATE * count
 
@@ -203,84 +206,63 @@ export function Passage({
         },
       })
 
-      timeline.fromTo(
-        ground,
-        { scale: GROUND_ENTRY_SCALE, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.15 },
-        0
-      )
+      timeline
+        .fromTo(
+          ground,
+          { scale: GROUND_ENTRY_SCALE, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.15 },
+          0
+        )
+        /*
+         * The frame settles, but is never hidden. The covers used to fade in
+         * with the pin; a plate is the content of this section, and a reader
+         * arriving from the hero should meet the first drawing rather than a
+         * screen of empty grid.
+         */
+        .fromTo(
+          frame,
+          { yPercent: 8, scale: 0.94 },
+          { yPercent: 0, scale: 1, duration: 0.15 },
+          0
+        )
 
-      const frame = element.querySelector(`.${s.frame}`)
+      /*
+       * The plates. The first rests in the frame already; each one after it
+       * wipes up over the last, on a ground of its own so it covers what it
+       * replaces, while its drawing moves the other way and settles from a
+       * larger scale: two transforms in opposite directions, which is what
+       * makes a flat wipe read as depth.
+       */
       const plateNodes = [...element.querySelectorAll(`.${s.plate}`)]
-      const mediaNodes = [...element.querySelectorAll(`.${s.plateMedia}`)]
-      const countStrip = element.querySelector(`.${s.countStrip}`)
-      const captionStrip = element.querySelector(`.${s.captionStrip}`)
+      const drawingNodes = [...element.querySelectorAll(`.${s.drawing}`)]
+      const span = 0.6 / (count - 1)
+      for (let i = 1; i < count; i += 1) {
+        const at = 0.15 + span * (i - 1)
+        const plate = plateNodes[i]
+        const drawing = drawingNodes[i]
+        if (!plate || !drawing) continue
 
-      const indexNode = element.querySelector(`.${s.count}`)
-      const captions = element.querySelector(`.${s.captions}`)
-
-      if (frame && countStrip && captionStrip && indexNode && captions) {
         timeline
-          .fromTo(
-            frame,
-            { yPercent: 8, scale: 0.94, opacity: 0 },
-            { yPercent: 0, scale: 1, opacity: 1, duration: 0.15 },
-            0
-          )
           /*
-           * The index and the caption arrive with the frame they describe.
-           * They used to sit at full opacity from the first frame, so a
-           * reader approaching the passage saw "01 / 04" and a title beside
-           * an empty screen.
+           * `y: 0` on both ends, and it is load-bearing. At rest the
+           * stylesheet parks this plate with `translateY(101%)`; GSAP reads
+           * that computed matrix back as a **pixel** `y`, and a tween of
+           * `yPercent` alone would stack on top of it — the plate would
+           * travel from 202% to 101% and never enter the frame. Measured in
+           * Tahap 49: the first build showed one cover under every index.
            */
           .fromTo(
-            [indexNode, captions],
-            { opacity: 0 },
-            { opacity: 1, duration: 0.15 },
-            0
+            plate,
+            { y: 0, yPercent: 101 },
+            { y: 0, yPercent: 0, duration: span * 0.85 },
+            at
           )
-
-        /*
-         * The plates. The first rests in the frame already; each one after
-         * it wipes up over the last while the picture inside moves the other
-         * way and settles from a larger scale — two transforms in opposite
-         * directions, which is what makes a flat wipe read as depth.
-         */
-        const span = 0.6 / (count - 1)
-        for (let i = 1; i < count; i += 1) {
-          const at = 0.15 + span * (i - 1)
-          const plate = plateNodes[i]
-          const media = mediaNodes[i]
-          if (!plate || !media) continue
-
-          timeline
-            /*
-             * `y: 0` on both ends, and it is load-bearing. At rest the
-             * stylesheet parks this plate with `translateY(101%)`; GSAP reads
-             * that computed matrix back as a **pixel** `y`, and a tween of
-             * `yPercent` alone would stack on top of it — the plate would
-             * travel from 202% to 101% and never enter the frame. Measured:
-             * the first build showed the first work's cover under all four
-             * indices.
-             */
-            .fromTo(
-              plate,
-              { y: 0, yPercent: 101 },
-              { y: 0, yPercent: 0, duration: span * 0.85 },
-              at
-            )
-            .fromTo(
-              media,
-              { yPercent: PLATE_COUNTER, scale: PLATE_ENTRY_SCALE },
-              { yPercent: 0, scale: 1, duration: span * 0.85 },
-              at
-            )
-            .to(
-              [countStrip, captionStrip],
-              { yPercent: (-100 * i) / count, duration: span * 0.5 },
-              at + span * 0.35
-            )
-        }
+          .fromTo(
+            drawing,
+            { yPercent: PLATE_COUNTER, scale: PLATE_ENTRY_SCALE },
+            { yPercent: 0, scale: 1, duration: span * 0.85 },
+            at
+          )
       }
 
       timeline
@@ -324,6 +306,7 @@ export function Passage({
        * name rather than point at an anonymous element.
        */
       data-epic="arth-passage"
+      data-passage=""
       /*
        * The heading inside is announced by this moment rather than by the
        * reveal contract: a container reveal and a scrubbed passage would be
@@ -332,54 +315,54 @@ export function Passage({
        */
       data-reveal-exempt=""
     >
+      {count > 0 && (
+        <noscript>
+          {/* oxlint-disable-next-line react/no-danger -- a static, self-authored string with no interpolation; `style-src` carries 'unsafe-inline' as the documented base policy (lib/integrations/csp.ts), and the rule must reach markup that no script will unwrap */}
+          <style dangerouslySetInnerHTML={{ __html: NOSCRIPT_STYLE }} />
+        </noscript>
+      )}
       {/*
         The ground, across the whole pinned screen: the twelve-column grid
         this site lays everything on, held still behind the reel.
         `aria-hidden` and inert — `vault/magic/README.md` house rule 4.
       */}
       <GridPattern width={48} height={48} className={s.ground} />
-      <div className={s.stage}>
+      <div className={s.stage} data-passage-stage="">
         {count > 0 && (
-          <div className={s.reel} aria-hidden="true">
-            <div className={cn('h1', s.count)}>
-              <div className={s.countMask}>
-                <div className={s.countStrip}>
-                  {reel.map((plate, position) => (
-                    <span key={plate.id} className={s.countValue}>
-                      {index(position + 1)}
+          <div className={s.reel}>
+            <div className={s.frame} data-passage-frame="">
+              {reel.map((plate, position) => (
+                <figure
+                  key={plate.id}
+                  className={s.plate}
+                  data-passage-plate=""
+                >
+                  <div className={s.drawing} data-passage-drawing="">
+                    {plate.media}
+                  </div>
+                  <figcaption className={s.caption}>
+                    <span className={s.count}>
+                      <span className={cn('h2', s.countValue)}>
+                        {index(position + 1)}
+                      </span>
+                      <span className={cn('caption', s.countTotal)}>
+                        / {index(count)}
+                      </span>
                     </span>
-                  ))}
-                </div>
-              </div>
-              <span className={cn('caption', s.countTotal)}>
-                / {index(count)}
-              </span>
-            </div>
-
-            <div className={s.frame}>
-              {reel.map((plate) => (
-                <div key={plate.id} className={s.plate}>
-                  <div className={s.plateMedia}>{plate.media}</div>
-                </div>
-              ))}
-            </div>
-
-            <div className={s.captions}>
-              <div className={s.captionStrip}>
-                {reel.map((plate) => (
-                  <div key={plate.id} className={s.caption}>
+                    <span className={cn('caption', s.captionUnit)}>
+                      {plate.unit}
+                    </span>
                     <span className={cn('p-big', s.captionTitle)}>
                       {plate.title}
                     </span>
-                    {plate.meta && (
-                      <span className={cn('caption', s.captionMeta)}>
-                        {plate.meta}
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
+                    <span className={cn('caption', s.captionMeta)}>
+                      {plate.meta}
+                    </span>
+                  </figcaption>
+                </figure>
+              ))}
             </div>
+            {note ? <p className={cn('caption', s.note)}>{note}</p> : null}
           </div>
         )}
         <div className={s.mask}>

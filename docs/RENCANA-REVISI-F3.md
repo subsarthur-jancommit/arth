@@ -300,6 +300,14 @@ kalimat "Rangkaian yang mungkin, bukan proyek yang pernah kami kerjakan."
 Pelat tampil di pita gelap pembuka setiap halaman unit. Lintasan beranda dan
 material WebGL menyusul di PR sendiri.
 
+**Lintasan beranda (E1.2), 30 Oktober 2026.** `vault/blocks/passage` kembali ke
+beranda, sesudah hero dan sebelum daftar unit, dengan tiga pelat itu: satu
+pelat per layar gulir, keterangannya ikut masuk, lalu judul "Satu kafe,
+dikerjakan tiga unit." naik dan pin lepas ke daftar unit. Setiap pelat kini
+`figure` yang terbaca pembaca layar. Di bawah reduced motion dan tanpa
+JavaScript ketiga pelat tersusun berurutan, semuanya tampil, tanpa pin. Uji
+`journey` untuk pin dan reduced motion dihidupkan lagi.
+
 #### Navbar interaktif: rencana, belum dieksekusi
 
 Pemilik, 30 Oktober 2026: "untuk navbar tulis rencana (untuk nanti di

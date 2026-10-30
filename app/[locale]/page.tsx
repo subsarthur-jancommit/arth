@@ -29,6 +29,8 @@ import {
 import { ContactBlock } from '@/vault/blocks/contact-block'
 import { Hero } from '@/vault/blocks/hero'
 import { LatestWriting } from '@/vault/blocks/latest-writing'
+import { Passage } from '@/vault/blocks/passage'
+import { Plate } from '@/vault/blocks/plate'
 import { PracticeList } from '@/vault/blocks/practice-list'
 import { SituationLinks } from '@/vault/blocks/situation-links'
 import { StudioNote } from '@/vault/blocks/studio-note'
@@ -97,17 +99,19 @@ async function fetchHomeForRequest(locale: Locale) {
  * D1): its works, clients, and photographs were never Arthur's (Aturan isi
  * 13). The page now reads as the plan's home: the umbrella header, the three
  * units, the reader's situation, the umbrella's labelled paragraphs, and the
- * first step. The drawing plates of R4 bring a pinned passage back.
+ * first step. R4's working drawings bring the pinned passage back, ahead of
+ * the units it introduces: one café, drawn by each of the three.
  */
 export default async function Home() {
   const requested = await localeRootParam()
   const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
 
-  const [{ settings, units, isDraftMode }, t, tUnit, latest] =
+  const [{ settings, units, isDraftMode }, t, tUnit, tPlate, latest] =
     await Promise.all([
       fetchHomeForRequest(locale),
       getTranslations('home'),
       getTranslations('unit'),
+      getTranslations('plates'),
       latestWriting(locale),
     ])
 
@@ -193,6 +197,26 @@ export default async function Home() {
     )
   const opening = settings?.opening ?? null
 
+  /*
+   * The pinned path (R4, E1.2): each unit's working drawing, in the order the
+   * unit list reads. A unit the list leaves out (no approved name or summary)
+   * is left out here too, so no plate stands for a unit the page does not
+   * open.
+   */
+  const plates = unitEntries.map((unit) => ({
+    id: unit.value,
+    unit: unit.label,
+    title: tPlate(`${unit.value}.job`),
+    meta: tPlate(`${unit.value}.drawing`),
+    media: (
+      <Plate
+        unit={unit.value}
+        title={tPlate(`${unit.value}.title`)}
+        description={tPlate(`${unit.value}.description`)}
+      />
+    ),
+  }))
+
   const actionLabel = settings?.ajakan?.label ?? t('actionFallback')
   const actionAfter = settings?.ajakan?.sesudahnya ?? t('actionAfterFallback')
 
@@ -234,6 +258,13 @@ export default async function Home() {
             {t('draftPreview')}
           </p>
         )}
+
+        <Passage plates={plates} note={tPlate('note')}>
+          <SectionHeader
+            eyebrow={t('passageEyebrow')}
+            title={t('passageTitle')}
+          />
+        </Passage>
 
         {/*
           The three units, opened one at a time. Each panel links the unit's
