@@ -297,7 +297,7 @@ Bagian ini adalah rencana itu.
 
 **Status 30 Oktober 2026: dibangun** di `components/layout/header` dan
 `vault/motion/route-marker`, menunggu tinjauan pemilik di pratinjau. Penanda
-aktif, ikut latar, sembunyi dan muncul, dan lembar menu ponsel sudah ada;
+aktif, ikut latar, dan lembar menu ponsel sudah ada;
 sisi kanan berisi Cari, ajakan "Ceritakan masalahnya" (mulai 1100 px), dan
 tempat pengalih bahasa. Tiga hal berbeda dari rencana di bawah: tujuan tetap
 lima (tiga unit, Metode kerja, Kontak), sesuai baris R4 dan permintaan sesi
@@ -305,6 +305,14 @@ koordinator, sehingga Layanan dan Pembayaran belum masuk baris atas; ikut
 latar dan sembunyi memakai `IntersectionObserver` dan event gulir pasif, bukan
 ScrollTrigger, karena header tampil di halaman yang tidak memuat GSAP, dan
 keduanya tetap tanpa loop RAF kedua; pratinjau pelat unit belum dibuat.
+
+**Sembunyi dan muncul ditunda.** Sempat dibangun, lalu dicabut karena CI
+menunjukkan banyak bagian situs menempel ke tepi header: bilah kemajuan baca
+jurnal, indeks proyek, pelat sticky, dan palet cari. Saat header menyingkir,
+bagian itu tertinggal di atas teks (`contrast-situ` mengukur teks jurnal 1:1
+di bawah bilah kemajuan), dan dua uji yang membuka menu sesudah menggulir
+gagal. Gerak ini kembali sesudah semua elemen yang memakai `--header-height`
+ikut bergeser bersama header.
 
 **Isi navbar.** Tiga unit (Konstruksi, Teknologi, Peekabo), lalu Layanan,
 Metode kerja, Pembayaran, dan Kontak, karena pemilik meminta halaman tetap
