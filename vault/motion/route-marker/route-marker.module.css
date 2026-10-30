@@ -45,7 +45,13 @@
 
 /* Only what `follows` names slides it; `index.tsx` has why nothing else does. */
 .marker[data-moves] {
-  transition: transform var(--duration) var(--ease-out-expo);
+  /*
+   * The opacity is for previews (`index.tsx`): where nothing is current, the
+   * rule fades as the pointer leaves rather than vanishing under it.
+   */
+  transition:
+    transform var(--duration) var(--ease-out-expo),
+    opacity var(--duration-fast) var(--ease-out-expo);
 }
 
 /*
