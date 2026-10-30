@@ -23,6 +23,7 @@ import {
 } from './document-actions'
 import { apiVersion, dataset, previewURL, projectId } from './env'
 import { schema } from './schemas'
+import { pageDocumentPath } from './utils/link'
 
 /**
  * Preview URL resolution — kept in sync with `resolveDocumentUrl` in
@@ -67,12 +68,12 @@ const structure: StructureResolver = (S) =>
             .title('Pengaturan Arthur')
         ),
       S.listItem()
-        .title('Cara kami bekerja')
+        .title('Metode kerja')
         .child(
           S.document()
             .schemaType('howWeWork')
             .documentId('howWeWork')
-            .title('Cara kami bekerja')
+            .title('Metode kerja')
         ),
       S.divider(),
       S.listItem()
@@ -125,10 +126,10 @@ function resolveHref(documentType?: string, slug?: string): string | undefined {
     // `home` is not special-cased: `/${PREVIEW_LOCALE}` is the developer-owned
     // starter page, so a `home` document previews at `/en/home` like any other
     // slug.
+    // A fixed page previews at its own route, which for the payment page is
+    // not its slug (`FIXED_PAGE_ROUTES`).
     case 'page':
-      if (slug === 'kebijakan') return previewPath('/kebijakan')
-      if (slug === 'cara-kami-dibayar') return previewPath('/cara-kami-dibayar')
-      return slug ? `/${PREVIEW_LOCALE}/halaman/${slug}` : undefined
+      return slug ? previewPath(pageDocumentPath(slug)) : undefined
     case 'project':
       return slug ? `/${PREVIEW_LOCALE}/work/${slug}` : undefined
     default:
@@ -197,7 +198,7 @@ export default projectId && dataset
                 filter: `_type == "page" && slug.current == "kebijakan"`,
               },
               {
-                route: '/:locale/cara-kami-dibayar',
+                route: '/:locale/pembayaran',
                 filter: `_type == "page" && slug.current == "cara-kami-dibayar"`,
               },
               {
@@ -205,7 +206,7 @@ export default projectId && dataset
                 filter: `_type == "page" && slug.current == $slug`,
               },
               {
-                route: '/:locale/satu-klien-tiga-unit',
+                route: '/:locale/layanan',
                 filter: `_type == "sequence"`,
               },
               {
@@ -275,8 +276,8 @@ export default projectId && dataset
                 resolve: () => ({
                   locations: [
                     {
-                      title: 'Cara kami bekerja',
-                      href: previewPath('/cara-kerja'),
+                      title: 'Metode kerja',
+                      href: previewPath('/metode'),
                     },
                   ],
                 }),
@@ -286,8 +287,8 @@ export default projectId && dataset
                 resolve: () => ({
                   locations: [
                     {
-                      title: 'Satu klien, tiga unit',
-                      href: previewPath('/satu-klien-tiga-unit'),
+                      title: 'Layanan',
+                      href: previewPath('/layanan'),
                     },
                   ],
                 }),

@@ -70,7 +70,7 @@ export default async function HowWeWorkPage() {
       <article className={s.page}>
         <header className={s.hero}>
           <p className={cn('caption', s.eyebrow)}>Arthur</p>
-          <h1 className={cn('h1', s.title)}>Cara kami bekerja</h1>
+          <h1 className={cn('h1', s.title)}>Metode kerja</h1>
           {data.pembuka ? (
             <p className={cn('p-big', s.lead)}>{data.pembuka}</p>
           ) : null}
@@ -168,10 +168,10 @@ export async function generateMetadata() {
   const description = howWeWorkDescription(data)
 
   return generatePageMetadata({
-    title: data.metadata?.title ?? 'Cara kami bekerja',
+    title: data.metadata?.title ?? 'Metode kerja',
     ...(description && { description }),
     ...(keywords && { keywords }),
     noIndex: isDraftMode || data.metadata?.noIndex === true,
-    url: `/${locale}/cara-kerja`,
+    url: `/${locale}/metode`,
   })
 }

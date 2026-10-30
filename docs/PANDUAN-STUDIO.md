@@ -90,8 +90,8 @@ pemilik, wilayah, dan kanal kontak. Email `kontak@arth.invalid` serta alamat
 contoh yang terlihat hari ini adalah dummy—bukan alamat atau lokasi nyata—dan
 harus diganti sebelum halaman kontak boleh diterbitkan.
 
-**Cara kami bekerja** juga singleton; medan **Pembuka**-nya adalah kalimat di
-bawah judul halaman `/cara-kerja`. **Rangkaian tiga unit**, **Tanya jawab**,
+**Metode kerja** juga singleton; medan **Pembuka**-nya adalah kalimat di
+bawah judul halaman `/metode`. **Rangkaian tiga unit**, **Tanya jawab**,
 dan **Halaman tetap** ada di bagian Isi pendukung. Page memakai `judul` dan
 `isi` berbahasa; medan lama tetap terlihat hanya-baca selama migrasi yang
 disetujui belum terjadi. Jangan menghapus atau mengosongkan medan lama tanpa

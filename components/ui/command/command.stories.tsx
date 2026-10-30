@@ -37,7 +37,7 @@ import { CommandPalette } from './palette'
  * Indonesian because `/en/search.json` answers 307 to that index
  * (`lib/i18n/public-locale-redirect.ts`), so these are the rows on English
  * pages too. The English rows this story used to carry had drifted from what
- * `/en/search.json` served — only `page:/cara-kerja` still matched — and that
+ * `/en/search.json` served — only `page:/metode` still matched — and that
  * index now reaches Presentation previews alone.
  *
  * The first draft of this file invented a client name for a real project, and
@@ -49,13 +49,13 @@ import { CommandPalette } from './palette'
  */
 const entries: SearchEntry[] = [
   {
-    id: 'page:/cara-kerja',
+    id: 'page:/metode',
     kind: 'page',
-    label: 'Cara kami bekerja',
+    label: 'Metode kerja',
     description:
       'Lingkup, harga, target, dan laporan disepakati tertulis sebelum kerja dimulai.',
-    href: '/id/cara-kerja',
-    meta: '/cara-kerja',
+    href: '/id/metode',
+    meta: '/metode',
   },
   {
     id: 'page:/kontak',

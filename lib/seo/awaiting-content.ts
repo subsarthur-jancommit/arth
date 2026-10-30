@@ -24,7 +24,7 @@
  * added here disappears from each of them that names it, at once.
  *
  * Leaving the list only brings a page back where it is named. When
- * `/satu-klien-tiga-unit` left it, the proxy was the only reader that knew the
+ * `/layanan` left it, the proxy was the only reader that knew the
  * page, so the same change gave it a catalog entry. `/kebijakan`, the last
  * one, left it in V5 and stays out of the catalog on purpose: it is `noindex`
  * until its legal review is done, so only the footer links it.
@@ -37,7 +37,7 @@
  */
 export const AWAITING_CONTENT: readonly string[] = []
 
-/** Whether a locale-free template (`/cara-kerja`) is still awaiting content. */
+/** Whether a locale-free template (`/metode`) is still awaiting content. */
 export function isAwaitingContent(template: string): boolean {
   return AWAITING_CONTENT.includes(template)
 }

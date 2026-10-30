@@ -133,17 +133,17 @@ describe('buildMarkdownDocument', () => {
 })
 
 /*
- * `/cara-kerja` reads its meta description from the CMS. The mirror has to
+ * `/metode` reads its meta description from the CMS. The mirror has to
  * print what that head says, in both places it names the page — the page's
  * own section and the page list every mirror carries.
  */
 describe('a page whose head describes itself from the CMS', () => {
   const descriptions = new Map([
-    ['/id/cara-kerja', 'Cara kerja, seperti ditulis di Studio.'],
+    ['/id/metode', 'Cara kerja, seperti ditulis di Studio.'],
   ])
 
   it("prints the head's description under This page and in the page list", () => {
-    const document = buildMarkdownDocumentFromRoutes('/id/cara-kerja', [], {
+    const document = buildMarkdownDocumentFromRoutes('/id/metode', [], {
       descriptions,
     })
     assertDocumentBody(document)
@@ -153,7 +153,7 @@ describe('a page whose head describes itself from the CMS', () => {
       '## This page\n\nCara kerja, seperti ditulis di Studio.\n'
     )
     expect(document.body).toContain(
-      `(${absoluteSiteUrl('/id/cara-kerja')}): Cara kerja, seperti ditulis di Studio.`
+      `(${absoluteSiteUrl('/id/metode')}): Cara kerja, seperti ditulis di Studio.`
     )
   })
 
@@ -164,14 +164,14 @@ describe('a page whose head describes itself from the CMS', () => {
     assertDocumentBody(document)
 
     expect(document.body).toContain(
-      `(${absoluteSiteUrl('/id/cara-kerja')}): Cara kerja, seperti ditulis di Studio.`
+      `(${absoluteSiteUrl('/id/metode')}): Cara kerja, seperti ditulis di Studio.`
     )
   })
 
   it('prints no line of its own when nothing could be read', async () => {
     // Hermetic: no CMS is configured under `bun test`, so the resolver reads
     // nothing, and the catalog keeps no copy of the head's sentence.
-    const document = await buildMarkdownDocument('/id/cara-kerja')
+    const document = await buildMarkdownDocument('/id/metode')
     assertDocumentBody(document)
 
     expect(document.status).toBe(200)
@@ -179,7 +179,7 @@ describe('a page whose head describes itself from the CMS', () => {
       '## This page\n\nThis representation summarizes the route'
     )
     expect(document.body).toContain(
-      `- [Cara kami bekerja](${absoluteSiteUrl('/id/cara-kerja')})\n`
+      `- [Metode kerja](${absoluteSiteUrl('/id/metode')})\n`
     )
   })
 })

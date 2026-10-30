@@ -114,7 +114,7 @@ const STORYBOOK_ENABLED =
  * It also broke this file's own rule three lines further down: the row is
  * capped at one line, and seven is not one line.
  *
- * The nav now answers the Arthur map directly: three units, Cara kami bekerja,
+ * The nav now answers the Arthur map directly: three units, Metode kerja,
  * and Kontak. The catalogue and journal indexes remain addressable but are
  * not promoted in navigation. The wordmark to the left is the home link and
  * carries `aria-label="<brand> —
@@ -133,7 +133,7 @@ const UNIT_LINKS = UNITS.map((unit) => ({
  */
 const ROUTE_LINKS = [
   ...UNIT_LINKS.map((link) => ({ ...link, kind: 'unit' as const })),
-  { href: '/cara-kerja', labelKey: 'studio' as const, kind: 'nav' as const },
+  { href: '/metode', labelKey: 'studio' as const, kind: 'nav' as const },
   { href: '/kontak', labelKey: 'contact' as const, kind: 'nav' as const },
 ].filter(({ href }) => !isAwaitingContent(href))
 
