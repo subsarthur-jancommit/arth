@@ -289,11 +289,62 @@ memakai alamat formal satu kata tanpa tanda hubung: `/layanan` (dulu
 `/work`, `/journal` tidak diubah, atas keputusan pemilik. Rinciannya di
 `docs/RENCANA-KONTEKS-V2.md` dan `lib/i18n/renamed-paths.ts`.
 
-#### Navbar interaktif: rencana, belum dieksekusi
+**Pelat gambar kerja, 30 Oktober 2026.** Tiga pelat arah B dipindahkan dari
+gambar diam ke situs sebagai data di `lib/plates/` dan digambar sebagai SVG
+oleh `vault/blocks/plate`: Konstruksi denah lantai 1 dan potongan A-A,
+Teknologi diagram alur pesanan, Peekabo papan kampanye pembukaan. Koordinat
+dan label mengikuti `docs/r4-arah-visual/model.py`, jadi gambarnya sama dengan
+yang dipilih pemilik; satu label diganti ke bahasa pembaca ("Pass-out" menjadi
+"Loket saji"). Alt teks dan keterangan ada di `messages/` (`plates`), termasuk
+kalimat "Rangkaian yang mungkin, bukan proyek yang pernah kami kerjakan."
+Pelat tampil di pita gelap pembuka setiap halaman unit. Lintasan beranda dan
+material WebGL menyusul di PR sendiri.
+
+**Lintasan beranda (E1.2), 30 Oktober 2026.** `vault/blocks/passage` kembali ke
+beranda, sesudah hero dan sebelum daftar unit, dengan tiga pelat itu: satu
+pelat per layar gulir, keterangannya ikut masuk, lalu judul "Satu kafe,
+dikerjakan tiga unit." naik dan pin lepas ke daftar unit. Setiap pelat kini
+`figure` yang terbaca pembaca layar. Di bawah reduced motion dan tanpa
+JavaScript ketiga pelat tersusun berurutan, semuanya tampil, tanpa pin. Uji
+`journey` untuk pin dan reduced motion dihidupkan lagi.
+
+**WebGL di panggung, 30 Oktober 2026.** `vault/webgl/plate-material` menyalakan
+pelat lintasan beranda sebagai material di kanvas root (arah B, "maket
+cahaya"): pelat digambar ulang ke tekstur dari data yang sama
+(`lib/plates/canvas.ts`), lalu saat pembaca menggulir, denah Konstruksi rebah
+dan potongannya berdiri di belakangnya, diagram Teknologi dan papan Peekabo
+bersandar seperti lembar di meja, dan kamera berputar pelan melewatinya.
+Pelat datar SVG tetap ada di bawahnya: tampil di ponsel, di bawah reduced
+motion, tanpa WebGL2, dan sampai bingkai pertama tergambar; ia juga tetap
+membawa alt teks. Halaman unit sengaja tetap memakai pelat datar: kanvas root
+digambar di belakang `<main>`, sedangkan pembuka unit adalah pita gelap di
+halaman terang, jadi pelat bercahaya di sana harus ikut menggambar pita itu
+di WebGL dan akan memunculkan sambungan DOM dan kanvas saat digulir.
+
+#### Navbar interaktif
 
 Pemilik, 30 Oktober 2026: "untuk navbar tulis rencana (untuk nanti di
 eksekusi) bahwa Kedepannya akan dibuat Dengan sistem animasi yang interaktif."
-Bagian ini adalah rencana itu. Belum ada kode yang dibuat untuknya.
+Bagian ini adalah rencana itu.
+
+**Status 30 Oktober 2026: dibangun** di `components/layout/header` dan
+`vault/motion/route-marker`, menunggu tinjauan pemilik di pratinjau. Penanda
+aktif, ikut latar, dan lembar menu ponsel sudah ada;
+sisi kanan berisi Cari, ajakan "Ceritakan masalahnya" (mulai 1100 px), dan
+tempat pengalih bahasa. Tiga hal berbeda dari rencana di bawah: tujuan tetap
+lima (tiga unit, Metode kerja, Kontak), sesuai baris R4 dan permintaan sesi
+koordinator, sehingga Layanan dan Pembayaran belum masuk baris atas; ikut
+latar dan sembunyi memakai `IntersectionObserver` dan event gulir pasif, bukan
+ScrollTrigger, karena header tampil di halaman yang tidak memuat GSAP, dan
+keduanya tetap tanpa loop RAF kedua; pratinjau pelat unit belum dibuat.
+
+**Sembunyi dan muncul ditunda.** Sempat dibangun, lalu dicabut karena CI
+menunjukkan banyak bagian situs menempel ke tepi header: bilah kemajuan baca
+jurnal, indeks proyek, pelat sticky, dan palet cari. Saat header menyingkir,
+bagian itu tertinggal di atas teks (`contrast-situ` mengukur teks jurnal 1:1
+di bawah bilah kemajuan), dan dua uji yang membuka menu sesudah menggulir
+gagal. Gerak ini kembali sesudah semua elemen yang memakai `--header-height`
+ikut bergeser bersama header.
 
 **Isi navbar.** Tiga unit (Konstruksi, Teknologi, Peekabo), lalu Layanan,
 Metode kerja, Pembayaran, dan Kontak, karena pemilik meminta halaman tetap

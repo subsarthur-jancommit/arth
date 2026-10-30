@@ -18,6 +18,13 @@
   padding-inline: var(--safe);
 
   /*
+   * Which ground shows (R4): 0 the paper one, 1 the ink one. The bar takes
+   * its theme from the section under it (`data-theme` on this element, set by
+   * `index.tsx`), and from the page when it has none of its own.
+   */
+  --header-dark: 0;
+
+  /*
    * Three zones on desktop, with the nav on the centre — Tahap 87.
    *
    * This was `space-between` on four items, which is not a layout but a
@@ -77,6 +84,11 @@
    */
 }
 
+.header[data-theme='dark'],
+:where([data-theme='dark']) .header:not([data-theme]) {
+  --header-dark: 1;
+}
+
 /*
  * The translucent ground, and its edge.
  *
@@ -97,14 +109,14 @@
  * inside it, which is the difference between a soft edge and a bar with a
  * blurry bottom.
  */
-.header::before {
+.header::before,
+.header::after {
   content: '';
   position: absolute;
   inset-inline: 0;
   inset-block: 0 calc(-1 * mobile-vw(16px));
   z-index: -1;
   pointer-events: none;
-  background-color: color-mix(in oklab, var(--color-primary) 82%, transparent);
   backdrop-filter: blur(mobile-vw(12px));
   /*
    * `black`/`transparent` keywords, not a hex: a mask reads only the alpha
@@ -112,11 +124,30 @@
    * `lib/styles/scripts/token-rules.test.ts` bans the hex spelling of it.
    */
   mask-image: linear-gradient(to bottom, black 62%, transparent);
+  transition: opacity var(--duration-fast) var(--ease-out-expo);
 
   @media (--desktop) {
     inset-block: 0 calc(-1 * desktop-vw(24px));
     backdrop-filter: blur(desktop-vw(12px));
   }
+}
+
+/*
+ * Two grounds, crossfaded — R4. The bar's theme can change under a reader as
+ * a dark section passes beneath it, and a ground that changed colour in one
+ * frame would flash. Each ground is fixed to its own ink, and only their
+ * opacity moves (CLAUDE.md #4). Both carry the blur, so neither state loses
+ * it; while one rests at zero the cost of the second is not measured here
+ * (#19).
+ */
+.header::before {
+  background-color: color-mix(in oklab, var(--color-paper) 82%, transparent);
+  opacity: calc(1 - var(--header-dark));
+}
+
+.header::after {
+  background-color: color-mix(in oklab, var(--color-ink) 82%, transparent);
+  opacity: var(--header-dark);
 }
 
 .brand {
@@ -299,9 +330,11 @@
 
   /*
    * On a phone the same links are the sheet's words — the fork: display
-   * type, one size, fitted to the longest word among them in this language
-   * (`--fit-chars`, set by `index.tsx`) with the nameplate's 0.72em per
-   * character. "Journal" is 71px on a 390px phone, "Jurnal" 83; `14svh` caps
+   * type, each word fitted to its own longest word since R4 (E8.1;
+   * `--fit-chars` per link, set by `index.tsx`, with the nameplate's 0.72em
+   * per character, until the measured `--fit-size` replaces it). Before R4
+   * they shared the size of the longest word among them. "Journal" was 71px
+   * on a 390px phone, "Jurnal" 83; `14svh` caps
    * a phone on its side, where width is plentiful and height is not. Onest at
    * 700 reaches at most 0.639em a character over the route words (headless
    * Chrome, 2026-10-30), inside that 0.72.
@@ -318,8 +351,16 @@
     font-weight: 700;
     font-size: 12vw;
 
+    /*
+     * `--fit-size` is the measured size, each word its own (R4, E8.1), set by
+     * `index.tsx` once the face has loaded; until then, and without a
+     * script, the per-character estimate from this word's own count.
+     */
     @supports (width: 1cqi) and (height: 1svh) {
-      font-size: min(calc(100cqi / (var(--fit-chars, 7) * 0.72)), 14svh);
+      font-size: min(
+        var(--fit-size, calc(100cqi / (var(--fit-chars, 7) * 0.72))),
+        14svh
+      );
     }
     line-height: 0.95;
     letter-spacing: -0.04em;
@@ -362,22 +403,29 @@
   display: inline-block;
 }
 
+/*
+ * MENU and Close, in a box both words fit — R4, E8.5.
+ *
+ * The two labels share one grid cell, so the box is sized by the wider word
+ * whichever is showing: "Tutup" no longer runs out of the outline "Menu"
+ * drew, and nothing beside the button moves when the label changes.
+ */
 .menuToggle {
   display: none;
-  align-items: center;
+  place-items: center;
   background: none;
-  border: none;
+  border: thin solid var(--line);
+  border-radius: 999px;
   color: var(--color-secondary);
   text-transform: uppercase;
   letter-spacing: 0.12em;
   cursor: pointer;
-  padding: 0;
+  padding-inline: mobile-vw(14px);
   min-height: 44px;
   min-width: 44px;
-  justify-content: flex-end;
 
   @media (--mobile) {
-    display: flex;
+    display: grid;
   }
 
   &:focus-visible {
@@ -386,9 +434,61 @@
   }
 }
 
+.menuLabel {
+  grid-area: 1 / 1;
+
+  &:not([data-shown]) {
+    visibility: hidden;
+  }
+}
+
 .language {
   /* Outside the sheet on purpose: a preference, reachable while it is shut. */
   flex-shrink: 0;
+}
+
+/*
+ * The first step, at the end of the row (R4): an outlined pill in the nav's
+ * own caption type. Only from 1100px: below that the five routes, search and
+ * this would not share one line, and the routes come first.
+ */
+.cta {
+  display: none;
+  align-items: center;
+  min-height: 36px;
+  padding-inline: desktop-vw(16px);
+  border: thin solid currentColor;
+  border-radius: 999px;
+  color: var(--color-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform var(--duration-micro) var(--ease-out-quart);
+
+  @media (min-width: 1100px) {
+    display: inline-flex;
+  }
+
+  /*
+   * INTENT, one state reached two ways (`MOTION-SPEC.md` §9): the pill fills,
+   * under a pointer and under the keyboard's focus alike, the way the home
+   * page's own call to action does. A ring alone would acknowledge a cursor
+   * and not a keyboard (`e2e/interaction-grammar.e2e.ts`).
+   */
+  @media (--hover) {
+    &:hover {
+      background-color: var(--color-secondary);
+      color: var(--color-primary);
+    }
+  }
+
+  &:focus-visible {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    outline: 2px solid var(--color-contrast);
+    outline-offset: 4px;
+  }
 }
 
 /*
@@ -421,6 +521,9 @@
    * duration the shorthand above overrides.
    */
   .navLink,
+  .cta,
+  .header::before,
+  .header::after,
   :is(.nav:popover-open, .nav[data-open]) .navItem {
     transition: none;
   }

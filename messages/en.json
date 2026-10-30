@@ -9,6 +9,7 @@
     "contact": "Contact",
     "policy": "Policy",
     "storybook": "Storybook",
+    "cta": "Tell us the problem",
     "openMenu": "Menu",
     "closeMenu": "Close",
     "skipToContent": "Skip to main content",
@@ -35,6 +36,8 @@
     "placeholderNote": "Placeholder copy. The studio’s own words replace this text as soon as the CMS has them.",
     "addressHeading": "Address",
     "heroIndexLabel": "Unit",
+    "passageEyebrow": "Working drawings",
+    "passageTitle": "One café, worked on by three units.",
     "practiceEyebrow": "Unit",
     "practiceTitle": "Arthur's three units",
     "practiceLink": "Open unit",
@@ -391,5 +394,26 @@
   "connection": {
     "offline": "You are offline",
     "restored": "Back online"
+  },
+  "plates": {
+    "note": "A possible sequence, not a project we have done.",
+    "konstruksi": {
+      "drawing": "Ground floor plan and section A-A",
+      "job": "A café ready to open in a rented space",
+      "title": "Konstruksi working drawing: the ground floor plan and a section of a café in a rented shophouse",
+      "description": "The plan shows the terrace, the seating, the stair, the bar, the serving hatch, the kitchen with its stove and preparation table, the store, and the sink. A dashed line marks the guests' route from the street to a table. A dotted line marks the route of stock, preparation, and service. The section shows two floors, the canopy, the bar, the stove with its flue up through the roof, and the tables along the wall."
+    },
+    "teknologi": {
+      "drawing": "Order flow diagram",
+      "job": "Order and pay at the table",
+      "title": "Teknologi working drawing: the flow of an order in the same café, from the guest to the supplier",
+      "description": "Four lanes: guest, system, kitchen, and supplier. Guests order on WhatsApp or at the table, then pay at the table. Each order is recorded with prices and promotions set by your rules, and the money received matches the record. A screen in the kitchen sets the order of service. Stock is recorded too, and when an ingredient runs low a reorder goes to the supplier by itself."
+    },
+    "peekabo": {
+      "drawing": "Opening campaign board",
+      "job": "Opening a branch or an outlet",
+      "title": "Peekabo working drawing: the opening campaign board for the same café",
+      "description": "The columns are time: before the café opens, the first day, and after. The rows are aims: attention, trust, and sales. Attention comes from the target and the message, ads on TikTok, Meta, and Google, one day of shooting for a month of content, and managed social media. Trust comes from inviting the neighbours first, a booth and sampling, and meeting customers. Sales come from creators and live hosts who sell. Targets, scope, and reports are agreed in writing."
+    }
   }
 }

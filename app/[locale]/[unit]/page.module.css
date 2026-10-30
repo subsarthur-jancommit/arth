@@ -29,6 +29,50 @@
   }
 }
 
+/*
+ * The working drawing closes the stage: the drawing across most of the
+ * columns, its caption beside it at the top, the way the approved stills set
+ * theirs. On a phone the caption follows the drawing.
+ */
+.plate {
+  display: grid;
+  gap: calc(20 / 375 * 100vw);
+  margin: 0;
+  padding-bottom: calc(72 / 375 * 100vw);
+
+  @media (--desktop) {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gutter);
+    align-items: start;
+    padding-bottom: calc(120 / 1440 * 100vw);
+  }
+}
+
+.plateDrawing {
+  @media (--desktop) {
+    grid-column: 1 / 10;
+  }
+}
+
+.plateCaption {
+  display: grid;
+  gap: calc(8 / 375 * 100vw);
+  align-content: start;
+
+  @media (--desktop) {
+    grid-column: 10 / -1;
+    gap: calc(12 / 1440 * 100vw);
+  }
+}
+
+.plateJob {
+  margin: 0;
+}
+
+.plateNote {
+  color: var(--text-muted);
+}
+
 .section {
   display: grid;
   gap: calc(36 / 375 * 100vw);

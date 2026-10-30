@@ -81,6 +81,41 @@ import s from './header.module.css'
  * `<Activity>` also means two `#header-nav` in one document; crossing into
  * desktop closes it; and a browser without `popover` gets a plain toggle with
  * `aria-expanded`, Escape, a tap outside, and focus handed back.
+ *
+ * ## The bar follows the page — R4
+ *
+ * The navbar plan in `docs/RENCANA-REVISI-F3.md` (R4), built:
+ *
+ * - **The rule previews.** `RouteMarker` with `previews`: it goes to the link
+ *   pointed at or focused, and slides back to the current one.
+ * - **The ground is the page's.** A page can paint a section in the other
+ *   theme (a unit page's dark opening on a light page). The bar takes the
+ *   theme of the section under it, read by an `IntersectionObserver` on a
+ *   one-pixel line through its middle, and crossfades its ground by opacity.
+ *   No frame loop: an observer is called only when a section crosses.
+ * - **The sheet's words are measured, each its own.** E8.1: every route word
+ *   is set as large as its own widest word allows, measured in the face it is
+ *   drawn in; the per-character estimate stays as the size before a script
+ *   runs, and without one.
+ * - **Close fits its box.** E8.5: both labels are in the button at once, the
+ *   one not showing hidden, so the box is the wider word's and never changes.
+ * - **The right side is composed.** Search, the first step ("Ceritakan
+ *   masalahnya", to the contact page, from 1100px where the row has room),
+ *   and the language switcher's place for R7, in that order.
+ *
+ * The plan's list named seven destinations; this keeps five, the R4 row's
+ * number and the one the brief for this build asked for. Two more entries in
+ * `ROUTE_LINKS` add Layanan and Pembayaran.
+ *
+ * Not built: the plan's "sembunyi dan muncul", the bar stepping aside going
+ * down the page. It was, and CI took it back out. This site anchors more to
+ * the bar than the bar itself: the journal's reading progress sits on its
+ * edge (`vault/motion/reading-progress`), sticky plates and the project
+ * spine sit under it, the search palette hangs from it, and tests open the
+ * menu and the routes after scrolling. With the bar gone those were left
+ * floating over text — `e2e/contrast-situ.e2e.ts` measured the journal's
+ * words at 1:1 under the stranded progress bar. It comes back once every
+ * element anchored to `--header-height` follows the bar too.
  */
 
 // In local dev, link straight to the Storybook dev server. In deployed builds,
@@ -136,6 +171,16 @@ const ROUTE_LINKS = [
   { href: '/metode', labelKey: 'studio' as const, kind: 'nav' as const },
   { href: '/kontak', labelKey: 'contact' as const, kind: 'nav' as const },
 ].filter(({ href }) => !isAwaitingContent(href))
+
+/** The size the sheet's words are measured at, and their tracking there. */
+const FIT_PROBE = 100
+const SHEET_TRACKING = -0.04
+
+/**
+ * The share of the column a fitted word may take. The canvas measures the
+ * advance, and a glyph's ink can reach a little past it.
+ */
+const FIT_MARGIN = 0.96
 
 /**
  * Whether this browser has the popover API.
@@ -197,6 +242,7 @@ export function Header() {
   )
   const nav = useRef<HTMLElement>(null)
   const menuButton = useRef<HTMLButtonElement>(null)
+  const bar = useRef<HTMLElement>(null)
   const t = useTranslations('nav')
   const tUnit = useTranslations('workIndex')
 
@@ -218,26 +264,21 @@ export function Header() {
   )
 
   /*
-   * The route words share one size on a phone, fitted to the longest *word*
-   * among them in this language — `lib/styles/css/global.css`
-   * `.nameplate-title` measured the face's widest glyph run at 0.72em per
-   * character, and the sheet uses the same figure.
+   * Each route word is fitted to its own longest *word* — R4, E8.1.
    *
-   * Fitting to the longest whole label was right for three one-word routes.
-   * With "Cara kami bekerja" (17 characters) in the list it shrank every word
-   * on the sheet from 80px to 28px on a 390px phone (`docs/TINJAUAN-F01-F03.md`
-   * E8.1). A multi-word label wraps instead (`header.module.css`), so no
-   * single word can overflow and the sheet keeps its display size.
+   * Until R4 the words shared one size, fitted to the longest word among all
+   * of them, so "Kontak" was set as small as "Konstruksi". Now each link
+   * carries its own count, which is the size the server renders and the size
+   * a reader without a script keeps: `lib/styles/css/global.css`
+   * `.nameplate-title` measured the face's widest glyph run at 0.72em per
+   * character, and the sheet uses the same figure. Once the face has loaded,
+   * the effect below measures the real words and replaces the estimate.
+   *
+   * A multi-word label still wraps (`header.module.css`), so no single word
+   * can overflow and none shrinks for its neighbour.
    */
-  const routeStyle = {
-    '--fit-chars': Math.max(
-      ...ROUTE_LINKS.flatMap(({ labelKey, kind }) =>
-        (kind === 'unit' ? tUnit(labelKey) : t(labelKey))
-          .split(/\s+/)
-          .map((word) => Array.from(word).length)
-      )
-    ),
-  } as CSSProperties
+  const fitChars = (label: string) =>
+    Math.max(...label.split(/\s+/).map((word) => Array.from(word).length))
 
   const closeMenu = useCallback(() => {
     const element = nav.current
@@ -373,6 +414,128 @@ export function Header() {
     }
   }, [fallbackOpen, closeMenu, cover, uncover])
 
+  /*
+   * The sheet's words, measured — E8.1.
+   *
+   * On a phone, each route word is set so its widest word fills the sheet's
+   * column, measured with the canvas in the face the word is drawn in, at
+   * the sheet's own tracking. The column is the header's content box: the
+   * sheet is laid out with the same `--safe` inset, and the header is there
+   * to measure while the sheet is still shut. Measured again when the
+   * viewport changes; the 14svh cap stays the stylesheet's.
+   */
+  useEffect(() => {
+    const header = bar.current
+    const list = nav.current?.querySelector('ul')
+    const context = document.createElement('canvas').getContext('2d')
+    if (!header || !list || !context) return
+
+    const phone = window.matchMedia('(max-width: 799.98px)')
+    const fit = () => {
+      if (!phone.matches) return
+      const box = getComputedStyle(header)
+      const column =
+        header.clientWidth -
+        Number.parseFloat(box.paddingLeft) -
+        Number.parseFloat(box.paddingRight)
+      for (const link of list.querySelectorAll<HTMLElement>(
+        '[data-route-word]'
+      )) {
+        const face = getComputedStyle(link)
+        context.font = `${face.fontWeight} ${FIT_PROBE}px ${face.fontFamily}`
+        const widest = Math.max(
+          ...(link.textContent ?? '')
+            .split(/\s+/)
+            .filter(Boolean)
+            .map(
+              (word) =>
+                context.measureText(word).width +
+                SHEET_TRACKING * FIT_PROBE * Array.from(word).length
+            )
+        )
+        if (widest > 0) {
+          link.style.setProperty(
+            '--fit-size',
+            `${((column * FIT_MARGIN) / widest) * FIT_PROBE}px`
+          )
+        }
+      }
+    }
+
+    let cancelled = false
+    document.fonts.ready
+      .then(() => {
+        if (!cancelled) fit()
+      })
+      .catch(() => {
+        // The per-character estimate stays, which is the size without a script.
+      })
+    phone.addEventListener('change', fit)
+    window.addEventListener('resize', fit)
+    return () => {
+      cancelled = true
+      phone.removeEventListener('change', fit)
+      window.removeEventListener('resize', fit)
+    }
+  }, [])
+
+  /*
+   * The bar takes the ground of the section under it — R4.
+   *
+   * Sections that paint the other theme carry `data-theme` (the unit pages'
+   * dark opening); the bar watches a one-pixel line through its own middle
+   * and takes the theme of the last such section crossing it, or the page's
+   * when none does. This page's own `<main>`, found from the bar: Next keeps
+   * the previous page in a hidden `<Activity>`, and its sections would
+   * otherwise be watched too.
+   */
+  useEffect(() => {
+    const header = bar.current
+    const main = header?.parentElement?.querySelector('main')
+    if (!header || !main) return
+    const sections = [...main.querySelectorAll<HTMLElement>('[data-theme]')]
+    if (sections.length === 0) return
+
+    const crossing = new Set<Element>()
+    const apply = () => {
+      const under = sections.findLast((section) => crossing.has(section))
+      const theme = under?.getAttribute('data-theme')
+      if (theme === 'dark' || theme === 'light') {
+        header.setAttribute('data-theme', theme)
+      } else {
+        header.removeAttribute('data-theme')
+      }
+    }
+
+    let observer: IntersectionObserver | null = null
+    const watch = () => {
+      observer?.disconnect()
+      crossing.clear()
+      const line = Math.round(header.offsetHeight / 2)
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) crossing.add(entry.target)
+            else crossing.delete(entry.target)
+          }
+          apply()
+        },
+        {
+          rootMargin: `-${line}px 0px -${Math.max(0, window.innerHeight - line - 1)}px 0px`,
+        }
+      )
+      for (const section of sections) observer.observe(section)
+    }
+
+    watch()
+    window.addEventListener('resize', watch)
+    return () => {
+      observer?.disconnect()
+      window.removeEventListener('resize', watch)
+      header.removeAttribute('data-theme')
+    }
+  }, [])
+
   const onRouteClick = (event: MouseEvent<HTMLElement>) => {
     // A modified click opens a new tab and leaves the reader here, menu and
     // all.
@@ -388,7 +551,7 @@ export function Header() {
   }
 
   return (
-    <header className={s.header}>
+    <header ref={bar} className={s.header}>
       <Link href="/" className={s.brand} aria-label={`${BRAND_NAME} — home`}>
         {BRAND_NAME}
       </Link>
@@ -409,7 +572,7 @@ export function Header() {
          */
         {...(open && { 'data-lenis-prevent': '' })}
       >
-        <ul className={s.navList} style={routeStyle}>
+        <ul className={s.navList}>
           {/*
             The routes, on every page — Tahap 38.
 
@@ -427,27 +590,33 @@ export function Header() {
             Tahap 54 removed the home-page anchors that used to sit above
             these, so this is now the whole list.
           */}
-          {ROUTE_LINKS.map(({ href, labelKey, kind }, index) => (
-            <li
-              key={href}
-              className={s.navItem}
-              style={{ '--item': index } as CSSProperties}
-            >
-              <Link
-                className={cn('caption', s.navLink)}
-                href={href}
-                onClick={onRouteClick}
-                // `MOTION-SPEC.md` §9.
-                data-press="nav"
-                data-intent=""
-                {...(getLinkIntent(href, pathname).isActive && {
-                  'aria-current': 'page' as const,
-                })}
+          {ROUTE_LINKS.map(({ href, labelKey, kind }, index) => {
+            const label = kind === 'unit' ? tUnit(labelKey) : t(labelKey)
+            return (
+              <li
+                key={href}
+                className={s.navItem}
+                style={{ '--item': index } as CSSProperties}
               >
-                {kind === 'unit' ? tUnit(labelKey) : t(labelKey)}
-              </Link>
-            </li>
-          ))}
+                <Link
+                  className={cn('caption', s.navLink)}
+                  href={href}
+                  onClick={onRouteClick}
+                  // `MOTION-SPEC.md` §9.
+                  data-press="nav"
+                  data-intent=""
+                  // The sheet's size for this word (E8.1), measured above.
+                  data-route-word=""
+                  style={{ '--fit-chars': fitChars(label) } as CSSProperties}
+                  {...(getLinkIntent(href, pathname).isActive && {
+                    'aria-current': 'page' as const,
+                  })}
+                >
+                  {label}
+                </Link>
+              </li>
+            )
+          })}
 
           {STORYBOOK_ENABLED && (
             <li className={cn(s.navItem, s.navAside)}>
@@ -472,7 +641,7 @@ export function Header() {
           the page turns — Tata & Gerak, stage 2. Desktop only: on a phone
           the sheet's current word carries an underline of its own.
         */}
-        <RouteMarker className={s.marker} />
+        <RouteMarker className={s.marker} previews />
       </nav>
 
       {/*
@@ -489,6 +658,26 @@ export function Header() {
       */}
       <div className={s.tools}>
         <CommandTrigger className={s.search} />
+        {/*
+          The first step, at the end of the row — R4. A link, not a
+          destination: it leads to the same contact page the nav names, so it
+          carries no `aria-current` and the nav keeps the one "you are here".
+          From 1100px, where the row has room for it; a phone's sheet already
+          lists Kontak.
+        */}
+        <Link
+          href="/kontak"
+          className={cn('caption', s.cta)}
+          data-press="cta"
+          data-intent=""
+        >
+          {t('cta')}
+        </Link>
+        {/*
+          The language switcher's place, last on the right. It renders nothing
+          while Indonesian is the only published language, and takes this
+          place when R7 publishes English.
+        */}
         <LanguageSwitcher className={s.language} />
       </div>
 
@@ -509,7 +698,18 @@ export function Header() {
           if (!supportsPopover()) setFallbackOpen((was) => !was)
         }}
       >
-        {open ? t('closeMenu') : t('openMenu')}
+        {/*
+          Both words, one hidden — E8.5. The box is always the wider word's,
+          so "Tutup" fits the outline "Menu" drew and nothing moves when the
+          label changes. `visibility: hidden` keeps the hidden word out of the
+          button's name as well as out of sight.
+        */}
+        <span className={s.menuLabel} data-shown={open ? undefined : ''}>
+          {t('openMenu')}
+        </span>
+        <span className={s.menuLabel} data-shown={open ? '' : undefined}>
+          {t('closeMenu')}
+        </span>
       </button>
     </header>
   )

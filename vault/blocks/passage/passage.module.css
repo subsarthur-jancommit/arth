@@ -1,11 +1,13 @@
 /*
- * The passage: a reel of the work, pinned, then the section's title.
+ * The passage: the units' plates, pinned, then the section's title.
  *
- * Every rule here describes the **resting** state — what a reader sees with
- * JavaScript off. GSAP's tweens are `fromTo`, so the "from" only exists once
- * the timeline has set it, and nothing here can strand content invisible.
- * At rest the reel sits on its first plate: the others wait below the frame
- * (`.plate:not(:first-child)`), which is the stylesheet's doing, not a tween's.
+ * Every rule outside the reduced-motion block describes the reel's **resting**
+ * state. GSAP's tweens are `fromTo`, so the "from" only exists once the
+ * timeline has set it, and nothing here can strand content invisible. At rest
+ * the reel sits on its first plate: the others wait below the frame
+ * (`.plate:not(:first-child)`), which is the stylesheet's doing, not a
+ * tween's. Where nothing will move them, the reduced-motion block (and the
+ * component's `<noscript>` rule) lays every plate out in the flow instead.
  */
 .passage {
   position: relative;
@@ -24,23 +26,6 @@
  */
 .withReel {
   min-height: 100svh;
-}
-
-/*
- * The ground, across the whole section rather than behind the title — the
- * defect the old passage shipped with (see the component's doc comment).
- * A radial mask so the grid reads as a field the reel sits in, not a sheet
- * of graph paper cut off at the viewport's edge. The mask is static; only
- * `transform` and `opacity` are animated.
- */
-.ground {
-  transform-origin: center;
-  will-change: transform, opacity;
-  mask-image: radial-gradient(
-    ellipse 70% 65% at 50% 55%,
-    black 35%,
-    transparent 100%
-  );
 }
 
 .stage {
@@ -65,184 +50,137 @@
   }
 }
 
-/*
- * The reel.
- *
- * Desktop: index, frame and caption on three columns of the twelve — 3, 6, 3
- * — with the index and caption sitting on the frame's baseline. Mobile: the
- * frame takes the width, and the caption and index share the row under it.
- * `minmax(0, …)` on every track, `CLAUDE.md` #12.
- */
 .reel {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-areas:
-    'frame frame'
-    'caption count';
-  align-items: end;
-  column-gap: var(--gap);
-  row-gap: mobile-vw(16px);
+  gap: mobile-vw(12px);
 
   @media (--desktop) {
-    grid-template-columns: minmax(0, 3fr) minmax(0, 6fr) minmax(0, 3fr);
-    grid-template-areas: 'count frame caption';
-    row-gap: 0;
+    gap: desktop-vw(16px);
   }
-}
-
-.count {
-  grid-area: count;
-  display: flex;
-  align-items: flex-end;
-  gap: mobile-vw(8px);
-  justify-self: end;
-
-  @media (--desktop) {
-    justify-self: start;
-    gap: desktop-vw(12px);
-  }
-}
-
-/* One numeral tall, so the strip behind it shows exactly one index. */
-.countMask {
-  height: 1em;
-  overflow: clip;
 }
 
 /*
- * No `will-change` on the strips and plates: GSAP promotes an element while
- * it tweens and lets it go after, and a permanent hint here kept 2n + 4
- * layers alive for the life of the page — under reduced motion too, where
- * nothing here moves.
+ * The frame the plates wipe through: what is left of the screen once the
+ * header, the stage's padding, the note and the title have their room. The
+ * pinned stage has to fit one screen, or its last lines would sit under the
+ * fold for the whole length of the pin.
  */
-.countStrip {
-  display: grid;
-}
-
-.countValue {
-  display: block;
-  height: 1em;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-
-.countTotal {
-  color: var(--text-muted);
-  padding-bottom: 0.2em;
-}
-
 .frame {
-  grid-area: frame;
   position: relative;
   overflow: clip;
-  aspect-ratio: 4 / 5;
-  max-height: 52svh;
-  width: 100%;
-  justify-self: center;
+  height: calc(100svh - var(--header-height) - mobile-vw(260px));
+  will-change: transform, opacity;
 
   @media (--desktop) {
-    aspect-ratio: auto;
-    /*
-     * 58svh, or less on a short, wide screen: the stage also holds the
-     * header's clearance, the title under the reel and their gaps (about
-     * 200px at the 1440 design width), and all of it has to fit the pinned
-     * screen or the title rises below the fold while the reel holds.
-     */
-    height: min(58svh, calc(100svh - var(--header-height) - desktop-vw(200px)));
-    max-height: none;
+    height: calc(100svh - var(--header-height) - desktop-vw(300px));
   }
 }
 
+/*
+ * A plate: the drawing, and its caption beside it on desktop (the way the
+ * approved stills set theirs) or under it on a phone. It carries the page's
+ * ground, so the plate that wipes in covers the one it replaces.
+ */
 .plate {
   position: absolute;
   inset: 0;
-  overflow: clip;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: mobile-vw(16px);
+  margin: 0;
+  background-color: var(--color-primary);
+
+  @media (--desktop) {
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gutter);
+  }
+}
+
+/*
+ * Lit plates are drawn by the root canvas, which sits behind the page, so a
+ * plate's ground would hide them. Once any of them has drawn, the grounds
+ * clear; the plate before fades as the next arrives, so nothing shows
+ * through that should not.
+ */
+.withReel:has([data-plate-live]) .plate {
+  background-color: transparent;
 }
 
 .plate:not(:first-child) {
   transform: translateY(101%);
 }
 
-.plateMedia {
-  position: absolute;
-  inset: 0;
-}
-
 /*
- * The cover fills the frame whatever its own ratio — the dataset carries
- * portrait, square and landscape works, and the frame is one shape.
+ * The drawing fills its cell and the SVG keeps its own proportions inside it
+ * (`preserveAspectRatio`'s default, `xMidYMid meet`), so a plate of any shape
+ * sits whole in the frame.
  */
-.plateMedia img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  object-fit: cover;
-}
+.drawing {
+  position: relative;
+  min-height: 0;
+  will-change: transform;
 
-/*
- * Captions roll in step with the index: one row tall, so the strip behind
- * shows one work's title and facts at a time. A title that would wrap is cut
- * rather than allowed to change the row's height, because the roll is
- * computed in whole rows.
- */
-.captions {
-  grid-area: caption;
-  height: mobile-vw(72px);
-  overflow: clip;
+  & svg {
+    height: 100%;
+  }
 
   @media (--desktop) {
-    height: desktop-vw(88px);
+    grid-column: 1 / 10;
   }
-}
-
-.captionStrip {
-  display: grid;
 }
 
 .caption {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: mobile-vw(4px);
-  /* The same height as `.captions`, which is the row the roll counts in. */
-  height: mobile-vw(72px);
+  display: grid;
+  align-content: start;
+  gap: mobile-vw(6px);
   min-width: 0;
 
   @media (--desktop) {
-    gap: desktop-vw(6px);
-    height: desktop-vw(88px);
+    grid-column: 10 / -1;
+    gap: desktop-vw(10px);
   }
 }
 
-.captionTitle {
-  display: block;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+.count {
+  display: flex;
+  align-items: baseline;
+  gap: mobile-vw(8px);
+
+  @media (--desktop) {
+    gap: desktop-vw(12px);
+    margin-block-end: desktop-vw(8px);
+  }
 }
 
-/*
- * Facts get two lines: the caption column is three of twelve, and the
- * engagement, client and year of a real work rarely fit one.
- */
-.captionMeta {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+.countValue {
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.countTotal {
   color: var(--text-muted);
 }
 
-/*
- * The title's mask.
- *
- * `overflow: clip` and not `hidden`: `hidden` establishes a scroll container
- * that assistive technology can focus and scroll even though nothing
- * overflows it at rest. `clip` cuts without that side effect.
- */
+.captionUnit,
+.captionMeta {
+  color: var(--text-muted);
+}
+
+.captionTitle {
+  overflow-wrap: anywhere;
+}
+
+.note {
+  margin: 0;
+  color: var(--text-muted);
+
+  @media (--desktop) {
+    justify-self: end;
+    max-width: calc(3 / 12 * 100%);
+  }
+}
+
 .mask {
   position: relative;
   overflow: clip;
@@ -252,17 +190,18 @@
   will-change: transform, opacity;
 }
 
+/*
+ * Stillness, and every plate in the flow.
+ *
+ * The component builds no timeline here, so nothing would ever bring a
+ * parked plate into the frame: the frame stops being a frame. The figures
+ * stack one after another, each drawing capped at three quarters of a screen
+ * so the page stays shorter than the pinned one by about the pin's own
+ * length (`e2e/journey.e2e.ts`, "reduced motion adds no empty scroll").
+ * The `<noscript>` rule in `index.tsx` repeats this for a reader with
+ * scripting off; keep the two in step.
+ */
 @media (--reduced-motion) {
-  /*
-   * No reel and no screen-tall box: the component creates no ScrollTrigger
-   * under this preference, so the passage is only its title, and the work
-   * follows at once. The reel is a preview of the grid below; under reduced
-   * motion the grid is the whole story.
-   */
-  .reel {
-    display: none;
-  }
-
   .withReel {
     min-height: auto;
   }
@@ -271,7 +210,26 @@
     padding-block: 0;
   }
 
-  .ground,
+  .frame {
+    display: grid;
+    gap: calc(var(--section-lead) * 2);
+    height: auto;
+    overflow: visible;
+  }
+
+  .plate,
+  .plate:not(:first-child) {
+    position: relative;
+    inset: auto;
+    transform: none;
+  }
+
+  .drawing svg {
+    height: auto;
+    max-height: 75svh;
+  }
+
+  .frame,
   .title,
   .stage {
     transform: none;

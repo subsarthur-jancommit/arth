@@ -32,6 +32,16 @@
  * Either way the first paint, a page brought back by Back, a resize and a
  * face arriving put it where it belongs at once.
  *
+ * ## Previews — R4
+ *
+ * `previews`, the header's since R4 (`docs/RENCANA-REVISI-F3.md`, the
+ * navbar plan's "penanda aktif"): in `press`, the rule also goes to the item
+ * under the pointer or the keyboard's focus, and comes back to the current
+ * one when they leave the index. Where nothing is current it shows only
+ * while something is pointed at, and fades as they leave. A press ends the
+ * previews: the rule stays on the pressed item until the page turns, so a
+ * pointer drifting off it does not take back what the press said.
+ *
  * ## Where it finds its place
  *
  * In its parent: the item marked `aria-current` there, and in `press`, the
@@ -68,6 +78,11 @@ import s from './route-marker.module.css'
 interface RouteMarkerProps {
   /** What slides it: a press (the default), or the current item changing. */
   follows?: 'press' | 'current' | undefined
+  /**
+   * In `press`, preview the item pointed at or focused, and slide back to the
+   * current one when the pointer and the focus leave.
+   */
+  previews?: boolean | undefined
   className?: string | undefined
 }
 
@@ -115,6 +130,7 @@ function place(
 
 export function RouteMarker({
   follows = 'press',
+  previews = false,
   className,
 }: RouteMarkerProps) {
   const ref = useRef<HTMLSpanElement>(null)
@@ -157,6 +173,14 @@ export function RouteMarker({
       }
     }
 
+    /** The item an event happened on, if it is one of this index's. */
+    const itemOf = (target: EventTarget | null) => {
+      if (!(target instanceof Element)) return null
+      const item = target.closest<HTMLElement>('a[href], button')
+      return item && container.contains(item) ? item : null
+    }
+
+    let pressedOne = false
     const onClick = (event: MouseEvent) => {
       // A modified click opens a new tab and leaves the reader here.
       if (
@@ -167,20 +191,48 @@ export function RouteMarker({
         event.altKey
       )
         return
-      const target = event.target
-      if (!(target instanceof Element)) return
-      const pressed = target.closest<HTMLElement>('a[href], button')
-      if (!pressed || !container.contains(pressed)) return
+      const pressed = itemOf(event.target)
+      if (!pressed) return
       if (pressed.getAttribute('target') === '_blank') return
+      pressedOne = true
       place(marker, container, pressed, true)
     }
     container.addEventListener('click', onClick)
 
+    // Previews: to what is pointed at or focused, and back when both leave.
+    const onPreview = (event: Event) => {
+      const item = itemOf(event.target)
+      if (item && !pressedOne) place(marker, container, item, true)
+    }
+    const onLeave = () => {
+      if (pressedOne) return
+      if (container.contains(document.activeElement)) {
+        const focused = itemOf(document.activeElement)
+        if (focused) return place(marker, container, focused, true)
+      }
+      place(marker, container, currentIn(container), true)
+    }
+    const onFocusOut = (event: FocusEvent) => {
+      const next = event.relatedTarget
+      if (next instanceof Node && container.contains(next)) return
+      onLeave()
+    }
+    if (previews) {
+      container.addEventListener('pointerover', onPreview)
+      container.addEventListener('pointerleave', onLeave)
+      container.addEventListener('focusin', onPreview)
+      container.addEventListener('focusout', onFocusOut)
+    }
+
     return () => {
       resize.disconnect()
       container.removeEventListener('click', onClick)
+      container.removeEventListener('pointerover', onPreview)
+      container.removeEventListener('pointerleave', onLeave)
+      container.removeEventListener('focusin', onPreview)
+      container.removeEventListener('focusout', onFocusOut)
     }
-  }, [follows])
+  }, [follows, previews])
 
   return (
     <span

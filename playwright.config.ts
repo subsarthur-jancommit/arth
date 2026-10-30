@@ -100,6 +100,14 @@ export default defineConfig({
         // The menu exists only below the desktop breakpoint, so this is the
         // one project that can open it (the fork).
         '**/phone-menu.e2e.ts',
+        // R4's header: the sheet's measured word sizes (E8.1) and the Close
+        // button that fits its box (E8.5) exist only on a phone. On desktop
+        // those two tests skip, so without this line they never ran at all.
+        '**/navbar.e2e.ts',
+        // R4's plates on the home path: a phone never lights them, so the
+        // flat plates under reduced motion and without a script are the
+        // whole of what it shows, and that is a claim at this width too.
+        '**/plate-paths.e2e.ts',
       ],
       use: {
         browserName: 'chromium',

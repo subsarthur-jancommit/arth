@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { SectionHeader } from '@/components/ui/section-header'
+import { Plate } from '@/vault/blocks/plate'
 
 import { Passage } from './index'
 
@@ -11,13 +12,13 @@ const meta = {
     docs: {
       description: {
         component:
-          "The home page's third choreographed moment. What is shown here is " +
-          'its **resting state** — the one a reader sees with JavaScript off ' +
-          'or reduced motion on — because the choreography is a pinned, ' +
-          'scrubbed timeline and a story frame has no page to scroll. That ' +
-          'resting state is the point of the story: every tween is a ' +
-          '`fromTo`, so nothing is ever stranded invisible, and this is what ' +
-          'the block looks like when none of them run.',
+          "The home page's pinned path. What is shown here is the reel's " +
+          '**resting state**, because the choreography is a pinned, scrubbed ' +
+          'timeline and a story frame has no page to scroll: the first plate ' +
+          'in the frame, the others parked below it. Every tween is a ' +
+          '`fromTo`, so nothing is ever stranded invisible; under reduced ' +
+          'motion, and without JavaScript, the plates are laid out one after ' +
+          'another instead.',
       },
     },
   },
@@ -26,72 +27,66 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/**
- * What the home page passes it: the work section's own header, with its own
- * title and count. No copy was added for the passage — the page has no spare
- * words, and that constraint is what made this a slot rather than a block
- * with props.
- */
+/** No plates: only the section header, which is what the passage delivers. */
 export const Default: Story = {
   args: {
-    children: <SectionHeader title="Work" aside="Six works" />,
+    children: <SectionHeader eyebrow="Gambar kerja" title="Satu kafe" />,
   },
 }
 
 /**
- * Indonesian, which is a real locale here rather than a demonstration — and
- * the check that a longer count string does not push the header off its
- * own row.
+ * With the three plates the home page passes, in the units' order. The words
+ * here stand in for the page's `messages/` strings.
  */
-export const Indonesian: Story = {
-  args: {
-    children: <SectionHeader title="Karya" aside="Enam karya" />,
-  },
-}
-
-/**
- * A plate for the reel. The catalogue has no CMS images, so each plate is a
- * lit gradient — the reel is `aria-hidden` and its media decorative, which
- * is what the home page passes too (`alt=""`).
- */
-function plate(id: string, title: string, meta: string, hue: number) {
-  return {
-    id,
-    title,
-    meta,
-    media: (
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: `radial-gradient(circle at 30% 20%, oklch(0.78 0.08 ${hue}), oklch(0.3 0.06 ${hue}) 70%)`,
-        }}
-      />
-    ),
-  }
-}
-
-/**
- * With a reel — what the home page passes since the fork. At rest, which is
- * what a story shows: the first plate in the frame, index `01`, its caption,
- * and the title below. The other plates wait under the frame until the
- * pinned timeline wipes them up.
- */
-export const WithReel: Story = {
+export const WithPlates: Story = {
   args: {
     children: (
-      <SectionHeader title="Recent engagements" aside="4 engagements" />
+      <SectionHeader
+        eyebrow="Gambar kerja"
+        title="Satu kafe, dikerjakan tiga unit."
+      />
     ),
+    note: 'Rangkaian yang mungkin, bukan proyek yang pernah kami kerjakan.',
     plates: [
-      plate(
-        'fixture-1',
-        'Panas Sore',
-        'Architecture review, six weeks · 2025',
-        55
-      ),
-      plate('fixture-2', 'Tenun', 'Retainer, six months · 2025', 160),
-      plate('fixture-3', 'Arus', 'Evaluation build, ten weeks · 2024', 285),
-      plate('fixture-4', 'Takar', 'Data pipeline, fixed scope · 2024', 320),
+      {
+        id: 'konstruksi',
+        unit: 'Konstruksi',
+        title: 'Kafe siap buka dari lokasi sewa',
+        meta: 'Denah lantai 1 dan potongan A-A',
+        media: (
+          <Plate
+            unit="konstruksi"
+            title="Denah lantai 1 dan potongan sebuah kafe"
+            description="Denah dan potongan sebuah kafe di ruko sewa."
+          />
+        ),
+      },
+      {
+        id: 'teknologi',
+        unit: 'Teknologi',
+        title: 'Pesan dan bayar dari meja',
+        meta: 'Diagram alur pesanan',
+        media: (
+          <Plate
+            unit="teknologi"
+            title="Diagram alur pesanan"
+            description="Empat lajur: tamu, sistem, dapur, dan pemasok."
+          />
+        ),
+      },
+      {
+        id: 'peekabo',
+        unit: 'Peekabo',
+        title: 'Pembukaan cabang atau gerai',
+        meta: 'Papan kampanye pembukaan',
+        media: (
+          <Plate
+            unit="peekabo"
+            title="Papan kampanye pembukaan"
+            description="Tiga kolom waktu dan tiga baris tujuan."
+          />
+        ),
+      },
     ],
   },
 }
