@@ -23,6 +23,7 @@ import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 import { CapabilitySet } from '@/vault/blocks/capability-set'
 import { NextPractice } from '@/vault/blocks/next-practice'
+import { Plate } from '@/vault/blocks/plate'
 import { SideDoors, type SideDoor } from '@/vault/blocks/side-doors'
 import { UnitHero } from '@/vault/blocks/unit-hero'
 import { Reveal } from '@/vault/motion/reveal'
@@ -82,8 +83,9 @@ export default async function UnitPage({ params }: UnitPageProps) {
   const requested = await localeRootParam()
   const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
   const { isEnabled } = await draftMode()
-  const [t, content] = await Promise.all([
+  const [t, tPlate, content] = await Promise.all([
     getTranslations('unit'),
+    getTranslations('plates'),
     unitContent(locale, unit, isEnabled),
   ])
   /*
@@ -145,6 +147,30 @@ export default async function UnitPage({ params }: UnitPageProps) {
             statement={statement}
             sideCount={t('sideCount', { count: SIDES[unit].length })}
           />
+
+          {/*
+           * The unit's working drawing (R4, direction B): the plan and section
+           * of the café, its order flow, or its campaign board. The caption
+           * says in words what the stills said: a possible sequence, not a
+           * project done.
+           */}
+          <figure className={s.plate}>
+            <Plate
+              unit={unit}
+              title={tPlate(`${unit}.title`)}
+              description={tPlate(`${unit}.description`)}
+              className={s.plateDrawing}
+            />
+            <figcaption className={s.plateCaption}>
+              <span className="caption">{tPlate(`${unit}.drawing`)}</span>
+              <span className={cn('p', s.plateJob)}>
+                {tPlate(`${unit}.job`)}
+              </span>
+              <span className={cn('caption', s.plateNote)}>
+                {tPlate('note')}
+              </span>
+            </figcaption>
+          </figure>
         </div>
 
         {pillars.length > 0 ? (

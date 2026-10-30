@@ -289,6 +289,17 @@ memakai alamat formal satu kata tanpa tanda hubung: `/layanan` (dulu
 `/work`, `/journal` tidak diubah, atas keputusan pemilik. Rinciannya di
 `docs/RENCANA-KONTEKS-V2.md` dan `lib/i18n/renamed-paths.ts`.
 
+**Pelat gambar kerja, 30 Oktober 2026.** Tiga pelat arah B dipindahkan dari
+gambar diam ke situs sebagai data di `lib/plates/` dan digambar sebagai SVG
+oleh `vault/blocks/plate`: Konstruksi denah lantai 1 dan potongan A-A,
+Teknologi diagram alur pesanan, Peekabo papan kampanye pembukaan. Koordinat
+dan label mengikuti `docs/r4-arah-visual/model.py`, jadi gambarnya sama dengan
+yang dipilih pemilik; satu label diganti ke bahasa pembaca ("Pass-out" menjadi
+"Loket saji"). Alt teks dan keterangan ada di `messages/` (`plates`), termasuk
+kalimat "Rangkaian yang mungkin, bukan proyek yang pernah kami kerjakan."
+Pelat tampil di pita gelap pembuka setiap halaman unit. Lintasan beranda dan
+material WebGL menyusul di PR sendiri.
+
 #### Navbar interaktif: rencana, belum dieksekusi
 
 Pemilik, 30 Oktober 2026: "untuk navbar tulis rencana (untuk nanti di

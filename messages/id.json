@@ -391,5 +391,26 @@
   "connection": {
     "offline": "Anda sedang luring",
     "restored": "Tersambung kembali"
+  },
+  "plates": {
+    "note": "Rangkaian yang mungkin, bukan proyek yang pernah kami kerjakan.",
+    "konstruksi": {
+      "drawing": "Denah lantai 1 dan potongan A-A",
+      "job": "Kafe siap buka dari lokasi sewa",
+      "title": "Gambar kerja Konstruksi: denah lantai 1 dan potongan sebuah kafe di ruko sewa",
+      "description": "Denah memperlihatkan teras, ruang duduk, tangga, bar, loket saji, dapur dengan kompor dan meja olah, gudang bahan, dan tempat cuci. Garis putus menandai alur pelanggan dari jalan ke meja. Garis titik menandai alur bahan, olah, dan saji. Potongan memperlihatkan dua lantai, kanopi, bar, kompor dengan cerobong sampai atap, dan meja di sepanjang dinding."
+    },
+    "teknologi": {
+      "drawing": "Diagram alur pesanan",
+      "job": "Pesan dan bayar dari meja",
+      "title": "Gambar kerja Teknologi: diagram alur pesanan di kafe yang sama, dari tamu sampai pemasok",
+      "description": "Empat lajur: tamu, sistem, dapur, dan pemasok. Tamu memesan lewat WhatsApp atau dari meja, lalu membayar dari meja. Pesanan dicatat dengan harga dan promo menurut aturan Anda, dan uang yang masuk cocok dengan catatannya. Layar di dapur menyusun urutan saji. Stok bahan ikut tercatat, dan saat bahan menipis pesanan ulang terkirim sendiri ke pemasok."
+    },
+    "peekabo": {
+      "drawing": "Papan kampanye pembukaan",
+      "job": "Pembukaan cabang atau gerai",
+      "title": "Gambar kerja Peekabo: papan kampanye pembukaan kafe yang sama",
+      "description": "Kolomnya waktu: sebelum kafe dibuka, hari pertama, dan sesudahnya. Barisnya tujuan: perhatian, kepercayaan, dan penjualan. Perhatian datang dari sasaran dan pesan, iklan di TikTok, Meta, dan Google, satu hari syuting untuk stok konten sebulan, dan media sosial yang dikelola. Kepercayaan datang dari warga sekitar yang diundang lebih dulu, booth dan sampling, dan temu pelanggan. Penjualan datang dari kreator dan host live yang ikut menjual. Target, lingkup, dan laporan disepakati tertulis."
+    }
   }
 }

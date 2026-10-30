@@ -1,0 +1,47 @@
+/*
+ * A plate is as wide as its box and as tall as its drawing.
+ *
+ * The SVG carries a `viewBox` and no width or height of its own, so
+ * `height: auto` takes its aspect ratio from the drawing before anything
+ * loads: there is nothing to wait for, and nothing shifts.
+ */
+.plate {
+  /*
+   * Line weight, as a multiple of the stills'. Their hairlines were drawn
+   * for a plate about a thousand pixels across, and a phone shows one at
+   * about a third of that, where 0.9 units is a third of a pixel.
+   */
+  --plate-weight: 2.2;
+
+  display: block;
+  width: 100%;
+  height: auto;
+  text-rendering: geometricPrecision;
+
+  @media (--desktop) {
+    --plate-weight: 1;
+  }
+
+  /*
+   * Lit on a stage (direction B): the paper lines carry a faint glow of
+   * themselves, as the approved stills did. `drop-shadow` follows the drawn
+   * lines rather than the box, and on a document page the plate is plain ink.
+   */
+  :where([data-theme='dark']) & {
+    filter: drop-shadow(
+      0 0 3px color-mix(in oklab, currentColor 45%, transparent)
+    );
+  }
+
+  & text {
+    fill: currentColor;
+  }
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.display {
+  font-family: var(--font-display);
+}
