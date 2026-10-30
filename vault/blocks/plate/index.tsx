@@ -56,16 +56,13 @@ interface PlateProps {
  * Widths go through `--plate-weight`: a phone shows a plate at about a
  * quarter of its units, and the stills' hairlines would vanish there.
  */
+/** What each fill paints with: the line's ink, or the page behind it. */
+const FILLS = { ink: 'currentColor', ground: 'var(--color-primary)' } as const
+
 function markStyle({ role }: PlateMark): CSSProperties {
   const style = MARK_STYLES[role]
-  const fill =
-    style.fill === 'ink'
-      ? 'currentColor'
-      : style.fill === 'ground'
-        ? 'var(--color-primary)'
-        : 'none'
   return {
-    fill,
+    fill: style.fill ? FILLS[style.fill] : 'none',
     ...(style.fillOpacity !== undefined && { fillOpacity: style.fillOpacity }),
     ...(style.stroke === undefined
       ? { stroke: 'none' }
