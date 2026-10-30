@@ -26,7 +26,10 @@ function coordinates(d: string): number[][] {
 
 describe('working-drawing plates', () => {
   it('has one plate per unit, drawn for that unit', () => {
-    expect(Object.keys(PLATES).toSorted()).toEqual([...UNITS].toSorted())
+    const byName = (a: string, b: string) => a.localeCompare(b)
+    expect(Object.keys(PLATES).toSorted(byName)).toEqual(
+      [...UNITS].toSorted(byName)
+    )
     for (const unit of UNITS) expect(PLATES[unit].unit).toBe(unit)
   })
 
