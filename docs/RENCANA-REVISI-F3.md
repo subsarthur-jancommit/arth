@@ -300,11 +300,22 @@ kalimat "Rangkaian yang mungkin, bukan proyek yang pernah kami kerjakan."
 Pelat tampil di pita gelap pembuka setiap halaman unit. Lintasan beranda dan
 material WebGL menyusul di PR sendiri.
 
-#### Navbar interaktif: rencana, belum dieksekusi
+#### Navbar interaktif
 
 Pemilik, 30 Oktober 2026: "untuk navbar tulis rencana (untuk nanti di
 eksekusi) bahwa Kedepannya akan dibuat Dengan sistem animasi yang interaktif."
-Bagian ini adalah rencana itu. Belum ada kode yang dibuat untuknya.
+Bagian ini adalah rencana itu.
+
+**Status 30 Oktober 2026: dibangun** di `components/layout/header` dan
+`vault/motion/route-marker`, menunggu tinjauan pemilik di pratinjau. Penanda
+aktif, ikut latar, sembunyi dan muncul, dan lembar menu ponsel sudah ada;
+sisi kanan berisi Cari, ajakan "Ceritakan masalahnya" (mulai 1100 px), dan
+tempat pengalih bahasa. Tiga hal berbeda dari rencana di bawah: tujuan tetap
+lima (tiga unit, Metode kerja, Kontak), sesuai baris R4 dan permintaan sesi
+koordinator, sehingga Layanan dan Pembayaran belum masuk baris atas; ikut
+latar dan sembunyi memakai `IntersectionObserver` dan event gulir pasif, bukan
+ScrollTrigger, karena header tampil di halaman yang tidak memuat GSAP, dan
+keduanya tetap tanpa loop RAF kedua; pratinjau pelat unit belum dibuat.
 
 **Isi navbar.** Tiga unit (Konstruksi, Teknologi, Peekabo), lalu Layanan,
 Metode kerja, Pembayaran, dan Kontak, karena pemilik meminta halaman tetap
