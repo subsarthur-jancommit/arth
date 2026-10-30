@@ -12,6 +12,23 @@
   }
 }
 
+/*
+ * The dark band behind the unit's opening — R4. It reaches the page edges by
+ * undoing `.page`'s inline padding and re-applying it inside, and it paints
+ * its own ground from the theme its `data-theme` selects.
+ */
+.stage {
+  margin-inline: calc(-20 / 375 * 100vw);
+  padding-inline: calc(20 / 375 * 100vw);
+  color: var(--color-secondary);
+  background-color: var(--color-primary);
+
+  @media (--desktop) {
+    margin-inline: calc(-64 / 1440 * 100vw);
+    padding-inline: calc(64 / 1440 * 100vw);
+  }
+}
+
 .section {
   display: grid;
   gap: calc(36 / 375 * 100vw);

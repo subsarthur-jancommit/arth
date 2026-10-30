@@ -130,15 +130,22 @@ export default async function UnitPage({ params }: UnitPageProps) {
   return (
     <Wrapper theme="light">
       <article className={s.page}>
-        <UnitHero
-          unit={unit}
-          eyebrow={t('eyebrow')}
-          name={name}
-          title={title}
-          subtitle={subtitle}
-          statement={statement}
-          sideCount={t('sideCount', { count: SIDES[unit].length })}
-        />
+        {/*
+         * The opening is a stage, the rest is a document (R4): the hero sits
+         * in a dark band and the page below it stays light. `data-theme` on
+         * the band is enough, because the colour tokens resolve per element.
+         */}
+        <div data-theme="dark" className={s.stage}>
+          <UnitHero
+            unit={unit}
+            eyebrow={t('eyebrow')}
+            name={name}
+            title={title}
+            subtitle={subtitle}
+            statement={statement}
+            sideCount={t('sideCount', { count: SIDES[unit].length })}
+          />
+        </div>
 
         {pillars.length > 0 ? (
           <Reveal as="section" className={s.section} perItem>

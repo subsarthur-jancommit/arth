@@ -36,13 +36,31 @@
   }
 }
 
-.name {
-  margin: 0;
-  overflow-wrap: anywhere;
+/*
+ * The stage setting (R4). The unit hero sits on the dark band of the unit
+ * page, so its name is fitted to its line rather than sitting at the h1 size.
+ *
+ * It was set wide on Archivo's width axis. Onest, the heading face since the
+ * type after framer.com (2026-10-30), has no width axis, so the name is
+ * sized instead: the global nameplate (`global.css`) fits it to its own cell
+ * from `--fit-chars`, which `nameplateStyle` sets, at the h1's weight. The
+ * cell is the box, not the grid, because on desktop the name holds columns
+ * 3 to 12, narrower than the grid the fit would otherwise measure. Onest at
+ * the h1 setting reaches at most 0.585em a character (headless Chrome,
+ * 2026-10-30), inside the 0.72 the fit assumes, so a name never runs past
+ * its cell.
+ */
+.nameCell {
+  min-width: 0;
 
   @media (--desktop) {
     grid-column: 3 / -1;
   }
+}
+
+.name {
+  margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .sideCount {

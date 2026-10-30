@@ -32,8 +32,10 @@ export default async function ContactPage() {
   const hasRealChannel =
     content.whatsappHref !== null || content.emailHref !== null
 
+  // Dark: contact closes the pitch, so it is a stage page (R4, page map in
+  // `docs/DESIGN-SYSTEM.md` §1).
   return (
-    <Wrapper theme="light" lenis={{ anchors: true }}>
+    <Wrapper theme="dark" lenis={{ anchors: true }}>
       <article className={s.page}>
         <header className={s.hero}>
           <p className={cn('caption', s.eyebrow)}>{t('eyebrow')}</p>
