@@ -46,19 +46,22 @@ export function UnitHero({
         <p data-reveal-item className={cn('caption', s.eyebrow)}>
           {eyebrow}
         </p>
-        <ViewTransition
-          name={transitionName(`practice-${unit}`)}
-          share="morph"
-          default="none"
-        >
-          <h1
-            data-reveal-item
-            className={cn('h1', s.name)}
-            style={nameplateStyle(name)}
+        {/* The name's own cell is the box it is fitted to (`.nameplate`). */}
+        <div className={cn('nameplate', s.nameCell)}>
+          <ViewTransition
+            name={transitionName(`practice-${unit}`)}
+            share="morph"
+            default="none"
           >
-            {name}
-          </h1>
-        </ViewTransition>
+            <h1
+              data-reveal-item
+              className={cn('h1', 'nameplate-title', s.name)}
+              style={nameplateStyle(name)}
+            >
+              {name}
+            </h1>
+          </ViewTransition>
+        </div>
         <p data-reveal-item className={cn('caption', s.sideCount)}>
           {sideCount}
         </p>
