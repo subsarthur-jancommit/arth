@@ -302,7 +302,7 @@ body {
    * almost everything in the starter carried a class; the home page's `<h1>`
    * did not, and rendered the studio's headline in a serif nobody chose.
    * Setting it here makes the fallback the design system rather than the
-   * browser's. Since R4 that fallback is the text face (Geist), not the
+   * browser's. Since R4 that fallback is the text face (Inter), not the
    * display face: an element without a type class is more often a sentence
    * than a heading.
    */
@@ -626,7 +626,9 @@ html.screenshot {
  *   in R4 (headless Chrome, 2026-10-24): "Work" 0.589, "Commission" 0.569,
  *   "Pesanan" 0.566 … "Konsultasi" 0.477, so 0.72 still never overflows at
  *   normal width. Archivo set wide (125) reaches 0.744 ("Work"); a nameplate
- *   that uses the wide setting needs its own, larger factor.
+ *   that uses the wide setting needs its own, larger factor. Re-measured for
+ *   Onest 500 at -0.04em (2026-10-30) over the nameplate strings and the
+ *   longest headline words: at most 0.585 ("Work"), so 0.72 holds.
  * - capped at `--fit-cap` (default 34svh), so a four-letter word does not
  *   become a wall.
  * - never smaller than the `h1` curve — copied from the `h1` utility in

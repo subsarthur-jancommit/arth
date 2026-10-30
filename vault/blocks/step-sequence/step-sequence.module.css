@@ -277,10 +277,10 @@
   text-wrap: balance;
   /*
    * A project's chapters pass their own titles, and at display size one long
-   * word can outgrow the 6fr track and run under the body beside it.
+   * word can outgrow the 6fr track and run under the body beside it. It
+   * breaks without a hyphen since R4 (2026-10-30), as `capability-set` does.
    */
   overflow-wrap: break-word;
-  hyphens: auto;
 
   @media (--desktop) {
     grid-column: 2;
