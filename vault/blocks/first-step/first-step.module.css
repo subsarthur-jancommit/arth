@@ -1,0 +1,124 @@
+/*
+ * Provenance: original work for this project. No third-party code copied.
+ *
+ * A surface rather than a rule: the approved screen sets the first step on
+ * `--surface`, the 4% tint of ink that marks a block as the place to act.
+ * Muted text keeps AA on it (estimated 8.9:1 against 9.5:1 on the page
+ * ground; `e2e/contrast-situ.e2e.ts` measures the rendered page).
+ */
+.block {
+  display: grid;
+  gap: mobile-vw(16px);
+  padding: mobile-vw(28px) mobile-vw(20px);
+  background-color: var(--surface);
+
+  @media (--desktop) {
+    gap: desktop-vw(16px);
+    padding: desktop-vw(40px) desktop-vw(44px);
+  }
+}
+
+.label {
+  margin: 0;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.title {
+  margin: 0;
+  max-width: 22em;
+  text-wrap: balance;
+}
+
+.body,
+.note {
+  margin: 0;
+  max-width: 44em;
+  text-wrap: pretty;
+}
+
+.note {
+  color: var(--text-muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: mobile-vw(16px) mobile-vw(24px);
+  align-items: center;
+  margin: 0;
+  padding-block-start: mobile-vw(8px);
+
+  @media (--desktop) {
+    gap: desktop-vw(16px) desktop-vw(24px);
+    padding-block-start: desktop-vw(8px);
+  }
+}
+
+/*
+ * The ink pill. On a document page `--color-secondary` is ink and
+ * `--color-primary` paper, so this is the approved dark button; on a stage
+ * the same tokens swap and it turns to paper on ink by itself. On hover and
+ * on keyboard focus it empties to an outline of the same ink, so both a
+ * cursor and a keyboard see the control answer (INTENT, `MOTION-SPEC.md`
+ * §9). The press is the shared `[data-press]` scale.
+ */
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75em;
+  min-height: 48px;
+  padding: mobile-vw(14px) mobile-vw(24px);
+  border: 1px solid var(--color-secondary);
+  border-radius: var(--radius-full);
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast) var(--ease-gleasing),
+    color var(--duration-fast) var(--ease-gleasing),
+    transform var(--duration-micro) var(--ease-out-quart);
+
+  @media (--desktop) {
+    min-height: 56px;
+    padding: desktop-vw(16px) desktop-vw(28px);
+  }
+
+  @media (--hover) {
+    &:hover {
+      background-color: transparent;
+      color: var(--color-secondary);
+    }
+  }
+
+  &:focus-visible {
+    background-color: transparent;
+    color: var(--color-secondary);
+    outline: 2px solid var(--color-contrast);
+    outline-offset: 4px;
+  }
+}
+
+.arrow {
+  display: inline-block;
+}
+
+.secondary {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.3em;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-contrast);
+    outline-offset: 4px;
+  }
+}
+
+@media (--reduced-motion) {
+  .action {
+    transition: none;
+  }
+}

@@ -22,6 +22,7 @@ import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 import { CapabilitySet } from '@/vault/blocks/capability-set'
+import { FirstStep } from '@/vault/blocks/first-step'
 import { NextPractice } from '@/vault/blocks/next-practice'
 import { Plate } from '@/vault/blocks/plate'
 import { SideDoors, type SideDoor } from '@/vault/blocks/side-doors'
@@ -145,7 +146,6 @@ export default async function UnitPage({ params }: UnitPageProps) {
             title={title}
             subtitle={subtitle}
             statement={statement}
-            sideCount={t('sideCount', { count: SIDES[unit].length })}
           />
 
           {/*
@@ -173,13 +173,20 @@ export default async function UnitPage({ params }: UnitPageProps) {
           </figure>
         </div>
 
+        {/*
+         * The document half (R5, direction A). Its sections are headed the
+         * way the approved unit screen heads them: a small ruled label, then
+         * the words, with no second title competing with the hero's.
+         */}
         {pillars.length > 0 ? (
-          <Reveal as="section" className={s.section} perItem>
-            <SectionHeader reveal eyebrow={name} title={t('pillarsTitle')} />
-            <ol className={s.problemList}>
+          <Reveal as="section" className={s.doc} perItem>
+            <h2 data-reveal-item className={cn('caption', s.label)}>
+              {t('pillarsTitle')}
+            </h2>
+            <ol className={s.pillars}>
               {pillars.map((pillar) => (
                 <li key={pillar.key} data-reveal-item className={s.pillar}>
-                  <p className="h3">{pillar.lead}</p>
+                  <h3 className="h3">{pillar.lead}</h3>
                   <p className="p-big">{pillar.body}</p>
                 </li>
               ))}
@@ -196,19 +203,23 @@ export default async function UnitPage({ params }: UnitPageProps) {
         />
 
         {problems.length > 0 ? (
-          <Reveal as="section" className={s.section} perItem>
-            <SectionHeader
-              reveal
-              eyebrow={t('problemsEyebrow')}
-              title={t('problemsTitle')}
-            />
-            <ol className={s.problemList}>
+          <Reveal as="section" className={s.doc} perItem>
+            <header data-reveal-item className={s.docHeader}>
+              <p className={cn('caption', s.label)}>{t('problemsEyebrow')}</p>
+              <h2 className="h2">{t('problemsTitle')}</h2>
+            </header>
+            {/* Three across on desktop, as the approved unit screen sets
+                them: a number, then the problem in the reader's words. */}
+            <ol className={s.problems}>
               {problems.map((problem, index) => (
                 <li key={problem.key} data-reveal-item className={s.problem}>
-                  <span className="caption">
+                  <span
+                    aria-hidden="true"
+                    className={cn('caption', s.problemNumber)}
+                  >
                     {String(index + 1).padStart(2, '0')}
                   </span>
-                  <p className="h3">{problem.text}</p>
+                  <p className="p-big">{problem.text}</p>
                 </li>
               ))}
             </ol>
@@ -274,24 +285,14 @@ export default async function UnitPage({ params }: UnitPageProps) {
           </Reveal>
         ) : null}
 
+        {/* The contact page until K5 names a channel (P4, R0). */}
         {action ? (
-          <Reveal as="section" className={s.action}>
-            <p data-reveal-item className="caption">
-              {t('ctaEyebrow')}
-            </p>
-            <h2 data-reveal-item className="h2">
-              {action.label}
-            </h2>
-            <p data-reveal-item className="p-big">
-              {action.after}
-            </p>
-            {/* The contact page until K5 names a channel (P4, R0). */}
-            <p data-reveal-item>
-              <Link href="/kontak" className={cn('caption', s.actionLink)}>
-                {t('ctaLink')}
-              </Link>
-            </p>
-          </Reveal>
+          <FirstStep
+            label={t('ctaEyebrow')}
+            title={action.label}
+            body={action.after}
+            action={{ href: '/kontak', label: t('ctaLink') }}
+          />
         ) : null}
 
         <NextPractice

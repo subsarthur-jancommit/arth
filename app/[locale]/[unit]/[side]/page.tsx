@@ -7,7 +7,6 @@ import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
 import { Link } from '@/components/ui/link'
 import { NoScriptFrontDoors } from '@/components/ui/route-loading'
-import { SectionHeader } from '@/components/ui/section-header'
 import { sideContent, type SideContent } from '@/lib/content/arthur-content'
 import {
   chapterForPath,
@@ -25,6 +24,8 @@ import {
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { generatePageMetadata } from '@/lib/utils/metadata'
+import { DocHead } from '@/vault/blocks/doc-head'
+import { FirstStep } from '@/vault/blocks/first-step'
 import { NetworkSide } from '@/vault/blocks/network-side'
 import { SideChapterTable } from '@/vault/blocks/side-chapter-table'
 import { StepSequence } from '@/vault/blocks/step-sequence'
@@ -193,27 +194,26 @@ export default async function SidePage({ params }: SidePageProps) {
           <RouteMarker />
         </nav>
 
-        <header className={s.hero}>
-          <p className="caption">{sideName}</p>
-          <SectionHeader
-            as="h1"
-            eyebrow={tSide('eyebrow', { unit: tUnit(unit) })}
-            title={title}
-            className={s.header}
-          />
-          {buyers.length > 0 ? (
-            <div className={s.buyers}>
-              <p className="caption">{tSide('buyersLabel')}</p>
-              <ul className={s.buyerList}>
-                {buyers.map((buyer) => (
-                  <li key={buyer} className="p">
-                    {buyer}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-        </header>
+        {/*
+         * A document head (R5, direction A): who the page is for as its
+         * label, the side's own question as its title, and a title block of
+         * facts beside it. It replaced a hero held at 62 to 76svh, whose
+         * height was empty space above a short title.
+         */}
+        <DocHead
+          eyebrow={sideName}
+          title={title}
+          titleSize="sentence"
+          facts={[
+            ...(buyers.length > 0
+              ? [{ term: tSide('buyersLabel'), detail: buyers }]
+              : []),
+            {
+              term: tUnit('eyebrow'),
+              detail: <Link href={unitTemplate(unit)}>{tUnit(unit)}</Link>,
+            },
+          ]}
+        />
 
         {isNetworkSide && networkContent ? (
           <NetworkSide
@@ -269,15 +269,23 @@ export default async function SidePage({ params }: SidePageProps) {
               />
             )}
 
+            {/*
+             * The reader's own button label goes on the button and its
+             * sentence stays outside it (`docs/R1-GLOSARIUM-PEMBACA.md` §6),
+             * where it was a heading over a generic "Mulai percakapan". The
+             * contact page until K5 names a channel (P4, R0).
+             */}
             {action ? (
-              <section className={s.action}>
-                <p className="caption">{tSide('firstStepEyebrow')}</p>
-                <h2 className="h2">{action.label}</h2>
-                <p className="p-big">{action.after}</p>
-                <Link href="/kontak" className={cn('caption', s.actionLink)}>
-                  {tSide('firstStepLink')}
-                </Link>
-              </section>
+              <FirstStep
+                label={tSide('firstStepEyebrow')}
+                body={action.after}
+                action={{
+                  href: '/kontak',
+                  // A label, not a sentence: a stray full stop would sit
+                  // on the button before its arrow.
+                  label: action.label.replace(/\.$/u, ''),
+                }}
+              />
             ) : null}
           </>
         )}

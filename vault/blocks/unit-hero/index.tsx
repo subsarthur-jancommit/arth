@@ -26,7 +26,6 @@ interface UnitHeroProps {
   /** The italic line under a ready-to-publish header, when the unit has one. */
   subtitle?: string | null | undefined
   statement: string
-  sideCount: string
   className?: string | undefined
 }
 
@@ -37,7 +36,6 @@ export function UnitHero({
   title,
   subtitle,
   statement,
-  sideCount,
   className,
 }: UnitHeroProps) {
   return (
@@ -62,9 +60,6 @@ export function UnitHero({
             </h1>
           </ViewTransition>
         </div>
-        <p data-reveal-item className={cn('caption', s.sideCount)}>
-          {sideCount}
-        </p>
       </Reveal>
 
       <section

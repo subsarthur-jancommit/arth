@@ -118,11 +118,17 @@ const UNIT_DESCRIPTIONS = {
 } satisfies Record<Unit, Localized<string>>
 
 const SIDE_LABELS = {
-  'pelaku-proyek': { en: 'People running a project', id: 'Pelaku proyek' },
+  'pelaku-proyek': { en: 'People running projects', id: 'Pelaku proyek' },
   'pemilik-bangunan': { en: 'Building owners', id: 'Pemilik bangunan' },
-  'siap-pakai': { en: 'Ready to use', id: 'Siap pakai' },
-  'paham-teknis': { en: 'Technically fluent', id: 'Paham teknis' },
-  'pemilik-usaha': { en: 'Business owners', id: 'Pemilik usaha' },
+  'siap-pakai': { en: 'Ready to use', id: 'Hasil siap pakai' },
+  'paham-teknis': {
+    en: 'Developers and technical teams',
+    id: 'Yang paham teknis',
+  },
+  'pemilik-usaha': {
+    en: 'Business owners and brands',
+    id: 'Pemilik usaha dan brand',
+  },
   jaringan: { en: 'The seller network', id: 'Jaringan penjual' },
 } satisfies Record<Side, Localized<string>>
 
