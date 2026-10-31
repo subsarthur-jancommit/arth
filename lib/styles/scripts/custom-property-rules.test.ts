@@ -88,14 +88,22 @@ function settable(source: string): string[] {
   return names
 }
 
+/**
+ * Every file the globs match, read in parallel. Read one at a time, the
+ * reads alone took 2.5 s on a OneDrive checkout, and the survey ran past the
+ * 5 s test timeout.
+ */
 async function read(globs: string[]): Promise<[string, string][]> {
-  const files: [string, string][] = []
+  const scanned: string[] = []
   for (const pattern of globs) {
-    for await (const scanned of new Glob(pattern).scan('.')) {
-      files.push([posix(scanned), await readFile(scanned, 'utf8')])
-    }
+    for await (const file of new Glob(pattern).scan('.')) scanned.push(file)
   }
-  return files
+  return Promise.all(
+    scanned.map(async (file): Promise<[string, string]> => [
+      posix(file),
+      await readFile(file, 'utf8'),
+    ])
+  )
 }
 
 async function survey() {
