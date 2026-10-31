@@ -156,6 +156,20 @@
 }
 
 .index {
+  /*
+   * Above `.content`, because on desktop the two share a row — R5.
+   *
+   * SplitText sets each headline line as a block as wide as the `h1`'s 9em
+   * measure, so the line boxes run under the right-hand columns even where
+   * the words stop short of them. `.content` comes later and sits at z 1, so
+   * once the units became links its line boxes took the clicks: e2e run
+   * 41159054886 found `main a[href="/id/konstruksi"]` visible and
+   * unclickable, intercepted by the "Pasar bertambah." line. Nothing in
+   * `.content` lies under this block — the subline and the action keep to the
+   * left — so lifting it costs no other control its pointer.
+   */
+  position: relative;
+  z-index: 2;
   /* Row 2: directly above `.content` in row 3, with the frame's slack over
      both. On desktop this is overridden to share `.content`'s rows so the
      list sits beside the headline instead of above it. */
@@ -227,9 +241,16 @@
      * right-aligned two-line notes would read as a ragged poem. So the block
      * sits against the frame's right edge at a measure of its own, and its
      * lines start together on its left.
+     *
+     * That measure scales with the screen, as the headline does. A fixed
+     * 26rem held at 1440 and collided below it: measured on production at
+     * 1024x768, the headline's last line ends at x 682, and a 416px block
+     * against the right edge would start about 90px over its last word. At
+     * 28vw it starts about 30px clear of it, and about 60px clear at 1280.
+     * Arithmetic from that measurement, not a rendering of this rule.
      */
     justify-self: end;
-    width: min(100%, 26rem);
+    width: min(100%, 26rem, 28vw);
     gap: desktop-vw(12px);
     /*
      * Clearance from the header, measured — Tahap 67.
