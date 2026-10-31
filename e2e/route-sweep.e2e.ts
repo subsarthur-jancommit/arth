@@ -10,6 +10,7 @@ import { publicLocaleRedirect } from '../lib/i18n/public-locale-redirect'
 import { PUBLISHED_LOCALES, routing } from '../lib/i18n/routing'
 import { isAwaitingContentPath } from '../lib/seo/route-status'
 import { axeTags } from './axe-tags'
+import { SITUATION_ROUTES, WORK_ROUTES } from './fixtures'
 
 /**
  * Route sweep — auto-discovered smoke coverage for every static page.
@@ -214,7 +215,17 @@ function discoverRoutes(): string[] {
   return [...new Set(routes)].sort()
 }
 
-const discoveredRoutes = discoverRoutes()
+/*
+ * The situation and work pages sit under `[...slug]`, which discovery skips
+ * because their addresses come from content. R5's done-criterion wants them
+ * swept too, so they are named: production slugs, since the fixtures F3-12
+ * asks for do not exist yet (`e2e/fixtures.ts` says why).
+ */
+const discoveredRoutes = [
+  ...discoverRoutes(),
+  ...SITUATION_ROUTES,
+  ...WORK_ROUTES,
+]
 
 /**
  * Runs every scroll-triggered reveal to completion, so axe scans a settled page.

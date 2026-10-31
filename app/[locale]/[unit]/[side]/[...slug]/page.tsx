@@ -31,11 +31,11 @@ import {
 } from '@/lib/integrations/sanity/queries'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 import { ChapterOfferGrid } from '@/vault/blocks/chapter-offer-grid'
-import { OfferAudience } from '@/vault/blocks/offer-audience'
+import { DocHead } from '@/vault/blocks/doc-head'
+import { FirstStep } from '@/vault/blocks/first-step'
 import { OfferBoundaries } from '@/vault/blocks/offer-boundaries'
 import { OfferPrintControl } from '@/vault/blocks/offer-print-control'
 import { OfferScope } from '@/vault/blocks/offer-scope'
-import { TextReveal } from '@/vault/motion/text-reveal'
 
 import s from './page.module.css'
 // Bab dan offer datang dari dokumen Sanity, jadi nilainya tidak tersedia saat
@@ -212,6 +212,15 @@ function askHref(chapter: string, offer?: string) {
   const query = new URLSearchParams({ dari: chapter })
   if (offer) query.set('pekerjaan', offer)
   return `/kontak?${query.toString()}`
+}
+
+/**
+ * A first step's label as a button reads it: the reader's own label
+ * (`docs/R1-GLOSARIUM-PEMBACA.md` §6) without a closing full stop, which
+ * would sit between the words and the arrow.
+ */
+function buttonLabel(label: string) {
+  return label.replace(/\.$/u, '')
 }
 
 function chapterCards(
@@ -454,6 +463,21 @@ function offerBridge(data: OfferReaderData) {
   }
 }
 
+/** The situation's name, for a work page's path back and its facts. */
+async function chapterNameFor(
+  values: RouteValues,
+  locale: Locale,
+  preview: boolean
+) {
+  const { data } = await fetchChapter(
+    { unit: values.unit, side: values.side, chapter: values.chapter },
+    locale,
+    preview
+  )
+  const parsed = chapterReaderSchema.safeParse(data)
+  return parsed.success ? parsed.data.nama : null
+}
+
 /** Reader-facing chapter and offer routes below one validated side. */
 export default async function ArthurDetailPage({
   params,
@@ -468,8 +492,10 @@ export default async function ArthurDetailPage({
 
   if (!values.offer) {
     const { isEnabled } = await draftMode()
-    const [t, { data }] = await Promise.all([
+    const [t, tUnit, tSide, { data }] = await Promise.all([
       getTranslations('chapter'),
+      getTranslations('unit'),
+      getTranslations('side'),
       fetchChapter(values, locale, isEnabled),
     ])
     const parsed = chapterReaderSchema.safeParse(data)
@@ -491,18 +517,35 @@ export default async function ArthurDetailPage({
     return (
       <Wrapper theme="light">
         <article className={s.page}>
-          <header className={s.hero}>
-            <p className="caption">{chapterData.nama}</p>
+          {/*
+           * A document head (R5, direction A), after the approved situation
+           * screen: the path back to the unit and the reader, "Situasi", the
+           * situation's name as the page's title, then the buyer's own words
+           * and the situation line. It replaced a hero held at 62 to 76svh
+           * that set the name as a caption and gave the page no h1.
+           */}
+          <DocHead
+            crumbs={[
+              { label: tUnit(values.unit), href: unitTemplate(values.unit) },
+              {
+                label: tSide(values.side),
+                href: sideTemplate(values.unit, values.side),
+              },
+            ]}
+            crumbsLabel={t('crumbsLabel')}
+            eyebrow={tSide('chapterLabel')}
+            title={chapterData.nama ?? ''}
+          >
             <blockquote className={cn('quote', s.quote)}>
               {chapterData.kutipan}
             </blockquote>
             {chapterData.situasi ? (
-              <p className="p-big">{chapterData.situasi}</p>
+              <p className={cn('p-big', s.lead)}>{chapterData.situasi}</p>
             ) : null}
             {chapterData.pembeli ? (
-              <p className="caption">{chapterData.pembeli}</p>
+              <p className={cn('caption', s.buyers)}>{chapterData.pembeli}</p>
             ) : null}
-          </header>
+          </DocHead>
 
           <ChapterOfferGrid
             offers={cards}
@@ -520,16 +563,18 @@ export default async function ArthurDetailPage({
           />
 
           {chapterData.batas ? (
-            <section className={s.boundaries}>
-              <p className="caption">{t('boundariesEyebrow')}</p>
+            <section className={s.doc}>
+              <h2 className={cn('caption', s.label)}>
+                {t('boundariesEyebrow')}
+              </h2>
               <p className="p-big">{chapterData.batas}</p>
             </section>
           ) : null}
 
           {bridges.length > 0 ? (
-            <section className={s.bridges}>
-              <p className="caption">{t('bridgesEyebrow')}</p>
-              <ul>
+            <section className={s.doc}>
+              <h2 className={cn('caption', s.label)}>{t('bridgesEyebrow')}</h2>
+              <ul className={s.bridgeList}>
                 {bridges.map((bridge) => (
                   <li key={bridge.id}>
                     <Link href={bridge.href} className="p-big" data-intent="">
@@ -541,18 +586,19 @@ export default async function ArthurDetailPage({
             </section>
           ) : null}
 
+          {/*
+           * The reader's own label on the button, its sentence outside it
+           * (glossary §6), where it was a heading over "Mulai percakapan".
+           */}
           {chapterData.ajakan?.label && chapterData.ajakan.sesudahnya ? (
-            <section className={s.action}>
-              <p className="caption">{t('firstStepEyebrow')}</p>
-              <h2 className="h2">{chapterData.ajakan.label}</h2>
-              <p className="p-big">{chapterData.ajakan.sesudahnya}</p>
-              <Link
-                href={askHref(values.chapter)}
-                className={cn('caption', s.actionLink)}
-              >
-                {t('firstStepLink')}
-              </Link>
-            </section>
+            <FirstStep
+              label={t('firstStepEyebrow')}
+              body={chapterData.ajakan.sesudahnya}
+              action={{
+                href: askHref(values.chapter),
+                label: buttonLabel(chapterData.ajakan.label),
+              }}
+            />
           ) : null}
 
           <nav aria-label={t('navigationLabel')} className={s.navigation}>
@@ -580,9 +626,13 @@ export default async function ArthurDetailPage({
   }
 
   const { isEnabled } = await draftMode()
-  const [t, { data }] = await Promise.all([
+  const [t, tUnit, tSide, tNav, { data }, chapterName] = await Promise.all([
     getTranslations('offer'),
+    getTranslations('unit'),
+    getTranslations('side'),
+    getTranslations('nav'),
     fetchOffer(values as Required<RouteValues>, locale, isEnabled),
+    chapterNameFor(values, locale, isEnabled),
   ])
   const parsed = offerReaderSchema.safeParse(data)
   if (!parsed.success || !offerIsSafe(parsed.data)) {
@@ -599,36 +649,58 @@ export default async function ArthurDetailPage({
   return (
     <Wrapper theme="light">
       <article className={cn(s.page, s.offerPage)} data-offer-sheet="">
-        <header className={cn(s.hero, s.offerHero)} data-epic="offer-arrival">
-          <p className="caption">{offerData.jenis}</p>
-          <TextReveal
-            as="h1"
-            split="lines"
-            pace="epic"
-            className={s.offerTitle}
-          >
-            {offerData.judul ?? ''}
-          </TextReveal>
+        {/*
+         * A document head after the approved work screen: the path back to
+         * the situation, the kind of work, the title, its impact, and the
+         * facts a buyer checks first. The title had no type class and set at
+         * body size, inside a hero held at 62 to 76svh.
+         */}
+        <DocHead
+          crumbs={[
+            { label: tUnit(values.unit), href: unitTemplate(values.unit) },
+            {
+              label: tSide(values.side),
+              href: sideTemplate(values.unit, values.side),
+            },
+            ...(chapterName ? [{ label: chapterName, href: chapterHref }] : []),
+          ]}
+          crumbsLabel={t('crumbsLabel')}
+          eyebrow={offerData.jenis ?? undefined}
+          title={offerData.judul ?? ''}
+          facts={[
+            { term: t('audienceEyebrow'), detail: offerData.untukSiapa },
+            {
+              term: tUnit('eyebrow'),
+              detail: (
+                <Link href={unitTemplate(values.unit)}>
+                  {tUnit(values.unit)}
+                </Link>
+              ),
+            },
+            ...(chapterName
+              ? [
+                  {
+                    term: tSide('chapterLabel'),
+                    detail: <Link href={chapterHref}>{chapterName}</Link>,
+                  },
+                ]
+              : []),
+            ...(offerData.syarat
+              ? [{ term: t('conditionLabel'), detail: offerData.syarat }]
+              : []),
+          ]}
+        >
           <p className={cn('p-big', s.impact)}>{offerData.dampak}</p>
-          {offerData.syarat ? (
-            <p className={cn('p', s.condition)}>
-              {t('conditionLabel')}: {offerData.syarat}
-            </p>
-          ) : null}
-        </header>
+        </DocHead>
 
-        <OfferAudience label={t('audienceEyebrow')} className={s.audience}>
-          {offerData.untukSiapa ?? ''}
-        </OfferAudience>
-
-        <section className={s.situation}>
-          <h2 className="caption">{t('situationEyebrow')}</h2>
-          <p className="p-big">{offerData.situasi}</p>
+        <section className={s.doc}>
+          <h2 className={cn('caption', s.label)}>{t('situationEyebrow')}</h2>
+          <p className={cn('h3', s.situationText)}>{offerData.situasi}</p>
         </section>
 
         {packages.length > 0 ? (
-          <section className={s.packages}>
-            <h2 className="caption">{t('packagesEyebrow')}</h2>
+          <section className={s.doc}>
+            <h2 className={cn('caption', s.label)}>{t('packagesEyebrow')}</h2>
             <ul className={s.packageList}>
               {packages.map((item) => (
                 <li key={item.id} className={s.package}>
@@ -667,38 +739,32 @@ export default async function ArthurDetailPage({
           {offerData.batas ?? ''}
         </OfferBoundaries>
 
-        <section className={s.action}>
-          <p className="caption">{t('firstStepEyebrow')}</p>
-          <h2 className="h2">{offerData.langkahPertama?.label}</h2>
-          <p className="p-big">{offerData.langkahPertama?.sesudahnya}</p>
-          {offerData.kalimatJujur ? (
-            <p className="p">{offerData.kalimatJujur}</p>
-          ) : null}
-          <Link
-            href={askHref(values.chapter, offerData.slug ?? undefined)}
-            className={cn('caption', s.actionLink)}
-          >
-            {t('firstStepLink')}
-          </Link>
-          {/*
-           * Teknologi work pages keep their commission sentence and refer to
-           * the one page that explains every way Arthur is paid
-           * (docs/R1-SERAH-CARA-KAMI-DIBAYAR.md, section 2).
-           */}
+        {/*
+         * The reader's own label on the button and its sentence outside it
+         * (glossary §6), then the unit's honest sentence. Teknologi work
+         * pages keep their commission sentence and refer to the one page
+         * that explains every way Arthur is paid
+         * (docs/R1-SERAH-CARA-KAMI-DIBAYAR.md, section 2).
+         */}
+        <FirstStep
+          label={t('firstStepEyebrow')}
+          body={offerData.langkahPertama?.sesudahnya ?? undefined}
+          note={offerData.kalimatJujur ?? undefined}
+          action={{
+            href: askHref(values.chapter, offerData.slug ?? undefined),
+            label: buttonLabel(offerData.langkahPertama?.label ?? ''),
+          }}
+        >
           {values.unit === 'teknologi' ? (
-            <Link
-              href="/pembayaran"
-              className={cn('caption', s.actionLink)}
-              data-payment-link=""
-            >
-              Pembayaran
+            <Link href="/pembayaran" data-payment-link="">
+              {tNav('payment')}
             </Link>
           ) : null}
-        </section>
+        </FirstStep>
 
         {bridge ? (
-          <section className={s.offerBridge}>
-            <h2 className="caption">{t('bridgeEyebrow')}</h2>
+          <section className={s.doc}>
+            <h2 className={cn('caption', s.label)}>{t('bridgeEyebrow')}</h2>
             <p className="p-big">{bridge.text}</p>
             <Link href={bridge.href} className={cn('h3', s.bridgeLink)}>
               {bridge.title}

@@ -1,32 +1,35 @@
+/*
+ * The situation and work pages as documents (R5, direction A), after the
+ * approved screens in `docs/r4-arah-visual/` (`akhir_layar.py` `situasi`,
+ * `gabungan.py` work page). The head is `vault/blocks/doc-head`; the first
+ * step is `vault/blocks/first-step`. What is left here is the rhythm between
+ * sections and the parts only these pages have.
+ *
+ * The header is fixed, so the page clears it the way the side pages do. The
+ * hero this replaced was held at 62 to 76svh and bottom-aligned, which hid
+ * the missing clearance under empty space.
+ */
 .page {
   display: flex;
   flex-grow: 1;
   flex-direction: column;
-  gap: calc(96 / 375 * 100vw);
-  padding: calc(40 / 375 * 100vw) calc(20 / 375 * 100vw) calc(96 / 375 * 100vw);
+  gap: calc(80 / 375 * 100vw);
+  padding: calc(var(--header-height) + 32 / 375 * 100vw) calc(20 / 375 * 100vw)
+    calc(96 / 375 * 100vw);
 }
 
-.hero {
-  display: grid;
-  gap: calc(24 / 375 * 100vw);
-  min-height: 62svh;
-  align-content: end;
-  max-width: 72rem;
+/* The buyer's own words, the largest line after the title. */
+.quote {
+  max-width: 23em;
+  text-wrap: pretty;
 }
 
-.hero > p,
-.quote,
-.boundaries p,
-.action p,
-.action h2,
-.bridges ul {
-  margin: 0;
+.lead {
+  max-width: 41em;
+  text-wrap: pretty;
 }
 
-.hero > p,
-.boundaries > p:first-child,
-.bridges > p:first-child,
-.action > p:first-child {
+.buyers {
   color: var(--text-muted);
 }
 
@@ -35,34 +38,51 @@
   padding-inline: calc(20 / 375 * 100vw);
 }
 
-.boundaries,
-.action,
-.bridges {
+/*
+ * A document section: a small ruled label over the words, the way the
+ * approved screens head "Situasinya", "Dua paket" and "Batas dan syarat".
+ */
+.doc {
   display: grid;
-  gap: calc(18 / 375 * 100vw);
-  max-width: 60rem;
+  gap: calc(14 / 375 * 100vw);
+  max-width: 72rem;
+  padding-top: calc(16 / 375 * 100vw);
+  border-top: 1px solid var(--line-strong);
 }
 
-.boundaries,
-.action {
-  padding-block: calc(40 / 375 * 100vw);
-  border-block: 1px solid var(--line-strong);
+.doc > p,
+.doc > ul {
+  margin: 0;
 }
 
-.bridges ul {
+.doc > p {
+  max-width: 44em;
+  text-wrap: pretty;
+}
+
+.label {
+  margin: 0;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.bridgeList {
   display: grid;
   gap: calc(12 / 375 * 100vw);
   padding: 0;
   list-style: none;
 }
 
-.bridges a,
-.actionLink {
+.bridgeList a,
+.bridgeLink {
   color: inherit;
 }
 
-.actionLink {
+.bridgeLink {
   width: fit-content;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
 }
 
 .navigation {
@@ -84,74 +104,30 @@
   margin-inline: auto;
 }
 
-.offerHero {
-  max-width: 76rem;
-}
-
-.offerTitle,
-.impact,
-.situation h2,
-.situation p,
-.offerBridge h2,
-.offerBridge p,
-.offerBridge h3 {
-  margin: 0;
-}
-
 .impact {
-  max-width: 54rem;
+  max-width: 36em;
+  text-wrap: pretty;
 }
 
-.audience,
-.situation,
+/* "Situasinya" in large type, as the approved work screen sets it. */
+.situationText {
+  max-width: 33em;
+  text-wrap: pretty;
+}
+
 .offerScope,
-.offerBoundaries,
-.offerBridge {
+.offerBoundaries {
   max-width: 72rem;
 }
 
-.situation,
-.offerBridge {
-  display: grid;
-  gap: calc(18 / 375 * 100vw);
-}
-
-.situation > h2:first-child,
-.offerBridge > h2:first-child {
-  color: var(--text-muted);
-}
-
-.bridgeLink {
-  width: fit-content;
-  color: inherit;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
-}
-
-/* A † offer's condition, one line under the impact. */
-.condition {
-  max-width: 54rem;
-  margin: 0;
-  color: var(--text-muted);
-}
-
-/* Paket Starter and Paket Integrator (glossary, section 10). */
-.packages {
-  display: grid;
-  gap: calc(18 / 375 * 100vw);
-  max-width: 72rem;
-}
-
-.packages > h2:first-child {
-  margin: 0;
-  color: var(--text-muted);
-}
-
+/*
+ * The two packages, side by side on desktop, each a ruled sheet in the ink
+ * of the page: its name, its sentence, then its points behind short dashes.
+ */
 .packageList {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: calc(12 / 375 * 100vw);
-  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -161,7 +137,7 @@
   gap: calc(12 / 375 * 100vw);
   align-content: start;
   padding: calc(20 / 375 * 100vw);
-  border: 1px solid var(--line-strong);
+  border: 1.5px solid currentColor;
 }
 
 .package h3,
@@ -171,9 +147,27 @@
 
 .packagePoints {
   display: grid;
-  gap: calc(6 / 375 * 100vw);
   margin: 0;
-  padding-left: 1.2em;
+  padding: 0;
+  list-style: none;
+}
+
+.packagePoints li {
+  position: relative;
+  padding-block: 0.6em;
+  padding-inline-start: 1.75em;
+  border-top: 1px solid var(--line);
+}
+
+/* A drawn dash rather than a bullet: the list is a sheet's, not a page's. */
+.packagePoints li::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0.1em;
+  top: 1.25em;
+  width: 0.8em;
+  height: 1.5px;
+  background-color: currentColor;
 }
 
 .offerUtilities {
@@ -186,13 +180,9 @@
 
 @media (--desktop) {
   .page {
-    gap: calc(152 / 1440 * 100vw);
-    padding: calc(64 / 1440 * 100vw) calc(64 / 1440 * 100vw)
-      calc(128 / 1440 * 100vw);
-  }
-
-  .hero {
-    min-height: 76svh;
+    gap: calc(120 / 1440 * 100vw);
+    padding: calc(var(--header-height) + 48 / 1440 * 100vw)
+      calc(64 / 1440 * 100vw) calc(128 / 1440 * 100vw);
   }
 
   .offers {
@@ -200,56 +190,27 @@
     padding-inline: calc(64 / 1440 * 100vw);
   }
 
-  .boundaries,
-  .action,
-  .bridges {
-    gap: calc(24 / 1440 * 100vw);
-  }
-
-  .boundaries,
-  .action {
-    padding-block: calc(56 / 1440 * 100vw);
-  }
-
-  .bridges ul {
+  .doc {
     gap: calc(16 / 1440 * 100vw);
+    padding-top: calc(20 / 1440 * 100vw);
   }
 
-  .situation,
-  .offerBridge {
-    grid-template-columns: 2fr 10fr;
+  .bridgeList {
     gap: calc(16 / 1440 * 100vw);
-  }
-
-  .situation > p:last-child,
-  .offerBridge > :not(:first-child) {
-    grid-column: 2;
-  }
-
-  .offerBridge > h2:first-child {
-    grid-row: 1 / span 2;
   }
 
   .offerUtilities {
     gap: calc(16 / 1440 * 100vw);
   }
 
-  .packages {
-    gap: calc(16 / 1440 * 100vw);
-  }
-
   .packageList {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: calc(16 / 1440 * 100vw);
+    gap: calc(24 / 1440 * 100vw);
   }
 
   .package {
     gap: calc(14 / 1440 * 100vw);
-    padding: calc(28 / 1440 * 100vw);
-  }
-
-  .packagePoints {
-    gap: calc(6 / 1440 * 100vw);
+    padding: calc(24 / 1440 * 100vw) calc(28 / 1440 * 100vw);
   }
 }
 
@@ -264,21 +225,14 @@
     margin-block-end: 24pt;
   }
 
-  .hero {
-    min-height: 0;
-    max-width: none;
-  }
-
-  .offerTitle {
+  /* The fluid display size is a screen's; a sheet takes a fixed one. */
+  .offerPage h1 {
     font-size: 28pt;
   }
 
-  .audience,
-  .situation,
+  .doc,
   .offerScope,
-  .offerBoundaries,
-  .action,
-  .offerBridge {
+  .offerBoundaries {
     max-width: none;
   }
 

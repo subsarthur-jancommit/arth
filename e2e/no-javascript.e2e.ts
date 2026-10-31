@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test'
 
 import { SIDES, sideTemplate, UNITS } from '../lib/content/units'
 import { routing } from '../lib/i18n/routing'
+import { SITUATION_ROUTES, WORK_ROUTES } from './fixtures'
 
 /**
  * The pages that must be readable with JavaScript switched off.
@@ -74,7 +75,8 @@ async function renderWithoutJavaScript(browser: Browser, path: string) {
         // lost the label without script is the failure this catches.
         sampleBlocks: document.querySelectorAll('[data-sample-content]').length,
         // The first step's way out, inside the page rather than the header.
-        contactLinks: document.querySelectorAll('main a[href="/id/kontak"]')
+        // A situation or work page adds where the question came from.
+        contactLinks: document.querySelectorAll('main a[href^="/id/kontak"]')
           .length,
         text: text.slice(0, 120),
       }
@@ -163,6 +165,26 @@ test.describe('readable without JavaScript', () => {
         }
       })
     }
+  }
+
+  /*
+   * The situation and work pages, under `[...slug]` (R5's done-criterion).
+   * Production slugs, not fixtures: `e2e/fixtures.ts` says why. A situation
+   * page had no h1 before R5, so the floor here is the same as everywhere.
+   */
+  for (const path of [...SITUATION_ROUTES, ...WORK_ROUTES]) {
+    test(`${path} renders server-side`, async ({ browser }) => {
+      const rendered = await renderWithoutJavaScript(browser, path)
+
+      expect(rendered.headings, 'exactly one h1').toBe(1)
+      expect(rendered.chars, `only rendered: ${rendered.text}`).toBeGreaterThan(
+        MIN_CHARS
+      )
+      expect(
+        rendered.contactLinks,
+        `${path} offers no way to the contact page without script`
+      ).toBeGreaterThan(0)
+    })
   }
 
   test('a project page renders server-side', async ({ browser, request }) => {

@@ -4,11 +4,11 @@
  *
  * Provenance: original work for Arthur. No third-party code copied. The
  * arrangement follows the approved document screens in
- * `docs/r4-arah-visual/` (`gabungan.py`: `.g-head`, `.g-kop`): a label, the
- * title, and a ruled box of facts beside them, the way a sheet carries its
- * title block. The screens also draw a breadcrumb and a lead paragraph; they
- * join this block with the first page that passes them, since a prop no page
- * asks for is a capability nobody can see (`vault/vault-api.test.ts`).
+ * `docs/r4-arah-visual/` (`gabungan.py`: `.g-crumb`, `.g-head`, `.g-kop`):
+ * a path back up, a label, the title, what the page says under it, and a
+ * ruled box of facts beside them, the way a sheet carries its title block.
+ * What sits under the title is the page's own (`children`): a buyer's quote
+ * and its situation on a situation page, one impact line on a work page.
  *
  * ## What it owns, and what the page owns
  *
@@ -25,7 +25,15 @@
 import cn from 'clsx'
 import type { ReactNode } from 'react'
 
+import { Link } from '@/components/ui/link'
+
 import s from './doc-head.module.css'
+
+export interface DocCrumb {
+  label: string
+  /** Where it leads. The page being read has none. */
+  href?: string | undefined
+}
 
 export interface DocFact {
   term: string
@@ -33,6 +41,10 @@ export interface DocFact {
 }
 
 interface DocHeadProps {
+  /** The path back up, ancestors first. */
+  crumbs?: readonly DocCrumb[] | undefined
+  /** The breadcrumb's name for assistive technology. */
+  crumbsLabel?: string | undefined
   eyebrow?: string | undefined
   title: string
   /**
@@ -41,20 +53,43 @@ interface DocHeadProps {
    */
   titleSize?: 'name' | 'sentence' | undefined
   facts?: readonly DocFact[] | undefined
+  /** What the page says under its title, in its own markup. */
+  children?: ReactNode
   className?: string | undefined
 }
 
 export function DocHead({
+  crumbs,
+  crumbsLabel,
   eyebrow,
   title,
   titleSize = 'name',
   facts,
+  children,
   className,
 }: DocHeadProps) {
   const hasFacts = facts !== undefined && facts.length > 0
 
   return (
     <header className={cn(s.head, hasFacts && s.withFacts, className)}>
+      {crumbs && crumbs.length > 0 ? (
+        <nav aria-label={crumbsLabel} className={s.crumbs}>
+          <ol className={s.crumbList}>
+            {crumbs.map((crumb) => (
+              <li key={crumb.label} className={cn('caption', s.crumb)}>
+                {crumb.href ? (
+                  <Link href={crumb.href} className={s.crumbLink}>
+                    {crumb.label}
+                  </Link>
+                ) : (
+                  <span aria-current="page">{crumb.label}</span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      ) : null}
+
       <div className={s.main}>
         {eyebrow ? <p className={cn('caption', s.eyebrow)}>{eyebrow}</p> : null}
         <h1
@@ -66,6 +101,7 @@ export function DocHead({
         >
           {title}
         </h1>
+        {children}
       </div>
 
       {hasFacts ? (
