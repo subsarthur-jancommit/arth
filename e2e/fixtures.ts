@@ -53,3 +53,42 @@ export const SQUARE_WORK = 'bacaan-mesin'
  * this one takes the track.
  */
 export const RUN_WORK = 'pusat-beban'
+
+/**
+ * Situation and work pages, by shape, for the sweeps R5 extended to them
+ * (route-sweep, no-JavaScript, reduced motion).
+ *
+ * **These are production slugs, not fixtures.** The plan asks for fixtures
+ * (F3-12), and none exist yet: e2e reads the live production dataset until
+ * the separate `ci` dataset (F0-06) is set up by the owner. Each one is a
+ * shape a test needs, checked against the published dataset on 2026-10-31:
+ *
+ * - a situation without the market filter (Teknologi, Kuliner);
+ * - a situation with it (Konstruksi, the reader running projects);
+ * - a work page with two packages, the honest sentence and the payment link
+ *   (Teknologi), the one `route-status.e2e.ts` already names;
+ * - a work page on the older steps and deliverables (no packages).
+ */
+/**
+ * The five fixed pages R5 rebuilt last, which route-sweep already finds on
+ * disk: named here so the no-JavaScript and reduced-motion specs reach them
+ * too. Their words are Sanity's; each answered 200 on production on
+ * 2026-10-31.
+ */
+export const FIXED_ROUTES = [
+  '/id/metode',
+  '/id/layanan',
+  '/id/kontak',
+  '/id/kebijakan',
+  '/id/pembayaran',
+] as const
+
+export const SITUATION_ROUTES = [
+  '/id/teknologi/siap-pakai/kuliner',
+  '/id/konstruksi/pelaku-proyek/hulu-hilir',
+] as const
+
+export const WORK_ROUTES = [
+  '/id/teknologi/siap-pakai/kuliner/bot-pesan-antar-whatsapp',
+  '/id/konstruksi/pelaku-proyek/penyedia-instansi/pengadaan-papan-nama-signage-dan-papan-informasi',
+] as const

@@ -186,8 +186,9 @@
   overflow: clip;
 }
 
+/* It rises through `.mask` and no longer fades (`TITLE_RISE`, R5). */
 .title {
-  will-change: transform, opacity;
+  will-change: transform;
 }
 
 /*

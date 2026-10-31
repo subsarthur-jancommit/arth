@@ -79,6 +79,22 @@
   }
 }
 
+/*
+ * The unit's drawing at the head of its step, as the approved screen sets
+ * three panels across: the step's own padding is undone so the drawing
+ * takes the panel's width, ruled off from the words below it.
+ */
+.media {
+  margin: mobile-vw(-24px) mobile-vw(-24px) 0;
+  padding: mobile-vw(16px);
+  border-bottom: 1px solid var(--line);
+
+  @media (--desktop) {
+    margin: desktop-vw(-28px) desktop-vw(-28px) 0;
+    padding: desktop-vw(20px);
+  }
+}
+
 .stepHead {
   display: flex;
   align-items: baseline;
