@@ -27,12 +27,16 @@
 .crumbList {
   display: flex;
   flex-wrap: wrap;
+  row-gap: 4px;
+  align-items: center;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .crumb {
+  display: inline-flex;
+  align-items: center;
   font-family: var(--font-mono, monospace);
   color: var(--text-muted);
 }
@@ -44,7 +48,16 @@
   margin-inline: 0.75em;
 }
 
+/*
+ * Each link is a 24px target, the size axe's `target-size` asks for (WCAG
+ * 2.2, 2.5.8). Set in caption type they were 14px tall, and on a phone a
+ * long path wraps, which left them 14px apart: e2e run 41175849016 measured
+ * all three on a Konstruksi work page at 390px.
+ */
 .crumbLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   color: inherit;
   text-decoration: underline;
   text-decoration-color: var(--line-strong);
