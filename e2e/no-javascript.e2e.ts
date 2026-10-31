@@ -1,7 +1,7 @@
 import type { Browser } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
-import { UNITS } from '../lib/content/units'
+import { SIDES, sideTemplate, UNITS } from '../lib/content/units'
 import { routing } from '../lib/i18n/routing'
 
 /**
@@ -73,6 +73,9 @@ async function renderWithoutJavaScript(browser: Browser, path: string) {
         // `lib/content/sample-content.ts` owns the string, and a page that
         // lost the label without script is the failure this catches.
         sampleBlocks: document.querySelectorAll('[data-sample-content]').length,
+        // The first step's way out, inside the page rather than the header.
+        contactLinks: document.querySelectorAll('main a[href="/id/kontak"]')
+          .length,
         text: text.slice(0, 120),
       }
     })
@@ -131,6 +134,35 @@ test.describe('readable without JavaScript', () => {
         MIN_CHARS
       )
     })
+  }
+
+  /*
+   * The six side pages, which R5 rebuilt as documents (R5's done-criterion:
+   * no-JavaScript green for every route). The same floor as a unit page:
+   * one h1 and real prose, plus the way out to the contact page, which is
+   * the one action a side page offers and must not need script to reach.
+   * The network side ends in its own registration block instead.
+   */
+  for (const unit of UNITS) {
+    for (const side of SIDES[unit]) {
+      const path = `/id${sideTemplate(unit, side)}`
+
+      test(`${path} renders server-side`, async ({ browser }) => {
+        const rendered = await renderWithoutJavaScript(browser, path)
+
+        expect(rendered.headings, 'exactly one h1').toBe(1)
+        expect(
+          rendered.chars,
+          `only rendered: ${rendered.text}`
+        ).toBeGreaterThan(MIN_CHARS)
+        if (side !== 'jaringan') {
+          expect(
+            rendered.contactLinks,
+            `${path} offers no way to the contact page without script`
+          ).toBeGreaterThan(0)
+        }
+      })
+    }
   }
 
   test('a project page renders server-side', async ({ browser, request }) => {

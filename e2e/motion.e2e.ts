@@ -2,6 +2,7 @@ import AxeBuilder from '@axe-core/playwright'
 import type { Browser, Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
+import { SIDES, sideTemplate, UNITS } from '../lib/content/units'
 import { routing } from '../lib/i18n/routing'
 import { transitionName } from '../lib/motion/transition-name'
 import { axeTags } from './axe-tags'
@@ -217,6 +218,38 @@ test.describe('motion', () => {
           // The accessible name is the whole headline whether or not it was
           // split (`aria: 'auto'`), so this passes even while the page shows
           // one line of three. What a reader sees is the assertion below.
+          const clipped = await clippedOutOfView(page)
+          expect(
+            clipped,
+            `${path}: text parked outside its own mask: ${clipped.join(', ')}`
+          ).toEqual([])
+        } finally {
+          await context.close()
+        }
+      })
+    }
+
+    /*
+     * The unit and side pages R5 rebuilt (R5's done-criterion: reduced
+     * motion green for every route). Rule #5 is the whole assertion: after a
+     * pass down the page, no reveal is left below full opacity and no
+     * headline line is parked outside its mask.
+     */
+    for (const path of UNITS.flatMap((unit) => [
+      `/id/${unit}`,
+      ...SIDES[unit].map((side) => `/id${sideTemplate(unit, side)}`),
+    ])) {
+      test(`${path} ends with every part visible`, async ({ browser }) => {
+        const { context, page } = await reducedMotionPage(browser, path)
+
+        try {
+          await expect(page.locator('main h1')).toBeVisible()
+          await scrollThrough(page)
+
+          expect(
+            await strandedItems(page),
+            `${path} left content at opacity 0`
+          ).toEqual([])
           const clipped = await clippedOutOfView(page)
           expect(
             clipped,

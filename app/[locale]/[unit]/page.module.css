@@ -73,6 +73,128 @@
   color: var(--text-muted);
 }
 
+/*
+ * A document section (R5, direction A): a small ruled label over the words,
+ * the way the approved unit screen heads "Yang kami kerjakan" and "Masalah
+ * yang dijawab". The rule over the label marks where a section begins.
+ */
+.doc {
+  display: grid;
+  gap: calc(28 / 375 * 100vw);
+  padding-top: calc(20 / 375 * 100vw);
+  border-top: 1px solid var(--line-strong);
+
+  @media (--desktop) {
+    gap: calc(36 / 1440 * 100vw);
+    padding-top: calc(24 / 1440 * 100vw);
+  }
+}
+
+.label {
+  margin: 0;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.docHeader {
+  display: grid;
+  gap: calc(12 / 375 * 100vw);
+
+  @media (--desktop) {
+    gap: calc(14 / 1440 * 100vw);
+  }
+}
+
+.docHeader h2 {
+  margin: 0;
+  max-width: 20em;
+  text-wrap: balance;
+}
+
+/*
+ * What the unit does: each of the header's labelled paragraphs as its lead
+ * and its paragraph, stacked, the way the approved screen sets them. Two
+ * across on desktop. The approved screen sets three of them in one column
+ * beside a sheet of the drawing; that drawing already closes the stage above
+ * (R4), so the paragraphs take the width instead of repeating it.
+ */
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @media (--desktop) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--gutter);
+  }
+}
+
+.pillar {
+  display: grid;
+  gap: calc(10 / 375 * 100vw);
+  align-content: start;
+  padding-block: calc(20 / 375 * 100vw) calc(28 / 375 * 100vw);
+  border-top: 1px solid var(--line);
+
+  @media (--desktop) {
+    gap: calc(12 / 1440 * 100vw);
+    padding-block: calc(24 / 1440 * 100vw) calc(40 / 1440 * 100vw);
+    padding-right: calc(48 / 1440 * 100vw);
+  }
+}
+
+.pillar h3,
+.pillar p {
+  margin: 0;
+}
+
+.pillar p {
+  max-width: 52ch;
+}
+
+/* The problems, three across on desktop: a number, then the problem. */
+.problems {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @media (--desktop) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: calc(28 / 1440 * 100vw);
+  }
+}
+
+.problem {
+  display: grid;
+  grid-template-columns: minmax(0, 2.5em) minmax(0, 1fr);
+  gap: calc(12 / 375 * 100vw);
+  align-items: baseline;
+  padding-block: calc(14 / 375 * 100vw) calc(18 / 375 * 100vw);
+  border-top: 1px solid var(--line-strong);
+
+  @media (--desktop) {
+    gap: calc(16 / 1440 * 100vw);
+    padding-block: calc(16 / 1440 * 100vw) calc(24 / 1440 * 100vw);
+  }
+}
+
+.problem p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.problemNumber {
+  font-family: var(--font-mono, monospace);
+  color: var(--text-muted);
+}
+
+/* The example offers and the bridges keep the header-beside-list section
+   until there are published ones to set (none on 2026-10-31). */
 .section {
   display: grid;
   gap: calc(36 / 375 * 100vw);
@@ -89,7 +211,6 @@
   }
 }
 
-.problemList,
 .cardList,
 .bridgeList {
   display: grid;
@@ -103,47 +224,7 @@
   }
 }
 
-.problem {
-  display: grid;
-  grid-template-columns: minmax(0, 3rem) minmax(0, 1fr);
-  gap: calc(16 / 375 * 100vw);
-  align-items: baseline;
-  padding-block: calc(24 / 375 * 100vw);
-  border-top: 1px solid var(--line);
-
-  @media (--desktop) {
-    gap: var(--gutter);
-    padding-block: calc(28 / 1440 * 100vw);
-  }
-}
-
-.problem:last-child,
-.pillar:last-child {
-  border-bottom: 1px solid var(--line);
-}
-
-/* A header paragraph: its bold lead, then the paragraph, stacked. */
-.pillar {
-  display: grid;
-  gap: calc(12 / 375 * 100vw);
-  padding-block: calc(24 / 375 * 100vw);
-  border-top: 1px solid var(--line);
-
-  @media (--desktop) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--gutter);
-    padding-block: calc(28 / 1440 * 100vw);
-  }
-}
-
-.pillar p {
-  margin: 0;
-}
-
-.problem p,
-.bridge p,
-.action h2,
-.action p {
+.bridge p {
   margin: 0;
 }
 
@@ -171,8 +252,7 @@
   }
 }
 
-.cardKind,
-.note {
+.cardKind {
   color: var(--text-muted);
 }
 
@@ -194,26 +274,4 @@
   gap: calc(16 / 375 * 100vw);
   padding-top: calc(24 / 375 * 100vw);
   border-top: 1px solid var(--line);
-}
-
-.action {
-  display: grid;
-  gap: calc(20 / 375 * 100vw);
-  max-width: 64rem;
-  padding-block: calc(48 / 375 * 100vw);
-  border-block: 1px solid var(--line-strong);
-
-  @media (--desktop) {
-    gap: calc(24 / 1440 * 100vw);
-    padding-block: calc(64 / 1440 * 100vw);
-  }
-}
-
-.actionLink {
-  width: fit-content;
-  color: inherit;
-}
-
-.note {
-  max-width: 52ch;
 }

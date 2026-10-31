@@ -25,12 +25,14 @@
   }
 }
 
-.eyebrow,
-.sideCount {
-  margin: 0;
-}
-
+/*
+ * The count of reader sides that stood under the name ("2 pintu masuk") is
+ * gone in R5: the glossary removes it (`docs/R1-GLOSARIUM-PEMBACA.md` §8,
+ * `unit.sideCount`), and the doors themselves say it a scroll later.
+ */
 .eyebrow {
+  margin: 0;
+
   @media (--desktop) {
     grid-column: 1 / 3;
   }
@@ -61,14 +63,6 @@
 .name {
   margin: 0;
   overflow-wrap: anywhere;
-}
-
-.sideCount {
-  color: var(--text-muted);
-
-  @media (--desktop) {
-    grid-column: 3 / 7;
-  }
 }
 
 .statement {

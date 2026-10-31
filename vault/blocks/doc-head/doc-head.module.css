@@ -1,0 +1,106 @@
+/*
+ * Provenance: original work for this project. No third-party code copied.
+ *
+ * One column on a phone: label, title, then the facts under them. On
+ * desktop the facts move beside the title, in the last four of the twelve
+ * columns, ruled like a title block: a heavier line over the box, hairlines
+ * between its rows.
+ */
+.head {
+  display: grid;
+  gap: mobile-vw(24px);
+
+  @media (--desktop) {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    row-gap: desktop-vw(28px);
+    align-items: start;
+  }
+}
+
+.main {
+  display: grid;
+  gap: mobile-vw(16px);
+  min-width: 0;
+
+  @media (--desktop) {
+    grid-column: 1 / -1;
+    gap: desktop-vw(20px);
+  }
+}
+
+.withFacts .main {
+  @media (--desktop) {
+    grid-column: 1 / 9;
+  }
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.title {
+  margin: 0;
+  max-width: 16em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+/* A whole sentence, not a name: a wider measure, and no balancing, which
+   would break a question at an arbitrary word to even the lines. */
+.sentence {
+  max-width: 24em;
+  text-wrap: pretty;
+}
+
+.facts {
+  margin: 0;
+  border-block-start: 1.5px solid currentColor;
+
+  @media (--desktop) {
+    grid-column: 9 / -1;
+  }
+}
+
+.fact {
+  display: grid;
+  grid-template-columns: minmax(0, 7.5em) minmax(0, 1fr);
+  gap: mobile-vw(12px);
+  padding-block: mobile-vw(12px);
+  border-block-end: 1px solid var(--line-strong);
+
+  @media (--desktop) {
+    gap: desktop-vw(12px);
+    padding-block: desktop-vw(13px);
+  }
+}
+
+.term {
+  font-family: var(--font-mono, monospace);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  /* On the first line of the detail, not centred against a list of names. */
+  padding-block-start: 0.2em;
+}
+
+.detail {
+  margin: 0;
+  min-width: 0;
+
+  & a {
+    color: inherit;
+    text-underline-offset: 0.2em;
+  }
+}
+
+.names {
+  display: grid;
+  gap: 0.25em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
