@@ -1,10 +1,10 @@
 /*
  * Provenance: original work for this project. No third-party code copied.
  *
- * One column on a phone: path, label, title, lead, then the facts under
- * them. On desktop the facts move beside the title, in the last four of the
- * twelve columns, ruled like a title block: a heavier line over the box,
- * hairlines between its rows.
+ * One column on a phone: label, title, then the facts under them. On
+ * desktop the facts move beside the title, in the last four of the twelve
+ * columns, ruled like a title block: a heavier line over the box, hairlines
+ * between its rows.
  */
 .head {
   display: grid;
@@ -15,52 +15,6 @@
     column-gap: var(--gap);
     row-gap: desktop-vw(28px);
     align-items: start;
-  }
-}
-
-.crumbs {
-  @media (--desktop) {
-    grid-column: 1 / -1;
-  }
-}
-
-.crumbList {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.crumb {
-  font-family: var(--font-mono, monospace);
-  color: var(--text-muted);
-}
-
-/* The slash belongs to the path, not to either name, so it is drawn rather
-   than written, and takes the muted ink of the names it separates. */
-.crumb + .crumb::before {
-  content: '/';
-  margin-inline: 0.75em;
-}
-
-.crumbLink {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-color: var(--line-strong);
-  text-underline-offset: 0.25em;
-  transition: color var(--duration-fast) var(--ease-gleasing);
-
-  &:focus-visible {
-    color: var(--color-secondary);
-    outline: 2px solid var(--color-contrast);
-    outline-offset: 3px;
-  }
-
-  @media (--hover) {
-    &:hover {
-      color: var(--color-secondary);
-    }
   }
 }
 
@@ -99,12 +53,6 @@
    would break a question at an arbitrary word to even the lines. */
 .sentence {
   max-width: 24em;
-  text-wrap: pretty;
-}
-
-.lead {
-  margin: 0;
-  max-width: 40em;
   text-wrap: pretty;
 }
 
@@ -155,10 +103,4 @@
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-@media (--reduced-motion) {
-  .crumbLink {
-    transition: none;
-  }
 }
