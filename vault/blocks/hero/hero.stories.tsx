@@ -54,8 +54,24 @@ export const Default: Story = {
     subline:
       'Consulting, AI and data, and commissioned build, scoped to a brief and delivered against it.',
     index: {
-      label: 'Practice',
-      items: ['Consulting', 'AI & Data', 'Commission'],
+      label: 'Unit',
+      items: [
+        {
+          label: 'Konstruksi',
+          note: 'Isi celahnya. Bangun sampai jadi. Rawat sesudahnya.',
+          href: '/konstruksi',
+        },
+        {
+          label: 'Teknologi',
+          note: 'Buka pasar baru. Otomatiskan sisanya.',
+          href: '/teknologi',
+        },
+        {
+          label: 'Peekabo',
+          note: 'Rebut perhatian. Bangun kepercayaan. Biarkan jaringan yang menjual.',
+          href: '/peekabo',
+        },
+      ],
     },
     action,
   },

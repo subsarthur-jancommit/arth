@@ -163,28 +163,47 @@
   }
 }
 
+.opening {
+  margin: 0;
+  max-width: 48ch;
+}
+
 /*
- * The umbrella header's labelled paragraphs: the bold lead, then its
- * paragraph, one per row, ruled like the sections around them.
+ * The umbrella header's labelled paragraphs: the lead, then its paragraph,
+ * ruled like the sections around them. One per row on a phone; two per row
+ * on desktop (R5), so four paragraphs fill the page's width in two rows
+ * instead of running down a 65ch column beside an empty one.
  */
 .pillars {
   display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: 0;
   margin: 0;
   padding: 0;
   list-style: none;
+
+  @media (--desktop) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--gap);
+  }
 }
 
 .pillar {
   display: grid;
   gap: mobile-vw(8px);
+  align-content: start;
   padding-block: mobile-vw(20px);
   border-top: 1px solid var(--line);
 
   @media (--desktop) {
-    gap: desktop-vw(12px);
-    padding-block: desktop-vw(24px);
+    gap: desktop-vw(16px);
+    padding-block: desktop-vw(28px) desktop-vw(36px);
+    padding-inline-end: desktop-vw(48px);
   }
+}
+
+.pillar p:last-child {
+  max-width: 52ch;
 }
 
 .pillar p {

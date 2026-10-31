@@ -5,7 +5,6 @@ import { locale as localeRootParam } from 'next/root-params'
 
 import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
-import { Link } from '@/components/ui/link'
 import { SectionHeader } from '@/components/ui/section-header'
 import { resolveHomeContent } from '@/lib/content/home-fallback'
 import { canRenderPublicContent } from '@/lib/content/public-content-guard'
@@ -16,6 +15,7 @@ import {
   sideTemplate,
   type Unit,
   UNITS,
+  unitTemplate,
 } from '@/lib/content/units'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
@@ -27,13 +27,13 @@ import {
   siteSettingsQuery,
 } from '@/lib/integrations/sanity/queries'
 import { ContactBlock } from '@/vault/blocks/contact-block'
+import { FirstStepBand } from '@/vault/blocks/first-step-band'
 import { Hero } from '@/vault/blocks/hero'
 import { LatestWriting } from '@/vault/blocks/latest-writing'
 import { Passage } from '@/vault/blocks/passage'
 import { Plate } from '@/vault/blocks/plate'
 import { PracticeList } from '@/vault/blocks/practice-list'
 import { SituationLinks } from '@/vault/blocks/situation-links'
-import { StudioNote } from '@/vault/blocks/studio-note'
 import { Reveal } from '@/vault/motion/reveal'
 import { PlateMaterial } from '@/vault/webgl/plate-material'
 
@@ -134,10 +134,12 @@ export default async function Home() {
     const candidate = units.find((unit) => unit.kunci === value)
     const label = candidate?.nama
     const intro = candidate?.ringkas
+    // The unit header's own short line, under its name in the hero's index.
+    const line = candidate?.judul ?? undefined
     return label &&
       intro &&
-      canRenderPublicContent(`home unit/${value}`, [label, intro])
-      ? [{ value, label, intro }]
+      canRenderPublicContent(`home unit/${value}`, [label, intro, line])
+      ? [{ value, label, intro, line }]
       : []
   })
   const unitLabel = (value: Unit) =>
@@ -184,7 +186,7 @@ export default async function Home() {
   })
 
   /* The umbrella header's labelled paragraphs, word for word. */
-  const pillars = (settings?.pilar ?? [])
+  const allPillars = (settings?.pilar ?? [])
     .flatMap((pillar) =>
       pillar.lead && pillar.isi
         ? [{ key: pillar._key, lead: pillar.lead, body: pillar.isi }]
@@ -196,6 +198,21 @@ export default async function Home() {
         pillar.body,
       ])
     )
+  /*
+   * The header's last paragraph closes the page (R5, after the approved
+   * closing screen): it is how Arthur holds the work, "Cara kami bekerja.",
+   * and it sits beside the first step as the answer to it, one sentence per
+   * row. Every word stays the header's; only its place moves. With a single
+   * paragraph there is nothing to split off, and it stays in the statement.
+   */
+  const closing = allPillars.length > 1 ? allPillars.at(-1) : undefined
+  const pillars = closing ? allPillars.slice(0, -1) : allPillars
+  const closingTerms = closing
+    ? {
+        title: closing.lead.replace(/\.$/u, ''),
+        items: closing.body.split(/(?<=\.)\s+/u).filter(Boolean),
+      }
+    : undefined
   const opening = settings?.opening ?? null
 
   /*
@@ -247,7 +264,11 @@ export default async function Home() {
          */
         index={{
           label: t('heroIndexLabel'),
-          items: unitEntries.map((unit) => unit.label),
+          items: unitEntries.map((unit) => ({
+            label: unit.label,
+            note: unit.line,
+            href: unitTemplate(unit.value),
+          })),
         }}
         action={
           /* oxlint-disable-next-line react/forbid-elements -- a same-page jump must keep working when JavaScript is disabled */
@@ -297,19 +318,33 @@ export default async function Home() {
           destinationLabel={t('situationDestination')}
         />
 
-        <StudioNote id="studio" className={s.section} title={t('studioTitle')}>
-          <div className={s.statement} data-statement="header">
-            {opening ? <p className="p-big">{opening}</p> : null}
-            <ol className={s.pillars}>
-              {pillars.map((pillar) => (
-                <li key={pillar.key} className={s.pillar}>
-                  <p className="h3">{pillar.lead}</p>
-                  <p className="p">{pillar.body}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </StudioNote>
+        {/*
+          The umbrella header's labelled paragraphs, two to a row on desktop
+          (R5). Inside the studio note's 65ch prose column they ran as one
+          narrow stack with most of a 1440px screen empty beside it, the
+          450 to 800px band R3 set out to remove; here they take the page's
+          width, and each lead stays beside its own paragraph.
+        */}
+        {pillars.length > 0 || opening ? (
+          <Reveal as="section" id="studio" className={s.section} perItem>
+            <SectionHeader reveal title={t('studioTitle')} />
+            <div className={s.statement} data-statement="header">
+              {opening ? (
+                <p data-reveal-item className={cn('p-big', s.opening)}>
+                  {opening}
+                </p>
+              ) : null}
+              <ol className={s.pillars}>
+                {pillars.map((pillar) => (
+                  <li key={pillar.key} data-reveal-item className={s.pillar}>
+                    <p className="h3">{pillar.lead}</p>
+                    <p className="p">{pillar.body}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </Reveal>
+        ) : null}
 
         {latest && (
           <LatestWriting
@@ -325,25 +360,19 @@ export default async function Home() {
         {/*
           The first step. Until K5 names a real channel the fallback address
           is a reserved `.invalid` placeholder, and P4 is that a reader never
-          sees one, so the action points to the contact page instead.
+          sees one, so the action points to the contact page instead. Beside
+          it, the header's last paragraph as the terms the reader is offered
+          in return (R5, the approved closing screen).
         */}
         {content.fallbacks.email ? (
-          <Reveal as="section" id="contact" className={s.section}>
-            <SectionHeader
-              eyebrow={t('actionEyebrow')}
-              title={`${actionLabel} ${actionAfter}`}
-            />
-            <p data-reveal-item>
-              <Link
-                href="/kontak"
-                className={cn('cta', s.heroCta)}
-                data-press="cta"
-                data-intent=""
-              >
-                {t('actionLink')}
-              </Link>
-            </p>
-          </Reveal>
+          <FirstStepBand
+            id="contact"
+            className={s.section}
+            terms={closingTerms}
+            eyebrow={t('actionEyebrow')}
+            title={`${actionLabel} ${actionAfter}`}
+            action={{ href: '/kontak', label: t('actionLink') }}
+          />
         ) : (
           <ContactBlock
             id="contact"
