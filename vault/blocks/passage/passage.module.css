@@ -93,7 +93,9 @@
   @media (--desktop) {
     grid-template-rows: minmax(0, 1fr);
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: var(--gutter);
+    /* The layout's 16px gutter. This named an undefined `--gutter`, so the
+       grid had no gap at all at desktop. */
+    gap: var(--gap);
   }
 }
 

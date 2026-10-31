@@ -28,10 +28,11 @@ import { Glob } from 'bun'
  *
  * ## Known misses
  *
- * `KNOWN_UNDEFINED` holds names read today that nothing defines, recorded
- * rather than fixed here because fixing them moves layout someone has to
- * look at. The second test keeps the list honest: an entry whose name gains
- * a definition or loses its last reader fails until it is deleted.
+ * `KNOWN_UNDEFINED` is for a name read before anything defines it, recorded
+ * with its reason when the fix moves layout someone has to look at first.
+ * It held `--gutter` and `--background` until both were fixed, and is empty
+ * now. The second test keeps it honest: an entry whose name gains a
+ * definition or loses its last reader fails until it is deleted.
  */
 
 const STYLE_GLOBS = [
@@ -47,14 +48,7 @@ const SCRIPT_GLOBS = [
   'lib/**/*.{ts,tsx,mjs}',
 ]
 
-const KNOWN_UNDEFINED = {
-  '--gutter':
-    'Nine `gap: var(--gutter)` on the 12-column grids of the unit page, ' +
-    'unit hero, side doors and passage, all at desktop: each computes to ' +
-    'no gap. The layout scale defines `--gap`.',
-  '--background':
-    'The unit sequence splice, which therefore has no background.',
-} satisfies Record<string, string>
+const KNOWN_UNDEFINED = {} satisfies Record<string, string>
 
 interface Use {
   file: string
