@@ -413,5 +413,30 @@
       "title": "Gambar kerja Peekabo: papan kampanye pembukaan kafe yang sama",
       "description": "Kolomnya waktu: sebelum kafe dibuka, hari pertama, dan sesudahnya. Barisnya tujuan: perhatian, kepercayaan, dan penjualan. Perhatian datang dari sasaran dan pesan, iklan di TikTok, Meta, dan Google, satu hari syuting untuk stok konten sebulan, dan media sosial yang dikelola. Kepercayaan datang dari warga sekitar yang diundang lebih dulu, booth dan sampling, dan temu pelanggan. Penjualan datang dari kreator dan host live yang ikut menjual. Target, lingkup, dan laporan disepakati tertulis."
     }
+  },
+  "servicesPage": {
+    "eyebrow": "Layanan",
+    "title": "Tiga unit. Satu urutan kerja.",
+    "lead": "Mulai dari situasi Anda. Baca pekerjaan setiap unit dalam urutan yang ditetapkan, sebagai kemungkinan, bukan riwayat proyek.",
+    "situation": "Situasi",
+    "offer": "Pekerjaan dalam langkah ini",
+    "possible": "Rangkaian yang mungkin",
+    "action": "Ceritakan masalahnya"
+  },
+  "methodPage": {
+    "eyebrow": "Arthur",
+    "title": "Metode kerja",
+    "promisesEyebrow": "Janji tertulis",
+    "promisesTitle": "Janji kerja Arthur",
+    "stamp": "Tertulis",
+    "termsEyebrow": "Batas kerja",
+    "termsTitle": "Hak milik, komisi, dan batas",
+    "ownership": "Hak milik klien",
+    "commission": "Pengungkapan komisi",
+    "notSold": "Yang tidak kami jual",
+    "regionsEyebrow": "Jangkauan",
+    "regionsTitle": "Wilayah kerja",
+    "regionCount": "{count} wilayah",
+    "formatEyebrow": "Format kerja"
   }
 }

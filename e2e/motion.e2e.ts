@@ -6,7 +6,12 @@ import { SIDES, sideTemplate, UNITS } from '../lib/content/units'
 import { routing } from '../lib/i18n/routing'
 import { transitionName } from '../lib/motion/transition-name'
 import { axeTags } from './axe-tags'
-import { FEATURED_WORK, SITUATION_ROUTES, WORK_ROUTES } from './fixtures'
+import {
+  FEATURED_WORK,
+  FIXED_ROUTES,
+  SITUATION_ROUTES,
+  WORK_ROUTES,
+} from './fixtures'
 import { REMOVED_IN_F3 } from './removed-in-f3'
 
 /**
@@ -230,7 +235,7 @@ test.describe('motion', () => {
     }
 
     /*
-     * The unit, side, situation and work pages R5 rebuilt (R5's
+     * The unit, side, situation, work and fixed pages R5 rebuilt (R5's
      * done-criterion: reduced motion green for every route; the last two
      * are production slugs, `e2e/fixtures.ts` says why). Rule #5 is the
      * whole assertion: after a pass down the page, no reveal is left below
@@ -243,6 +248,7 @@ test.describe('motion', () => {
       ]),
       ...SITUATION_ROUTES,
       ...WORK_ROUTES,
+      ...FIXED_ROUTES,
     ]) {
       test(`${path} ends with every part visible`, async ({ browser }) => {
         const { context, page } = await reducedMotionPage(browser, path)

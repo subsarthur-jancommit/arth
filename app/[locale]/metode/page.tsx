@@ -1,4 +1,5 @@
 import cn from 'clsx'
+import { getTranslations } from 'next-intl/server'
 import { draftMode } from 'next/headers'
 import { locale as localeRootParam } from 'next/root-params'
 
@@ -8,6 +9,7 @@ import { howWeWorkContent } from '@/lib/content/how-we-work-content'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { howWeWorkDescription } from '@/lib/seo/page-descriptions'
 import { generatePageMetadata } from '@/lib/utils/metadata'
+import { DocHead } from '@/vault/blocks/doc-head'
 import { PromiseStamp, type WrittenPromise } from '@/vault/blocks/promise-stamp'
 import { Dimension } from '@/vault/motion/dimension'
 import { Plumb } from '@/vault/motion/plumb'
@@ -25,7 +27,10 @@ async function howWeWorkForRequest(locale: Locale, stega = true) {
 export default async function HowWeWorkPage() {
   const requested = await localeRootParam()
   const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
-  const { data } = await howWeWorkForRequest(locale)
+  const [{ data }, t] = await Promise.all([
+    howWeWorkForRequest(locale),
+    getTranslations('methodPage'),
+  ])
 
   if (!data) return <LocalizedNotFound />
 
@@ -42,15 +47,15 @@ export default async function HowWeWorkPage() {
         : []
     ) ?? []
   const terms = [
-    { id: 'hak-milik', title: 'Hak milik klien', body: data.hakMilikKlien },
+    { id: 'hak-milik', title: t('ownership'), body: data.hakMilikKlien },
     {
       id: 'pengungkapan-komisi',
-      title: 'Pengungkapan komisi',
+      title: t('commission'),
       body: data.pengungkapanKomisi,
     },
     {
       id: 'yang-tidak-dijual',
-      title: 'Yang tidak kami jual',
+      title: t('notSold'),
       body: data.yangTidakDijual,
     },
   ].flatMap((term) => (term.body ? [{ ...term, body: term.body }] : []))
@@ -68,19 +73,21 @@ export default async function HowWeWorkPage() {
   return (
     <Wrapper theme="light">
       <article className={s.page}>
-        <header className={s.hero}>
-          <p className={cn('caption', s.eyebrow)}>Arthur</p>
-          <h1 className={cn('h1', s.title)}>Metode kerja</h1>
+        {/*
+         * A document head (R5, direction A). It replaced a hero held at 72svh
+         * whose height sat empty above a two-word title.
+         */}
+        <DocHead eyebrow={t('eyebrow')} title={t('title')}>
           {data.pembuka ? (
             <p className={cn('p-big', s.lead)}>{data.pembuka}</p>
           ) : null}
-        </header>
+        </DocHead>
 
         {promises.length > 0 && (
           <PromiseStamp
-            eyebrow="Janji tertulis"
-            title="Janji kerja Arthur"
-            stampLabel="Tertulis"
+            eyebrow={t('promisesEyebrow')}
+            title={t('promisesTitle')}
+            stampLabel={t('stamp')}
             promises={promises}
           />
         )}
@@ -88,9 +95,9 @@ export default async function HowWeWorkPage() {
         {terms.length > 0 && (
           <Reveal as="section" id="batas-kerja" className={s.terms} perItem>
             <header data-reveal-item className={s.sectionHeader}>
-              <p className={cn('caption', s.eyebrow)}>Batas kerja</p>
+              <p className={cn('caption', s.eyebrow)}>{t('termsEyebrow')}</p>
               <h2 id="batas-kerja-title" className={cn('h2', s.sectionTitle)}>
-                Hak milik, komisi, dan batas
+                {t('termsTitle')}
               </h2>
             </header>
             <Plumb className={s.plumb}>
@@ -109,9 +116,9 @@ export default async function HowWeWorkPage() {
         {regions.length > 0 && (
           <Reveal as="section" className={s.regions}>
             <header data-reveal-item className={s.sectionHeader}>
-              <p className={cn('caption', s.eyebrow)}>Jangkauan</p>
+              <p className={cn('caption', s.eyebrow)}>{t('regionsEyebrow')}</p>
               <h2 id="wilayah-kerja-title" className={cn('h2', s.sectionTitle)}>
-                Wilayah kerja
+                {t('regionsTitle')}
               </h2>
             </header>
 
@@ -122,11 +129,11 @@ export default async function HowWeWorkPage() {
                 marks={regionMarks}
                 className={s.regionMeasure}
               >
-                {regions.length} wilayah
+                {t('regionCount', { count: regions.length })}
               </Dimension>
             ) : (
               <p data-reveal-item className={cn('caption', s.regionMeasure)}>
-                1 wilayah
+                {t('regionCount', { count: 1 })}
               </p>
             )}
 
@@ -143,7 +150,7 @@ export default async function HowWeWorkPage() {
         {data.contohFormat && (
           <Reveal as="section" className={s.format}>
             <p data-reveal-item className={cn('caption', s.eyebrow)}>
-              Format kerja
+              {t('formatEyebrow')}
             </p>
             <p data-reveal-item className={cn('p-big', s.formatCopy)}>
               {data.contohFormat}

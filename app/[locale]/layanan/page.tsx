@@ -1,4 +1,5 @@
 import cn from 'clsx'
+import { getTranslations } from 'next-intl/server'
 import { draftMode } from 'next/headers'
 import { locale as localeRootParam } from 'next/root-params'
 
@@ -8,6 +9,7 @@ import { sequenceContent } from '@/lib/content/sequence-content'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { threeUnitsDescription } from '@/lib/seo/page-descriptions'
 import { generatePageMetadata } from '@/lib/utils/metadata'
+import { Plate } from '@/vault/blocks/plate'
 import { type SequenceStep, UnitSequence } from '@/vault/blocks/unit-sequence'
 
 import s from './page.module.css'
@@ -22,7 +24,11 @@ async function sequencesForRequest(locale: Locale) {
 export default async function ThreeUnitsPage() {
   const requested = await localeRootParam()
   const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
-  const { sequences } = await sequencesForRequest(locale)
+  const [{ sequences }, t, tPlate] = await Promise.all([
+    sequencesForRequest(locale),
+    getTranslations('servicesPage'),
+    getTranslations('plates'),
+  ])
 
   if (sequences.length === 0) return <LocalizedNotFound />
 
@@ -32,25 +38,43 @@ export default async function ThreeUnitsPage() {
     <Wrapper theme="dark">
       <article className={s.page}>
         <header className={s.hero}>
-          <p className={cn('caption', s.eyebrow)}>Layanan</p>
-          <h1 className={cn('h1', s.title)}>Tiga unit. Satu urutan kerja.</h1>
-          <p className={cn('p-big', s.lead)}>
-            Mulai dari situasi Anda. Baca pekerjaan setiap unit dalam urutan
-            yang ditetapkan—sebagai kemungkinan, bukan riwayat proyek.
-          </p>
+          <p className={cn('caption', s.eyebrow)}>{t('eyebrow')}</p>
+          <h1 className={cn('h1', s.title)}>{t('title')}</h1>
+          <p className={cn('p-big', s.lead)}>{t('lead')}</p>
         </header>
 
         {sequences.map((sequence) => {
-          const steps: SequenceStep[] = sequence.langkah.map((step) => ({
-            id: step._key,
-            unit: step.unit.nama,
-            unitKey: step.unit.kunci,
-            body: step.kalimat,
-            offers: step.offer.map((offer) => ({
-              id: offer._key,
-              title: offer.judul,
-            })),
-          }))
+          const steps: SequenceStep[] = sequence.langkah.map((step) => {
+            const unit = step.unit.kunci
+            /*
+             * A unit's plate draws one job: the café's plan and section, its
+             * order flow, its opening campaign (`messages` `plates.*.job`). It
+             * heads the step only when the step's work is that job, so a
+             * drawing never stands for work it does not show.
+             */
+            const drawsThisWork = step.offer.some(
+              (offer) => offer.judul === tPlate(`${unit}.job`)
+            )
+            return {
+              id: step._key,
+              unit: step.unit.nama,
+              unitKey: unit,
+              body: step.kalimat,
+              offers: step.offer.map((offer) => ({
+                id: offer._key,
+                title: offer.judul,
+              })),
+              ...(drawsThisWork && {
+                media: (
+                  <Plate
+                    unit={unit}
+                    title={tPlate(`${unit}.title`)}
+                    description={tPlate(`${unit}.description`)}
+                  />
+                ),
+              }),
+            }
+          })
 
           return (
             <UnitSequence
@@ -60,10 +84,10 @@ export default async function ThreeUnitsPage() {
               steps={steps}
               note={sequence.keterangan}
               labels={{
-                situation: 'Situasi',
-                offer: 'Pekerjaan dalam langkah ini',
-                possible: 'Rangkaian yang mungkin',
-                action: 'Ceritakan masalahnya',
+                situation: t('situation'),
+                offer: t('offer'),
+                possible: t('possible'),
+                action: t('action'),
               }}
             />
           )

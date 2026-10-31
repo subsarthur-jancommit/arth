@@ -9,6 +9,7 @@
  */
 
 import cn from 'clsx'
+import type { ReactNode } from 'react'
 
 import { Link } from '@/components/ui/link'
 import { Level } from '@/vault/motion/level'
@@ -28,6 +29,12 @@ export interface SequenceStep {
   unitKey: 'konstruksi' | 'teknologi' | 'peekabo'
   body: string
   offers: readonly SequenceOffer[]
+  /**
+   * The unit's working drawing for this step, when it draws this very
+   * work (R5, after the approved "Satu klien, tiga unit" screen). The
+   * page decides; a step with no drawing of its own shows none.
+   */
+  media?: ReactNode
 }
 
 interface UnitSequenceProps {
@@ -77,6 +84,7 @@ export function UnitSequence({
             data-unit={step.unitKey}
             className={s.step}
           >
+            {step.media ? <div className={s.media}>{step.media}</div> : null}
             <div className={s.stepHead}>
               <span aria-hidden="true" className={cn('caption', s.number)}>
                 {String(index + 1).padStart(2, '0')}
