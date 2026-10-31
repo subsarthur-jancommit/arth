@@ -114,7 +114,9 @@
   height: 100%;
   padding: 1rem;
   background: var(--surface-2);
-  color: var(--text-primary);
+  /* The theme's text colour. This named an undefined `--text-primary`, which
+     fell back to the inherited colour. */
+  color: var(--color-secondary);
 }
 
 .preview > :last-child {
