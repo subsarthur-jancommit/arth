@@ -44,8 +44,10 @@
   text-transform: uppercase;
 }
 
+/* The theme's text colour, ink on this light page. This named an undefined
+   `--text-primary` and reached the same ink only by inheriting it. */
 .switcherLink[aria-current='page'] {
-  color: var(--text-primary);
+  color: var(--color-secondary);
 }
 
 .steps,

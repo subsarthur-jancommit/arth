@@ -300,7 +300,9 @@
   padding: 0.55em 0.9em;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-full);
-  color: var(--text-primary);
+  /* The theme's text colour. This named an undefined `--text-primary`, which
+     fell back to the inherited colour. */
+  color: var(--color-secondary);
   text-transform: uppercase;
 }
 
