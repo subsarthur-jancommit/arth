@@ -69,6 +69,20 @@ export const RUN_WORK = 'pusat-beban'
  *   (Teknologi), the one `route-status.e2e.ts` already names;
  * - a work page on the older steps and deliverables (no packages).
  */
+/**
+ * The five fixed pages R5 rebuilt last, which route-sweep already finds on
+ * disk: named here so the no-JavaScript and reduced-motion specs reach them
+ * too. Their words are Sanity's; each answered 200 on production on
+ * 2026-10-31.
+ */
+export const FIXED_ROUTES = [
+  '/id/metode',
+  '/id/layanan',
+  '/id/kontak',
+  '/id/kebijakan',
+  '/id/pembayaran',
+] as const
+
 export const SITUATION_ROUTES = [
   '/id/teknologi/siap-pakai/kuliner',
   '/id/konstruksi/pelaku-proyek/hulu-hilir',

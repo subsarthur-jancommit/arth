@@ -413,5 +413,30 @@
       "title": "Peekabo working drawing: the opening campaign board for the same café",
       "description": "The columns are time: before the café opens, the first day, and after. The rows are aims: attention, trust, and sales. Attention comes from the target and the message, ads on TikTok, Meta, and Google, one day of shooting for a month of content, and managed social media. Trust comes from inviting the neighbours first, a booth and sampling, and meeting customers. Sales come from creators and live hosts who sell. Targets, scope, and reports are agreed in writing."
     }
+  },
+  "servicesPage": {
+    "eyebrow": "Services",
+    "title": "Three units. One order of work.",
+    "lead": "Start from your situation. Read each unit’s work in the order set out, as a possibility, not a project history.",
+    "situation": "Situation",
+    "offer": "Work in this step",
+    "possible": "A possible sequence",
+    "action": "Tell us the problem"
+  },
+  "methodPage": {
+    "eyebrow": "Arthur",
+    "title": "How we work",
+    "promisesEyebrow": "Written promises",
+    "promisesTitle": "What Arthur promises",
+    "stamp": "In writing",
+    "termsEyebrow": "Limits of the work",
+    "termsTitle": "Ownership, commission, and limits",
+    "ownership": "The client’s ownership",
+    "commission": "Commission disclosure",
+    "notSold": "What we do not sell",
+    "regionsEyebrow": "Reach",
+    "regionsTitle": "Where we work",
+    "regionCount": "{count} regions",
+    "formatEyebrow": "Format of the work"
   }
 }
