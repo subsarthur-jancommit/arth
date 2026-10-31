@@ -170,7 +170,14 @@ export function ChapterOfferGrid({
         <p className="caption">{label}</p>
       </div>
 
+      {/*
+       * A named group of toggle buttons. `aria-label` on a `div` with no role
+       * names nothing a reader can reach, and axe could not decide
+       * `aria-prohibited-attr` on it (e2e run 41187949698, R5). `group` is
+       * the role that carries the name.
+       */}
       <div
+        role="group"
         className={s.filters}
         aria-label={marketLabel}
         hidden={!hasHydrated || !canFilter}

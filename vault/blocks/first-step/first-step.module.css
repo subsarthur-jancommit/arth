@@ -3,7 +3,7 @@
  *
  * A surface rather than a rule: the approved screen sets the first step on
  * `--surface`, the 4% tint of ink that marks a block as the place to act.
- * Its muted label keeps AA on it (estimated 8.9:1 against 9.5:1 on the page
+ * Muted text keeps AA on it (estimated 8.9:1 against 9.5:1 on the page
  * ground; `e2e/contrast-situ.e2e.ts` measures the rendered page).
  */
 .block {
@@ -31,10 +31,15 @@
   text-wrap: balance;
 }
 
-.body {
+.body,
+.note {
   margin: 0;
   max-width: 44em;
   text-wrap: pretty;
+}
+
+.note {
+  color: var(--text-muted);
 }
 
 .actions {
@@ -97,6 +102,21 @@
 
 .arrow {
   display: inline-block;
+}
+
+/* A plain link beside the pill: the approved screen's underlined second
+   way, such as how Arthur is paid. */
+.actions > a:not(.action) {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.3em;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-contrast);
+    outline-offset: 4px;
+  }
 }
 
 @media (--reduced-motion) {

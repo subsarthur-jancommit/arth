@@ -28,9 +28,20 @@
   font: inherit;
 }
 
+/*
+ * The chosen market as an ink pill, as the approved situation screen sets it.
+ *
+ * This read `var(--text-primary)` and `var(--surface)`. No `--text-primary`
+ * exists in this palette, so the background fell back to transparent and the
+ * near-paper text sat on paper: axe measured 1.1:1 on
+ * `/id/konstruksi/pelaku-proyek/hulu-hilir` the first time route-sweep
+ * reached a situation page (R5, e2e run 41175849016). The palette's own pair
+ * is ink and paper.
+ */
 .filter[aria-pressed='true'] {
-  background: var(--text-primary);
-  color: var(--surface);
+  border-color: var(--color-secondary);
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
 }
 
 .groups {
@@ -74,9 +85,11 @@
   color: inherit;
 }
 
+/* Ink, which the undefined `--text-primary` this named only reached by
+   falling back to `currentColor`. */
 .entry {
   gap: calc(16 / 375 * 100vw);
-  border-color: var(--text-primary);
+  border-color: var(--color-secondary);
 }
 
 .entryLabel,

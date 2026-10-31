@@ -1,7 +1,7 @@
 /*
  * Provenance: original work for this project. No third-party code copied.
  *
- * One column on a phone: label, title, then the facts under them. On
+ * One column on a phone: path, label, title, then the facts under them. On
  * desktop the facts move beside the title, in the last four of the twelve
  * columns, ruled like a title block: a heavier line over the box, hairlines
  * between its rows.
@@ -18,10 +18,75 @@
   }
 }
 
+.crumbs {
+  @media (--desktop) {
+    grid-column: 1 / -1;
+  }
+}
+
+.crumbList {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 4px;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono, monospace);
+  color: var(--text-muted);
+}
+
+/* The slash belongs to the path, not to either name, so it is drawn rather
+   than written, and takes the muted ink of the names it separates. */
+.crumb + .crumb::before {
+  content: '/';
+  margin-inline: 0.75em;
+}
+
+/*
+ * Each link is a 24px target, the size axe's `target-size` asks for (WCAG
+ * 2.2, 2.5.8). Set in caption type they were 14px tall, and on a phone a
+ * long path wraps, which left them 14px apart: e2e run 41175849016 measured
+ * all three on a Konstruksi work page at 390px.
+ */
+.crumbLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  transition: color var(--duration-fast) var(--ease-gleasing);
+
+  &:focus-visible {
+    color: var(--color-secondary);
+    outline: 2px solid var(--color-contrast);
+    outline-offset: 3px;
+  }
+
+  @media (--hover) {
+    &:hover {
+      color: var(--color-secondary);
+    }
+  }
+}
+
+/* The title and what the page says under it. Children keep their own
+   margins at zero; the gap spaces them. */
 .main {
   display: grid;
   gap: mobile-vw(16px);
   min-width: 0;
+
+  & > * {
+    margin: 0;
+  }
 
   @media (--desktop) {
     grid-column: 1 / -1;
@@ -103,4 +168,10 @@
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+@media (--reduced-motion) {
+  .crumbLink {
+    transition: none;
+  }
 }

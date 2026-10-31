@@ -5,9 +5,8 @@
  * Provenance: original work for Arthur. No third-party code copied. The
  * block follows the approved work-page screen in `docs/r4-arah-visual/`
  * (`gabungan.py`, `.g-lp`): a quiet surface, the label, the step in large
- * type, the sentence after it, then an ink pill. The screen also sets a
- * muted note and a plain link beside the pill; they join with the first page
- * that passes them (`vault/vault-api.test.ts` holds that rule).
+ * type, the sentence after it, an optional honest note, then an ink pill
+ * and, where the page has one, a plain link beside it (`children`).
  *
  * ## Which words go where
  *
@@ -22,6 +21,7 @@
  */
 
 import cn from 'clsx'
+import type { ReactNode } from 'react'
 
 import { Link } from '@/components/ui/link'
 import { Reveal } from '@/vault/motion/reveal'
@@ -35,7 +35,14 @@ interface FirstStepProps {
   /** The step itself, in large type. */
   title?: string | undefined
   body?: string | undefined
+  /** A muted sentence that keeps the promise honest. */
+  note?: string | undefined
   action: { href: string; label: string }
+  /**
+   * Plain links beside the pill, in the page's own markup, so a link can
+   * carry what only the page knows (a test marker, a route of its own).
+   */
+  children?: ReactNode
   className?: string | undefined
 }
 
@@ -44,7 +51,9 @@ export function FirstStep({
   label,
   title,
   body,
+  note,
   action,
+  children,
   className,
 }: FirstStepProps) {
   return (
@@ -65,6 +74,11 @@ export function FirstStep({
           {body}
         </p>
       ) : null}
+      {note ? (
+        <p data-reveal-item className={cn('p', s.note)}>
+          {note}
+        </p>
+      ) : null}
       <p data-reveal-item className={s.actions}>
         <Link
           href={action.href}
@@ -77,6 +91,7 @@ export function FirstStep({
             →
           </span>
         </Link>
+        {children}
       </p>
     </Reveal>
   )

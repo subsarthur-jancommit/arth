@@ -98,8 +98,17 @@ const SCREENS_PER_PLATE = 0.9
 /** Screens of scroll the passage spends before and after the plates. */
 const SCREENS_AROUND = 1.2
 
-/** The title's travel through its mask, as a percentage of its own height. */
-const TITLE_RISE = 40
+/**
+ * The title's travel through its mask, as a percentage of its own height.
+ *
+ * All of it, and with no fade (R5). The rise was 40% with `opacity` 0 to 1,
+ * and a scrubbed fade rests wherever the reader stops: at 1280x720 the title
+ * held at 0.567, which put the muted "Gambar kerja" at 3.72:1 where 4.5:1 is
+ * needed (`e2e/contrast-situ.e2e.ts`, run 41175849016). A line that starts
+ * wholly under its mask is hidden without a fade, so on its way up every
+ * glyph shown is at full ink, the way `TextReveal` hides its lines.
+ */
+const TITLE_RISE = 100
 
 /** How far into the frame a drawing starts, and how much larger. */
 const PLATE_COUNTER = -30
@@ -304,8 +313,8 @@ export function Passage({
       timeline
         .fromTo(
           title,
-          { yPercent: TITLE_RISE, opacity: 0 },
-          { yPercent: 0, opacity: 1, duration: 0.16 },
+          { yPercent: TITLE_RISE },
+          { yPercent: 0, duration: 0.16 },
           0.78
         )
         /*
