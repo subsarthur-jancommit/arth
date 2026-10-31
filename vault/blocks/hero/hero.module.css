@@ -221,8 +221,15 @@
      * `flex-end` puts its right edge on the frame's, where the header's
      * EN/ID already sits. The headline holds x=16 and this holds x=1574, and
      * the band spans the screen instead of trailing off inside it.
+     *
+     * R5: the right edge still holds, and the block holds it now rather than
+     * each line. Every unit carries its header line under its name, and three
+     * right-aligned two-line notes would read as a ragged poem. So the block
+     * sits against the frame's right edge at a measure of its own, and its
+     * lines start together on its left.
      */
-    align-items: flex-end;
+    justify-self: end;
+    width: min(100%, 26rem);
     gap: desktop-vw(12px);
     /*
      * Clearance from the header, measured — Tahap 67.
@@ -353,27 +360,79 @@
   letter-spacing: 0.16em;
 }
 
+/*
+ * The units as a ruled list, 01 to 03 (R5, after the approved home screen).
+ *
+ * It was a row of three bare words on a phone and a right-aligned stack on
+ * desktop. With a line under each name a row no longer fits, so the list is
+ * a stack at every width: the number in its own narrow column, the name and
+ * its line beside it, a hairline over each entry.
+ */
 .indexList {
   list-style: none;
   color: var(--color-secondary);
   margin: 0;
   padding: 0;
-  display: flex;
-  /* A row on mobile, a stack on desktop: across four columns a stack of three
-     words is a tall thin ribbon, and beside a display headline a row is a
-     line of text pretending to be a list. */
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: mobile-vw(12px);
-  font-family: var(--font-mono, monospace);
+  display: grid;
+}
+
+.indexItem {
+  display: grid;
+  grid-template-columns: 2.5em minmax(0, 1fr);
+  column-gap: mobile-vw(8px);
+  row-gap: mobile-vw(2px);
+  padding-block: mobile-vw(8px);
+  border-block-start: 1px solid var(--line);
 
   @media (--desktop) {
-    flex-direction: column;
-    /* Right edges flush with the label above and the frame beside them — the
-       three words differ in length, and ragged-right here would undo the
-       anchor the parent just established. */
-    align-items: flex-end;
-    gap: desktop-vw(8px);
+    column-gap: desktop-vw(8px);
+    row-gap: desktop-vw(4px);
+    padding-block: desktop-vw(10px);
+  }
+}
+
+.indexNumber {
+  grid-row: 1 / span 2;
+  font-family: var(--font-mono, monospace);
+  color: var(--text-muted);
+  /* On the name's first line, not centred against the name and its note. */
+  padding-block-start: 0.3em;
+}
+
+.indexName {
+  grid-column: 2;
+  width: fit-content;
+  margin: 0;
+  font-weight: 500;
+  color: inherit;
+  text-decoration: none;
+  text-underline-offset: 0.2em;
+}
+
+a.indexName:focus-visible {
+  outline: 2px solid var(--color-contrast);
+  outline-offset: 4px;
+}
+
+@media (--hover) {
+  a.indexName:hover {
+    text-decoration: underline;
+  }
+}
+
+/*
+ * Desktop only. On a phone the index stands above the headline, and three
+ * two-line notes there would push the headline toward the fold; the unit
+ * list below the passage says the same thing at full size.
+ */
+.indexNote {
+  display: none;
+  grid-column: 2;
+  color: var(--text-muted);
+  text-wrap: pretty;
+
+  @media (--desktop) {
+    display: block;
   }
 }
 

@@ -89,6 +89,7 @@
 import cn from 'clsx'
 import type { ReactNode } from 'react'
 
+import { Link } from '@/components/ui/link'
 import { useReveal } from '@/lib/hooks/use-reveal'
 import { GridPattern } from '@/vault/magic/grid-pattern'
 import { NoiseTexture } from '@/vault/magic/noise-texture'
@@ -125,9 +126,23 @@ interface HeroProps {
    * the classes, the page owns the words. A slot would put the typography of
    * the hero in `page.tsx`, which is where the hardcoded values this project
    * spent Tahap 11 removing came from in the first place.
+   *
+   * R5: each item is numbered, may carry one line under its name, and may
+   * lead somewhere. The approved home screen (`docs/r4-arah-visual/`,
+   * `hasil-akhir.html`) sets the index as 01 to 03 with each unit's own
+   * header line under its name, so the first screen says what each unit does
+   * rather than only that there are three.
    */
-  index?: { label: string; items: readonly string[] } | undefined
+  index?: { label: string; items: readonly HeroIndexItem[] } | undefined
   className?: string | undefined
+}
+
+export interface HeroIndexItem {
+  label: string
+  /** One line under the name, in the caller's words. */
+  note?: string | undefined
+  /** Where the name leads. Without one it is a plain word. */
+  href?: string | undefined
 }
 
 export function Hero({
@@ -166,11 +181,35 @@ export function Hero({
         {index && (
           <div data-reveal-item className={s.index}>
             <p className={cn('caption', s.indexLabel)}>{index.label}</p>
-            <ul className={cn('caption', s.indexList)}>
-              {index.items.map((item) => (
-                <li key={item}>{item}</li>
+            {/*
+              An ordered list, so the order is said once by the list itself;
+              the drawn number beside each name is for the eye and stays out
+              of the reading.
+            */}
+            <ol className={s.indexList}>
+              {index.items.map((item, position) => (
+                <li key={item.label} className={s.indexItem}>
+                  <span
+                    aria-hidden="true"
+                    className={cn('caption', s.indexNumber)}
+                  >
+                    {String(position + 1).padStart(2, '0')}
+                  </span>
+                  {item.href ? (
+                    <Link href={item.href} className={cn('p', s.indexName)}>
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <span className={cn('p', s.indexName)}>{item.label}</span>
+                  )}
+                  {item.note ? (
+                    <span className={cn('caption', s.indexNote)}>
+                      {item.note}
+                    </span>
+                  ) : null}
+                </li>
               ))}
-            </ul>
+            </ol>
           </div>
         )}
 

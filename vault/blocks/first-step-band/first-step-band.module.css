@@ -1,0 +1,125 @@
+/*
+ * Provenance: original work for this project. No third-party code copied.
+ *
+ * Two columns on desktop, terms left and step right, as the approved closing
+ * screen draws them; one column on a phone, terms first, so the action is
+ * the last thing in the column and the first thing under the thumb.
+ */
+.band {
+  display: grid;
+  gap: mobile-vw(56px);
+  align-items: start;
+
+  @media (--desktop) {
+    gap: desktop-vw(32px);
+  }
+}
+
+.withTerms {
+  @media (--desktop) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: desktop-vw(96px);
+  }
+}
+
+.terms,
+.step {
+  display: grid;
+  gap: mobile-vw(20px);
+  align-content: start;
+
+  @media (--desktop) {
+    gap: desktop-vw(24px);
+  }
+}
+
+.label {
+  margin: 0;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.termList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-block-start: 1px solid var(--line-strong);
+}
+
+.term {
+  margin: 0;
+  padding-block: mobile-vw(14px);
+  border-block-end: 1px solid var(--line);
+  text-wrap: pretty;
+
+  @media (--desktop) {
+    padding-block: desktop-vw(16px);
+  }
+}
+
+.title {
+  margin: 0;
+  max-width: 16em;
+  text-wrap: balance;
+}
+
+.actionRow {
+  margin: 0;
+  padding-block-start: mobile-vw(8px);
+
+  @media (--desktop) {
+    padding-block-start: desktop-vw(12px);
+  }
+}
+
+/*
+ * The paper pill on the dark ground. At rest it is the brightest thing in the
+ * band; on hover and on keyboard focus it turns to an outline of the same
+ * paper, so both a cursor and a keyboard see the control answer (INTENT,
+ * `MOTION-SPEC.md` §9). The press itself is the shared `[data-press]` scale.
+ */
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75em;
+  min-height: 48px;
+  padding: mobile-vw(14px) mobile-vw(24px);
+  border: 1px solid var(--color-secondary);
+  border-radius: var(--radius-full);
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast) var(--ease-gleasing),
+    color var(--duration-fast) var(--ease-gleasing),
+    transform var(--duration-micro) var(--ease-out-quart);
+
+  @media (--desktop) {
+    padding: desktop-vw(16px) desktop-vw(28px);
+  }
+
+  @media (--hover) {
+    &:hover {
+      background-color: transparent;
+      color: var(--color-secondary);
+    }
+  }
+
+  &:focus-visible {
+    background-color: transparent;
+    color: var(--color-secondary);
+    outline: 2px solid var(--color-contrast);
+    outline-offset: 4px;
+  }
+}
+
+.arrow {
+  display: inline-block;
+}
+
+@media (--reduced-motion) {
+  .action {
+    transition: none;
+  }
+}
