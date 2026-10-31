@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 
 import { SIDES, sideTemplate, UNITS } from '../lib/content/units'
 import { routing } from '../lib/i18n/routing'
-import { SITUATION_ROUTES, WORK_ROUTES } from './fixtures'
+import { FIXED_ROUTES, SITUATION_ROUTES, WORK_ROUTES } from './fixtures'
 
 /**
  * The pages that must be readable with JavaScript switched off.
@@ -172,6 +172,18 @@ test.describe('readable without JavaScript', () => {
    * Production slugs, not fixtures: `e2e/fixtures.ts` says why. A situation
    * page had no h1 before R5, so the floor here is the same as everywhere.
    */
+  // The fixed pages (R5): one h1 and real prose with script off.
+  for (const path of FIXED_ROUTES) {
+    test(`${path} renders server-side`, async ({ browser }) => {
+      const rendered = await renderWithoutJavaScript(browser, path)
+
+      expect(rendered.headings, 'exactly one h1').toBe(1)
+      expect(rendered.chars, `only rendered: ${rendered.text}`).toBeGreaterThan(
+        MIN_CHARS
+      )
+    })
+  }
+
   for (const path of [...SITUATION_ROUTES, ...WORK_ROUTES]) {
     test(`${path} renders server-side`, async ({ browser }) => {
       const rendered = await renderWithoutJavaScript(browser, path)
