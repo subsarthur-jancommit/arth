@@ -155,7 +155,9 @@
   inset-block-end: calc(var(--gap) * -2);
   inset-inline-start: 50%;
   z-index: 1;
-  background: var(--background);
+  /* The theme's ground. This named an undefined `--background`, so the
+     joint had no ground of its own. */
+  background: var(--color-primary);
   transform: translate(-50%, 50%) rotate(90deg);
 
   @media (--desktop) {
