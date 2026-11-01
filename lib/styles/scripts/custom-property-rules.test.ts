@@ -28,10 +28,11 @@ import { Glob } from 'bun'
  *
  * ## Known misses
  *
- * `KNOWN_UNDEFINED` holds names read today that nothing defines, recorded
- * rather than fixed here because fixing them moves layout someone has to
- * look at. The second test keeps the list honest: an entry whose name gains
- * a definition or loses its last reader fails until it is deleted.
+ * `KNOWN_UNDEFINED` is for a name read before anything defines it, recorded
+ * with its reason when the fix moves layout someone has to look at first.
+ * It held `--gutter` and `--background` until both were fixed, and is empty
+ * now. The second test keeps it honest: an entry whose name gains a
+ * definition or loses its last reader fails until it is deleted.
  */
 
 const STYLE_GLOBS = [
@@ -47,14 +48,7 @@ const SCRIPT_GLOBS = [
   'lib/**/*.{ts,tsx,mjs}',
 ]
 
-const KNOWN_UNDEFINED = {
-  '--gutter':
-    'Nine `gap: var(--gutter)` on the 12-column grids of the unit page, ' +
-    'unit hero, side doors and passage, all at desktop: each computes to ' +
-    'no gap. The layout scale defines `--gap`.',
-  '--background':
-    'The unit sequence splice, which therefore has no background.',
-} satisfies Record<string, string>
+const KNOWN_UNDEFINED = {} satisfies Record<string, string>
 
 interface Use {
   file: string
@@ -94,14 +88,22 @@ function settable(source: string): string[] {
   return names
 }
 
+/**
+ * Every file the globs match, read in parallel. Read one at a time, the
+ * reads alone took 2.5 s on a OneDrive checkout, and the survey ran past the
+ * 5 s test timeout.
+ */
 async function read(globs: string[]): Promise<[string, string][]> {
-  const files: [string, string][] = []
+  const scanned: string[] = []
   for (const pattern of globs) {
-    for await (const scanned of new Glob(pattern).scan('.')) {
-      files.push([posix(scanned), await readFile(scanned, 'utf8')])
-    }
+    for await (const file of new Glob(pattern).scan('.')) scanned.push(file)
   }
-  return files
+  return Promise.all(
+    scanned.map(async (file): Promise<[string, string]> => [
+      posix(file),
+      await readFile(file, 'utf8'),
+    ])
+  )
 }
 
 async function survey() {
