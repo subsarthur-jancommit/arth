@@ -20,6 +20,7 @@ import {
 } from '@/lib/i18n/paths'
 import {
   announceNavigation,
+  DEPTH_TYPES,
   type NavigationIntent,
 } from '@/lib/motion/navigation-signal'
 
@@ -93,12 +94,15 @@ type CustomLinkProps = Omit<
     /**
      * How this navigation should be dressed.
      *
-     * `cover` (the default) lets `vault/motion/page-transition` sweep a panel
-     * over the swap. Pass `morph` when the destination shares an element with
-     * this page — a work's cover going from a catalogue card to its project
-     * page — so the overlay stands aside and React's `<ViewTransition>` can
-     * animate the shared element across instead. The two cannot both run: a
-     * morph is only legible if the reader can see both states.
+     * `depth` (the default) is `set-depth`: `vault/motion/page-transition`
+     * opens a detail circle from this link over the swap, and the
+     * `set-depth` transition type lets the browser hold the old page under
+     * it until the circle has closed (`docs/MOTION-SPEC.md` §13.10). Pass
+     * `morph` when the destination shares an element with this page — a
+     * work's cover going from a catalogue card to its project page — so the
+     * overlay stands aside and React's `<ViewTransition>` can animate the
+     * shared element across instead. The two cannot both run: a morph is
+     * only legible if the reader can see both states.
      */
     transition?: NavigationIntent | undefined
   }
@@ -222,7 +226,7 @@ export function Link({
   onClick,
   scroll = true,
   newTab = false,
-  transition = 'cover',
+  transition = 'depth',
   ...props
 }: CustomLinkProps) {
   // next-intl's `usePathname`, not the one from `next/navigation`: it returns
@@ -303,6 +307,14 @@ export function Link({
      * the overlay is absent under reduced motion.
      */
     onNavigate: () => announceNavigation(transition),
+    /*
+     * The transition type `set-depth` reaches React and the browser with the
+     * navigation, so the page overlay's `<ViewTransition>` mark activates and
+     * `global.css` can hold the old page under the detail circle. Only this
+     * intent carries it: a morph, a sheet and the history panel keep the
+     * transitions they had.
+     */
+    ...(transition === 'depth' && { transitionTypes: DEPTH_TYPES }),
     ...props,
   }
 
