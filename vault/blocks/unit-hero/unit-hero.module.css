@@ -6,7 +6,9 @@
 
   @media (--desktop) {
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: var(--gutter);
+    /* The layout's 16px gutter. This named an undefined `--gutter`, so the
+       grid had no gap at all at desktop. */
+    gap: var(--gap);
     align-items: start;
     min-height: 115svh;
     padding-top: calc(112 / 1440 * 100vw);
@@ -21,7 +23,7 @@
   @media (--desktop) {
     grid-column: 1 / -1;
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: var(--gutter);
+    gap: var(--gap);
   }
 }
 
