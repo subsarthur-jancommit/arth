@@ -491,19 +491,23 @@ export function PageTransition({ maxWait = 2000 }: PageTransitionProps) {
    * Parked again: nothing is held for the circle any more. Released only
    * once no view transition is running, because `global.css`'s hold rules
    * leaving mid-transition would give the old page's snapshot the browser's
-   * default cross-fade, and it would flash back over the new page.
+   * default cross-fade, and it would flash back over the new page. The
+   * retry is this effect's own timer, stopped when the overlay leaves idle
+   * (a new press sets the attribute again) or unmounts.
    */
   useEffect(() => {
     if (state !== 'idle') return
     if (closed.current) clearTimeout(closed.current)
+    let retry: ReturnType<typeof setTimeout> | undefined
     const release = () => {
       if (viewTransitionRunning()) {
-        closed.current = setTimeout(release, RELEASE_RETRY)
+        retry = setTimeout(release, RELEASE_RETRY)
         return
       }
       delete document.documentElement.dataset.depth
     }
     release()
+    return () => clearTimeout(retry)
   }, [state])
 
   useEffect(
