@@ -143,6 +143,7 @@ import type {
 } from '@/lib/motion/navigation-signal'
 import { useHistoryNavigation } from '@/lib/motion/use-history-navigation'
 
+import c from './depth-circle.module.css'
 import s from './page-transition.module.css'
 
 /**
@@ -544,7 +545,7 @@ export function PageTransition({ maxWait = 2000 }: PageTransitionProps) {
         exit={DEPTH_CLASS}
         default="none"
       >
-        <span aria-hidden="true" className={s.mark} />
+        <span aria-hidden="true" className={c.mark} />
       </ViewTransition>
       <div
         className={s.overlay}
@@ -586,8 +587,8 @@ export function PageTransition({ maxWait = 2000 }: PageTransitionProps) {
         }}
       >
         {/* The circle, and the ring drawn round the press it opens out of. */}
-        <span className={s.depth} />
-        <span className={s.ring} />
+        <span className={c.circle} />
+        <span className={c.ring} />
       </div>
     </>
   )

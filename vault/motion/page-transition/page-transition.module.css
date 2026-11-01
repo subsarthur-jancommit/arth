@@ -62,7 +62,11 @@
  *
  * The overlay stops being a panel. It holds still over the viewport, clear,
  * and clips the circle to the screen, so the parts of a circle that reach
- * past the corners are never painted.
+ * past the corners are never painted. The ring, the circle and the
+ * view-transition mark are styled in `depth-circle.module.css`: gates find
+ * this overlay by `[class*="page-transition"]`, and a CSS module puts its
+ * file name into every class it generates, so anything else styled here
+ * would answer that selector too.
  */
 .overlay[data-kind='depth'] {
   overflow: hidden;
@@ -74,82 +78,6 @@
   transform: none;
   transition: none;
   animation: none;
-}
-
-/* Both pieces sit on the press, in the ground that contrasts with the link. */
-.depth,
-.ring {
-  position: absolute;
-  border-radius: 50%;
-  opacity: 0;
-  pointer-events: none;
-}
-
-/*
- * The circle, as wide as its reach and opened by scale from nothing. Its
- * position and size are set once per press, before it opens; only its
- * `transform` and `opacity` ever animate (CLAUDE.md #4).
- */
-.depth {
-  inset-inline-start: calc(var(--depth-x) - var(--depth-r));
-  inset-block-start: calc(var(--depth-y) - var(--depth-r));
-  inline-size: calc(var(--depth-r) * 2);
-  block-size: calc(var(--depth-r) * 2);
-  background-color: var(--depth-ground, var(--color-secondary));
-  transform: scale(0);
-}
-
-/* The ring round the press: a detail mark, about a fingertip wide. */
-.ring {
-  --ring-size: 3.5rem;
-  inset-inline-start: calc(var(--depth-x) - var(--ring-size) / 2);
-  inset-block-start: calc(var(--depth-y) - var(--ring-size) / 2);
-  inline-size: var(--ring-size);
-  block-size: var(--ring-size);
-  border: 1.5px solid var(--depth-ground, var(--color-secondary));
-  transform: scale(0.6);
-}
-
-/* COMMIT, 150ms: the ring is drawn round the press. */
-.overlay[data-kind='depth'][data-state='covering'] .ring {
-  opacity: 1;
-  transform: scale(1);
-  transition:
-    opacity var(--duration-micro) var(--ease-out-quart),
-    transform var(--duration-micro) var(--ease-out-quart);
-}
-
-/*
- * TRANSPORT, 400ms: the circle opens out of the ring until it covers the
- * screen. `ease-in-out-quart` starts slowly, so the ring is what the reader
- * sees first, then the circle gathers speed toward the edges.
- */
-.overlay[data-kind='depth'][data-state='covering'] .depth {
-  opacity: 1;
-  transform: scale(1);
-  transition: transform var(--duration) var(--ease-in-out-quart);
-}
-
-/* Then both fade off the new page while its title settles (`global.css`). */
-.overlay[data-kind='depth'][data-state='revealing'] .depth,
-.overlay[data-kind='depth'][data-state='revealing'] .ring {
-  opacity: 0;
-  transform: scale(1);
-  transition: opacity var(--duration) var(--ease-out-quart);
-}
-
-/*
- * The `<ViewTransition>` mark that lets React start the holding transition:
- * one fixed pixel in the corner, so React counts it inside the viewport, and
- * nothing painted.
- */
-.mark {
-  position: fixed;
-  inset-block-start: 0;
-  inset-inline-start: 0;
-  inline-size: 1px;
-  block-size: 1px;
-  pointer-events: none;
 }
 
 /*

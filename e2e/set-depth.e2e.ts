@@ -47,16 +47,20 @@ declare global {
 
 /**
  * Records the overlay's state and kind, the root's two attributes, and the
- * types of every view transition, from before the first paint.
+ * types of every view transition, for the whole life of the document.
  *
  * A `MutationObserver`, not a frame poll: `e2e/journey.e2e.ts` records how a
  * per-frame sample lost the `covering` state of a fast navigation.
+ *
+ * The observers attach once the document exists. An init script runs before
+ * `<html>` is parsed, so observing `document.documentElement` there throws on
+ * `null` and records nothing at all (e2e run 41275281002). The overlay is
+ * looked for until it renders, since it may arrive after the first parse.
  */
 async function record(page: Page) {
   await page.addInitScript(() => {
     const seen: DepthRecord = { marks: [], types: [], origin: null }
     globalThis.__depth = seen
-    const root = document.documentElement
 
     const original = document.startViewTransition?.bind(document)
     if (original) {
@@ -72,6 +76,7 @@ async function record(page: Page) {
 
     let overlay: Element | null = null
     const note = () => {
+      const root = document.documentElement
       const state = overlay?.getAttribute('data-state') ?? '-'
       const kind = overlay?.getAttribute('data-kind') ?? '-'
       seen.marks.push(
@@ -85,20 +90,30 @@ async function record(page: Page) {
       }
     }
 
-    new MutationObserver(note).observe(root, {
-      attributes: true,
-      attributeFilter: ['data-depth', 'data-arrival'],
-    })
-
-    const watch = () => {
+    const watchOverlay = (tries: number) => {
       overlay = document.querySelector('[data-page-transition]')
-      if (!overlay) return
-      new MutationObserver(note).observe(overlay, {
-        attributes: true,
-        attributeFilter: ['data-state', 'data-kind'],
-      })
+      if (overlay) {
+        new MutationObserver(note).observe(overlay, {
+          attributes: true,
+          attributeFilter: ['data-state', 'data-kind'],
+        })
+      } else if (tries > 0) {
+        setTimeout(() => watchOverlay(tries - 1), 100)
+      }
     }
-    document.addEventListener('DOMContentLoaded', watch)
+
+    const start = () => {
+      new MutationObserver(note).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-depth', 'data-arrival'],
+      })
+      watchOverlay(100)
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', start)
+    } else {
+      start()
+    }
   })
 }
 
@@ -223,6 +238,9 @@ test.describe('set-depth', () => {
 
     await page.goBack()
     await page.waitForURL((url) => url.pathname === FROM)
+    // Long enough for the panel to have run, so `idle` below is its end and
+    // not the moment before it started.
+    await page.waitForTimeout(900)
     await expect(overlay).toHaveAttribute('data-state', 'idle', {
       timeout: 5000,
     })
