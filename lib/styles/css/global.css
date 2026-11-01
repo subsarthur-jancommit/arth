@@ -607,6 +607,108 @@ html.screenshot {
 }
 
 /*
+ * set-depth (`docs/MOTION-SPEC.md` §13.10, R6): the picture held under the
+ * detail circle.
+ *
+ * `vault/motion/page-transition` opens the circle and explains why it cannot
+ * hide the swap alone: a prefetched route commits about 50ms after the press.
+ * A `depth` link navigates with the `set-depth` transition type, the
+ * overlay's keyed mark turns that into a view transition, and these rules
+ * keep exactly one of the two pages on screen at any moment. While
+ * `data-depth="rising"` the old page's snapshot stays and the new page waits
+ * beneath it; once the circle has closed, `data-depth="covered"` swaps them
+ * under it. Neither moves or fades: the circle is the only thing the reader
+ * sees change.
+ *
+ * Selected by the attribute rather than by the transition type, so the hold
+ * applies only while a circle is actually open, and a browser that cannot
+ * parse the type selector still holds. While the circle is rising the group
+ * carries a hold that changes nothing, because a view transition ends as soon
+ * as its last animation does and the old page has to outlast the opening.
+ * The hold is dropped the moment the circle has closed, so the transition
+ * ends under the closed circle and never outlives it: the page overlay
+ * releases `data-depth` only once no view transition is running, because
+ * these rules leaving mid-transition would hand the old snapshot back to the
+ * browser's default cross-fade. `mix-blend-mode: normal` replaces that
+ * cross-fade's `plus-lighter`, which would add the two pages together if
+ * both were ever shown.
+ *
+ * The overlay is named `page-depth` while the circle is open. Its old
+ * snapshot is a still of the circle and is dropped; its new picture is live,
+ * so the circle goes on opening above both pages.
+ */
+:root[data-depth='rising']::view-transition-group(root) {
+  animation: set-depth-hold var(--duration) linear both;
+}
+
+:root[data-depth='covered']::view-transition-group(root) {
+  animation: none;
+}
+
+:root[data-depth]::view-transition-old(root),
+:root[data-depth]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+:root[data-depth='rising']::view-transition-new(root),
+:root[data-depth='covered']::view-transition-old(root) {
+  opacity: 0;
+}
+
+::view-transition-group(page-depth),
+::view-transition-new(page-depth) {
+  animation: none;
+}
+
+::view-transition-old(page-depth) {
+  display: none;
+}
+
+/*
+ * SETTLE, 800ms: the destination's title comes to rest as the circle fades
+ * off it. `transform` only, so the title is never half-transparent at any
+ * moment a reader or `contrast-situ` could look at it, and composed onto
+ * whatever the title's own entrance is doing rather than replacing it.
+ */
+:root[data-arrival='depth'] main h1 {
+  animation: set-depth-settle var(--duration-slow) var(--ease-out-expo) both;
+  animation-composition: add;
+}
+
+@keyframes set-depth-hold {
+  from,
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes set-depth-settle {
+  from {
+    transform: translateY(1.75rem);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (--reduced-motion) {
+  /*
+   * No circle opens under the preference, so neither attribute is ever set
+   * and nothing above applies. Kept as a stop in case one is left behind.
+   */
+  :root[data-arrival] main h1 {
+    animation: none;
+  }
+
+  :root[data-depth='rising']::view-transition-group(root) {
+    /* motion-exempt: the standard reduced-motion kill switch, as above. */
+    animation-duration: 0.01ms;
+  }
+}
+
+/*
  * Nameplates — the fork (`docs/FORK.md` §3.2).
  *
  * The inner routes' one-word names (Work, Studio, Journal, a practice) sat at

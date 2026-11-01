@@ -35,8 +35,15 @@ const NAVIGATION_START = 'arth:navigation-start'
 /**
  * How a navigation should be dressed.
  *
- * `cover` is the default: a panel sweeps across and hides the swap, which is
- * right for a link between two unrelated pages.
+ * `depth` is the default for a link: `set-depth` (`docs/MOTION-SPEC.md`
+ * §13.10). A detail circle opens from the pressed link and covers the page,
+ * the way a drawing's detail mark points into another sheet of the set, and
+ * the destination's title settles once it is uncovered.
+ *
+ * `cover` is the panel that sweeps up across the page. The browser's own back
+ * and forward controls use it, faster, because §13.10 asks for a closing
+ * panel there rather than a circle shrinking back to a link the restored
+ * scroll position may not show.
  *
  * `morph` means the destination shares an element with this page — a work's
  * cover, going from the catalogue card to the project page — and React's
@@ -51,7 +58,21 @@ const NAVIGATION_START = 'arth:navigation-start'
  * sheet of one drawing set slides over the last, rather than rising like a
  * new page.
  */
-export type NavigationIntent = 'cover' | 'morph' | 'sheet'
+export type NavigationIntent = 'cover' | 'depth' | 'morph' | 'sheet'
+
+/**
+ * The React transition type a `depth` link navigates with.
+ *
+ * Read in two places: `components/ui/link` passes it as `transitionTypes`,
+ * and the overlay's `<ViewTransition>` mark gives itself a class only for it,
+ * which is what makes React start the view transition that holds the old
+ * page under the detail circle. A typo at either end would raise nothing and
+ * hold nothing, so both ends share this constant, and
+ * `e2e/set-depth.e2e.ts` fails if no view transition carries it. An array
+ * because that is the shape `transitionTypes` takes.
+ */
+export const DEPTH_TYPE = 'set-depth'
+export const DEPTH_TYPES: string[] = [DEPTH_TYPE]
 
 /**
  * What started the navigation.
