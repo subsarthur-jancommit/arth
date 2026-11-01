@@ -57,8 +57,6 @@ declare global {
 
 const GUTTER_ROUTES = [
   '/id',
-  '/en/journal',
-  '/en/journal/scope-is-the-deliverable',
   '/id/kontak',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
@@ -77,9 +75,9 @@ const GUTTER_ROUTES = [
  * Adding them would mean lowering this gate's floors to whatever a scaffold
  * happens to measure, which is how a substance gate stops being able to fail.
  * They join when F3-02 builds the unit template and there is substance to
- * measure. Until then `/en/metode`, `/en/work`, `/en/journal` and the home
- * page carry the gate, and that absence is recorded in
- * `docs/PROGRES-ARTHUR.md` rather than left to be noticed.
+ * measure. Until then `/en/metode`, `/en/work` and the home page carry the
+ * gate (`/en/journal` did too, until F5-04 retired it), and that absence is
+ * recorded in `docs/PROGRES-ARTHUR.md` rather than left to be noticed.
  */
 
 /*

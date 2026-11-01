@@ -50,8 +50,9 @@ const ALLOWED_MESSAGE_KEYS = new Map([
   ['contactPage.draftPreview', 'draft mode only'],
   ['policyPage.draftPreview', 'draft mode only'],
   // Legacy fixture pages, labelled dummy by plan until F5-04 removes them.
-  ['project.contactPlaceholderNote', '/work fixtures, removed at F5-04'],
-  ['journal.contactPlaceholderNote', '/journal fixtures, removed at F5-04'],
+  // Kept with `/work` by the owner's decision of 2026-11-01, until Arthur's
+  // own projects replace the template's samples.
+  ['project.contactPlaceholderNote', '/work samples, kept by the owner'],
 ])
 
 /** A next-intl message catalogue: strings, nested under namespace keys. */

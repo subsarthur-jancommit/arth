@@ -176,13 +176,8 @@ const ROUTES: { path: string }[] = [
    * nothing on this route has asked for a scene.
    */
   { path: '/id/kontak' },
-  /*
-   * The journal, index and entry. Both opt into `gsap` for one thing only:
-   * `TextReveal` on their `h1`, which is the entrance vocabulary every route
-   * with a heading now speaks. Neither carries a choreographed moment.
-   */
-  { path: '/en/journal' },
-  { path: '/en/journal/scope-is-the-deliverable' },
+  // The journal's index and entry, which opted into `gsap` for their `h1`,
+  // left in F5-04.
 ]
 
 /** Identify a library by something only that library contains. */

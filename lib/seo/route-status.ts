@@ -56,6 +56,12 @@ export const NOT_FOUND_STATUS = 404
  * one thing that is certainly untrue — the three units are not the three
  * practices renamed. `410` tells a crawler to drop the URL instead of
  * re-checking it, which is what should happen to a page with no successor.
+ *
+ * Then the journal, retired in F5-04 for the same reason: its essays were
+ * the starter template's scaffolding, never Arthur's, and no page of Arthur's
+ * takes their place. `/work` stays live by the owner's decision of
+ * 2026-11-01, with the template's sample projects, until Arthur's own replace
+ * them.
  */
 export const GONE_PREFIXES = [
   '/practice',
@@ -70,6 +76,8 @@ export const GONE_PREFIXES = [
    * is the same string in both languages by construction.
    */
   '/praktik',
+  /* The journal, its entries and its Atom feed (F5-04). */
+  '/journal',
 ] as const
 
 /**
@@ -96,7 +104,6 @@ export const GONE_PREFIXES = [
 export const LIVE_SEGMENTS: readonly string[] = [
   ...UNITS,
   'halaman',
-  'journal',
   'search.json',
   'kebijakan',
   'kontak',
@@ -106,7 +113,7 @@ export const LIVE_SEGMENTS: readonly string[] = [
   'work',
 ]
 
-/** Whether `pathname` is one of the retired practice addresses. */
+/** Whether `pathname` is one of the retired addresses above. */
 export function isGonePath(pathname: string): boolean {
   const withoutLocale = stripLocale(pathname).path
   return GONE_PREFIXES.some(

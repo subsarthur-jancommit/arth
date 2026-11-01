@@ -4,7 +4,6 @@ import { z } from 'zod'
 import { isConfigured } from '@/integrations/registry'
 import { sanityFetch } from '@/integrations/sanity/live'
 import { urlForReference } from '@/integrations/sanity/utils/link'
-import { resolveJournalEntries } from '@/lib/content/journal-fallback'
 import { localizedPath } from '@/lib/i18n/paths'
 import { PUBLISHED_LOCALES, type Locale } from '@/lib/i18n/routing'
 import { MARKDOWN_HANDLER_PATH } from '@/lib/seo/markdown-path'
@@ -168,10 +167,7 @@ export function buildRoutesFromDocuments(data: unknown): ContentRoute[] {
     })
 
     // `path === '#'` is unresolvable; a `staticPaths` hit means the document's
-    // slug collides with an already-listed static route (e.g. a `page` with
-    // slug `journal` resolves to `/journal`, which the static route already
-    // serves). The example used to be `ai`; since Tahap 84 removed that route,
-    // a document slugged `ai` is legitimate.
+    // slug collides with an already-listed static route.
     // A `RESERVED_PATHS` hit means it collides with a route outside the
     // catch-all that isn't advertised in the sitemap at all (e.g. `studio`).
     if (path === '#' || staticPaths.has(path) || RESERVED_PATHS.has(path))
@@ -286,54 +282,6 @@ export async function getCmsRoutes(): Promise<ContentRoute[]> {
 }
 
 /**
- * The journal's entries, as advertisable routes — Tahap 38.
- *
- * ## The defect this closes
- *
- * `routableContentQuery` above covers `page` and `project` only, and
- * `STATIC_ROUTE_TEMPLATES` carries `/journal` but none of its children. So
- * six real URLs — three entries in two languages — were absent from
- * `sitemap.xml`, `/llms.txt` and `/ai` while being present in the search
- * palette and reachable by a reader. Measured before this existed: the string
- * `/journal/` appeared **once** in the sitemap, for the index.
- *
- * ## Why the labels are localized here and the CMS's are not
- *
- * `localizedContentRoutes` expands a path across locales; it cannot translate
- * a label, because a CMS document's title arrives as one string from one
- * projection. These entries carry both languages already, so the label is
- * resolved per locale rather than left English — which is what a
- * locale-scoped surface needs (`/id/ai` was one until Tahap 84), and what CMS
- * projects still do not get.
- *
- * ## The gap this leaves, stated rather than hidden
- *
- * `resolveJournalEntries(locale, null)` returns the scaffolding, and the entry
- * route reads the same scaffolding (`fallbackEntry`), so the two agree today
- * and every advertised URL resolves. When the studio publishes real entries,
- * **both** have to start reading the CMS together — advertising CMS slugs
- * while the route still serves the fallback would put 404s in the sitemap.
- * `app/[locale]/journal/[slug]/page.tsx` already records that gap as open;
- * this is the second place it now has to be closed.
- */
-export function journalContentRoutes(locale?: Locale): ContentRoute[] {
-  const locales = locale ? [locale] : PUBLISHED_LOCALES
-
-  return locales.flatMap((each) =>
-    resolveJournalEntries(each, null).map((entry) => ({
-      path: localizedPath(each, `/journal/${entry.slug}`),
-      label: entry.title,
-      // The entry's own date. An `Invalid Date` here would serialize as an
-      // empty `<lastmod>` and invalidate the whole sitemap entry, so a
-      // malformed one falls back to now rather than being emitted broken.
-      lastModified: Number.isNaN(new Date(entry.date).getTime())
-        ? new Date()
-        : new Date(entry.date),
-    }))
-  )
-}
-
-/**
  * Everything beyond the static catalogue that a machine surface advertises,
  * already expanded to real URLs.
  *
@@ -342,6 +290,7 @@ export function journalContentRoutes(locale?: Locale): ContentRoute[] {
  * to assemble their own lists and drifted twice —
  * once over locale expansion (`localizedContentRoutes`' own doc comment) and
  * once over the journal, which reached all three only when it was added here.
+ * The journal's entries left with `/journal` in F5-04.
  *
  * Pass `locale` for a surface that is itself locale-scoped; omit it for the
  * two single documents that cover the whole site. No caller passes it since
@@ -350,10 +299,7 @@ export function journalContentRoutes(locale?: Locale): ContentRoute[] {
 export async function getAdvertisedRoutes(
   locale?: Locale
 ): Promise<ContentRoute[]> {
-  return [
-    ...journalContentRoutes(locale),
-    ...localizedContentRoutes(await getCmsRoutes(), locale),
-  ]
+  return localizedContentRoutes(await getCmsRoutes(), locale)
 }
 
 /** Outage-aware accessor — see `CmsRoutesResult.degraded`. Used by markdown-document.ts. */

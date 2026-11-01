@@ -68,10 +68,9 @@ test.describe('English is offered only where it is written', () => {
     })
   }
 
-  test('the English journal and catalogue stay English', async ({
-    request,
-  }) => {
-    for (const path of ['/en/work', '/en/journal']) {
+  // The journal stood here beside it until F5-04 retired it.
+  test('the English catalogue stays English', async ({ request }) => {
+    for (const path of ['/en/work']) {
       const response = await request.get(path, { maxRedirects: 0 })
       expect(response.status(), path).toBe(200)
     }

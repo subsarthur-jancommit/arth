@@ -2,9 +2,10 @@ import { expect, test } from '@playwright/test'
 
 /**
  * `/en` and Arthur's untranslated English pages redirect to `/id` (K2, R0); the
- * journal is English, so it carries the English side of these checks.
+ * catalogue is English, so it carries the English side of these checks. The
+ * journal did until F5-04 retired it.
  */
-const LOCALE_SURFACES = ['/id', '/en/journal'] as const
+const LOCALE_SURFACES = ['/id', '/en/work'] as const
 
 /**
  * The site keeps the promises it makes about itself.
@@ -129,9 +130,10 @@ test.describe('locale parity', () => {
     }
 
     // Arthur's own pages have no public English address yet (K2, R0). The
-    // journal index exists in both languages, so compare it.
-    const en = await read('/en/journal')
-    const id = await read('/id/journal')
+    // catalogue exists in both languages, so compare it (the journal index
+    // until F5-04).
+    const en = await read('/en/work')
+    const id = await read('/id/work')
 
     expect(en.meta, 'no meta description on /en').toBeTruthy()
     expect(en.description, 'no Organization description on /en').toBeTruthy()
@@ -151,8 +153,8 @@ test.describe('locale parity', () => {
       const html = await (await request.get(path)).text()
       return html.match(/"@id":"([^"]*#organization)"/)?.[1]
     }
-    const englishId = await organizationId('/en/journal')
-    const indonesianId = await organizationId('/id/journal')
+    const englishId = await organizationId('/en/work')
+    const indonesianId = await organizationId('/id/work')
     expect(englishId).toBeTruthy()
     expect(englishId).toBe(indonesianId)
   })

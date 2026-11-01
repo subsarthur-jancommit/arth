@@ -39,8 +39,6 @@ import { waitForEntrance } from './page-settled'
  * judgement, so it went with the rest of the file.
  */
 
-const JOURNAL_ENTRY = 'scope-is-the-deliverable'
-
 const ROUTES = [
   '/id',
   '/id/kontak',
@@ -48,8 +46,6 @@ const ROUTES = [
   `/en/work/${FEATURED_WORK}`,
   '/id/konstruksi',
   '/id/konstruksi/pelaku-proyek',
-  '/en/journal',
-  `/en/journal/${JOURNAL_ENTRY}`,
 ]
 
 /** Every element that acts as a pressable call-to-action. */

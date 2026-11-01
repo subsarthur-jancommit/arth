@@ -195,8 +195,8 @@ itself says to revert it and never commit it.
   GROQ `queries.ts`, generated `sanity.types.ts`). Every integration
   self-disables when its env vars are absent. Arthur's words live in Sanity
   only: without it the home, unit and side pages show the not-found view, and
-  `lib/content/*-fallback.ts` keeps just the placeholder contact (until K5)
-  and the journal scaffolding (until F5-04);
+  `lib/content/home-fallback.ts` keeps just the placeholder contact (until
+  K5); `/journal` was retired in F5-04 and answers 410;
   `lib/content/editorial-copy.test.ts` fails if editorial text comes back.
   Read env only through `@/lib/env`.
   `app/api/revalidate` and `app/api/draft-mode` are the webhook and preview

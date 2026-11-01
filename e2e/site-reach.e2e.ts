@@ -152,8 +152,6 @@ const HUMAN_ROUTES = [
   `/en/work/${FEATURED_WORK}`,
   `/id/${UNITS[0]}`,
   '/id/kontak',
-  '/en/journal',
-  '/en/journal/scope-is-the-deliverable',
 ] as const
 
 /** Paths a person can act on. `/llms.txt` is not one of them. */
@@ -235,28 +233,11 @@ test.describe('every page offers a way onward', () => {
     ).toBeGreaterThanOrEqual(3)
   })
 
-  test('every journal entry is announced to machines', async ({ request }) => {
-    const [sitemap, llms] = await Promise.all([
-      (await request.get('/sitemap.xml')).text(),
-      (await request.get('/llms.txt')).text(),
-    ])
-
-    const slugs = [
-      'scope-is-the-deliverable',
-      'a-decision-you-can-defend',
-      'evaluation-before-pipeline',
-    ]
-
-    expect(sitemap.length).toBeGreaterThan(200)
-    for (const slug of slugs) {
-      expect(sitemap, `${slug} missing from the sitemap`).toContain(
-        `/journal/${slug}`
-      )
-      expect(llms, `${slug} missing from llms.txt`).toContain(
-        `/journal/${slug}`
-      )
-    }
-  })
+  /*
+   * The journal's entries were checked here for a place in the sitemap and
+   * `/llms.txt` until F5-04 retired `/journal`; `e2e/route-status.e2e.ts`
+   * now holds that their addresses answer 410.
+   */
 
   /*
    * `/en/practice/consulting` was here and is retired. The unit page is not
@@ -264,10 +245,8 @@ test.describe('every page offers a way onward', () => {
    * is a top-level page with nothing above it but the home page. F3-02 can
    * add one when the unit sits inside a hierarchy of sides and chapters.
    */
-  for (const route of [
-    `/en/work/${FEATURED_WORK}`,
-    '/en/journal/scope-is-the-deliverable',
-  ]) {
+  // The journal entry was the second route here until F5-04 retired it.
+  for (const route of [`/en/work/${FEATURED_WORK}`]) {
     test(`${route} publishes a breadcrumb trail`, async ({ request }) => {
       const html = await (await request.get(route)).text()
       const blocks = [

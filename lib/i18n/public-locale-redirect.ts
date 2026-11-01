@@ -9,9 +9,10 @@ import { UNITS } from '@/lib/content/units'
  * itself did, so `/en/konstruksi` rendered English chrome around Indonesian
  * copy (`docs/TINJAUAN-F01-F03.md` C2).
  *
- * A denylist rather than "everything under `/en`": `/en/work` and
- * `/en/journal` are fully English and stay, and an unknown `/en/...` keeps its
- * own 404 instead of being bounced to an `/id` 404. A new Arthur route is
+ * A denylist rather than "everything under `/en`": `/en/work` is fully
+ * English and stays, an unknown `/en/...` keeps its own 404 instead of being
+ * bounced to an `/id` 404, and the retired `/en/journal` (F5-04) its own 410
+ * in English, from `lib/seo/route-status.ts`. A new Arthur route is
  * added here in the same change that adds the route.
  */
 export const UNTRANSLATED_SEGMENTS: readonly string[] = [
@@ -28,8 +29,8 @@ export const UNTRANSLATED_SEGMENTS: readonly string[] = [
    * descriptions nobody approved, and link to `/en` addresses that answer 307
    * anyway — 13 of its 22 rows, measured on production 2026-10-22. Its two
    * readers, the palette and the 404's suggestions (`vault/blocks/wayfinder`),
-   * fetch it and follow the 307, so `/en/work` and `/en/journal` keep both
-   * over the published index. Draft mode keeps the English index for
+   * fetch it and follow the 307, so `/en/work` keeps both over the published
+   * index. Draft mode keeps the English index for
    * Presentation, as it keeps the pages.
    */
   'search.json',
