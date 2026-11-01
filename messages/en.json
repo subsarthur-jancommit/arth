@@ -51,7 +51,8 @@
     "actionEyebrow": "First step",
     "actionFallback": "Tell us the problem.",
     "actionAfterFallback": "We will decide which unit should work first.",
-    "actionLink": "Go to the contact page"
+    "actionLink": "Go to the contact page",
+    "sequenceLink": "See every sequence"
   },
   "contactPage": {
     "eyebrow": "About and contact",

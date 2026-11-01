@@ -37,6 +37,8 @@ import { SituationLinks } from '@/vault/blocks/situation-links'
 import { Reveal } from '@/vault/motion/reveal'
 import { PlateMaterial } from '@/vault/webgl/plate-material'
 
+import { HomeSequence } from './home-sequence'
+
 import s from './page.module.css'
 
 async function fetchPublishedHome(locale: Locale) {
@@ -316,6 +318,17 @@ export default async function Home() {
           eyebrow={t('situationEyebrow')}
           title={t('situationTitle')}
           destinationLabel={t('situationDestination')}
+        />
+
+        {/*
+          One client, three units: one sequence after the reader's own
+          situation and before how Arthur works (plan §5.1), with the way to
+          the rest of them on /layanan.
+        */}
+        <HomeSequence
+          className={s.section}
+          locale={locale}
+          preview={isDraftMode}
         />
 
         {/*

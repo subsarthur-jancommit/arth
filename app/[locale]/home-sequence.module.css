@@ -1,0 +1,27 @@
+/*
+ * The way from the one sequence on the home page to all of them on
+ * `/layanan`. On a desktop it sits on the column the sequence's own closing
+ * note uses (`vault/blocks/unit-sequence`, `.noteBlock`), so the note, its
+ * action and this link read as one ending rather than two.
+ */
+.more {
+  margin: 0;
+
+  @media (--desktop) {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gap);
+  }
+}
+
+/* The same underline as the sequence's own action, so the two read alike. */
+.link {
+  width: fit-content;
+  padding-block-end: 0.25em;
+  border-bottom: 1px solid currentcolor;
+  color: inherit;
+
+  @media (--desktop) {
+    grid-column: 3 / 10;
+  }
+}
