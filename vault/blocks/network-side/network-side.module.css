@@ -179,12 +179,22 @@
   max-width: 58ch;
 }
 
+/*
+ * `network-money-flow` (MOTION-SPEC §13.4, R6). The plumb line is the flow's
+ * own leader here, so it is drawn in the text's ink rather than a hairline,
+ * and `--money-reach` is how far it stands from the steps: the branch each
+ * step sends out to it is exactly that long.
+ */
 .moneyLine {
-  padding-inline-start: mobile-vw(30px);
+  --plumb-ink: var(--color-secondary);
+  --money-reach: mobile-vw(30px);
+
+  padding-inline-start: var(--money-reach);
 
   @media (--desktop) {
+    --money-reach: var(--gap);
+
     margin-inline-start: calc(var(--column-width) * 2 + var(--gap) * 2);
-    padding-inline-start: var(--gap);
   }
 }
 
@@ -193,6 +203,8 @@
 }
 
 .moneyStep {
+  position: relative;
+  view-timeline: --money-step block;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: mobile-vw(18px);
@@ -217,6 +229,86 @@
   text-wrap: balance;
 }
 
+/*
+ * Each step's branch and its node on the line.
+ *
+ * The plumb line's tip follows the bottom of the screen down the list, so it
+ * passes a step's middle as half the step has come into view. That is when
+ * the step branches off it: the node lands on the line and the branch runs
+ * out to the step, finished as the whole step is on screen. Driven by the
+ * step's own view timeline, so it follows the reader's scroll both ways with
+ * no script and no loop, and only decoration moves; the step's words never
+ * do (`e2e/network-promise.e2e.ts` checks).
+ */
+.moneyStep::before,
+.moneyStep::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  pointer-events: none;
+}
+
+.moneyStep::before {
+  inset-inline-end: 100%;
+  inline-size: var(--money-reach);
+  border-block-start: thin solid var(--color-secondary);
+  transform-origin: left center;
+}
+
+.moneyStep::after {
+  inset-inline-start: calc(var(--money-reach) * -1);
+  inline-size: calc(var(--gap) * 0.375);
+  block-size: calc(var(--gap) * 0.375);
+  border-radius: 50%;
+  background: var(--color-secondary);
+  translate: -50% -50%;
+}
+
+@supports (animation-timeline: view()) {
+  .moneyStep::before {
+    animation: money-branch linear both;
+    animation-timeline: --money-step;
+    animation-range: entry 50% entry 100%;
+  }
+
+  .moneyStep::after {
+    animation: money-node linear both;
+    animation-timeline: --money-step;
+    animation-range: entry 45% entry 55%;
+  }
+}
+
+@keyframes money-branch {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@keyframes money-node {
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+/*
+ * The stamp lands on the step it confirms: in the text's ink, at a stamp's
+ * slant. `rotate` rather than `transform`, because the stamp's own strike
+ * animates `transform` and the slant has to survive it.
+ */
+.moneyStep .stamp {
+  border-color: currentColor;
+  color: var(--color-secondary);
+  rotate: -3deg;
+}
+
 .stamp {
   grid-column: 2;
   width: fit-content;
@@ -227,6 +319,14 @@
     grid-row: 1;
     align-self: center;
     justify-self: end;
+  }
+}
+
+/* Reduced motion: every branch and node already drawn (§13.4). */
+@media (--reduced-motion) {
+  .moneyStep::before,
+  .moneyStep::after {
+    animation: none;
   }
 }
 
