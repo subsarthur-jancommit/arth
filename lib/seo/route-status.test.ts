@@ -103,8 +103,25 @@ describe('gone', () => {
     expect(isGonePath('/en/work/practical-guide')).toBe(false)
   })
 
+  it('answers for the journal, its entries and its feed (F5-04)', () => {
+    for (const path of [
+      '/id/journal',
+      '/en/journal',
+      '/en/journal/scope-is-the-deliverable',
+      // A dotted path, which `proxy.ts` tests before its page-document guard
+      // waves dotted paths through.
+      '/id/journal/feed.xml',
+      '/en/journal/feed.xml',
+    ]) {
+      expect(isGonePath(path), path).toBe(true)
+    }
+    expect(isGonePath('/id/journals')).toBe(false)
+  })
+
   it('leaves live pages alone', () => {
+    // `/work` stays live by the owner's decision of 2026-11-01.
     expect(isGonePath('/en/work')).toBe(false)
+    expect(isGonePath('/id/work/arus-balik')).toBe(false)
     for (const unit of UNITS) expect(isGonePath(`/id/${unit}`)).toBe(false)
   })
 })

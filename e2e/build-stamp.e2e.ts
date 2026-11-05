@@ -11,7 +11,8 @@ import { expect, test } from '@playwright/test'
  * Vercel's to name. The rules for that half are unit-tested in `build.test.ts`.
  */
 for (const [path, colophon, builtOn] of [
-  ['/en/journal', 'Colophon', 'Built on Satūs'],
+  // The English colophon was read on the journal until F5-04 retired it.
+  ['/en/work', 'Colophon', 'Built on Satūs'],
   ['/id', 'Kolofon', 'Dibangun di atas Satūs'],
 ] as const) {
   test(`${path}: no stamp without a build to name`, async ({ page }) => {

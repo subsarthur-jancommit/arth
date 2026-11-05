@@ -19,8 +19,8 @@
  * own module at a higher specificity than a rule about paper should need to
  * match, or written inline by a script while the page is read, and a print
  * sheet is the one place that has to win outright. Per-page rules (which
- * parts of an essay to keep) live with the page —
- * `app/[locale]/journal/[slug]/page.module.css`.
+ * parts of a page to keep) live with the page's own stylesheet; the journal
+ * entry's was the first, and left with the journal in F5-04.
  *
  * Moved here from `global.css` when it grew.
  */

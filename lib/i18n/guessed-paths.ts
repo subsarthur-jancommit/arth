@@ -84,9 +84,9 @@ const GUESSED_SEGMENTS = new Map([
 /**
  * Single segments that already resolve, so a guess must never shadow them.
  *
- * `work`, `journal` (Tahap 26), the fixed pages and, since F1-03, the three
- * units — each of which is a one-segment page, which is exactly the depth
- * this function matches.
+ * `work`, the fixed pages and, since F1-03, the three units — each of which
+ * is a one-segment page, which is exactly the depth this function matches.
+ * `journal` (Tahap 26) was here until F5-04 retired it.
  *
  * `ai` was in this list for a machine view Tahap 84 removed, so for several
  * stages it protected a route that did not exist. Removed: nothing answers
@@ -106,7 +106,6 @@ export const REAL_SEGMENTS = new Set([
   'metode',
   'pembayaran',
   'work',
-  'journal',
 ])
 
 /** Every key the table answers to. Exported for the unit test. */

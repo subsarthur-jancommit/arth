@@ -88,8 +88,9 @@ async function renderWithoutJavaScript(browser: Browser, path: string) {
 
 test.describe('readable without JavaScript', () => {
   // Arthur's English pages answer 307 to /id until English copy is approved
-  // (K2, R0). Keep English coverage on a page that is English: the journal.
-  for (const path of ['/id', '/en/journal']) {
+  // (K2, R0). English coverage is the catalogue's, below; the journal carried
+  // it here too until F5-04 retired it.
+  for (const path of ['/id']) {
     test(`${path} renders its content server-side`, async ({ browser }) => {
       const rendered = await renderWithoutJavaScript(browser, path)
 

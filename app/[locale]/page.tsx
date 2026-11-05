@@ -8,7 +8,6 @@ import { Wrapper } from '@/components/layout/wrapper'
 import { SectionHeader } from '@/components/ui/section-header'
 import { resolveHomeContent } from '@/lib/content/home-fallback'
 import { canRenderPublicContent } from '@/lib/content/public-content-guard'
-import { latestWriting } from '@/lib/content/unit-writing'
 import {
   isSideOf,
   isUnit,
@@ -29,7 +28,6 @@ import {
 import { ContactBlock } from '@/vault/blocks/contact-block'
 import { FirstStepBand } from '@/vault/blocks/first-step-band'
 import { Hero } from '@/vault/blocks/hero'
-import { LatestWriting } from '@/vault/blocks/latest-writing'
 import { Passage } from '@/vault/blocks/passage'
 import { Plate } from '@/vault/blocks/plate'
 import { PracticeList } from '@/vault/blocks/practice-list'
@@ -107,13 +105,12 @@ export default async function Home() {
   const requested = await localeRootParam()
   const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
 
-  const [{ settings, units, isDraftMode }, t, tUnit, tPlate, latest] =
+  const [{ settings, units, isDraftMode }, t, tUnit, tPlate] =
     await Promise.all([
       fetchHomeForRequest(locale),
       getTranslations('home'),
       getTranslations('unit'),
       getTranslations('plates'),
-      latestWriting(locale),
     ])
 
   const content = resolveHomeContent(locale, settings)
@@ -345,17 +342,6 @@ export default async function Home() {
             </div>
           </Reveal>
         ) : null}
-
-        {latest && (
-          <LatestWriting
-            className={s.section}
-            eyebrow={t('journalEyebrow')}
-            entry={latest}
-            practice={latest.unit ? unitLabel(latest.unit) : undefined}
-            allLabel={t('journalAll')}
-            locale={locale}
-          />
-        )}
 
         {/*
           The first step. Until K5 names a real channel the fallback address

@@ -9,7 +9,6 @@ import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import { Link } from '@/components/ui/link'
 import { nextProject } from '@/lib/content/next-project'
 import { studioContact } from '@/lib/content/studio-contact'
-import { writingForUnit } from '@/lib/content/unit-writing'
 import { isUnit, unitTemplate } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, LOCALE_TAGS, routing } from '@/lib/i18n/routing'
@@ -31,7 +30,6 @@ import {
 } from '@/lib/utils/metadata'
 import { EngagementEnquiry } from '@/vault/blocks/engagement-enquiry'
 import { enquiryHref } from '@/vault/blocks/engagement-enquiry/enquiry'
-import { EngagementWriting } from '@/vault/blocks/engagement-writing'
 import { NextProject } from '@/vault/blocks/next-project'
 import { PracticeEngagements } from '@/vault/blocks/practice-engagements'
 import { ProjectGallery } from '@/vault/blocks/project-gallery'
@@ -298,18 +296,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const next = nextProject(siblings, slug)
 
   /*
-   * The writing filed under this work's practice — round 5. The same cached
-   * read the unit writing helper makes (`lib/content/unit-writing`), so the two
-   * cannot list different entries.
+   * The writing filed under this work's practice (round 5) left with the
+   * journal in F5-04. It had nothing to list: no journal entry was published,
+   * and the scaffolding's entries were filed under no unit.
    */
   const practice =
     project.practice !== null && isUnit(project.practice)
       ? project.practice
       : null
-  const [writing, contact] = await Promise.all([
-    practice ? writingForUnit(locale, practice) : [],
-    studioContact(locale),
-  ])
+  const contact = await studioContact(locale)
 
   /*
    * The enquiry this case opens — a letter to the studio with the case
@@ -719,27 +714,6 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 title={t('engagementsTitle', { practice: tWork(practice) })}
                 currentLabel={t('engagementsCurrent')}
                 rows={engagements}
-              />
-            )}
-
-            {/*
-              What the practice has written, set out from this engagement's
-              year — round 5. Inside `#onward` and with no `data-region` of
-              its own: the spine lists exactly the page's regions
-              (`e2e/project-detail.e2e.ts`), and this is a way onward from the
-              work, not a region of it.
-            */}
-            {practice && writing.length > 0 && (
-              <EngagementWriting
-                title={t('writingTitle', { practice: tWork(practice) })}
-                entries={writing}
-                year={project.year}
-                datumLabel={
-                  project.year === null
-                    ? ''
-                    : t('writingDatum', { year: String(project.year) })
-                }
-                locale={locale}
               />
             )}
 

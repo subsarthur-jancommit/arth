@@ -1,4 +1,3 @@
-import { resolveJournalEntries } from '@/lib/content/journal-fallback'
 import {
   buildSearchIndex,
   resolveSearchIndex,
@@ -12,10 +11,7 @@ import {
 } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
-import {
-  journalEntriesQuery,
-  projectsQuery,
-} from '@/lib/integrations/sanity/queries'
+import { projectsQuery } from '@/lib/integrations/sanity/queries'
 import { resolveRouteDescriptions } from '@/lib/seo/route-descriptions'
 
 /**
@@ -66,11 +62,7 @@ async function buildIndex(locale: Locale): Promise<SearchEntry[]> {
   const descriptions = await resolveRouteDescriptions([locale])
 
   if (!isConfigured('sanity')) {
-    return buildSearchIndex(locale, {
-      projects: null,
-      journal: resolveJournalEntries(locale, null),
-      descriptions,
-    })
+    return buildSearchIndex(locale, { projects: null, descriptions })
   }
 
   /*
@@ -81,20 +73,12 @@ async function buildIndex(locale: Locale): Promise<SearchEntry[]> {
    * and unreachable", which is the case that actually happened.
    */
   const load = async () => {
-    const [projects, journal] = await Promise.all([
-      sanityFetch({
-        query: projectsQuery,
-        params: { locale },
-        perspective: 'published',
-        stega: false,
-      }),
-      sanityFetch({
-        query: journalEntriesQuery,
-        params: { locale },
-        perspective: 'published',
-        stega: false,
-      }),
-    ])
+    const projects = await sanityFetch({
+      query: projectsQuery,
+      params: { locale },
+      perspective: 'published',
+      stega: false,
+    })
 
     /*
      * The published perspective only, and never draft mode.
@@ -109,10 +93,7 @@ async function buildIndex(locale: Locale): Promise<SearchEntry[]> {
      * rather than after a lint rejection — a cast here would be claiming a
      * shape instead of naming the one this module actually needs.
      */
-    return {
-      projects: projects.data,
-      journal: resolveJournalEntries(locale, journal.data),
-    }
+    return { projects: projects.data }
   }
 
   return resolveSearchIndex(locale, load, descriptions)

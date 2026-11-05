@@ -431,11 +431,12 @@ test.describe('material layer', () => {
        * The unmount step: any page without a canvas will do, and its only
        * job is to take this one off screen.
        *
-       * It was `/en/ai` until Tahap 84 removed that route. `/en/journal` is
-       * the nearest equivalent that survives — `e2e/route-budget.e2e.ts`
-       * allows it `gsap` and no `three`, so it carries no canvas to wait for.
+       * It was `/en/ai` until Tahap 84 removed that route, then `/en/journal`
+       * until F5-04 did. `/id/kontak` is the nearest equivalent that
+       * survives — `e2e/route-budget.e2e.ts` allows it `gsap` and no
+       * `three`, so it carries no canvas to wait for.
        */
-      await page.goto('/en/journal', { waitUntil: 'domcontentloaded' })
+      await page.goto('/id/kontak', { waitUntil: 'domcontentloaded' })
       // `load`, not `networkidle`: the first visit above already warmed the
       // cache, so these three fetch nothing new. This is the only test that
       // visits `/en` more than once, and it is the only one that needs the

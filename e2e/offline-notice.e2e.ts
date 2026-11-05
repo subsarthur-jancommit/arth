@@ -10,6 +10,8 @@ import { axeTags } from './axe-tags'
  * `context.setOffline` is the browser's own switch: `navigator.onLine` flips
  * and the `offline` and `online` events fire, which is everything the notice
  * listens to. The page is fully loaded first, so nothing it needs is lost.
+ * Read on the catalogue, in both languages; it was the journal until F5-04
+ * retired it, and the notice is the layout's, on every page.
  */
 const NOTICE = '[data-epic="offline-notice"]'
 
@@ -21,7 +23,7 @@ for (const [locale, offline, restored] of [
     page,
     context,
   }) => {
-    await page.goto(`/${locale}/journal`)
+    await page.goto(`/${locale}/work`)
     await page.waitForLoadState('networkidle')
 
     const notice = page.locator(NOTICE)
@@ -54,7 +56,7 @@ test('the notice is never a stop for the keyboard or the pointer', async ({
   page,
   context,
 }) => {
-  await page.goto('/en/journal')
+  await page.goto('/en/work')
   await page.waitForLoadState('networkidle')
   await context.setOffline(true)
 
@@ -75,7 +77,7 @@ test('under reduced motion it neither rises nor fades', async ({
   context,
 }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.goto('/en/journal')
+  await page.goto('/en/work')
   await page.waitForLoadState('networkidle')
   await context.setOffline(true)
 

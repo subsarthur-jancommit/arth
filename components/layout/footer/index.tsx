@@ -200,9 +200,10 @@ export function Footer() {
         </section>
 
         {/* The footer index keeps every fixed page and the three units
-            reachable everywhere. Catalogue and journal indexes remain
-            addressable but are intentionally not promoted in navigation:
-            their entries are still seeded fixtures, not Arthur's work. */}
+            reachable everywhere. The catalogue remains addressable but is
+            intentionally not promoted in navigation: its entries are still
+            the template's samples, not Arthur's work. The journal left in
+            F5-04. */}
         <section className={s.column}>
           <h2 className={cn('caption', s.heading)}>{t('index')}</h2>
           <ul className={s.list}>

@@ -1,5 +1,7 @@
 import { expect, type Page, test } from '@playwright/test'
 
+import { FEATURED_WORK } from './fixtures'
+
 /**
  * A breadcrumb trail sits below the fixed header, not under it.
  *
@@ -8,26 +10,17 @@ import { expect, type Page, test } from '@playwright/test'
  * links the header covered entirely (WCAG 2.2 SC 2.4.11). Measured on the live
  * site on 2026-10-05 (`docs/HANDOFF.md` §4.8, A1).
  *
- * ## Why it reads the journal rather than the practice pages
+ * ## Why it reads a project page
  *
  * This was `e2e/practice-trail.e2e.ts` and swept `/practice/<value>`, which
- * is retired. The defect was never about that route: the overlap came from
- * the fixed header and `components/ui/breadcrumbs`, which two routes still
- * render — the journal entry and the project page. A journal entry is the
- * better subject of the two, because `lib/content/journal-fallback.ts`
- * guarantees one exists at a known slug in both languages whether or not the
- * CMS has anything, so the gate cannot pass by skipping.
+ * is retired; then the journal entry, which F5-04 retired too. The defect was
+ * never about either route: the overlap came from the fixed header and
+ * `components/ui/breadcrumbs`, which the project page still renders.
+ * Measured on production on 2026-11-01: y=120 under a header ending at 72 on
+ * a desktop, y=91 under 58 on a phone.
  */
 
-/**
- * The scaffolding entry every build has, in both languages.
- *
- * Taken from `lib/content/journal-fallback.ts` by slug rather than imported:
- * the claim is about a URL a reader can open, and the fallback's slugs are
- * the same in both locales by construction, which
- * `lib/content/journal-fallback.test.ts` asserts.
- */
-const ENTRY = 'scope-is-the-deliverable'
+const CASE = `work/${FEATURED_WORK}`
 async function trailClearsHeader(page: Page, path: string, label: string) {
   await page.goto(path)
   const trail = page.getByRole('navigation', { name: label })
@@ -46,14 +39,14 @@ async function trailClearsHeader(page: Page, path: string, label: string) {
 }
 
 test.describe('a breadcrumb trail clears the header', () => {
-  test(`desktop, /en/journal/${ENTRY}`, async ({ page }) => {
+  test(`desktop, /en/${CASE}`, async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 })
-    await trailClearsHeader(page, `/en/journal/${ENTRY}`, 'Breadcrumb')
+    await trailClearsHeader(page, `/en/${CASE}`, 'Breadcrumb')
   })
 
-  test(`desktop, /id/journal/${ENTRY}`, async ({ page }) => {
+  test(`desktop, /id/${CASE}`, async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 })
-    await trailClearsHeader(page, `/id/journal/${ENTRY}`, 'Remah roti')
+    await trailClearsHeader(page, `/id/${CASE}`, 'Remah roti')
   })
 
   test.describe('on a phone', () => {
@@ -63,12 +56,12 @@ test.describe('a breadcrumb trail clears the header', () => {
       hasTouch: true,
     })
 
-    test(`/en/journal/${ENTRY}`, async ({ page }) => {
-      await trailClearsHeader(page, `/en/journal/${ENTRY}`, 'Breadcrumb')
+    test(`/en/${CASE}`, async ({ page }) => {
+      await trailClearsHeader(page, `/en/${CASE}`, 'Breadcrumb')
     })
 
-    test(`/id/journal/${ENTRY}`, async ({ page }) => {
-      await trailClearsHeader(page, `/id/journal/${ENTRY}`, 'Remah roti')
+    test(`/id/${CASE}`, async ({ page }) => {
+      await trailClearsHeader(page, `/id/${CASE}`, 'Remah roti')
     })
   })
 })

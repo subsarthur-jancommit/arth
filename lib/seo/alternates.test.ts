@@ -13,7 +13,6 @@ import { describe, expect, it } from 'bun:test'
 import { LOCALE_TAGS, PUBLISHED_LOCALES } from '@/lib/i18n/routing'
 
 import { routeAlternates } from './alternates'
-import { FEED_TITLES } from './atom-feed'
 import { STATIC_ROUTES } from './route-catalog'
 
 /**
@@ -65,18 +64,12 @@ describe('routeAlternates', () => {
     expect(alternates('/studio').languages).toBeUndefined()
   })
 
-  it("announces the journal's feed on the journal's pages, in their language", () => {
-    expect(alternates('/en/journal').types?.['application/atom+xml']).toEqual([
-      { url: '/en/journal/feed.xml', title: FEED_TITLES.en },
-    ])
-    expect(
-      alternates('/id/journal/scope-is-the-deliverable').types?.[
-        'application/atom+xml'
-      ]
-    ).toEqual([{ url: '/id/journal/feed.xml', title: FEED_TITLES.id }])
-    expect(alternates('/en/metode').types?.['application/atom+xml']).toBe(
-      undefined
-    )
+  it('announces no feed now that the journal is retired (F5-04)', () => {
+    // `/journal/feed.xml` left with the journal, so a page that still linked
+    // it would send a reader app to an address that answers 410.
+    for (const path of ['/id', '/id/kontak', '/en/work']) {
+      expect(alternates(path).types?.['application/atom+xml']).toBeUndefined()
+    }
   })
 
   it('keeps the shared llms.txt alternate on every route', () => {
