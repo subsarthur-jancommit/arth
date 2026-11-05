@@ -1,7 +1,12 @@
 import { type Browser, expect, type Page, test } from '@playwright/test'
 
-import { UNITS } from '../lib/content/units'
+import { SIDES, sideTemplate, UNITS } from '../lib/content/units'
 import { SITUATION_ROUTES, WORK_ROUTES } from './fixtures'
+
+/** Every unit's two side pages. */
+const SIDE_ROUTES = UNITS.flatMap((unit) =>
+  SIDES[unit].map((side) => `/id${sideTemplate(unit, side)}`)
+)
 
 /**
  * Unit dialects on the rendered page: F4-02, `docs/MOTION-SPEC.md` §12.1.
@@ -257,7 +262,7 @@ test.describe('unit dialects', () => {
     })
   }
 
-  for (const path of [...SITUATION_ROUTES, ...WORK_ROUTES]) {
+  for (const path of [...SIDE_ROUTES, ...SITUATION_ROUTES, ...WORK_ROUTES]) {
     const unit = path.split('/')[2]
     test(`${path} speaks ${unit}'s dialect`, async ({ page }) => {
       await installLiveMain(page)
@@ -336,6 +341,7 @@ test.describe('unit dialects', () => {
 
   for (const path of [
     ...UNITS.map((unit) => `/id/${unit}`),
+    ...SIDE_ROUTES,
     ...SITUATION_ROUTES,
     ...WORK_ROUTES,
   ]) {

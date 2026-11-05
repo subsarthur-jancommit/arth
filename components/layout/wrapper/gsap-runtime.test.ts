@@ -44,11 +44,11 @@ const RUNTIME = new Set([
 /**
  * Pages known to drive GSAP without its runtime, each with its reason. The
  * last test fails once an entry no longer needs to be here.
+ *
+ * Empty. It held the side page (`StepSequence`) while another PR was editing
+ * that file; F4-02 passed `gsap` there once it was free.
  */
-const KNOWN_MISSING = {
-  'app/[locale]/[unit]/[side]/page.tsx':
-    'StepSequence runs ScrollTriggers here; #66 is editing this file, and F4-02 passes `gsap` once it has merged',
-} satisfies Record<string, string>
+const KNOWN_MISSING = {} satisfies Record<string, string>
 
 const posix = (file: string) => file.replaceAll('\\', '/')
 const withoutComments = (source: string) =>
