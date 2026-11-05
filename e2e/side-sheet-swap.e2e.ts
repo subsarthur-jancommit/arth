@@ -30,9 +30,20 @@ const SWITCHER = '[data-epic="side-sheet-swap"]:visible'
 const OTHER = `${SWITCHER} a[href="${TO}"]`
 const TITLE = 'main h1:visible'
 
+/** One view transition the page started, as the browser ran it. */
+interface Exchange {
+  types: string[]
+  /** `ready` once the browser took both pictures; `skipped` if it gave up. */
+  state: 'pending' | 'ready' | 'skipped'
+  /** Every animation on its pseudo-elements at `ready`, `name@pseudo`. */
+  animations: string[]
+  readyAt: number | null
+  doneAt: number | null
+}
+
 interface SheetRecord {
-  /** The transition types of every view transition the page started. */
-  types: string[][]
+  /** Every view transition the page started. */
+  transitions: Exchange[]
   /** Every `data-state` the page overlay passed through. */
   states: string[]
 }
@@ -42,24 +53,65 @@ declare global {
 }
 
 /**
- * Records the types of every view transition and the overlay's states for
- * the whole life of the document. As in `e2e/set-depth.e2e.ts`, the overlay
- * is looked for once the document exists, never before `<html>` is parsed.
+ * Records every view transition and the overlay's states for the whole life
+ * of the document. As in `e2e/set-depth.e2e.ts`, the overlay is looked for
+ * once the document exists, never before `<html>` is parsed.
+ *
+ * A transition's animations are read at its `ready`, not at some moment
+ * after the URL changes. React commits the new page, URL included, inside
+ * the transition's update and then waits up to 500ms for fonts and images in
+ * view before the browser takes the new picture and starts animating
+ * (`startViewTransition` in react-dom). Sampled 100ms after the URL changed,
+ * the exchange had not begun yet, and the sample was empty (e2e run
+ * 41956728827).
  */
 async function record(page: Page) {
   await page.addInitScript(() => {
-    const seen: SheetRecord = { types: [], states: [] }
+    const seen: SheetRecord = { transitions: [], states: [] }
     globalThis.__sheet = seen
 
     const original = document.startViewTransition?.bind(document)
     if (original) {
       document.startViewTransition = (argument) => {
-        seen.types.push(
-          argument && typeof argument === 'object'
-            ? [...(argument.types ?? [])]
-            : []
+        const exchange: Exchange = {
+          types:
+            argument && typeof argument === 'object'
+              ? [...(argument.types ?? [])]
+              : [],
+          state: 'pending',
+          animations: [],
+          readyAt: null,
+          doneAt: null,
+        }
+        seen.transitions.push(exchange)
+        const transition = original(argument)
+        transition.ready.then(
+          () => {
+            exchange.state = 'ready'
+            exchange.readyAt = performance.now()
+            exchange.animations = document.documentElement
+              .getAnimations({ subtree: true })
+              .flatMap((animation) => {
+                const effect = animation.effect
+                const pseudo =
+                  effect instanceof KeyframeEffect ? effect.pseudoElement : null
+                if (!pseudo?.startsWith('::view-transition')) return []
+                const name =
+                  animation instanceof CSSAnimation
+                    ? animation.animationName
+                    : 'script'
+                return [`${name}@${pseudo}`]
+              })
+          },
+          () => {
+            exchange.state = 'skipped'
+          }
         )
-        return original(argument)
+        const ended = () => {
+          exchange.doneAt = performance.now()
+        }
+        transition.finished.then(ended, ended)
+        return transition
       }
     }
 
@@ -96,34 +148,45 @@ async function titleHasFocus(page: Page) {
   })
 }
 
-/** The side-sheet animations running now, by name. */
-async function exchanging(page: Page) {
-  return page.evaluate(() =>
-    document
-      .getAnimations()
-      .flatMap((animation) =>
-        animation instanceof CSSAnimation &&
-        animation.animationName.startsWith('side-sheet') &&
-        animation.playState === 'running'
-          ? [animation.animationName]
-          : []
-      )
+/** The view transition that carried the exchange, once it has ended. */
+async function exchangeOf(page: Page) {
+  await page.waitForFunction(
+    () =>
+      globalThis.__sheet.transitions.some(
+        (transition) =>
+          transition.types.includes('side-sheet') && transition.doneAt !== null
+      ),
+    undefined,
+    { timeout: 8000 }
   )
+  const { transitions, states } = await page.evaluate(() => globalThis.__sheet)
+  const exchange = transitions.find((transition) =>
+    transition.types.includes('side-sheet')
+  )
+  return { exchange, transitions, states }
 }
 
-/** The side-sheet animations still running on the page, by name. */
-async function stillMoving(page: Page) {
-  return page.evaluate(() =>
-    document
-      .getAnimations()
-      .filter(
-        (animation) =>
-          animation instanceof CSSAnimation &&
-          animation.animationName.startsWith('side-sheet') &&
-          animation.playState === 'running'
-      )
-      .map((animation) => (animation as CSSAnimation).animationName)
-  )
+/** Both halves of the exchange ran, and ran their length. */
+function expectBothHalves(exchange: Exchange | undefined) {
+  const ran = JSON.stringify(exchange?.animations ?? [])
+  expect(exchange?.state, 'the exchange was skipped').toBe('ready')
+  expect(
+    exchange?.animations.some((animation) =>
+      animation.startsWith('side-sheet-lift@::view-transition-old(')
+    ),
+    `the old sheet did not lift: ${ran}`
+  ).toBe(true)
+  expect(
+    exchange?.animations.some((animation) =>
+      animation.startsWith('side-sheet-settle@::view-transition-new(')
+    ),
+    `the new sheet did not settle: ${ran}`
+  ).toBe(true)
+  // TRANSPORT then SETTLE: 400ms, then 800ms once the old sheet has gone.
+  expect(
+    (exchange?.doneAt ?? 0) - (exchange?.readyAt ?? 0),
+    'the exchange ended before the new sheet had settled'
+  ).toBeGreaterThanOrEqual(1100)
 }
 
 /** The switcher's rule and the link it should be under, as boxes. */
@@ -158,24 +221,11 @@ test.describe('side-sheet-swap', () => {
 
     await page.locator(OTHER).click()
     await page.waitForURL((url) => url.pathname === TO)
-    // TRANSPORT and SETTLE are both under way inside the first 400ms: the
-    // old sheet lifting, the new one waiting out its delay to settle.
-    await page.waitForTimeout(100)
-    const halves = await exchanging(page)
-    await page.waitForTimeout(1500)
 
-    expect(halves, 'the old sheet did not lift').toContain('side-sheet-lift')
-    expect(halves, 'the new sheet did not settle').toContain(
-      'side-sheet-settle'
-    )
-
-    const { types, states } = await page.evaluate(() => globalThis.__sheet)
+    const { exchange, transitions, states } = await exchangeOf(page)
+    expectBothHalves(exchange)
     expect(
-      types.some((list) => list.includes('side-sheet')),
-      `no view transition carried the exchange: ${JSON.stringify(types)}`
-    ).toBe(true)
-    expect(
-      types.some((list) => list.includes('set-depth')),
+      transitions.some((transition) => transition.types.includes('set-depth')),
       'the switcher opened a detail circle'
     ).toBe(false)
     expect(
@@ -183,7 +233,6 @@ test.describe('side-sheet-swap', () => {
       'the page overlay covered the exchange'
     ).toEqual([])
 
-    expect(await stillMoving(page), 'the exchange never finished').toEqual([])
     await expect(page.locator(TITLE)).toBeVisible()
     expect(await titleHasFocus(page), 'focus was not handed to the title').toBe(
       true
@@ -231,13 +280,9 @@ test.describe('side-sheet-swap', () => {
     await page.waitForTimeout(400)
     await foot.click()
     await page.waitForURL((url) => url.pathname === TO)
-    await page.waitForTimeout(1600)
 
-    const { types } = await page.evaluate(() => globalThis.__sheet)
-    expect(
-      types.some((list) => list.includes('side-sheet')),
-      `the foot link did not exchange the sheet: ${JSON.stringify(types)}`
-    ).toBe(true)
+    const { exchange } = await exchangeOf(page)
+    expectBothHalves(exchange)
     expect(await titleHasFocus(page)).toBe(true)
   })
 
@@ -248,24 +293,33 @@ test.describe('side-sheet-swap', () => {
     const page = await context.newPage()
 
     try {
+      await record(page)
       await page.goto(FROM)
       await page.waitForTimeout(1000)
 
       await page.locator(OTHER).click()
       await page.waitForURL((url) => url.pathname === TO)
-      // Well short of the 1200ms the exchange takes with motion.
-      await page.waitForTimeout(300)
+      // Longer than React's wait for fonts and images, well short of the
+      // 1200ms the exchange takes with motion.
+      await page.waitForTimeout(900)
 
-      expect(
-        await stillMoving(page),
-        'the sheet moved for a reader who asked for no motion'
-      ).toEqual([])
-      expect(
-        await page.evaluate(() =>
-          document.documentElement.matches(':active-view-transition')
-        ),
-        'a view transition is still holding the page'
-      ).toBe(false)
+      const { transitions } = await page.evaluate(() => globalThis.__sheet)
+      for (const transition of transitions) {
+        expect(
+          transition.animations.filter((animation) =>
+            animation.startsWith('side-sheet')
+          ),
+          'the sheet moved for a reader who asked for no motion'
+        ).toEqual([])
+        expect(
+          transition.doneAt,
+          'a view transition is still holding the page'
+        ).not.toBeNull()
+        expect(
+          (transition.doneAt ?? 0) - (transition.readyAt ?? 0),
+          'the new sheet did not appear at once'
+        ).toBeLessThan(200)
+      }
       await expect(page.locator(TITLE)).toBeVisible()
       expect(
         await titleHasFocus(page),
