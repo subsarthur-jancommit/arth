@@ -51,7 +51,8 @@
     "actionEyebrow": "Langkah pertama",
     "actionFallback": "Ceritakan masalahnya.",
     "actionAfterFallback": "Kami tentukan unit mana yang bekerja lebih dulu.",
-    "actionLink": "Ke halaman kontak"
+    "actionLink": "Ke halaman kontak",
+    "sequenceLink": "Lihat semua rangkaian"
   },
   "contactPage": {
     "eyebrow": "Tentang dan kontak",
