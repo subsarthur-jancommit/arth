@@ -264,15 +264,24 @@
   translate: -50% -50%;
 }
 
+/*
+ * Scroll-linked, on Peekabo's curve: this side is Peekabo's, and its dialect
+ * (`lib/styles/css/dialects.css`) is scroll-linked motion eased with
+ * gleasing, whose slight start is what keeps a scrubbed mark from seeming to
+ * jump as the scroll begins. `linear` is the base grammar's mapping, for the
+ * block outside a unit.
+ */
 @supports (animation-timeline: view()) {
   .moneyStep::before {
     animation: money-branch linear both;
+    animation-timing-function: var(--dialect-ease, linear);
     animation-timeline: --money-step;
     animation-range: entry 50% entry 100%;
   }
 
   .moneyStep::after {
     animation: money-node linear both;
+    animation-timing-function: var(--dialect-ease, linear);
     animation-timeline: --money-step;
     animation-range: entry 45% entry 55%;
   }

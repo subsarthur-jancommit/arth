@@ -19,6 +19,7 @@ import { Lenis } from '@/components/layout/lenis'
 import { Theme } from '@/components/layout/theme'
 import type { ThemeName } from '@/styles/config'
 import { BackToTop } from '@/vault/blocks/back-to-top'
+import type { Dialect } from '@/vault/motion/dialect'
 import { GridUnderlay } from '@/vault/motion/grid-underlay'
 import { Canvas } from '@/webgl/components/canvas'
 
@@ -91,6 +92,20 @@ interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
    * Tempus order.
    */
   gsap?: boolean
+  /**
+   * The unit dialect this page's motion speaks (`docs/MOTION-SPEC.md` §12.1).
+   *
+   * Written on `<main>` as `data-dialect`, which `lib/styles/css/dialects.css`
+   * keys on: Konstruksi settles long and one thing at a time, Teknologi in
+   * short ordered steps, Peekabo with rows that travel sideways. Only the
+   * unit routes pass it, the unit, side, situation and work pages, because
+   * they belong to one unit. Every other page leaves it unset and speaks the
+   * base grammar, which is what an unset dialect means.
+   *
+   * On `<main>` and not on the document: the header and footer are Arthur's
+   * on every page, and they keep the base grammar here too.
+   */
+  dialect?: Dialect | undefined
 }
 
 /**
@@ -159,6 +174,7 @@ export function Wrapper({
   simTypes,
   postprocessing = false,
   gsap = false,
+  dialect,
   ...props
 }: WrapperProps) {
   const t = useTranslations('footer')
@@ -193,6 +209,7 @@ export function Wrapper({
            * route whose canvas never arrived. `e2e/webgl-intent.ts` reads it.
            */
           data-webgl-root={webgl ? '' : undefined}
+          data-dialect={dialect}
           className={cn('relative flex grow flex-col', className)}
           {...props}
         >

@@ -85,7 +85,9 @@
  */
 .echo {
   margin: 0;
-  transition: opacity var(--duration) var(--ease-out-expo);
+  /* At the unit's tempo, as the item it echoes (below). */
+  transition: opacity var(--dialect-settle, var(--duration))
+    var(--dialect-ease, var(--ease-out-expo));
 }
 
 .items {
@@ -102,9 +104,15 @@
   /*
    * Only `opacity`, and only on the whole item — never a colour transition,
    * which animates a paint property (`CLAUDE.md` #4).
+   *
+   * At the unit's tempo (`unit-method`, `lib/styles/css/dialects.css`): the
+   * statement being read comes forward over a long settle on Konstruksi, in
+   * one short step on Teknologi, on gleasing on Peekabo. The block is only
+   * ever on a unit page; the fallback is the base grammar it had before.
    */
   opacity: var(--capability-recede);
-  transition: opacity var(--duration) var(--ease-out-expo);
+  transition: opacity var(--dialect-settle, var(--duration))
+    var(--dialect-ease, var(--ease-out-expo));
 
   @media (--desktop) {
     /*

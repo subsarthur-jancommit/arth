@@ -1,0 +1,136 @@
+/*
+ * Unit dialects: F4-02, `docs/MOTION-SPEC.md` §12.1.
+ *
+ * Arthur has one motion grammar and speaks it in three dialects, one per
+ * unit. The grammar and its tokens are shared; a dialect changes only the
+ * tempo of a unit's moments and the gesture its arrivals borrow from the
+ * unit's leading primitive. The palette stays monochrome, so the units are
+ * told apart by how things move, not by colour.
+ *
+ * This file is the dialect, and the only place its values are written.
+ *
+ * ## How a page selects one
+ *
+ * A unit route passes its unit to `<Wrapper dialect>`, which writes
+ * `data-dialect="<unit>"` on the page's `<main>` (`vault/motion/dialect.ts`).
+ * Every page that is Arthur's rather than one unit's (home, /layanan,
+ * /metode, /kebijakan, /kontak, /pembayaran, /work) sets none, and **the
+ * base grammar is simply the absence of a dialect**: nothing below is
+ * declared there, and every reader falls back to the value it had before
+ * dialects existed.
+ *
+ * ## The four parameters
+ *
+ * - `--dialect-settle`: how long one object takes to arrive or settle (a
+ *   row, a card, a plate, a sheet, a step coming into focus).
+ * - `--dialect-ease`: the curve of every arrival and settle.
+ * - `--dialect-step`: the interval between successive objects in a group,
+ *   and between the beats of one mark (a dimension's witnesses then its
+ *   line; a plate's four fixings).
+ * - `--dialect-travel`: where an arriving object comes from. This is the
+ *   leading primitive's gesture lent to the shared reveal: Konstruksi's
+ *   arrivals land from above as `bearing`'s load does, Teknologi's take one
+ *   short step, Peekabo's rows travel sideways as `horizontal` carries them.
+ *
+ * Small marks keep their own durations, which are sized to the mark (§2:
+ * duration scales with distance); a dialect reaches them through its ease
+ * and its step.
+ *
+ * ## What a dialect never touches
+ *
+ * REST, INTENT and COMMIT, the press grammar of §9. Hover, focus and press
+ * answer the reader's hand, and they answer it the same way on every page:
+ * a link must not feel slower to touch because it sits on Konstruksi. So the
+ * side switcher's marker, the side table's crosshair and every
+ * `data-press` noun keep their shared beats.
+ *
+ * ## Who reads it
+ *
+ * Every reader names its base value as the fallback,
+ * `var(--dialect-settle, var(--duration))`, so a page outside a unit is
+ * unchanged by construction. `lib/styles/scripts/dialects.test.ts` fails on
+ * a read without one, and `e2e/unit-dialects.e2e.ts` measures the result on
+ * the rendered pages.
+ */
+
+/*
+ * Konstruksi, weighty and precise. Leading primitives: bearing, formwork,
+ * level, fixings, dimension.
+ *
+ * The settle is 1000ms, the choreographed band's own default (§2), inside
+ * the 800 to 1200ms §12.1 asks for. The step is 400ms because out-expo has
+ * covered 95% of a 1000ms settle by then (the curve at x = 0.4 reads
+ * y = 0.951), so each object starts as the one before it lands: one object
+ * moves at a time. It lands from above, half a gutter, as `bearing`'s load
+ * does; nothing rises from below, which is the light, floating movement
+ * §12.1 rules out.
+ */
+[data-dialect='konstruksi'] {
+  --dialect-settle: 1000ms;
+  --dialect-ease: var(--ease-out-expo);
+  --dialect-step: var(--duration);
+  --dialect-travel: translateY(calc(var(--gap) * -0.5));
+}
+
+/*
+ * Teknologi, sequenced. Leading primitives: brace, dimension, step-sequence,
+ * leader.
+ *
+ * Short ordered steps: 200ms each with out-quart, and the step equals the
+ * settle, so each object begins as the one before it ends. The order is
+ * what the reader sees, and nothing moves at the same time as anything else.
+ * The travel is a quarter gutter, short to match the short beat.
+ */
+[data-dialect='teknologi'] {
+  --dialect-settle: var(--duration-fast);
+  --dialect-ease: var(--ease-out-quart);
+  --dialect-step: var(--duration-fast);
+  --dialect-travel: translateY(calc(var(--gap) * 0.25));
+}
+
+/*
+ * Peekabo, lively. Leading primitives: text-reveal, horizontal, parallax,
+ * crop-marks.
+ *
+ * Rows travel sideways, from the inline end, eased with gleasing, the house
+ * curve for scroll-driven transforms. The distance answers the reader's own
+ * speed: `--scroll-velocity` (published once a frame by
+ * `components/layout/lenis`, -1 to 1) stretches it from two gutters at rest
+ * to four in a flick, so a row arrives the way it was scrolled to. The step
+ * is the item beat, so a group arrives as one ripple rather than being
+ * counted out one by one: §12.1 rules out countdowns, and gleasing never
+ * passes its end, so nothing overshoots.
+ *
+ * Arrivals are timed, not scrubbed. A row of prose that moved with the
+ * scroll would drift against its own column while it is read, which
+ * `e2e/continuous-motion.e2e.ts` exists to forbid; the travel is spent
+ * before the row is read, and only decoration is ever scroll-linked.
+ */
+[data-dialect='peekabo'] {
+  --dialect-settle: var(--duration);
+  --dialect-ease: var(--ease-gleasing);
+  --dialect-step: var(--stagger-items);
+  --dialect-travel: translateX(
+    calc(
+      var(--gap) * 2 *
+        (1 + max(var(--scroll-velocity, 0), var(--scroll-velocity, 0) * -1))
+    )
+  );
+}
+
+/*
+ * Reduced motion: every dialect collapses to stillness (`CLAUDE.md` #5).
+ *
+ * The readers stand down on their own as well; this is the same promise
+ * made once, at the source, so that a reader added later cannot strand
+ * content by forgetting to: no travel, no wait between objects, and a settle
+ * that is effectively instant (0.01ms rather than 0, as the global kill
+ * switch uses, so a `transitionend` still fires for anything listening).
+ */
+@media (--reduced-motion) {
+  [data-dialect] {
+    --dialect-settle: 0.01ms;
+    --dialect-step: 0s;
+    --dialect-travel: none;
+  }
+}

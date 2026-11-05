@@ -33,7 +33,15 @@
   block-size: var(--gap);
 }
 
-/* A witness line at each end, dropped to the line once the reveal begins. */
+/*
+ * A witness line at each end, dropped to the line once the reveal begins.
+ *
+ * On a unit page the beats are the unit's (`lib/styles/css/dialects.css`):
+ * its step between the witnesses and the line, and its curve. Konstruksi
+ * lets each part stand before the next moves, Teknologi draws them in short
+ * order, Peekabo nearly together. The lengths are sized to the marks and
+ * stay; the base grammar, on /metode and /work, is the fallback.
+ */
 .line::before,
 .line::after {
   content: '';
@@ -41,8 +49,9 @@
   inset-block: 0;
   border-inline-start: thin solid var(--line-strong);
   transform-origin: center top;
-  transition: transform var(--duration-fast) var(--ease-out-expo)
-    var(--duration-fast);
+  transition: transform var(--duration-fast)
+    var(--dialect-ease, var(--ease-out-expo))
+    var(--dialect-step, var(--duration-fast));
 }
 
 .line::before {
@@ -61,8 +70,9 @@
   position: absolute;
   inset: 0;
   transform-origin: center;
-  transition: transform var(--duration) var(--ease-out-expo)
-    calc(var(--duration-fast) * 2);
+  transition: transform var(--duration)
+    var(--dialect-ease, var(--ease-out-expo))
+    calc(var(--dialect-step, var(--duration-fast)) * 2);
 }
 
 .rule::before {
@@ -84,18 +94,26 @@
   border-inline-start: thin solid var(--line);
 }
 
-[data-reveal='hidden'] .line::before,
-[data-reveal='hidden'] .line::after {
+/*
+ * Undrawn until the measure arrives, asked of its item as well as of the
+ * container, for the reason `Formwork` gives: in per-item mode
+ * (`useReveal({ perItem: true })`, which `vault/blocks/offer-scope` uses) the
+ * container stays `hidden` for good and the item carries the arrival. Keyed
+ * on the container alone, the offer's measure was never drawn.
+ */
+[data-reveal='hidden'] .line:not([data-reveal-item='visible'] .line)::before,
+[data-reveal='hidden'] .line:not([data-reveal-item='visible'] .line)::after {
   transform: scaleY(0);
 }
 
-[data-reveal='hidden'] .rule {
+[data-reveal='hidden'] .rule:not([data-reveal-item='visible'] .rule) {
   transform: scaleX(0);
 }
 
 /*
  * Reduced motion keeps the outcome and drops the beat (MOTION-SPEC §9.4 rule
- * 3): the measure is drawn at once.
+ * 3): the measure is drawn at once. The second group matches the undrawn
+ * rules' weight, so it wins by coming later.
  */
 @media (--reduced-motion) {
   .line::before,
@@ -106,7 +124,10 @@
 
   [data-reveal] .line::before,
   [data-reveal] .line::after,
-  [data-reveal] .rule {
+  [data-reveal] .rule,
+  [data-reveal='hidden'] .line:not([data-reveal-item='visible'] .line)::before,
+  [data-reveal='hidden'] .line:not([data-reveal-item='visible'] .line)::after,
+  [data-reveal='hidden'] .rule:not([data-reveal-item='visible'] .rule) {
     transform: none;
   }
 }

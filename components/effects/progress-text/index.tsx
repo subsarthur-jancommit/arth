@@ -8,6 +8,8 @@ import { SplitText } from 'gsap/SplitText'
 import type { CSSProperties, ReactNode } from 'react'
 import { useRef } from 'react'
 
+import { dialectGsapEase } from '@/vault/motion/dialect'
+
 import s from './progress-text.module.css'
 
 // Registered here (not only in `components/effects/gsap.tsx`) so this
@@ -152,8 +154,18 @@ export function ProgressText({
             return
           }
 
+          /*
+           * Each word comes up on the curve of the unit whose page this is
+           * (`practice-statement`, `lib/styles/css/dialects.css`): expo on
+           * Konstruksi, quart on Teknologi, gleasing on Peekabo. The scroll
+           * stays the clock in every dialect. Outside a unit no dialect is
+           * set, and the tween keeps GSAP's default curve, as it always has.
+           */
+          const ease = dialectGsapEase(container)
+
           gsap.to(split.words, {
             opacity: 1,
+            ...(ease !== undefined && { ease }),
             stagger: { each: 1 / split.words.length, from: 'start' },
             scrollTrigger: {
               trigger: container,

@@ -131,7 +131,8 @@ export default async function UnitPage({ params }: UnitPageProps) {
   const nextUnit = nextUnitAfter(unit)
 
   return (
-    <Wrapper theme="light">
+    // The unit's own motion dialect (`lib/styles/css/dialects.css`).
+    <Wrapper theme="light" dialect={unit}>
       <article className={s.page}>
         {/*
          * The opening is a stage, the rest is a document (R4): the hero sits

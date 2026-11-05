@@ -1,5 +1,12 @@
+/*
+ * The plate is put in place before it is fixed, and it is put there the way
+ * its unit sets things down (`lib/styles/css/dialects.css`): lowered from
+ * above on Konstruksi, one short step on Teknologi, carried in sideways on
+ * Peekabo. Half a gutter from below is the base grammar's placing, kept for
+ * a plate outside a unit.
+ */
 .section {
-  --reveal-transform: translateY(calc(var(--gap) * 0.5));
+  --reveal-transform: var(--dialect-travel, translateY(calc(var(--gap) * 0.5)));
 }
 
 .plate {
