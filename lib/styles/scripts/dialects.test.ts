@@ -241,6 +241,30 @@ describe('unit dialects (MOTION-SPEC §12.1)', () => {
       0.01
     )
   })
+
+  /*
+   * The file retimes the shared reveal contract, and that is the one place
+   * it moves anything itself. Every such rule must sit inside a dialect, so
+   * no page outside a unit can be reached, and must leave pressable nouns
+   * out, so a dialect never slows a COMMIT.
+   */
+  it('retimes the reveal only inside a dialect, never a press', async () => {
+    const { dialects } = await sources
+    const moving = [...dialects.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+      .map((match) => ({
+        selector: (match[1] ?? '').replace(/\s+/g, ' ').trim(),
+        body: match[2] ?? '',
+      }))
+      .filter(({ body }) =>
+        /(?:^|[\s;])(?:transition[\w-]*|transform)\s*:/.test(body)
+      )
+
+    expect(moving.length, 'dialects.css retimes no reveal').toBeGreaterThan(0)
+    for (const { selector } of moving) {
+      expect(selector).toStartWith('[data-dialect] [data-reveal')
+      expect(selector).toContain('[data-press]')
+    }
+  })
 })
 
 describe('the base grammar is the absence of a dialect', () => {

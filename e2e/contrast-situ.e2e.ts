@@ -11,6 +11,7 @@ import {
   paintedBoxes,
   worstContrast,
 } from './contrast-situ'
+import { transitionsAtRest } from './settle'
 
 /**
  * Text is readable against what is **actually painted behind it**.
@@ -408,6 +409,8 @@ for (const route of ROUTES) {
     for (const stop of stops) {
       await page.evaluate((y) => window.scrollTo(0, y), stop)
       await page.waitForTimeout(1100)
+      // A unit's dialect can arrive slower than the wait above (F4-02).
+      await transitionsAtRest(page)
 
       const facts = await page.evaluate(collectRuns)
       const runs: Collected[] = []

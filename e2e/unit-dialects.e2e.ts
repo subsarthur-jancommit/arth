@@ -68,21 +68,32 @@ async function resolved(page: Page, duration: string, ease: string) {
   )
 }
 
-/** The representative moment: `unit-method`'s first statement. */
-async function unitMethod(page: Page) {
-  return page.evaluate(() => {
+/**
+ * A moment's timing on the live page: `unit-method`'s first statement, or
+ * the first arrival through the shared reveal contract that is not also a
+ * pressable noun (whose transition carries its COMMIT).
+ */
+async function momentTiming(page: Page, selector: string) {
+  return page.evaluate((query) => {
     const main = dialectMain()
-    const item = main?.querySelector(
-      '[data-epic="unit-method"] [data-capability]'
-    )
+    const item = main?.querySelector(query)
     if (!main || !item) return null
     const style = getComputedStyle(item)
     return {
       dialect: main.dataset.dialect ?? null,
       duration: style.transitionDuration,
       ease: style.transitionTimingFunction,
+      delay: style.transitionDelay,
     }
-  })
+  }, selector)
+}
+
+const UNIT_METHOD = '[data-epic="unit-method"] [data-capability]'
+const REVEAL = '[data-reveal] [data-reveal-item]:not([data-press])'
+
+/** The representative moment: `unit-method`'s first statement. */
+async function unitMethod(page: Page) {
+  return momentTiming(page, UNIT_METHOD)
 }
 
 const seconds = (value: string | undefined) =>
@@ -181,6 +192,46 @@ test.describe('unit dialects', () => {
     // The three units are told apart by their motion.
     expect(new Set(seen.map(({ duration }) => duration)).size).toBe(3)
     expect(new Set(seen.map(({ ease }) => ease)).size).toBe(3)
+  })
+
+  /*
+   * The shared reveal contract carries most of a unit page's motion, so it
+   * is the second representative: the unit's own name and eyebrow arrive
+   * on the unit's settle and curve, and a step apart. The contract in
+   * `global.css` is not edited; `dialects.css` retimes it inside a dialect.
+   */
+  test('the reveal contract arrives at each unit`s tempo', async ({ page }) => {
+    await installLiveMain(page)
+
+    const seen = new Set<string>()
+    for (const unit of UNITS) {
+      await page.goto(`/id/${unit}`)
+      await expect(page.locator('main h1').first()).toBeVisible()
+      // `data-reveal` and each item's `--reveal-index` arrive with hydration.
+      await expect(page.locator(`main ${REVEAL}`).first()).toBeAttached()
+
+      const arrival = await momentTiming(page, REVEAL)
+      expect(arrival, `/id/${unit} has no reveal`).not.toBeNull()
+      const dialect = await resolved(
+        page,
+        'var(--dialect-settle)',
+        'var(--dialect-ease)'
+      )
+      expect(arrival?.duration).toBe(dialect?.duration)
+      expect(arrival?.ease).toBe(dialect?.ease)
+
+      // The second item of the same block waits one step of this unit.
+      const second = await page.evaluate((query) => {
+        const item = dialectMain()?.querySelectorAll(query)[1]
+        return item ? getComputedStyle(item).transitionDelay : null
+      }, REVEAL)
+      const step = await resolved(page, 'var(--dialect-step)', 'ease')
+      expect(second, `/id/${unit}: the second arrival`).toBe(step?.duration)
+
+      seen.add(`${arrival?.duration} ${arrival?.ease}`)
+    }
+
+    expect(seen.size, 'two units arrive alike').toBe(3)
   })
 
   for (const path of ['/id', '/id/layanan', '/id/metode']) {
