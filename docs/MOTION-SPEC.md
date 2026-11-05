@@ -862,9 +862,59 @@ working-drawing marks, not by colour.
 | Teknologi  | Sequenced           | `brace`, `dimension`, `step-sequence`, `leader`        | Short ordered steps, 150–200 ms each with `ease-out-quart`; the sequence reveals the workflow | Simultaneous movement without order |
 | Peekabo    | Lively              | `text-reveal`, `horizontal`, `parallax`, `crop-marks`  | Scroll-linked with `ease-gleasing`, responsive to scroll velocity; rows travel sideways       | Overshoot and countdowns            |
 
-The dialect is a parameter in one token file (planned for F4-02), not a
-separate component per unit. The home page, One client / three units, and How
-we work use the base grammar because they belong to Arthur, not to one unit.
+The dialect is a parameter in one token file, not a separate component per
+unit. The home page, One client / three units, and How we work use the base
+grammar because they belong to Arthur, not to one unit; Kebijakan has no
+dialect (§13.9).
+
+**Built in F4-02 (5 November 2026).** The token file is
+`lib/styles/css/dialects.css`. A unit route passes its unit to
+`<Wrapper dialect>`, which writes `data-dialect` on `<main>`: the unit, side,
+situation and work pages do, and no other page does. The base grammar is the
+absence of a dialect, and every reader names its base value as a fallback
+(`var(--dialect-settle, var(--duration))`), so a page outside a unit is
+unchanged by construction. It sits on `<main>` and not on the document,
+because the header and footer are Arthur's on every page.
+
+Each dialect sets four parameters. The travel is the leading primitive's
+gesture, lent to the shared arrivals:
+
+| Parameter          | Sets                                                                | Konstruksi                            | Teknologi                  | Peekabo                                                   |
+| ------------------ | ------------------------------------------------------------------- | ------------------------------------- | -------------------------- | --------------------------------------------------------- |
+| `--dialect-settle` | How long one object takes to arrive or settle                       | 1000ms                                | 200ms                      | 400ms                                                     |
+| `--dialect-ease`   | The curve of every arrival and settle                               | `ease-out-expo`                       | `ease-out-quart`           | `ease-gleasing`                                           |
+| `--dialect-step`   | The interval between successive objects, and between a mark's beats | 400ms: expo is 95% home by then       | 200ms, equal to the settle | 40ms: one ripple, not a countdown                         |
+| `--dialect-travel` | Where an arriving object comes from                                 | from above, half a gutter (`bearing`) | a quarter-gutter step      | sideways, 2 to 4 gutters with scroll speed (`horizontal`) |
+
+What reads them:
+
+- the shared reveal contract, retimed inside a dialect by `dialects.css`, so
+  `global.css` is unchanged; a block's own `--reveal-transform` still wins
+  over the unit's travel (`network-side` keeps its steps on the plumb line);
+- `unit-method` and `side-buying-path`, and the entry arrow;
+- `practice-statement`'s per-word curve, through `vault/motion/dialect.ts`,
+  which maps the computed curve back to its GSAP name;
+- `bab-formwork`, `bab-sift` (`flip` reads its tokens from the grid, which can
+  see `<main>`), `offer-fixings`, the offer measure (`dimension`) and the
+  offer plate's placing;
+- `network-money-flow`'s scroll-linked branches.
+
+What does not: REST, INTENT and COMMIT, the press grammar of §9. Hover, focus
+and press answer the reader's hand the same way on every page, so pressable
+nouns (`data-press`), the route marker and the side table's crosshair keep
+their shared beats. So does a sift's stagger, because it answers the reader's
+own press. Two choices keep a card's rule where the dialect would bend it: a
+fixing never waits less than its own beat, so §13.3's one at a time holds in
+every dialect; and Peekabo's arrivals are timed rather than scrubbed, because
+prose that moved with the scroll would drift against its column
+(`e2e/continuous-motion.e2e.ts`). Only decoration is scroll-linked.
+
+Under reduced motion every dialect collapses at the source: no travel, no
+step, and an instant settle. `lib/styles/scripts/dialects.test.ts` holds the
+file to the table at the head of this section, and `e2e/unit-dialects.e2e.ts`
+measures `unit-method` and the reveal contract on the three unit pages, the
+absence of any dialect on the base pages, and the reduced-motion end state.
+`side-sheet-swap` takes its unit's dialect in a follow-up once #70 has landed.
 
 ## 13. Arthur moment cards — design brief for later packages
 
