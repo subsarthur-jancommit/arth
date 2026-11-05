@@ -14,14 +14,48 @@
   }
 }
 
-/* The same underline as the sequence's own action, so the two read alike. */
+/*
+ * The same underline as the sequence's own action, and the same answer to a
+ * cursor, a keyboard and a press (`vault/blocks/unit-sequence`, `.action`), so
+ * the two read alike: the underline lifts on intent, the shared `[data-press]`
+ * scale is the press, and the `::after` gives the line a target about 44px
+ * tall without moving it.
+ */
 .link {
+  position: relative;
   width: fit-content;
   padding-block-end: 0.25em;
   border-bottom: 1px solid currentcolor;
   color: inherit;
+  transition:
+    border-color var(--duration-fast) var(--ease-out-expo),
+    transform var(--duration-micro) var(--ease-out-quart);
+
+  &::after {
+    position: absolute;
+    inset: -12px 0;
+    content: '';
+  }
+
+  @media (--hover) {
+    &:hover {
+      border-bottom-color: transparent;
+    }
+  }
+
+  &:focus-visible {
+    border-bottom-color: transparent;
+    outline: 2px solid var(--color-contrast);
+    outline-offset: 4px;
+  }
 
   @media (--desktop) {
     grid-column: 3 / 10;
+  }
+}
+
+@media (--reduced-motion) {
+  .link {
+    transition: none;
   }
 }
