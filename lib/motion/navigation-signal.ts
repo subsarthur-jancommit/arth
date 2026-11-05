@@ -51,7 +51,9 @@ const NAVIGATION_START = 'arth:navigation-start'
  * by construction: a morph is only legible if the reader can *see* both
  * states, and a cover exists precisely to stop them seeing either. Announcing
  * the intent is what lets the overlay stand aside for the handful of
- * navigations that have something better to show.
+ * navigations that have something better to show. A link between a unit's
+ * two sides announces it too: there the view transition moves the sheet
+ * itself (`side-sheet-swap`, `lib/motion/side-sheet.ts`).
  *
  * `sheet` is the same page in the other language — Orientasi, stage 4. It is
  * covered like any swap, but the panel crosses sideways, the way the next

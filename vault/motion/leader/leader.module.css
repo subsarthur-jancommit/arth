@@ -66,6 +66,28 @@
   opacity: 0;
 }
 
+/*
+ * An intent leader keeps one beat, INTENT, 200ms in all
+ * (`docs/MOTION-SPEC.md` §13.8): the drop takes its first quarter, the run
+ * the next three fifths and the dot the rest, so the dot lands as the beat
+ * ends however long the run is. The reveal leader's slower sequence above is
+ * for evidence a reader scrolls to, not for a row they are pointing at.
+ */
+.intent .drop {
+  transition-duration: calc(var(--duration-fast) * 0.25);
+  transition-delay: 0s;
+}
+
+.intent .run {
+  transition-duration: calc(var(--duration-fast) * 0.6);
+  transition-delay: calc(var(--duration-fast) * 0.25);
+}
+
+.intent .dot {
+  transition-duration: calc(var(--duration-fast) * 0.15);
+  transition-delay: calc(var(--duration-fast) * 0.85);
+}
+
 @media not (--desktop), (hover: none) {
   :global([data-reveal='hidden'] [data-reveal-item='visible']) .intent .drop {
     transform: scaleY(1);
@@ -87,6 +109,18 @@
  * active row, the per-item reveal state draws it as the row enters view.
  */
 @media (--desktop) and (hover: hover) {
+  /*
+   * At rest, and on the way back to it: the line is taken up all at once, a
+   * micro beat, so a pointer crossing the list does not leave a wake of
+   * half-drawn leaders behind it.
+   */
+  .intent .drop,
+  .intent .run,
+  .intent .dot {
+    transition-duration: var(--duration-micro);
+    transition-delay: 0s;
+  }
+
   .intent .drop {
     transform: scaleY(0);
   }
@@ -102,16 +136,21 @@
   :global([data-leader-target]:hover) .intent .drop,
   :global([data-leader-target]:focus-within) .intent .drop {
     transform: scaleY(1);
+    transition-duration: calc(var(--duration-fast) * 0.25);
   }
 
   :global([data-leader-target]:hover) .intent .run,
   :global([data-leader-target]:focus-within) .intent .run {
     transform: scaleX(1);
+    transition-duration: calc(var(--duration-fast) * 0.6);
+    transition-delay: calc(var(--duration-fast) * 0.25);
   }
 
   :global([data-leader-target]:hover) .intent .dot,
   :global([data-leader-target]:focus-within) .intent .dot {
     opacity: 1;
+    transition-duration: calc(var(--duration-fast) * 0.15);
+    transition-delay: calc(var(--duration-fast) * 0.85);
   }
 }
 

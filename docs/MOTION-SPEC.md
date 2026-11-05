@@ -888,6 +888,21 @@ is available. `CLAUDE.md`'s hard reader protections continue to apply.
 | Reduced motion       | The new sheet appears immediately and focus moves to its page title.                                                                                                                                             |
 | Verification planned | No-JavaScript link behavior, reduced-motion final state, and a named moment in the interaction-grammar report.                                                                                                   |
 
+**Built in R6 (5 November 2026).** INTENT is the switcher's `RouteMarker`
+with `previews`: the rule goes to the side pointed at or focused, 200ms
+`ease-out-quart` (`--route-marker-duration`, `--route-marker-ease`). Both
+links to the other side, the switcher's and the one at the sheet's foot
+(§13.11), navigate with the `side-sheet` transition type and the `morph`
+intent, so the page overlay stands aside. The side page keys a
+`<ViewTransition>` by the side around everything under the switcher, and
+`global.css` lifts the old sheet away (TRANSPORT) and settles the new one
+once it has gone (SETTLE, opacity whole within its first quarter); the
+switcher stays in the root picture. The new title is handed focus in both
+motion modes, because the link that held it leaves with the old sheet.
+Reduced motion drops the old picture and shows the new one at once. The
+names are shared from `lib/motion/side-sheet.ts`; covered by
+`e2e/side-sheet-swap.e2e.ts`.
+
 ### 13.2 Kartu dari bekisting — card from formwork (F3-04)
 
 | Field                | Specification                                                                                                                                                                                                                           |
@@ -980,6 +995,16 @@ is available. `CLAUDE.md`'s hard reader protections continue to apply.
 | Without JavaScript   | Each situation is a link whose text names its destination unit.                                                                             |
 | Reduced motion       | Do not draw the line; keep the destination unit named in text.                                                                              |
 | Verification planned | `keyboard-focus`; the interaction-grammar report checks keyboard INTENT.                                                                    |
+
+**Built in R6 (5 November 2026).** On the home page's "Pilih situasi" the
+leader has a grid track of its own between the situation and its unit, so
+the line runs from one to the other. Its intent beat is 200ms in all: the
+drop a quarter, the run three fifths, the dot the rest, and the unit is
+inked as the dot lands. Leaving a row takes the line up in a micro beat.
+The row no longer dims on hover. Each row is `data-press="situation"`, so
+the interaction grammar's sweep checks its press and its keyboard INTENT;
+`e2e/situation-leader.e2e.ts` checks the line itself, the phone's draw on
+arrival, and reduced motion drawing none.
 
 ### 13.9 Kebijakan dibaca tenang (F3-10)
 

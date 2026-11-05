@@ -1,0 +1,244 @@
+import { expect, type Page, test } from '@playwright/test'
+
+import { SIDES, sideTemplate } from '../lib/content/units'
+import { localizedPath } from '../lib/i18n/paths'
+
+/**
+ * `side-sheet-swap`, one side of a unit exchanged for the other
+ * (`docs/MOTION-SPEC.md` §13.1, R6).
+ *
+ * INTENT: the rule under the switcher goes to the side pointed at or
+ * focused. TRANSPORT and SETTLE: a press navigates with the `side-sheet`
+ * transition type, and the page's `<ViewTransition>` lets `global.css` lift
+ * the old sheet away and settle the new one. The page overlay stands aside,
+ * so no detail circle or panel covers the exchange. The new sheet's title is
+ * handed focus, in both motion modes.
+ *
+ * The card's planned verification is the no-JavaScript link, which
+ * `e2e/side-page.e2e.ts` already covers, the reduced-motion final state, and
+ * the named moment. This file covers the last two and the sequence itself.
+ */
+
+const [FIRST, SECOND] = SIDES.konstruksi
+const FROM = localizedPath('id', sideTemplate('konstruksi', FIRST))
+const TO = localizedPath('id', sideTemplate('konstruksi', SECOND))
+const SWITCHER = '[data-epic="side-sheet-swap"]'
+const OTHER = `${SWITCHER} a[href="${TO}"]`
+
+interface SheetRecord {
+  /** The transition types of every view transition the page started. */
+  types: string[][]
+  /** Every `data-state` the page overlay passed through. */
+  states: string[]
+}
+
+declare global {
+  var __sheet: SheetRecord
+}
+
+/**
+ * Records the types of every view transition and the overlay's states for
+ * the whole life of the document. As in `e2e/set-depth.e2e.ts`, the overlay
+ * is looked for once the document exists, never before `<html>` is parsed.
+ */
+async function record(page: Page) {
+  await page.addInitScript(() => {
+    const seen: SheetRecord = { types: [], states: [] }
+    globalThis.__sheet = seen
+
+    const original = document.startViewTransition?.bind(document)
+    if (original) {
+      document.startViewTransition = (argument) => {
+        seen.types.push(
+          argument && typeof argument === 'object'
+            ? [...(argument.types ?? [])]
+            : []
+        )
+        return original(argument)
+      }
+    }
+
+    const watch = (tries: number) => {
+      const overlay = document.querySelector('[data-page-transition]')
+      if (overlay) {
+        new MutationObserver(() =>
+          seen.states.push(overlay.getAttribute('data-state') ?? '-')
+        ).observe(overlay, {
+          attributes: true,
+          attributeFilter: ['data-state'],
+        })
+      } else if (tries > 0) {
+        setTimeout(() => watch(tries - 1), 100)
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => watch(100))
+    } else {
+      watch(100)
+    }
+  })
+}
+
+/** Whether focus is on the open sheet's title. */
+async function titleHasFocus(page: Page) {
+  return page.evaluate(
+    () => document.activeElement === document.querySelector('main h1')
+  )
+}
+
+/** The side-sheet animations still running on the page, by name. */
+async function stillMoving(page: Page) {
+  return page.evaluate(() =>
+    document
+      .getAnimations()
+      .filter(
+        (animation) =>
+          animation instanceof CSSAnimation &&
+          animation.animationName.startsWith('side-sheet') &&
+          animation.playState === 'running'
+      )
+      .map((animation) => (animation as CSSAnimation).animationName)
+  )
+}
+
+/** The switcher's rule and the link it should be under, as boxes. */
+async function markerUnder(page: Page, selector: string) {
+  const marker = await page
+    .locator(`${SWITCHER} [data-epic="route-marker"]`)
+    .boundingBox()
+  const link = await page.locator(selector).boundingBox()
+  expect(marker, 'the switcher has no rule').not.toBeNull()
+  expect(link, `no link at ${selector}`).not.toBeNull()
+  if (!marker || !link) return false
+  return (
+    Math.abs(marker.x - link.x) <= 2 && Math.abs(marker.width - link.width) <= 2
+  )
+}
+
+test.describe('side-sheet-swap', () => {
+  test('a press exchanges the sheet, with no circle, and focuses the new title', async ({
+    page,
+  }) => {
+    await record(page)
+    await page.goto(FROM)
+    await page.waitForTimeout(1500)
+
+    // INTENT: the rule goes to the side pointed at before anything is pressed.
+    await page.locator(OTHER).hover()
+    await page.waitForTimeout(400)
+    expect(
+      await markerUnder(page, OTHER),
+      'the rule did not go to the side pointed at'
+    ).toBe(true)
+
+    await page.locator(OTHER).click()
+    await page.waitForURL((url) => url.pathname === TO)
+    await page.waitForTimeout(1600)
+
+    const { types, states } = await page.evaluate(() => globalThis.__sheet)
+    expect(
+      types.some((list) => list.includes('side-sheet')),
+      `no view transition carried the exchange: ${JSON.stringify(types)}`
+    ).toBe(true)
+    expect(
+      types.some((list) => list.includes('set-depth')),
+      'the switcher opened a detail circle'
+    ).toBe(false)
+    expect(
+      states.filter((state) => state !== 'idle'),
+      'the page overlay covered the exchange'
+    ).toEqual([])
+
+    expect(await stillMoving(page), 'the exchange never finished').toEqual([])
+    await expect(page.locator('main h1')).toBeVisible()
+    expect(await titleHasFocus(page), 'focus was not handed to the title').toBe(
+      true
+    )
+    expect(
+      await markerUnder(page, `${SWITCHER} a[aria-current="page"]`),
+      'the rule is not under the side now open'
+    ).toBe(true)
+  })
+
+  test('the rule answers keyboard focus as it answers a pointer', async ({
+    page,
+  }) => {
+    await page.goto(FROM)
+    await page.waitForTimeout(1500)
+
+    // A real key first, so the focus below is a keyboard one.
+    await page.keyboard.press('Tab')
+    await page.locator(OTHER).focus()
+    await page.waitForTimeout(400)
+    expect(
+      await markerUnder(page, OTHER),
+      'the rule did not go to the focused side'
+    ).toBe(true)
+
+    await page.keyboard.press('Enter')
+    await page.waitForURL((url) => url.pathname === TO)
+    await page.waitForTimeout(1600)
+    expect(await titleHasFocus(page), 'focus was not handed to the title').toBe(
+      true
+    )
+  })
+
+  test('the link at the foot of the sheet makes the same exchange', async ({
+    page,
+  }) => {
+    await record(page)
+    await page.goto(FROM)
+    await page.waitForTimeout(1500)
+
+    const foot = page.locator(
+      `main nav:not([data-epic="side-sheet-swap"]) a[href="${TO}"]`
+    )
+    await foot.scrollIntoViewIfNeeded()
+    await page.waitForTimeout(400)
+    await foot.click()
+    await page.waitForURL((url) => url.pathname === TO)
+    await page.waitForTimeout(1600)
+
+    const { types } = await page.evaluate(() => globalThis.__sheet)
+    expect(
+      types.some((list) => list.includes('side-sheet')),
+      `the foot link did not exchange the sheet: ${JSON.stringify(types)}`
+    ).toBe(true)
+    expect(await titleHasFocus(page)).toBe(true)
+  })
+
+  test('under reduced motion the new sheet appears at once, its title focused', async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({ reducedMotion: 'reduce' })
+    const page = await context.newPage()
+
+    try {
+      await page.goto(FROM)
+      await page.waitForTimeout(1000)
+
+      await page.locator(OTHER).click()
+      await page.waitForURL((url) => url.pathname === TO)
+      // Well short of the 1200ms the exchange takes with motion.
+      await page.waitForTimeout(300)
+
+      expect(
+        await stillMoving(page),
+        'the sheet moved for a reader who asked for no motion'
+      ).toEqual([])
+      expect(
+        await page.evaluate(() =>
+          document.documentElement.matches(':active-view-transition')
+        ),
+        'a view transition is still holding the page'
+      ).toBe(false)
+      await expect(page.locator('main h1')).toBeVisible()
+      expect(
+        await titleHasFocus(page),
+        'focus was not handed to the title'
+      ).toBe(true)
+    } finally {
+      await context.close()
+    }
+  })
+})

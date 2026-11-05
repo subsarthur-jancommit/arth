@@ -709,6 +709,80 @@ html.screenshot {
 }
 
 /*
+ * side-sheet-swap (`docs/MOTION-SPEC.md` §13.1, R6): one side of a unit
+ * exchanged for the other.
+ *
+ * A link between a unit's two sides navigates with the `side-sheet`
+ * transition type, and the side page's `<ViewTransition>` gives the sheet
+ * under the switcher these two classes for that type alone
+ * (`lib/motion/side-sheet.ts`). The switcher stays in the root picture, so
+ * the rule under it, already moved by INTENT, is the one thing that holds
+ * still while the sheets change.
+ *
+ * TRANSPORT, 400ms `ease-in-out-quart`: the old sheet lifts and fades.
+ * SETTLE, 800ms `ease-out-expo`: once it has gone, the new sheet rises the
+ * last stretch into place, its title block first in view. Its opacity is
+ * whole within the first quarter of the settle, so no reader is left
+ * looking at a half-faded title; both pictures are snapshots and never the
+ * page's own text, which is whole throughout.
+ *
+ * The exchange is longer than the press it answers, so the reader is not
+ * made to wait for it: the pictures let pointer events through to the page
+ * under them, which is already in its final place.
+ */
+::view-transition-old(.side-sheet-out) {
+  animation: side-sheet-lift var(--duration) var(--ease-in-out-quart) both;
+}
+
+::view-transition-new(.side-sheet-in) {
+  animation: side-sheet-settle var(--duration-slow) var(--ease-out-expo)
+    var(--duration) both;
+}
+
+:root:active-view-transition-type(side-sheet)::view-transition {
+  pointer-events: none;
+}
+
+@keyframes side-sheet-lift {
+  to {
+    opacity: 0;
+    transform: translateY(-1.5rem);
+  }
+}
+
+@keyframes side-sheet-settle {
+  from {
+    opacity: 0;
+    transform: translateY(1.75rem);
+  }
+
+  25% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (--reduced-motion) {
+  /*
+   * The new sheet appears at once (§13.1). The class selectors outrank the
+   * `(*)` kill switch above, as `.morph`'s do, so they stand down here by
+   * name: the old picture is dropped and the new one is shown as it is,
+   * which ends the transition on its next frame.
+   */
+  ::view-transition-old(.side-sheet-out) {
+    display: none;
+  }
+
+  ::view-transition-new(.side-sheet-in) {
+    animation: none;
+  }
+}
+
+/*
  * Nameplates — the fork (`docs/FORK.md` §3.2).
  *
  * The inner routes' one-word names (Work, Studio, Journal, a practice) sat at

@@ -2,6 +2,7 @@ import cn from 'clsx'
 import { getTranslations } from 'next-intl/server'
 import { draftMode } from 'next/headers'
 import { locale as localeRootParam } from 'next/root-params'
+import { ViewTransition } from 'react'
 
 import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
@@ -23,13 +24,15 @@ import {
 } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
+import { SIDE_SHEET_ENTER, SIDE_SHEET_EXIT } from '@/lib/motion/side-sheet'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 import { DocHead } from '@/vault/blocks/doc-head'
 import { FirstStep } from '@/vault/blocks/first-step'
 import { NetworkSide } from '@/vault/blocks/network-side'
 import { SideChapterTable } from '@/vault/blocks/side-chapter-table'
 import { StepSequence } from '@/vault/blocks/step-sequence'
-import { RouteMarker } from '@/vault/motion/route-marker'
+
+import { SideSheetLink, SideSwitcher } from './side-switcher'
 
 import s from './page.module.css'
 
@@ -170,148 +173,146 @@ export default async function SidePage({ params }: SidePageProps) {
   return (
     <Wrapper theme="light">
       <article className={s.page}>
-        <nav
-          aria-label={tSide('switcherLabel', { unit: tUnit(unit) })}
-          className={s.switcher}
-          data-epic="side-sheet-swap"
-        >
-          <p className={cn('caption', s.switcherLabel)}>
-            {tSide('switcherEyebrow')}
-          </p>
-          {SIDES[unit].map((candidate) => (
-            <Link
-              key={candidate}
-              href={sideTemplate(unit, candidate)}
-              className={s.switcherLink}
-              aria-current={candidate === side ? 'page' : undefined}
-              transition={candidate === side ? 'cover' : 'sheet'}
-              data-press="side-sheet"
-              data-intent=""
-            >
-              {tSide(candidate)}
-            </Link>
-          ))}
-          <RouteMarker />
-        </nav>
-
-        {/*
-         * A document head (R5, direction A): who the page is for as its
-         * label, the side's own question as its title, and a title block of
-         * facts beside it. It replaced a hero held at 62 to 76svh, whose
-         * height was empty space above a short title.
-         */}
-        <DocHead
-          eyebrow={sideName}
-          title={title}
-          titleSize="sentence"
-          facts={[
-            ...(buyers.length > 0
-              ? [{ term: tSide('buyersLabel'), detail: buyers }]
-              : []),
-            {
-              term: tUnit('eyebrow'),
-              detail: <Link href={unitTemplate(unit)}>{tUnit(unit)}</Link>,
-            },
-          ]}
+        <SideSwitcher
+          label={tSide('switcherLabel', { unit: tUnit(unit) })}
+          eyebrow={tSide('switcherEyebrow')}
+          sides={SIDES[unit].map((candidate) => ({
+            href: sideTemplate(unit, candidate),
+            name: tSide(candidate),
+            current: candidate === side,
+          }))}
         />
 
-        {isNetworkSide && networkContent ? (
-          <NetworkSide
-            paths={networkPaths}
-            steps={buyingSteps.map((step) => ({
-              id: step.key,
-              text: step.body ? `${step.title}. ${step.body}` : step.title,
-            }))}
-            moneySteps={networkMoneySteps}
-            summary={networkContent.summary}
-            terms={networkContent.terms}
-            labels={{
-              pathsEyebrow: tNetwork('paths.eyebrow'),
-              pathsTitle: tNetwork('paths.title'),
-              chapterLabel: tNetwork('paths.chapterLabel'),
-              openPath: tNetwork('paths.open'),
-              workEyebrow: tNetwork('work.eyebrow'),
-              workTitle: tNetwork('work.title'),
-              moneyEyebrow: tNetwork('money.eyebrow'),
-              moneyTitle: tNetwork('money.title'),
-              moneyIntro: tNetwork('money.intro'),
-              stamp: tNetwork('money.stamp'),
-              termsEyebrow: tNetwork('terms.eyebrow'),
-              termsTitle: tNetwork('terms.title'),
-              sourceTitle: tNetwork('terms.source'),
-              absentTitle: tNetwork('terms.absent'),
-              conditionTitle: tNetwork('terms.condition'),
-              registrationEyebrow: tNetwork('registration.eyebrow'),
-            }}
-          />
-        ) : (
-          <>
-            {buyingSteps.length > 0 ? (
-              <StepSequence
-                label={tSide(`buying.${side}`)}
-                steps={buyingSteps}
-                data-epic="side-buying-path"
-                className={s.steps}
-              />
-            ) : null}
-
-            {/* Only once a chapter has published offers (P4, R0). */}
-            {chapters.length > 0 && (
-              <SideChapterTable
-                label={tSide('chaptersEyebrow')}
-                title={tSide('chaptersTitle')}
-                chapters={chapters}
-                chapterLabel={tSide('chapterLabel')}
-                typeLabel={tSide('typeLabel')}
-                entryLabel={tSide('entryLabel')}
-                offerCountLabel={tSide('offerCount')}
-                className={s.chapters}
-              />
-            )}
-
-            {/*
-             * The reader's own button label goes on the button and its
-             * sentence stays outside it (`docs/R1-GLOSARIUM-PEMBACA.md` §6),
-             * where it was a heading over a generic "Mulai percakapan". The
-             * contact page until K5 names a channel (P4, R0).
-             */}
-            {action ? (
-              <FirstStep
-                label={tSide('firstStepEyebrow')}
-                body={action.after}
-                action={{
-                  href: '/kontak',
-                  // A label, not a sentence: a stray full stop would sit
-                  // on the button before its arrow.
-                  label: action.label.replace(/\.$/u, ''),
-                }}
-              />
-            ) : null}
-          </>
-        )}
-
-        <nav
-          aria-label={tSide('navigationLabel', { unit: tUnit(unit) })}
-          className={s.navigation}
+        {/*
+         * The sheet `side-sheet-swap` exchanges (`lib/motion/side-sheet.ts`):
+         * everything under the switcher, which stays where it is. Keyed by
+         * the side, so a press always leaves one sheet and enters the other
+         * rather than updating one in place, and `none` for every other kind
+         * of navigation, which keeps its own transition.
+         */}
+        <ViewTransition
+          key={side}
+          enter={SIDE_SHEET_ENTER}
+          exit={SIDE_SHEET_EXIT}
+          default="none"
         >
-          <Link
-            href={sideTemplate(unit, otherSide)}
-            className={cn('caption', s.route)}
-            transition="sheet"
-            data-press="side-sheet"
-            data-intent=""
+          {/*
+           * A document head (R5, direction A): who the page is for as its
+           * label, the side's own question as its title, and a title block of
+           * facts beside it. It replaced a hero held at 62 to 76svh, whose
+           * height was empty space above a short title.
+           */}
+          <DocHead
+            eyebrow={sideName}
+            title={title}
+            titleSize="sentence"
+            facts={[
+              ...(buyers.length > 0
+                ? [{ term: tSide('buyersLabel'), detail: buyers }]
+                : []),
+              {
+                term: tUnit('eyebrow'),
+                detail: <Link href={unitTemplate(unit)}>{tUnit(unit)}</Link>,
+              },
+            ]}
+          />
+
+          {isNetworkSide && networkContent ? (
+            <NetworkSide
+              paths={networkPaths}
+              steps={buyingSteps.map((step) => ({
+                id: step.key,
+                text: step.body ? `${step.title}. ${step.body}` : step.title,
+              }))}
+              moneySteps={networkMoneySteps}
+              summary={networkContent.summary}
+              terms={networkContent.terms}
+              labels={{
+                pathsEyebrow: tNetwork('paths.eyebrow'),
+                pathsTitle: tNetwork('paths.title'),
+                chapterLabel: tNetwork('paths.chapterLabel'),
+                openPath: tNetwork('paths.open'),
+                workEyebrow: tNetwork('work.eyebrow'),
+                workTitle: tNetwork('work.title'),
+                moneyEyebrow: tNetwork('money.eyebrow'),
+                moneyTitle: tNetwork('money.title'),
+                moneyIntro: tNetwork('money.intro'),
+                stamp: tNetwork('money.stamp'),
+                termsEyebrow: tNetwork('terms.eyebrow'),
+                termsTitle: tNetwork('terms.title'),
+                sourceTitle: tNetwork('terms.source'),
+                absentTitle: tNetwork('terms.absent'),
+                conditionTitle: tNetwork('terms.condition'),
+                registrationEyebrow: tNetwork('registration.eyebrow'),
+              }}
+            />
+          ) : (
+            <>
+              {buyingSteps.length > 0 ? (
+                <StepSequence
+                  label={tSide(`buying.${side}`)}
+                  steps={buyingSteps}
+                  data-epic="side-buying-path"
+                  className={s.steps}
+                />
+              ) : null}
+
+              {/* Only once a chapter has published offers (P4, R0). */}
+              {chapters.length > 0 && (
+                <SideChapterTable
+                  label={tSide('chaptersEyebrow')}
+                  title={tSide('chaptersTitle')}
+                  chapters={chapters}
+                  chapterLabel={tSide('chapterLabel')}
+                  typeLabel={tSide('typeLabel')}
+                  entryLabel={tSide('entryLabel')}
+                  offerCountLabel={tSide('offerCount')}
+                  className={s.chapters}
+                />
+              )}
+
+              {/*
+               * The reader's own button label goes on the button and its
+               * sentence stays outside it (`docs/R1-GLOSARIUM-PEMBACA.md` §6),
+               * where it was a heading over a generic "Mulai percakapan". The
+               * contact page until K5 names a channel (P4, R0).
+               */}
+              {action ? (
+                <FirstStep
+                  label={tSide('firstStepEyebrow')}
+                  body={action.after}
+                  action={{
+                    href: '/kontak',
+                    // A label, not a sentence: a stray full stop would sit
+                    // on the button before its arrow.
+                    label: action.label.replace(/\.$/u, ''),
+                  }}
+                />
+              ) : null}
+            </>
+          )}
+
+          <nav
+            aria-label={tSide('navigationLabel', { unit: tUnit(unit) })}
+            className={s.navigation}
           >
-            {tSide('otherLabel', { unit: tUnit(unit) })}: {tSide(otherSide)}
-          </Link>
-          <Link
-            href={unitTemplate(unit)}
-            className={cn('caption', s.route)}
-            data-press="chip"
-            data-intent=""
-          >
-            {tSide('backToUnit', { unit: tUnit(unit) })}
-          </Link>
-        </nav>
+            {/* The same exchange from the foot of the sheet (§13.11). */}
+            <SideSheetLink
+              href={sideTemplate(unit, otherSide)}
+              className={cn('caption', s.route)}
+            >
+              {tSide('otherLabel', { unit: tUnit(unit) })}: {tSide(otherSide)}
+            </SideSheetLink>
+            <Link
+              href={unitTemplate(unit)}
+              className={cn('caption', s.route)}
+              data-press="chip"
+              data-intent=""
+            >
+              {tSide('backToUnit', { unit: tUnit(unit) })}
+            </Link>
+          </nav>
+        </ViewTransition>
       </article>
     </Wrapper>
   )
