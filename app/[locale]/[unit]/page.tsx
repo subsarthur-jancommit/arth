@@ -131,8 +131,11 @@ export default async function UnitPage({ params }: UnitPageProps) {
   const nextUnit = nextUnitAfter(unit)
 
   return (
-    // The unit's own motion dialect (`lib/styles/css/dialects.css`).
-    <Wrapper theme="light" dialect={unit}>
+    // The unit's own motion dialect (`lib/styles/css/dialects.css`), and
+    // GSAP's clock handed to Tempus: the statement (`ProgressText`) and the
+    // way of working (`useActiveInSequence`) both run ScrollTriggers, which
+    // without `gsap` tick on a loop of their own (`CLAUDE.md` #6).
+    <Wrapper theme="light" dialect={unit} gsap>
       <article className={s.page}>
         {/*
          * The opening is a stage, the rest is a document (R4): the hero sits
