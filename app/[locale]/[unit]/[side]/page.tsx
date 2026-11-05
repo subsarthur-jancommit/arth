@@ -29,7 +29,8 @@ import { FirstStep } from '@/vault/blocks/first-step'
 import { NetworkSide } from '@/vault/blocks/network-side'
 import { SideChapterTable } from '@/vault/blocks/side-chapter-table'
 import { StepSequence } from '@/vault/blocks/step-sequence'
-import { RouteMarker } from '@/vault/motion/route-marker'
+
+import { SideSheetLink, SideSwitcher } from './side-switcher'
 
 import s from './page.module.css'
 
@@ -172,29 +173,15 @@ export default async function SidePage({ params }: SidePageProps) {
     // clock handed to Tempus: `StepSequence` runs ScrollTriggers (#6).
     <Wrapper theme="light" dialect={unit} gsap>
       <article className={s.page}>
-        <nav
-          aria-label={tSide('switcherLabel', { unit: tUnit(unit) })}
-          className={s.switcher}
-          data-epic="side-sheet-swap"
-        >
-          <p className={cn('caption', s.switcherLabel)}>
-            {tSide('switcherEyebrow')}
-          </p>
-          {SIDES[unit].map((candidate) => (
-            <Link
-              key={candidate}
-              href={sideTemplate(unit, candidate)}
-              className={s.switcherLink}
-              aria-current={candidate === side ? 'page' : undefined}
-              transition={candidate === side ? 'cover' : 'sheet'}
-              data-press="side-sheet"
-              data-intent=""
-            >
-              {tSide(candidate)}
-            </Link>
-          ))}
-          <RouteMarker />
-        </nav>
+        <SideSwitcher
+          label={tSide('switcherLabel', { unit: tUnit(unit) })}
+          eyebrow={tSide('switcherEyebrow')}
+          sides={SIDES[unit].map((candidate) => ({
+            href: sideTemplate(unit, candidate),
+            name: tSide(candidate),
+            current: candidate === side,
+          }))}
+        />
 
         {/*
          * A document head (R5, direction A): who the page is for as its
@@ -296,15 +283,13 @@ export default async function SidePage({ params }: SidePageProps) {
           aria-label={tSide('navigationLabel', { unit: tUnit(unit) })}
           className={s.navigation}
         >
-          <Link
+          {/* The same exchange from the foot of the sheet (§13.11). */}
+          <SideSheetLink
             href={sideTemplate(unit, otherSide)}
             className={cn('caption', s.route)}
-            transition="sheet"
-            data-press="side-sheet"
-            data-intent=""
           >
             {tSide('otherLabel', { unit: tUnit(unit) })}: {tSide(otherSide)}
-          </Link>
+          </SideSheetLink>
           <Link
             href={unitTemplate(unit)}
             className={cn('caption', s.route)}
