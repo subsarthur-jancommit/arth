@@ -20,10 +20,6 @@
 }
 
 .switcher {
-  /* `side-sheet-swap` INTENT (MOTION-SPEC §13.1): the rule moves first. */
-  --route-marker-duration: var(--duration-fast);
-  --route-marker-ease: var(--ease-out-quart);
-
   position: relative;
   display: flex;
   flex-wrap: wrap;

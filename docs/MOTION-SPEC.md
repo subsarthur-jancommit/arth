@@ -888,21 +888,6 @@ is available. `CLAUDE.md`'s hard reader protections continue to apply.
 | Reduced motion       | The new sheet appears immediately and focus moves to its page title.                                                                                                                                             |
 | Verification planned | No-JavaScript link behavior, reduced-motion final state, and a named moment in the interaction-grammar report.                                                                                                   |
 
-**Built in R6 (5 November 2026).** INTENT is the switcher's `RouteMarker`
-with `previews`: the rule goes to the side pointed at or focused, 200ms
-`ease-out-quart` (`--route-marker-duration`, `--route-marker-ease`). Both
-links to the other side, the switcher's and the one at the sheet's foot
-(§13.11), navigate with the `side-sheet` transition type and the `morph`
-intent, so the page overlay stands aside. The side page keys a
-`<ViewTransition>` by the side around everything under the switcher, and
-`global.css` lifts the old sheet away (TRANSPORT) and settles the new one
-once it has gone (SETTLE, opacity whole within its first quarter); the
-switcher stays in the root picture. The new title is handed focus in both
-motion modes, because the link that held it leaves with the old sheet.
-Reduced motion drops the old picture and shows the new one at once. The
-names are shared from `lib/motion/side-sheet.ts`; covered by
-`e2e/side-sheet-swap.e2e.ts`.
-
 ### 13.2 Kartu dari bekisting — card from formwork (F3-04)
 
 | Field                | Specification                                                                                                                                                                                                                           |

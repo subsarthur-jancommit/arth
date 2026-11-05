@@ -47,14 +47,10 @@
 .marker[data-moves] {
   /*
    * The opacity is for previews (`index.tsx`): where nothing is current, the
-   * rule fades as the pointer leaves rather than vanishing under it. An index
-   * whose moment names its own beat sets the slide's duration and easing —
-   * the side switcher's INTENT is 200ms `ease-out-quart`
-   * (`docs/MOTION-SPEC.md` §13.1).
+   * rule fades as the pointer leaves rather than vanishing under it.
    */
   transition:
-    transform var(--route-marker-duration, var(--duration))
-      var(--route-marker-ease, var(--ease-out-expo)),
+    transform var(--duration) var(--ease-out-expo),
     opacity var(--duration-fast) var(--ease-out-expo);
 }
 
