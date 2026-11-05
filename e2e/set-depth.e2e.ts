@@ -20,6 +20,15 @@ import { localizedPath } from '../lib/i18n/paths'
  * changing the page with no transition at all. `instant-navigation` and
  * `navigation-landing` stay as they were and must stay green.
  *
+ * It also checks that the motion happened, not only that the attributes
+ * that call for it were set. `side-sheet-swap` found a view transition can
+ * carry its type and still hold nothing: when no `<ViewTransition>` takes
+ * part in the commit, React cancels the root (`script` animations on
+ * `::view-transition-group(root)` and `::view-transition`), and the old page
+ * is not held under the circle at all (e2e run 41983464648). So the
+ * transition's animations are read at its `ready`, and the circle's own
+ * transition is read as it opens.
+ *
  * Measured from a side page to the contact page: a plain `<Link>` in `main`
  * (the first-step pill), and no shared element between the two pages, so no
  * morph or sheet takes precedence over the circle.
@@ -39,6 +48,10 @@ interface DepthRecord {
   types: string[][]
   /** Where the circle opened, read the moment the overlay began covering. */
   origin: { x: number; y: number } | null
+  /** Every view transition's types, and its animations at `ready`. */
+  transitions: { types: string[]; animations: string[] }[]
+  /** The circle's own animations as it opened, `property:duration`. */
+  circle: string[]
 }
 
 declare global {
@@ -59,7 +72,13 @@ declare global {
  */
 async function record(page: Page) {
   await page.addInitScript(() => {
-    const seen: DepthRecord = { marks: [], types: [], origin: null }
+    const seen: DepthRecord = {
+      marks: [],
+      types: [],
+      origin: null,
+      transitions: [],
+      circle: [],
+    }
     globalThis.__depth = seen
 
     const original = document.startViewTransition?.bind(document)
@@ -70,7 +89,28 @@ async function record(page: Page) {
             ? [...(argument.types ?? [])]
             : []
         seen.types.push(types)
-        return original(argument)
+        const entry = { types, animations: [] as string[] }
+        seen.transitions.push(entry)
+        const transition = original(argument)
+        transition.ready.then(
+          () => {
+            entry.animations = document.documentElement
+              .getAnimations({ subtree: true })
+              .flatMap((animation) => {
+                const effect = animation.effect
+                const pseudo =
+                  effect instanceof KeyframeEffect ? effect.pseudoElement : null
+                if (!pseudo?.startsWith('::view-transition')) return []
+                const name =
+                  animation instanceof CSSAnimation
+                    ? animation.animationName
+                    : 'script'
+                return [`${name}@${pseudo}`]
+              })
+          },
+          () => undefined
+        )
+        return transition
       }
     }
 
@@ -86,6 +126,21 @@ async function record(page: Page) {
         seen.origin = {
           x: Number.parseFloat(overlay.style.getPropertyValue('--depth-x')),
           y: Number.parseFloat(overlay.style.getPropertyValue('--depth-y')),
+        }
+        // The circle is the overlay's first child. Asking for its
+        // animations settles its style, which starts the transition.
+        const circle = overlay.firstElementChild
+        if (circle) {
+          seen.circle.push(
+            ...circle.getAnimations().map((animation) => {
+              const duration = String(animation.effect?.getTiming().duration)
+              if (animation instanceof CSSTransition)
+                return `${animation.transitionProperty}:${duration}`
+              if (animation instanceof CSSAnimation)
+                return `${animation.animationName}:${duration}`
+              return `script:${duration}`
+            })
+          )
         }
       }
     }
@@ -126,6 +181,9 @@ async function leftBehind(page: Page) {
     return {
       depth: root.dataset.depth ?? null,
       arrival: root.dataset.arrival ?? null,
+      // The press names the root inline so React does not cancel it; the
+      // release must take that name off again.
+      rootName: root.style.getPropertyValue('view-transition-name'),
       parked: overlay
         ? overlay.getBoundingClientRect().top >= window.innerHeight
         : true,
@@ -148,7 +206,13 @@ async function pressContact(page: Page, press: 'click' | 'dblclick') {
   await page.waitForURL((url) => url.pathname === TO)
 }
 
-const CLEAN = { depth: null, arrival: null, parked: true, settling: false }
+const CLEAN = {
+  depth: null,
+  arrival: null,
+  rootName: '',
+  parked: true,
+  settling: false,
+}
 
 test.describe('set-depth', () => {
   test('a press opens a detail circle over the swap, then the title settles', async ({
@@ -164,7 +228,9 @@ test.describe('set-depth', () => {
     })
     await page.waitForTimeout(1200)
 
-    const { marks, types } = await page.evaluate(() => globalThis.__depth)
+    const { marks, types, transitions, circle } = await page.evaluate(
+      () => globalThis.__depth
+    )
     const trail = marks.join(', ')
 
     expect(
@@ -187,6 +253,24 @@ test.describe('set-depth', () => {
     expect(
       types.some((list) => list.includes('set-depth')),
       `no view transition held the old page: ${JSON.stringify(types)}`
+    ).toBe(true)
+
+    // The motion itself, not only the attributes that ask for it.
+    expect(
+      circle,
+      `the circle did not open by its transform: ${JSON.stringify(circle)}`
+    ).toContain('transform:400')
+    const hold = transitions.find((transition) =>
+      transition.types.includes('set-depth')
+    )
+    const ran = JSON.stringify(hold?.animations ?? [])
+    expect(
+      hold?.animations.includes('script@::view-transition-group(root)'),
+      `React cancelled the root, so no old page was held: ${ran}`
+    ).toBe(false)
+    expect(
+      hold?.animations.includes('set-depth-hold@::view-transition-group(root)'),
+      `the old page was not held under the circle: ${ran}`
     ).toBe(true)
 
     expect(await leftBehind(page)).toEqual(CLEAN)
