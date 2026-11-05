@@ -9,8 +9,8 @@ import { sequenceContent } from '@/lib/content/sequence-content'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { threeUnitsDescription } from '@/lib/seo/page-descriptions'
 import { generatePageMetadata } from '@/lib/utils/metadata'
-import { Plate } from '@/vault/blocks/plate'
-import { type SequenceStep, UnitSequence } from '@/vault/blocks/unit-sequence'
+import { UnitSequence } from '@/vault/blocks/unit-sequence'
+import { plateSteps } from '@/vault/blocks/unit-sequence/plate-steps'
 
 import s from './page.module.css'
 
@@ -44,37 +44,13 @@ export default async function ThreeUnitsPage() {
         </header>
 
         {sequences.map((sequence) => {
-          const steps: SequenceStep[] = sequence.langkah.map((step) => {
-            const unit = step.unit.kunci
-            /*
-             * A unit's plate draws one job: the café's plan and section, its
-             * order flow, its opening campaign (`messages` `plates.*.job`). It
-             * heads the step only when the step's work is that job, so a
-             * drawing never stands for work it does not show.
-             */
-            const drawsThisWork = step.offer.some(
-              (offer) => offer.judul === tPlate(`${unit}.job`)
-            )
-            return {
-              id: step._key,
-              unit: step.unit.nama,
-              unitKey: unit,
-              body: step.kalimat,
-              offers: step.offer.map((offer) => ({
-                id: offer._key,
-                title: offer.judul,
-              })),
-              ...(drawsThisWork && {
-                media: (
-                  <Plate
-                    unit={unit}
-                    title={tPlate(`${unit}.title`)}
-                    description={tPlate(`${unit}.description`)}
-                  />
-                ),
-              }),
-            }
-          })
+          // Each step headed by its unit's drawing when it draws this work
+          // (`vault/blocks/unit-sequence/plate-steps.tsx` holds the rule).
+          const steps = plateSteps(sequence, (unit) => ({
+            job: tPlate(`${unit}.job`),
+            title: tPlate(`${unit}.title`),
+            description: tPlate(`${unit}.description`),
+          }))
 
           return (
             <UnitSequence
