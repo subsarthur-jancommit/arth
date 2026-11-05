@@ -888,6 +888,34 @@ is available. `CLAUDE.md`'s hard reader protections continue to apply.
 | Reduced motion       | The new sheet appears immediately and focus moves to its page title.                                                                                                                                             |
 | Verification planned | No-JavaScript link behavior, reduced-motion final state, and a named moment in the interaction-grammar report.                                                                                                   |
 
+**Built in R6 (5 November 2026), without a view transition.** INTENT is
+the switcher's `RouteMarker` with `previews`, 200ms `ease-out-quart`. Both
+links to the other side, the switcher's and the one at the sheet's foot
+(§13.11), use the `morph` intent, so the page overlay stands aside.
+TRANSPORT and SETTLE run on the Web Animations API, from
+`app/[locale]/[unit]/[side]/side-switcher.tsx`. The press lifts and fades
+every block under the switcher (400ms `ease-in-out-quart`), and the new
+sheet's title block rises into place as it arrives (800ms `ease-out-expo`,
+`transform` only).
+
+**Why not a view transition.** Three CI runs on the first attempt (#66,
+then #70) showed that a press makes one view transition, which carries
+its type but changes nothing. The commit that actually swaps the sheets
+starts none, because React starts one only for transition, retry and idle
+lanes, and that commit runs in another.
+
+**Behaviour at the edges.**
+
+- The lift is cut short when Next hides the old sheet, which is the
+  exchange landing.
+- A late page never leaves the lifted sheet invisible: if the old sheet
+  is still on screen when the lift ends, it plays back and waits,
+  readable.
+- The new title takes focus in both motion modes.
+- Reduced motion moves nothing.
+
+Covered by `e2e/side-sheet-swap.e2e.ts`.
+
 ### 13.2 Kartu dari bekisting — card from formwork (F3-04)
 
 | Field                | Specification                                                                                                                                                                                                                           |

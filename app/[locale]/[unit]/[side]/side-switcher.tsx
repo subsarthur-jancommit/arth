@@ -5,15 +5,29 @@
  * (`docs/MOTION-SPEC.md` §13.1, R6).
  *
  * INTENT, 200ms `ease-out-quart`: the rule under the current side goes to
- * the side pointed at or focused, and stays on the one pressed. TRANSPORT and
- * SETTLE belong to `SideSheet`, the page's `<ViewTransition>`: a press sends
- * the sheet on screen away and names the one it opens, `global.css` lifts and
- * fades the first and settles the second's title block. The page overlay
- * stands aside, which is what the `morph` intent asks of it: the sheet itself
- * is what moves, so a circle or a panel over it would hide the only thing
- * worth watching.
+ * the side pointed at or focused, and stays on the one pressed. TRANSPORT,
+ * 400ms `ease-in-out-quart`: the press lifts and fades the sheet on screen.
+ * SETTLE, 800ms `ease-out-expo`: the new sheet's title block rises the last
+ * stretch into place as it arrives. The page overlay stands aside, which is
+ * what the `morph` intent asks of it: the sheet itself is what moves, so a
+ * circle or a panel over it would hide the only thing worth watching.
  *
  * Without a script both are ordinary links (`e2e/side-page.e2e.ts`).
+ *
+ * ## Why the Web Animations API and not a view transition
+ *
+ * A view transition never ran for this exchange in production (e2e runs
+ * 41983464648 and 41988334124): a press makes one transition, which carries
+ * its type but changes nothing, and the commit that swaps the sheets starts
+ * none, because React only starts one for transition, retry and idle lanes
+ * and that commit runs in another. So the sheets move themselves, on the
+ * browser's own animation timeline: no loop of this module's (`CLAUDE.md`
+ * #6), only `transform` and `opacity` (#4).
+ *
+ * The lift runs on the live sheet and is cut short when Next hides it for
+ * the new one, which is the exchange landing. If the navigation is late, the
+ * sheet is never left invisible: when the lift ends with the sheet still on
+ * screen, it plays back to where it was and waits there, readable.
  *
  * ## Focus
  *
@@ -25,70 +39,27 @@
  */
 
 import cn from 'clsx'
-import {
-  type MouseEvent,
-  type ReactNode,
-  useEffect,
-  useRef,
-  useSyncExternalStore,
-  ViewTransition,
-} from 'react'
+import { type MouseEvent, type ReactNode, useEffect, useRef } from 'react'
 
 import { Link } from '@/components/ui/link'
-import {
-  SIDE_SHEET_ENTER,
-  SIDE_SHEET_EXIT,
-  SIDE_SHEET_IN,
-  SIDE_SHEET_OUT,
-  SIDE_SHEET_TYPES,
-} from '@/lib/motion/side-sheet'
 import { RouteMarker } from '@/vault/motion/route-marker'
 
 import s from './page.module.css'
 
+/** The ids the two halves run under, which `e2e/side-sheet-swap.e2e.ts` reads. */
+const LIFT = 'side-sheet-lift'
+const SETTLE = 'side-sheet-settle'
+
 /**
- * The exchange a press asked for: the side it sends away and the side it
- * opens, both as addresses the way a link to them renders its `href`.
+ * Where a press on a side-sheet link is going, as its anchor renders it.
  *
- * A store in the module rather than state in a component, because the sheet
- * that was pressed leaves with the press and only the next sheet is there to
- * read what was asked; and because the sheet on screen has to re-render with
- * its exit class before the navigation commits, which a store's change
- * does synchronously.
+ * Kept in the module because the link that was pressed leaves with its
+ * sheet: only the next sheet's switcher is there to read it.
  */
-interface Exchange {
-  from: string
-  to: string
-}
+let switchingTo: string | null = null
 
-let exchange: Exchange | null = null
-const listeners = new Set<() => void>()
-
-function setExchange(next: Exchange | null) {
-  exchange = next
-  for (const listener of listeners) listener()
-}
-
-function subscribeExchange(listener: () => void) {
-  listeners.add(listener)
-  return () => {
-    listeners.delete(listener)
-  }
-}
-
-const exchangeNow = () => exchange
-const noExchange = () => null
-
-/**
- * How long a press is taken to be under way: React's wait for fonts and
- * images (up to 500ms), the transition of the commit that moves the URL,
- * then the 1200ms exchange, with room for a slow answer. Afterwards the
- * exchange is forgotten, so a press whose navigation never landed cannot
- * name a sheet on a later, unrelated one; and the pictures stop letting the
- * pointer through.
- */
-const EXCHANGE_WINDOW = 4000
-let exchangeEnds: ReturnType<typeof setTimeout> | undefined
+/** Lifts the sheet on screen. Set by that sheet's switcher while it is shown. */
+let liftSheet: (() => void) | null = null
 
 function noteSwitch(event: MouseEvent<HTMLElement>) {
   // A modified press opens another tab and leaves this sheet where it is.
@@ -100,60 +71,33 @@ function noteSwitch(event: MouseEvent<HTMLElement>) {
     event.altKey
   )
     return
-  const to = event.currentTarget.getAttribute('href')
-  if (!to) return
-  setExchange({ from: window.location.pathname, to })
-
-  const root = document.documentElement
-  root.dataset.sheetSwap = ''
-  clearTimeout(exchangeEnds)
-  exchangeEnds = setTimeout(() => {
-    delete root.dataset.sheetSwap
-    setExchange(null)
-  }, EXCHANGE_WINDOW)
+  switchingTo = event.currentTarget.getAttribute('href')
+  liftSheet?.()
 }
 
 /** Whether the page now open was reached by a side-sheet press. Reads once. */
 function arrivedBySwitch() {
-  const arrived = exchange?.to === window.location.pathname
-  if (arrived) setExchange(null)
+  const arrived =
+    switchingTo !== null && switchingTo === window.location.pathname
+  switchingTo = null
   return arrived
 }
 
-interface SideSheetProps {
-  /** This side's own address, as a link to it renders its `href`. */
-  path: string
-  children: ReactNode
+/** A motion token's value in milliseconds, or the fallback when it is absent. */
+function tokenMs(styles: CSSStyleDeclaration, token: string, fallback: number) {
+  const raw = styles.getPropertyValue(token).trim()
+  const value = Number.parseFloat(raw)
+  if (Number.isNaN(value)) return fallback
+  return raw.endsWith('ms') ? value : value * 1000
 }
 
-/**
- * The sheet `side-sheet-swap` exchanges: everything under the switcher.
- *
- * Its classes are chosen by the press, not only by the `side-sheet`
- * transition type. React gives a transition's types to its first commit, and
- * in production that commit only moves the URL; the sheets change in a later
- * commit that carries none (`lib/motion/side-sheet.ts` has the evidence). So
- * the press names both: the sheet on screen re-renders with its exit class
- * before the navigation commits, and the sheet that mounts reads that it is
- * the one asked for. The type maps stay for a commit that does carry the
- * type. Once the new sheet has arrived the exchange is forgotten, and a
- * sheet Next kept hidden reads that again the moment it is shown.
- *
- * No element of its own, so the layout is the page's: React names each
- * top-level block of the sheet that is on screen.
- */
-export function SideSheet({ path, children }: SideSheetProps) {
-  const asked = useSyncExternalStore(subscribeExchange, exchangeNow, noExchange)
-
-  return (
-    <ViewTransition
-      enter={asked?.to === path ? SIDE_SHEET_IN : SIDE_SHEET_ENTER}
-      exit={asked?.from === path ? SIDE_SHEET_OUT : SIDE_SHEET_EXIT}
-      default="none"
-    >
-      {children}
-    </ViewTransition>
-  )
+/** An easing token's value, or the fallback when it is absent. */
+function tokenEase(
+  styles: CSSStyleDeclaration,
+  token: string,
+  fallback: string
+) {
+  return styles.getPropertyValue(token).trim() || fallback
 }
 
 interface SideSheetLinkProps {
@@ -173,7 +117,6 @@ export function SideSheetLink({
       href={href}
       className={className}
       transition="morph"
-      transitionTypes={SIDE_SHEET_TYPES}
       onClick={noteSwitch}
       data-press="side-sheet"
       data-intent=""
@@ -194,17 +137,84 @@ export function SideSwitcher({ label, eyebrow, sides }: SideSwitcherProps) {
   const ref = useRef<HTMLElement>(null)
 
   useEffect(() => {
-    if (!arrivedBySwitch()) return
+    const nav = ref.current
+    const sheet = nav?.closest('article')
+    if (!nav || !sheet) return
+
+    const reduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches
+    const styles = getComputedStyle(document.documentElement)
+    const running: Animation[] = []
+
+    if (arrivedBySwitch()) {
+      /*
+       * This sheet's own title, found from the switcher rather than from the
+       * document. Next keeps the page just left in the tree, hidden, so the
+       * way back is instant: `main h1` names both titles then (e2e run
+       * 41954397719), and only this one is the sheet that arrived.
+       */
+      const title = sheet.querySelector('h1')
+      if (title instanceof HTMLElement) {
+        title.tabIndex = -1
+        title.focus({ preventScroll: true })
+      }
+
+      // SETTLE: the title block, by `transform` alone, so its words are
+      // never half-transparent at any moment a reader could look at them.
+      const block = title?.closest('header')
+      if (block && !reduced) {
+        running.push(
+          block.animate(
+            [{ transform: 'translateY(1.75rem)' }, { transform: 'none' }],
+            {
+              id: SETTLE,
+              duration: tokenMs(styles, '--duration-slow', 800),
+              easing: tokenEase(styles, '--ease-out-expo', 'ease-out'),
+            }
+          )
+        )
+      }
+    }
+
+    // TRANSPORT: everything under the switcher, which itself holds still.
+    const lift = () => {
+      for (const block of sheet.children) {
+        if (block === nav || !(block instanceof HTMLElement)) continue
+        const animation = block.animate(
+          [
+            { transform: 'none', opacity: 1 },
+            { transform: 'translateY(-1.5rem)', opacity: 0 },
+          ],
+          {
+            id: LIFT,
+            duration: tokenMs(styles, '--duration', 400),
+            easing: tokenEase(styles, '--ease-in-out-quart', 'ease-in-out'),
+            fill: 'forwards',
+          }
+        )
+        running.push(animation)
+        // Still on screen once lifted: the navigation is late, so the sheet
+        // comes back to be read rather than waiting there invisible.
+        void animation.finished.then(
+          () => {
+            if (block.checkVisibility()) animation.reverse()
+          },
+          () => undefined
+        )
+      }
+    }
+    if (!reduced) liftSheet = lift
+
     /*
-     * This sheet's own title, found from the switcher rather than from the
-     * document. Next keeps the page just left in the tree, hidden, so the
-     * way back is instant: `main h1` names both titles then (e2e run
-     * 41954397719), and only this one is the sheet that arrived.
+     * Hidden by Next for the next sheet, or gone: nothing of this sheet's
+     * motion may outlive it, least of all a lift held at opacity 0 that a
+     * later Back would show.
      */
-    const title = ref.current?.closest('article')?.querySelector('h1')
-    if (!(title instanceof HTMLElement)) return
-    title.tabIndex = -1
-    title.focus({ preventScroll: true })
+    return () => {
+      if (liftSheet === lift) liftSheet = null
+      for (const animation of running) animation.cancel()
+    }
   }, [current])
 
   return (
