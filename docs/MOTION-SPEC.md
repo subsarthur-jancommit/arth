@@ -1049,6 +1049,16 @@ strike, no replay, and the reduced-motion and no-JavaScript states.
 | Reduced motion       | Do not draw the line; keep the destination unit named in text.                                                                              |
 | Verification planned | `keyboard-focus`; the interaction-grammar report checks keyboard INTENT.                                                                    |
 
+**Built in R6 (5 November 2026).** On the home page's "Pilih situasi" the
+leader has a grid track of its own between the situation and its unit, so
+the line runs from one to the other. Its intent beat is 200ms in all: the
+drop a quarter, the run three fifths, the dot the rest, and the unit is
+inked as the dot lands. Leaving a row takes the line up in a micro beat.
+The row no longer dims on hover. Each row is `data-press="situation"`, so
+the interaction grammar's sweep checks its press and its keyboard INTENT;
+`e2e/situation-leader.e2e.ts` checks the line itself, the phone's draw on
+arrival, and reduced motion drawing none.
+
 ### 13.9 Kebijakan dibaca tenang (F3-10)
 
 Halaman Kebijakan tidak memiliki momen gerak khusus. Dokumen hukum

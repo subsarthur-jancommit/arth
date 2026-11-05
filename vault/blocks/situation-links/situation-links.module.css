@@ -29,21 +29,24 @@
   gap: mobile-vw(20px);
   color: inherit;
   text-decoration: none;
-  transition:
-    opacity var(--duration-fast) var(--ease-out-quart),
-    transform var(--duration-micro) var(--ease-out-quart);
+  transition: transform var(--duration-micro) var(--ease-out-quart);
 
+  /*
+   * `situation-leader` (MOTION-SPEC §13.8, R6). The leader takes a track of
+   * its own between the situation and its unit, so the line it draws runs
+   * the whole way from one to the other instead of a gutter in front of the
+   * unit's name. The situation keeps only the width its own lines need, and
+   * the unit's column is the third it has always had, so every name still
+   * starts on the same vertical.
+   */
   @media (--desktop) {
-    grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr);
+    grid-template-columns:
+      minmax(0, max-content)
+      minmax(var(--gap), 1fr)
+      max(16rem, calc((100% - desktop-vw(32px)) / 3));
     align-items: center;
-    gap: desktop-vw(32px);
+    column-gap: desktop-vw(12px);
     padding-block: desktop-vw(28px);
-  }
-}
-
-@media (--hover) {
-  .link:hover {
-    opacity: 0.72;
   }
 }
 
@@ -62,7 +65,7 @@
   gap: mobile-vw(12px);
 
   @media (--desktop) {
-    gap: desktop-vw(12px);
+    display: contents;
   }
 }
 
@@ -70,12 +73,35 @@
   flex: 0 0 auto;
 }
 
+/* As wide as its track: from the end of the situation to the unit. */
+@media (--desktop) {
+  .link .leader {
+    inline-size: auto;
+  }
+}
+
 .destinationText {
   color: var(--text-muted);
 }
 
+/*
+ * The unit is inked the moment the leader's dot lands on it, as the 200ms
+ * beat ends, and goes back to its muted ink at once when the row is left.
+ * Hover and keyboard focus are the same intent here, as they are for the
+ * line itself.
+ */
+@media (--desktop) and (hover: hover) {
+  .item:hover .destinationText,
+  .item:focus-within .destinationText {
+    color: var(--color-secondary);
+    transition: color 0s linear var(--duration-fast);
+  }
+}
+
 @media (--reduced-motion) {
-  .link {
+  .link,
+  .item:hover .destinationText,
+  .item:focus-within .destinationText {
     transition: none;
   }
 }
