@@ -25,7 +25,7 @@
  */
 
 import cn from 'clsx'
-import { type MouseEvent, type ReactNode, useEffect } from 'react'
+import { type MouseEvent, type ReactNode, useEffect, useRef } from 'react'
 
 import { Link } from '@/components/ui/link'
 import { SIDE_SHEET_TYPES } from '@/lib/motion/side-sheet'
@@ -97,17 +97,29 @@ interface SideSwitcherProps {
 
 export function SideSwitcher({ label, eyebrow, sides }: SideSwitcherProps) {
   const current = sides.find((side) => side.current)?.href
+  const ref = useRef<HTMLElement>(null)
 
   useEffect(() => {
     if (!arrivedBySwitch()) return
-    const title = document.querySelector<HTMLElement>('main h1')
-    if (!title) return
+    /*
+     * This sheet's own title, found from the switcher rather than from the
+     * document. Next keeps the page just left in the tree, hidden, so the
+     * way back is instant: `main h1` names both titles then (e2e run
+     * 41954397719), and only this one is the sheet that arrived.
+     */
+    const title = ref.current?.closest('article')?.querySelector('h1')
+    if (!(title instanceof HTMLElement)) return
     title.tabIndex = -1
     title.focus({ preventScroll: true })
   }, [current])
 
   return (
-    <nav aria-label={label} className={s.switcher} data-epic="side-sheet-swap">
+    <nav
+      ref={ref}
+      aria-label={label}
+      className={s.switcher}
+      data-epic="side-sheet-swap"
+    >
       <p className={cn('caption', s.switcherLabel)}>{eyebrow}</p>
       {sides.map((side) =>
         side.current ? (

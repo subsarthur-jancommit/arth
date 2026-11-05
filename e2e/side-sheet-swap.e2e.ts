@@ -17,13 +17,18 @@ import { localizedPath } from '../lib/i18n/paths'
  * The card's planned verification is the no-JavaScript link, which
  * `e2e/side-page.e2e.ts` already covers, the reduced-motion final state, and
  * the named moment. This file covers the last two and the sequence itself.
+ *
+ * Next keeps the page just left in the tree, hidden, so the way back is
+ * instant. After a switch the document holds both sheets, and every lookup
+ * here asks for the visible one (e2e run 41954397719 found two `main h1`).
  */
 
 const [FIRST, SECOND] = SIDES.konstruksi
 const FROM = localizedPath('id', sideTemplate('konstruksi', FIRST))
 const TO = localizedPath('id', sideTemplate('konstruksi', SECOND))
-const SWITCHER = '[data-epic="side-sheet-swap"]'
+const SWITCHER = '[data-epic="side-sheet-swap"]:visible'
 const OTHER = `${SWITCHER} a[href="${TO}"]`
+const TITLE = 'main h1:visible'
 
 interface SheetRecord {
   /** The transition types of every view transition the page started. */
@@ -79,10 +84,30 @@ async function record(page: Page) {
   })
 }
 
-/** Whether focus is on the open sheet's title. */
+/** Whether focus is on the title of the sheet now on screen. */
 async function titleHasFocus(page: Page) {
-  return page.evaluate(
-    () => document.activeElement === document.querySelector('main h1')
+  return page.evaluate(() => {
+    const focused = document.activeElement
+    return (
+      focused instanceof HTMLElement &&
+      focused.matches('main h1') &&
+      focused.checkVisibility()
+    )
+  })
+}
+
+/** The side-sheet animations running now, by name. */
+async function exchanging(page: Page) {
+  return page.evaluate(() =>
+    document
+      .getAnimations()
+      .flatMap((animation) =>
+        animation instanceof CSSAnimation &&
+        animation.animationName.startsWith('side-sheet') &&
+        animation.playState === 'running'
+          ? [animation.animationName]
+          : []
+      )
   )
 }
 
@@ -133,7 +158,16 @@ test.describe('side-sheet-swap', () => {
 
     await page.locator(OTHER).click()
     await page.waitForURL((url) => url.pathname === TO)
-    await page.waitForTimeout(1600)
+    // TRANSPORT and SETTLE are both under way inside the first 400ms: the
+    // old sheet lifting, the new one waiting out its delay to settle.
+    await page.waitForTimeout(100)
+    const halves = await exchanging(page)
+    await page.waitForTimeout(1500)
+
+    expect(halves, 'the old sheet did not lift').toContain('side-sheet-lift')
+    expect(halves, 'the new sheet did not settle').toContain(
+      'side-sheet-settle'
+    )
 
     const { types, states } = await page.evaluate(() => globalThis.__sheet)
     expect(
@@ -150,7 +184,7 @@ test.describe('side-sheet-swap', () => {
     ).toEqual([])
 
     expect(await stillMoving(page), 'the exchange never finished').toEqual([])
-    await expect(page.locator('main h1')).toBeVisible()
+    await expect(page.locator(TITLE)).toBeVisible()
     expect(await titleHasFocus(page), 'focus was not handed to the title').toBe(
       true
     )
@@ -232,7 +266,7 @@ test.describe('side-sheet-swap', () => {
         ),
         'a view transition is still holding the page'
       ).toBe(false)
-      await expect(page.locator('main h1')).toBeVisible()
+      await expect(page.locator(TITLE)).toBeVisible()
       expect(
         await titleHasFocus(page),
         'focus was not handed to the title'
