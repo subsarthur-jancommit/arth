@@ -93,3 +93,16 @@
     grid-column: 3;
   }
 }
+
+/*
+ * `promise-stamp` (MOTION-SPEC §13.6, R6): "Tertulis" is struck onto each
+ * promise as it is read, once. In the text's ink and at a stamp's slant, so
+ * it reads as a mark made on the sheet rather than as a label beside it.
+ * `rotate`, not `transform`: the strike animates `transform`, and the slant
+ * has to survive it. The strike's timing is the primitive's own.
+ */
+.promise .stamp {
+  border-color: currentColor;
+  color: var(--color-secondary);
+  rotate: -3deg;
+}
