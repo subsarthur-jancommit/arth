@@ -120,20 +120,20 @@ describe('editorial copy lives in Sanity, not in code', () => {
     expect(found).toEqual([])
   })
 
-  it('only the two fallback modules with a retirement decision remain', () => {
+  it('only the fallback module with a retirement decision remains', () => {
     /*
      * `home-fallback.ts` keeps the placeholder contact, a `.invalid` address
      * that says it is one, until the owner chooses a channel (K5); it holds
-     * no editorial copy. `journal-fallback.ts` keeps the previous site's
-     * journal scaffolding until F5-04 retires `/journal` with the other
-     * dummies; the home page no longer reads it. Removing either one is the
-     * point of those decisions, and adding one is a decision of its own.
+     * no editorial copy. `journal-fallback.ts` kept the previous site's
+     * journal scaffolding until F5-04 retired `/journal`, and went with it.
+     * Removing the last one is the point of K5, and adding one is a decision
+     * of its own.
      */
     const fallbacks = readdirSync(join('lib', 'content'))
       .filter((name) => name.endsWith('-fallback.ts'))
       .toSorted()
 
-    expect(fallbacks).toEqual(['home-fallback.ts', 'journal-fallback.ts'])
+    expect(fallbacks).toEqual(['home-fallback.ts'])
   })
 
   it('the chapter answer sheet stays retired', () => {

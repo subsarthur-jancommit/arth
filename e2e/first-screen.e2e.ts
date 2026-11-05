@@ -82,21 +82,7 @@ const SUBJECTS = [
     what: 'covers',
     one: 'cover',
   },
-  // The journal index is its rows. Added in Tahap 52, together with that
-  // page's first hero — a reading surface is exactly where a hero can quietly
-  // push the reading below the fold.
-  {
-    path: '/en/journal',
-    subject: '[data-epic="journal-index"] article',
-    what: 'entries',
-    one: 'entry',
-  },
-  {
-    path: '/id/journal',
-    subject: '[data-epic="journal-index"] article',
-    what: 'entries',
-    one: 'entry',
-  },
+  // The journal index stood here from Tahap 52 until F5-04 retired it.
 ] as const
 
 test.describe('nothing on the first screen waits for a scroll', () => {

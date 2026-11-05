@@ -29,11 +29,3 @@ for (const [path, name] of [
     ).toBe('underline')
   })
 }
-
-test('the journal remains open but is not in the footer index', async ({
-  page,
-}) => {
-  await page.goto('/en/journal/scope-is-the-deliverable')
-  await expect(page.locator('footer a[href="/en/journal"]')).toHaveCount(0)
-  await expect(page.locator('footer [aria-current]')).toHaveCount(0)
-})

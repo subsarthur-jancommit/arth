@@ -1,0 +1,61 @@
+/*
+ * The way from the one sequence on the home page to all of them on
+ * `/layanan`. On a desktop it sits on the column the sequence's own closing
+ * note uses (`vault/blocks/unit-sequence`, `.noteBlock`), so the note, its
+ * action and this link read as one ending rather than two.
+ */
+.more {
+  margin: 0;
+
+  @media (--desktop) {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gap);
+  }
+}
+
+/*
+ * The same underline as the sequence's own action, and the same answer to a
+ * cursor, a keyboard and a press (`vault/blocks/unit-sequence`, `.action`), so
+ * the two read alike: the underline lifts on intent, the shared `[data-press]`
+ * scale is the press, and the `::after` gives the line a target about 44px
+ * tall without moving it.
+ */
+.link {
+  position: relative;
+  width: fit-content;
+  padding-block-end: 0.25em;
+  border-bottom: 1px solid currentcolor;
+  color: inherit;
+  transition:
+    border-color var(--duration-fast) var(--ease-out-expo),
+    transform var(--duration-micro) var(--ease-out-quart);
+
+  &::after {
+    position: absolute;
+    inset: -12px 0;
+    content: '';
+  }
+
+  @media (--hover) {
+    &:hover {
+      border-bottom-color: transparent;
+    }
+  }
+
+  &:focus-visible {
+    border-bottom-color: transparent;
+    outline: 2px solid var(--color-contrast);
+    outline-offset: 4px;
+  }
+
+  @media (--desktop) {
+    grid-column: 3 / 10;
+  }
+}
+
+@media (--reduced-motion) {
+  .link {
+    transition: none;
+  }
+}

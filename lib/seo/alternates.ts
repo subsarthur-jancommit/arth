@@ -6,7 +6,6 @@ import {
   templateFromLocalizedPath,
 } from '@/lib/i18n/paths'
 import { LOCALE_TAGS, PUBLISHED_LOCALES, routing } from '@/lib/i18n/routing'
-import { FEED_PATH, FEED_TITLES } from '@/lib/seo/atom-feed'
 import { markdownPathForRoute } from '@/lib/seo/markdown-path'
 import { STATIC_ROUTES } from '@/lib/seo/route-catalog'
 
@@ -75,16 +74,6 @@ export function routeAlternates(path: string): Metadata['alternates'] {
   // engines read it as one.
   const languages = languageAlternates(path)
 
-  // The journal's feed, announced on the journal's own pages so a reader app
-  // pointed at one finds it (`app/[locale]/journal/feed.xml`). One feed per
-  // language, so the page links the feed in its own.
-  const template = templateFromLocalizedPath(path)
-  const locale = localeFromPath(path)
-  const journalFeed =
-    locale && (template === '/journal' || template?.startsWith('/journal/'))
-      ? [{ url: localizedPath(locale, FEED_PATH), title: FEED_TITLES[locale] }]
-      : null
-
   return {
     // Self-referential on every route. A single hardcoded canonical in a
     // layout is inherited by every child that doesn't override it, which
@@ -94,7 +83,6 @@ export function routeAlternates(path: string): Metadata['alternates'] {
     // Advertises the plain-text mirror via <link rel="alternate" type="text/plain">.
     types: {
       'text/plain': [{ url: '/llms.txt', title: 'llms.txt' }],
-      ...(journalFeed && { 'application/atom+xml': journalFeed }),
       ...(hasMarkdownRepresentation && {
         'text/markdown': [
           {

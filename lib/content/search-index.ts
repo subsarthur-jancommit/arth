@@ -6,7 +6,6 @@ import {
   STATIC_ROUTE_TEMPLATES,
 } from '@/lib/seo/route-catalog'
 
-import { type JournalEntry, resolveJournalEntries } from './journal-fallback'
 import { isUnit } from './units'
 
 /**
@@ -19,8 +18,9 @@ import { isUnit } from './units'
  * that feeds the sitemap and `/llms.txt`, and which already
  * carries a label and a description in both languages because those strings
  * are read by people and by crawlers alike. Projects come from the catalogue's
- * own GROQ query, journal entries from `resolveJournalEntries`. The palette is
- * the fourth consumer of those facts rather than a fifth copy that can drift.
+ * own GROQ query. The palette is another consumer of those facts rather than
+ * a copy that can drift. Journal entries came from `resolveJournalEntries`
+ * until F5-04 retired the journal.
  *
  * That is also why this module takes already-fetched data as arguments rather
  * than fetching anything itself: the fetch belongs to the route handler, with
@@ -30,12 +30,13 @@ import { isUnit } from './units'
  * ## The pages it lists are the advertised destinations
  *
  * A palette that omits an advertised destination is a second, quieter site
- * map that disagrees with the first. `/work` and `/journal` indexes are
- * intentionally absent from the shared static catalogue; their project and
- * journal entries remain searchable from the content index.
+ * map that disagrees with the first. `/work`'s index is intentionally absent
+ * from the shared static catalogue; its projects remain searchable from the
+ * content index. The journal's entries left with `/journal` in F5-04: those
+ * addresses answer `410`, and a row for one would offer a page that is gone.
  */
 
-export type SearchKind = 'page' | 'unit' | 'project' | 'journal'
+export type SearchKind = 'page' | 'unit' | 'project'
 
 export interface SearchEntry {
   /** Stable, unique within one index. Also the DOM id the listbox points at. */
@@ -47,7 +48,7 @@ export interface SearchEntry {
   /** Locale-prefixed path — what the item navigates to. */
   href: string
   /**
-   * The secondary line: a client and year, or a date. `null` when the entry
+   * The secondary line: a client and year, or a path. `null` when the entry
    * has no such fact, which is not the same as an empty string — an empty
    * string would render an empty element and take vertical space.
    */
@@ -117,12 +118,11 @@ export function pageEntries(
       /*
        * The path, locale-free, because `meta` is "the fact that identifies
        * this thing" and for a page that is where it lives. A project is
-       * identified by its client and year, an entry by its date; leaving a
-       * page's rail empty would be the only row in the index that answers
-       * nothing.
+       * identified by its client and year; leaving a page's rail empty would
+       * be the only row in the index that answers nothing.
        *
-       * Locale-free deliberately: `/journal` is the same page in both
-       * languages, and `/id/journal` in the rail would be repeating the
+       * Locale-free deliberately: `/kontak` is the same page in both
+       * languages, and `/id/kontak` in the rail would be repeating the
        * prefix every row already shares.
        */
       meta: route.path,
@@ -161,34 +161,9 @@ export function projectEntries(
   })
 }
 
-export function journalEntries(
-  locale: Locale,
-  entries: readonly JournalEntry[]
-): SearchEntry[] {
-  /*
-   * The reader's own date formatting, from the stored ISO string — the same
-   * decision the journal index page records. A pre-formatted string in the
-   * content would be English inside the Indonesian palette.
-   */
-  const formatter = new Intl.DateTimeFormat(locale, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-
-  return entries.map((entry) => ({
-    id: `journal:${entry.slug}`,
-    kind: 'journal' as const,
-    label: entry.title,
-    description: entry.summary,
-    href: localizedPath(locale, `/journal/${entry.slug}`),
-    meta: entry.date ? formatter.format(new Date(entry.date)) : null,
-  }))
-}
-
 /**
  * The whole index, in the order the palette shows it before anything is
- * typed: pages first, then practices, then work, then writing.
+ * typed: pages first, then units, then work.
  *
  * That order is the site's own — it is the order the footer's Index column
  * lists, and the order a visitor meets these things scrolling the home page.
@@ -198,7 +173,6 @@ export function buildSearchIndex(
   locale: Locale,
   sources: {
     projects: readonly SearchProject[] | null
-    journal: readonly JournalEntry[]
     descriptions?: RouteDescriptions
   }
 ): SearchEntry[] {
@@ -208,7 +182,6 @@ export function buildSearchIndex(
     ...pages.filter((entry) => entry.kind === 'page'),
     ...pages.filter((entry) => entry.kind === 'unit'),
     ...projectEntries(locale, sources.projects),
-    ...journalEntries(locale, sources.journal),
   ]
 }
 
@@ -244,8 +217,8 @@ export function buildSearchIndex(
  * ## What a degraded index contains, and why that is the right trade
  *
  * Static page and practice entries only: every route in
- * `lib/seo/route-catalog.ts`, which needs no network at all. No projects, no
- * journal. A palette missing its content is worse than a complete one and far
+ * `lib/seo/route-catalog.ts`, which needs no network at all. No projects. A
+ * palette missing its content is worse than a complete one and far
  * better than a site that does not exist — which is the only other outcome
  * when a prerender throws.
  *
@@ -260,7 +233,6 @@ export async function resolveSearchIndex(
   locale: Locale,
   load: () => Promise<{
     projects: readonly SearchProject[] | null
-    journal: readonly JournalEntry[]
   }>,
   descriptions: RouteDescriptions = NO_ROUTE_DESCRIPTIONS
 ): Promise<SearchEntry[]> {
@@ -271,11 +243,7 @@ export async function resolveSearchIndex(
       `[search-index] ${locale}: content source unreachable, serving pages only.`,
       error
     )
-    return buildSearchIndex(locale, {
-      projects: null,
-      journal: resolveJournalEntries(locale, null),
-      descriptions,
-    })
+    return buildSearchIndex(locale, { projects: null, descriptions })
   }
 }
 

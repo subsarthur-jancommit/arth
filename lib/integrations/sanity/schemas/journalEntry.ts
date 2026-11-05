@@ -29,11 +29,12 @@ import { requireEveryLocale } from '../utils/i18n-array'
  *
  * ## The scaffolding contract
  *
- * `lib/content/journal-fallback.ts` carries three entries in code so the
- * layout can be judged before the studio has written anything. **The moment
- * one document of this type is published, that file stops being rendered
- * entirely** — all or nothing, so a reader is never shown invented articles
- * beside real ones with no way to tell which is which.
+ * `lib/content/journal-fallback.ts` carried three entries in code so the
+ * layout could be judged before the studio had written anything, all or
+ * nothing, so a reader was never shown invented articles beside real ones.
+ * The journal and that file left in F5-04; no document of this type was ever
+ * published, and the type stays in the Studio until a later change removes
+ * it.
  */
 export const journalEntry = defineType({
   name: 'journalEntry',

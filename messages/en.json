@@ -51,7 +51,8 @@
     "actionEyebrow": "First step",
     "actionFallback": "Tell us the problem.",
     "actionAfterFallback": "We will decide which unit should work first.",
-    "actionLink": "Go to the contact page"
+    "actionLink": "Go to the contact page",
+    "sequenceLink": "See every sequence"
   },
   "contactPage": {
     "eyebrow": "About and contact",
@@ -341,7 +342,6 @@
     "readingTime": "{minutes} min read",
     "readingLeft": "{minutes} min left",
     "replyLabel": "Reply",
-    "contactPlaceholderNote": "This email address is a non-working placeholder. Replace it before Arthur's contact details are published.",
     "replyAction": "Talk to the studio about this",
     "replySubject": "Re: {title}",
     "replyBody": "Hello,\n\nWe read \"{title}\" and would like to talk about it in our own context.\n\nOrganisation:\nWhat we are deciding:\nTimeline:\n",

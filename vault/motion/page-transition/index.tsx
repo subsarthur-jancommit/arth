@@ -93,19 +93,57 @@
  * - Route changes are announced by the browser's own navigation handling; this
  *   component adds no live region, because a decorative wipe should not be
  *   narrated.
+ *
+ * ## set-depth: the detail circle (R6, `docs/MOTION-SPEC.md` §13.10)
+ *
+ * A link press no longer raises the panel. A ring is drawn round the point
+ * that was pressed (COMMIT, 150ms) and a circle of the contrasting ground
+ * opens out of it until it covers the screen (TRANSPORT, 400ms,
+ * `ease-in-out-quart`): the detail mark on a drawing that sends the reader
+ * into another sheet of the set. It then fades off the new page while that
+ * page's title settles (SETTLE, 800ms, `ease-out-expo`, `global.css`).
+ *
+ * A circle that slow could not hide the swap on its own. Routes here are
+ * prefetched, so the new page commits about 50ms after the press, when an
+ * `ease-in-out-quart` circle has barely started. Holding the navigation back
+ * until the circle closed would break the rule above, so the browser holds
+ * the *picture* instead: the link navigates with the `set-depth` transition
+ * type, the keyed `<ViewTransition>` mark below makes React start a view
+ * transition for it, and `global.css` keeps the old page's snapshot on screen
+ * and the new page's hidden until `data-depth="covered"` says the circle is
+ * complete. The overlay is named for that transition so it stays live above
+ * both. A browser without view transitions skips the hold and sees the swap
+ * happen under the opening circle, the way the panel always behaved.
+ *
+ * The circle takes `--color-secondary` from the link that was pressed, so it
+ * is ink on a light sheet and paper on the dark stage: going from the stage
+ * into a document, the paper circle becomes the document's own ground.
+ *
+ * Back and forward keep the panel, faster (§13.10 "Back navigation"); a
+ * second press while the circle is open moves it to the new link and covers
+ * until the last destination commits.
  */
 
 import { usePathname } from 'next/navigation'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  type CSSProperties,
+  type TransitionEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  ViewTransition,
+} from 'react'
 
 import { usePreferredReducedMotion } from '@/lib/hooks/use-sync-external'
-import { subscribeNavigation } from '@/lib/motion/navigation-signal'
+import { DEPTH_TYPE, subscribeNavigation } from '@/lib/motion/navigation-signal'
 import type {
   NavigationIntent,
   NavigationSource,
 } from '@/lib/motion/navigation-signal'
 import { useHistoryNavigation } from '@/lib/motion/use-history-navigation'
 
+import c from './depth-circle.module.css'
 import s from './page-transition.module.css'
 
 /**
@@ -134,6 +172,103 @@ const MIN_COVER = 32
  */
 const SETTLE = 900
 
+/**
+ * How long the detail circle takes to close over the page: `--duration`, the
+ * TRANSPORT beat in `page-transition.module.css`. The fade waits for it, and
+ * so does `data-depth="covered"`, which is what lets `global.css` swap the
+ * held snapshot for the new page once nothing of either shows.
+ */
+// motion-exempt: mirrors `--duration` (400ms) so the script and the
+// stylesheet agree on when the circle is closed; it declares no animation.
+const DEPTH_COVER = 400
+
+/**
+ * How long `data-arrival` stays on the root: the SETTLE beat
+ * (`--duration-slow`, 800ms) with a frame to spare, so the title's animation
+ * is never cut off and the attribute never outlives it by much.
+ */
+// motion-exempt: a cleanup floor for the SETTLE animation, not a duration.
+const ARRIVAL = 900
+
+/**
+ * A press older than this is not the one that started the navigation, so the
+ * circle opens from the middle of the screen instead of from a stale point.
+ */
+// motion-exempt: a staleness window for an input record, not a duration.
+const PRESS_FRESH = 1000
+
+/** How often to look again for a view transition still holding the page. */
+// motion-exempt: a polling interval for a cleanup, not a duration.
+const RELEASE_RETRY = 100
+
+/**
+ * Whether the browser is in the middle of a view transition. A browser that
+ * cannot parse the pseudo-class throws, and is treated as running none.
+ */
+function viewTransitionRunning() {
+  try {
+    return document.documentElement.matches(':active-view-transition')
+  } catch {
+    return false
+  }
+}
+
+/** What a press on a link leaves for the navigation it starts. */
+interface Press {
+  x: number
+  y: number
+  at: number
+  /** The pressed link's `--color-secondary`: the ground that contrasts. */
+  ground: string
+  /** The link points at the page already open, so there is nothing to open. */
+  samePage: boolean
+}
+
+/** The enter and exit class of the mark, for a `set-depth` navigation only. */
+const DEPTH_CLASS = { [DEPTH_TYPE]: DEPTH_TYPE, default: 'none' }
+
+function pressOf(event: MouseEvent): Press | null {
+  if (!(event.target instanceof Element)) return null
+  const link = event.target.closest('a[href]')
+  if (!(link instanceof HTMLAnchorElement)) return null
+
+  // A keyboard activation is a click with no detail and no pointer position,
+  // so the link's own centre stands in for the point that was pressed.
+  const box = link.getBoundingClientRect()
+  const keyboard = event.detail === 0
+  const url = new URL(link.href, window.location.href)
+
+  return {
+    x: keyboard ? box.left + box.width / 2 : event.clientX,
+    y: keyboard ? box.top + box.height / 2 : event.clientY,
+    at: performance.now(),
+    ground: getComputedStyle(link).getPropertyValue('--color-secondary').trim(),
+    samePage:
+      url.origin === window.location.origin &&
+      url.pathname === window.location.pathname &&
+      url.search === window.location.search,
+  }
+}
+
+/**
+ * Where the circle opens and how far it has to reach: to the corner farthest
+ * from that point, so at full size it leaves nothing of the page uncovered.
+ */
+function depthStyle(press: Press | null): CSSProperties {
+  const width = window.innerWidth
+  const height = window.innerHeight
+  const x = press?.x ?? width / 2
+  const y = press?.y ?? height / 2
+  const reach = Math.hypot(Math.max(x, width - x), Math.max(y, height - y))
+
+  return {
+    '--depth-x': `${Math.round(x)}px`,
+    '--depth-y': `${Math.round(y)}px`,
+    '--depth-r': `${Math.ceil(reach) + 2}px`,
+    ...(press?.ground && { '--depth-ground': press.ground }),
+  } as CSSProperties
+}
+
 interface PageTransitionProps {
   /**
    * Milliseconds to wait for a route commit before revealing anyway.
@@ -157,10 +292,13 @@ export function PageTransition({ maxWait = 2000 }: PageTransitionProps) {
   const [source, setSource] = useState<NavigationSource>('link')
   /*
    * Which panel it is. A `sheet` — the same page in the other language —
-   * crosses sideways instead of rising (Orientasi, stage 4); `morph` never
-   * reaches here, because a morph is never covered.
+   * crosses sideways instead of rising (Orientasi, stage 4); `depth` is the
+   * detail circle; `morph` never reaches here, because a morph is never
+   * covered.
    */
   const [kind, setKind] = useState<Exclude<NavigationIntent, 'morph'>>('cover')
+  /** Where the detail circle opens, its reach, and its ground. */
+  const [depth, setDepth] = useState<CSSProperties>({})
   const pathname = usePathname()
   const prefersReducedMotion = usePreferredReducedMotion()
 
@@ -178,11 +316,24 @@ export function PageTransition({ maxWait = 2000 }: PageTransitionProps) {
   const coveredAt = useRef(0)
   const safety = useRef<ReturnType<typeof setTimeout> | null>(null)
   const settle = useRef<ReturnType<typeof setTimeout> | null>(null)
+  /** The kind in flight, for `reveal`, which must not depend on render. */
+  const kindNow = useRef<Exclude<NavigationIntent, 'morph'>>('cover')
+  /** The last press on a link, recorded before its navigation is announced. */
+  const press = useRef<Press | null>(null)
+  /** Marks the circle closed, `DEPTH_COVER` after it began to open. */
+  const closed = useRef<ReturnType<typeof setTimeout> | null>(null)
+  /** Takes `data-arrival` off the root once the title has settled. */
+  const arrival = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const reveal = useCallback(() => {
+  /**
+   * @param arrived The route committed. `false` when `maxWait` gave up on it,
+   *   so there is no new title to settle.
+   */
+  const reveal = useCallback((arrived: boolean) => {
     if (!covering.current) return
     covering.current = false
     if (safety.current) clearTimeout(safety.current)
+    const isDepth = kindNow.current === 'depth'
 
     /*
      * Never in the same commit as the cover — Tahap 42.
@@ -223,11 +374,33 @@ export function PageTransition({ maxWait = 2000 }: PageTransitionProps) {
     paint.current = setTimeout(
       () => {
         paint.current = null
+        // The circle is closed by now; say so before it starts to fade, in
+        // case this timer won the race with the one that marks it.
+        if (isDepth) document.documentElement.dataset.depth = 'covered'
         setState('revealing')
         if (settle.current) clearTimeout(settle.current)
         settle.current = setTimeout(() => setState('idle'), SETTLE)
+
+        /*
+         * SETTLE. The new page's title settles as the circle fades off it,
+         * and only after a real arrival: when `maxWait` gave up, the title
+         * under the circle is the one the reader already had.
+         */
+        if (isDepth && arrived) {
+          const root = document.documentElement
+          root.dataset.arrival = 'depth'
+          if (arrival.current) clearTimeout(arrival.current)
+          arrival.current = setTimeout(() => {
+            delete root.dataset.arrival
+          }, ARRIVAL)
+        }
       },
-      Math.max(0, MIN_COVER - shown)
+      /*
+       * The detail circle waits until it has closed. Fading a circle that is
+       * still opening would show its edge travelling across the new page,
+       * and the held snapshot only gives way at `data-depth="covered"`.
+       */
+      Math.max(0, (isDepth ? DEPTH_COVER : MIN_COVER) - shown)
     )
     /*
      * A second net, for the other end of the sweep.
@@ -252,6 +425,25 @@ export function PageTransition({ maxWait = 2000 }: PageTransitionProps) {
      */
   }, [])
 
+  /*
+   * Where a press landed, recorded on the way down to the link. A capture
+   * listener on the document runs before React's own click handling, so the
+   * record is in place by the time the link's `onNavigate` announces the
+   * navigation. Passive, and it only reads the pressed link.
+   */
+  useEffect(() => {
+    if (prefersReducedMotion) return
+
+    const onPress = (event: MouseEvent) => {
+      press.current = pressOf(event)
+    }
+    document.addEventListener('click', onPress, {
+      capture: true,
+      passive: true,
+    })
+    return () => document.removeEventListener('click', onPress, true)
+  }, [prefersReducedMotion])
+
   useEffect(() => {
     if (prefersReducedMotion) return
 
@@ -261,58 +453,143 @@ export function PageTransition({ maxWait = 2000 }: PageTransitionProps) {
       // between two pages, and a panel over the top hides exactly that.
       if (intent === 'morph') return
 
+      if (intent === 'depth') {
+        const pressed =
+          press.current && performance.now() - press.current.at < PRESS_FRESH
+            ? press.current
+            : null
+        // A link to the page already open has no other sheet to open onto,
+        // and its route never changes, so a circle would wait out `maxWait`.
+        if (pressed?.samePage) return
+
+        setDepth(depthStyle(pressed))
+        const root = document.documentElement
+        root.dataset.depth = 'rising'
+        if (closed.current) clearTimeout(closed.current)
+        closed.current = setTimeout(() => {
+          root.dataset.depth = 'covered'
+        }, DEPTH_COVER)
+      }
+
       covering.current = true
       coveredAt.current = performance.now()
+      kindNow.current = intent
       setKind(intent)
       setSource(from)
       setState('covering')
       if (safety.current) clearTimeout(safety.current)
-      safety.current = setTimeout(reveal, maxWait)
+      safety.current = setTimeout(() => reveal(false), maxWait)
     })
   }, [maxWait, prefersReducedMotion, reveal])
 
   // The other half of the pair: the new route has committed. `reveal` no-ops
   // unless a navigation actually covered the screen.
   useEffect(() => {
-    reveal()
+    reveal(true)
   }, [pathname, reveal])
+
+  /*
+   * Parked again: nothing is held for the circle any more. Released only
+   * once no view transition is running, because `global.css`'s hold rules
+   * leaving mid-transition would give the old page's snapshot the browser's
+   * default cross-fade, and it would flash back over the new page. The
+   * retry is this effect's own timer, stopped when the overlay leaves idle
+   * (a new press sets the attribute again) or unmounts.
+   */
+  useEffect(() => {
+    if (state !== 'idle') return
+    if (closed.current) clearTimeout(closed.current)
+    let retry: ReturnType<typeof setTimeout> | undefined
+    const release = () => {
+      if (viewTransitionRunning()) {
+        retry = setTimeout(release, RELEASE_RETRY)
+        return
+      }
+      delete document.documentElement.dataset.depth
+    }
+    release()
+    return () => clearTimeout(retry)
+  }, [state])
 
   useEffect(
     () => () => {
       if (safety.current) clearTimeout(safety.current)
       if (settle.current) clearTimeout(settle.current)
       if (paint.current) clearTimeout(paint.current)
+      if (closed.current) clearTimeout(closed.current)
+      if (arrival.current) clearTimeout(arrival.current)
+      delete document.documentElement.dataset.depth
+      delete document.documentElement.dataset.arrival
     },
     []
   )
 
   if (prefersReducedMotion) return null
 
+  const circleOpen = kind === 'depth' && state !== 'idle'
+
   return (
-    <div
-      className={s.overlay}
-      /*
-       * Names the overlay for a gate, so it can be counted rather than
-       * guessed at from a class name — Tahap 48.
-       *
-       * The same lesson `components/ui/marquee` records: CSS modules put the
-       * source filename into every generated class, so a `[class*="…"]`
-       * selector measures the stylesheet rather than the page.
-       * `e2e/entrance.e2e.ts` asserts this panel and the entrance curtain are
-       * never both on screen, and that assertion needs a name it can trust.
-       */
-      data-page-transition=""
-      data-state={state}
-      data-source={source}
-      data-kind={kind}
-      aria-hidden="true"
-      // Park it again once it has left the top of the screen. Off-screen at
-      // both ends, so the reset is never visible.
-      onTransitionEnd={() => {
-        if (state !== 'revealing') return
-        if (settle.current) clearTimeout(settle.current)
-        setState('idle')
-      }}
-    />
+    <>
+      {/*
+        The mark that makes React start a view transition for a `set-depth`
+        navigation. Keyed by the path, so every route change unmounts one and
+        mounts the next, and only the `set-depth` type gives them a class:
+        every other navigation leaves it inert. React names a boundary only
+        when its element is inside the viewport at commit time, so the mark
+        is one fixed pixel in the corner (`components/ui/link` records that
+        rule). It paints nothing.
+      */}
+      <ViewTransition
+        key={pathname}
+        enter={DEPTH_CLASS}
+        exit={DEPTH_CLASS}
+        default="none"
+      >
+        <span aria-hidden="true" className={c.mark} />
+      </ViewTransition>
+      <div
+        className={s.overlay}
+        /*
+         * Names the overlay for a gate, so it can be counted rather than
+         * guessed at from a class name — Tahap 48.
+         *
+         * The same lesson `components/ui/marquee` records: CSS modules put
+         * the source filename into every generated class, so a `[class*="…"]`
+         * selector measures the stylesheet rather than the page.
+         * `e2e/entrance.e2e.ts` asserts this panel and the entrance curtain
+         * are never both on screen, and that assertion needs a name it can
+         * trust.
+         */
+        data-page-transition=""
+        data-state={state}
+        data-source={source}
+        data-kind={kind}
+        aria-hidden="true"
+        /*
+         * Named only while a circle is open, so the view transition that
+         * holds the old page captures the overlay on its own and keeps it
+         * live above both pages (`global.css`). Idle, it stays out of every
+         * other view transition, the morphs included.
+         */
+        style={
+          circleOpen ? { ...depth, viewTransitionName: 'page-depth' } : depth
+        }
+        // Park it again once it has left the top of the screen, or once the
+        // circle has faded. Off-screen or clear at both ends, so the reset is
+        // never visible. The circle's own transitions bubble here too; only
+        // its fade marks the end, never the ring arriving at COMMIT.
+        onTransitionEnd={(event: TransitionEvent<HTMLDivElement>) => {
+          if (state !== 'revealing') return
+          const child = event.target !== event.currentTarget
+          if (child && event.propertyName !== 'opacity') return
+          if (settle.current) clearTimeout(settle.current)
+          setState('idle')
+        }}
+      >
+        {/* The circle, and the ring drawn round the press it opens out of. */}
+        <span className={c.circle} />
+        <span className={c.ring} />
+      </div>
+    </>
   )
 }

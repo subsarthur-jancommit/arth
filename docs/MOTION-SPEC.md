@@ -1003,6 +1003,19 @@ seperti materi promosi.
 | Reduced motion       | The page changes without a transition.                                                                                                                                             |
 | Verification planned | Keep `instant-navigation` and `navigation-landing` green; add coverage for Back and double activation when this is implemented.                                                    |
 
+**Built in R6 (1 November 2026).** `vault/motion/page-transition` draws it:
+a ring round the press (COMMIT, `--duration-micro`), a circle in the pressed
+link's `--color-secondary` opening to the farthest corner (TRANSPORT,
+`--duration`, `ease-in-out-quart`), then a fade while the destination `h1`
+settles by `transform` only (SETTLE, `--duration-slow`, `ease-out-expo`).
+`<Link>` now defaults to the `depth` intent. Because a prefetched route
+commits about 50ms after the press, the old page is held as a
+view-transition snapshot until the circle has closed: the link navigates
+with the `set-depth` transition type, a keyed `<ViewTransition>` mark in the
+overlay activates for it, and `global.css` keys the hold on the root's
+`data-depth` attribute. Navigation itself is never delayed. Back and Forward
+keep the faster panel. Covered by `e2e/set-depth.e2e.ts`.
+
 ### 13.11 Navigation precedence
 
 One activation starts exactly one transition. When more than one could apply,

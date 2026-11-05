@@ -15,8 +15,8 @@ import { expect, test } from '@playwright/test'
  *
  * What stays protects the reader: cards never sit on top of each other at any
  * scroll position (a covered card is hidden content), the cursor carries
- * nothing the page does not also say, the journal keeps its theme without
- * JavaScript, and no icon ships without a name.
+ * nothing the page does not also say, and no icon ships without a name. The
+ * journal's theme without JavaScript was held here until F5-04 retired it.
  *
  * ## The numbers the variance rule was written against
  *
@@ -143,26 +143,6 @@ test.describe('the cursor carries nothing the page does not also say', () => {
       ).toBe(true)
     }
   })
-})
-
-test.describe('the journal is a reading surface', () => {
-  for (const path of ['/en/journal', '/en/journal/scope-is-the-deliverable']) {
-    test(`${path} renders its theme without JavaScript`, async ({
-      browser,
-    }) => {
-      const context = await browser.newContext({ javaScriptEnabled: false })
-      const page = await context.newPage()
-      await page.goto(path)
-
-      const theme = await page.evaluate(() => {
-        const themed = document.querySelector('[data-theme]')
-        return themed?.getAttribute('data-theme') ?? null
-      })
-
-      expect(theme, `${path} shipped no theme without JavaScript`).toBe('light')
-      await context.close()
-    })
-  }
 })
 
 test.describe('icons name actions', () => {

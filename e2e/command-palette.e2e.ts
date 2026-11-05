@@ -39,7 +39,7 @@ async function openWithShortcut(page: Page) {
 }
 
 test.describe('the search palette', () => {
-  for (const path of ['/en/journal', '/id'] as const) {
+  for (const path of ['/en/work', '/id'] as const) {
     test(`${path}: the button and the shortcut both open it`, async ({
       page,
     }) => {
@@ -93,13 +93,13 @@ test.describe('the search palette', () => {
   })
 
   /*
-   * The reader's side of the same answer. `/en/journal` still renders, so its
+   * The reader's side of the same answer. `/en/work` still renders, so its
    * palette still has to work: the fetch follows the 307, and every row is a
    * published page rather than an `/en` address that bounces. On 2026-10-22
-   * the first row here was `/en`.
+   * the first row here was `/en`. Read on `/en/journal` until F5-04.
    */
-  test('/en/journal: every result is a published page', async ({ page }) => {
-    await page.goto('/en/journal')
+  test('/en/work: every result is a published page', async ({ page }) => {
+    await page.goto('/en/work')
     await page.waitForTimeout(1200)
     await page.locator('[data-search-trigger]').click()
     await page.waitForSelector('[data-search-row]')
@@ -164,11 +164,12 @@ test.describe('the search palette', () => {
       (await results('tanjung 2025')).join(' '),
       'the client and the year are one line of the row, and typing both finds nothing'
     ).toContain('Arus Balik')
-    // Indonesian since F1-07 (K1): the entry is "Lingkup adalah hasilnya".
+    // A journal entry's title carried this case until F5-04 retired the
+    // journal; a page title has the same shape.
     expect(
-      (await results('lingkup hasilnya')).join(' '),
-      "an entry's own words, in order, without its connectives"
-    ).toContain('Lingkup adalah hasilnya')
+      (await results('tentang kontak')).join(' '),
+      "a title's own words, in order, without its connectives"
+    ).toContain('Tentang dan kontak')
   })
 
   test('a title match outranks a passing mention', async ({ page }) => {
@@ -176,7 +177,10 @@ test.describe('the search palette', () => {
     await page.waitForTimeout(1200)
     await openWithShortcut(page)
 
-    await page.keyboard.type('lingkup')
+    // "Pelaku proyek" carries the word in its title; the Konstruksi unit only
+    // mentions it, in "untuk pelaku proyek". This typed the first word of a
+    // journal entry's title until F5-04 retired the journal.
+    await page.keyboard.type('proyek')
     await page.waitForTimeout(400)
 
     const highlighted = await page.evaluate(
@@ -192,8 +196,8 @@ test.describe('the search palette', () => {
      */
     expect(
       highlighted,
-      `Enter would open "${highlighted}" — a page that merely mentions the word, rather than the entry whose title is it`
-    ).toContain('Lingkup adalah hasilnya')
+      `Enter would open "${highlighted}" — a page that merely mentions the word, rather than the page whose title holds it`
+    ).toContain('Pelaku proyek')
   })
 
   test('it is operable from the keyboard alone, and gives focus back', async ({
@@ -265,7 +269,7 @@ test.describe('the search palette', () => {
     await expect(page.locator('[role="dialog"]')).toBeHidden()
   })
 
-  for (const path of ['/en/journal', '/id'] as const) {
+  for (const path of ['/en/work', '/id'] as const) {
     test(`${path}: axe is clean with the palette open`, async ({ page }) => {
       await page.goto(path)
       await page.waitForTimeout(1200)

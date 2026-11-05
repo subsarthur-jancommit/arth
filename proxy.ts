@@ -289,6 +289,23 @@ export function proxy(request: NextRequest) {
   }
 
   const markdownRoute = routePathFromMarkdown(request.nextUrl.pathname)
+
+  /*
+   * A retired address with a file extension: the journal's Atom feed
+   * (`/id/journal/feed.xml`), retired with the journal in F5-04. The
+   * page-document guard below waves every dotted path through to the router,
+   * which answers it with the soft 404 at 200; a reader app still polling the
+   * feed is owed the same `410` as the pages it listed.
+   */
+  if (
+    (request.method === 'GET' || request.method === 'HEAD') &&
+    markdownRoute === null &&
+    FILE_EXTENSION.test(request.nextUrl.pathname) &&
+    isGonePath(request.nextUrl.pathname)
+  ) {
+    return brandedStatusResponse(GONE_STATUS, request.nextUrl.pathname)
+  }
+
   if (!isPageDocumentRequest(request, markdownRoute !== null)) {
     return NextResponse.next()
   }

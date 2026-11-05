@@ -8,7 +8,6 @@ import { Wrapper } from '@/components/layout/wrapper'
 import { SectionHeader } from '@/components/ui/section-header'
 import { resolveHomeContent } from '@/lib/content/home-fallback'
 import { canRenderPublicContent } from '@/lib/content/public-content-guard'
-import { latestWriting } from '@/lib/content/unit-writing'
 import {
   isSideOf,
   isUnit,
@@ -29,13 +28,14 @@ import {
 import { ContactBlock } from '@/vault/blocks/contact-block'
 import { FirstStepBand } from '@/vault/blocks/first-step-band'
 import { Hero } from '@/vault/blocks/hero'
-import { LatestWriting } from '@/vault/blocks/latest-writing'
 import { Passage } from '@/vault/blocks/passage'
 import { Plate } from '@/vault/blocks/plate'
 import { PracticeList } from '@/vault/blocks/practice-list'
 import { SituationLinks } from '@/vault/blocks/situation-links'
 import { Reveal } from '@/vault/motion/reveal'
 import { PlateMaterial } from '@/vault/webgl/plate-material'
+
+import { HomeSequence } from './home-sequence'
 
 import s from './page.module.css'
 
@@ -107,13 +107,12 @@ export default async function Home() {
   const requested = await localeRootParam()
   const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
 
-  const [{ settings, units, isDraftMode }, t, tUnit, tPlate, latest] =
+  const [{ settings, units, isDraftMode }, t, tUnit, tPlate] =
     await Promise.all([
       fetchHomeForRequest(locale),
       getTranslations('home'),
       getTranslations('unit'),
       getTranslations('plates'),
-      latestWriting(locale),
     ])
 
   const content = resolveHomeContent(locale, settings)
@@ -319,6 +318,17 @@ export default async function Home() {
         />
 
         {/*
+          One client, three units: one sequence after the reader's own
+          situation and before how Arthur works (plan §5.1), with the way to
+          the rest of them on /layanan.
+        */}
+        <HomeSequence
+          className={s.section}
+          locale={locale}
+          preview={isDraftMode}
+        />
+
+        {/*
           The umbrella header's labelled paragraphs, two to a row on desktop
           (R5). Inside the studio note's 65ch prose column they ran as one
           narrow stack with most of a 1440px screen empty beside it, the
@@ -345,17 +355,6 @@ export default async function Home() {
             </div>
           </Reveal>
         ) : null}
-
-        {latest && (
-          <LatestWriting
-            className={s.section}
-            eyebrow={t('journalEyebrow')}
-            entry={latest}
-            practice={latest.unit ? unitLabel(latest.unit) : undefined}
-            allLabel={t('journalAll')}
-            locale={locale}
-          />
-        )}
 
         {/*
           The first step. Until K5 names a real channel the fallback address

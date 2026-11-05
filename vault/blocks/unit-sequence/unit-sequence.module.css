@@ -155,7 +155,9 @@
   inset-block-end: calc(var(--gap) * -2);
   inset-inline-start: 50%;
   z-index: 1;
-  background: var(--background);
+  /* The theme's ground. This named an undefined `--background`, so the
+     joint had no ground of its own. */
+  background: var(--color-primary);
   transform: translate(-50%, 50%) rotate(90deg);
 
   @media (--desktop) {
@@ -199,11 +201,51 @@
   color: var(--text-muted);
 }
 
+/*
+ * INTENT and COMMIT (`MOTION-SPEC.md` §9). Under the cursor and under the
+ * keyboard's focus alike the underline lifts away, so both a cursor and a
+ * keyboard see the control answer; the press is the shared `[data-press]`
+ * scale.
+ *
+ * The `::after` reaches 12px above and below the line, so the target is
+ * about 44px tall while the underline stays where it was drawn. The link sits
+ * in the sequence's last reveal item, which rises a gutter once its stagger
+ * has passed: a press that began where the line was a moment earlier still
+ * lands on the link rather than on the ground beneath it.
+ */
 .action {
+  position: relative;
   width: fit-content;
   padding-block-end: 0.25em;
   border-bottom: 1px solid currentcolor;
   color: inherit;
+  transition:
+    border-color var(--duration-fast) var(--ease-out-expo),
+    transform var(--duration-micro) var(--ease-out-quart);
+
+  &::after {
+    position: absolute;
+    inset: -12px 0;
+    content: '';
+  }
+
+  @media (--hover) {
+    &:hover {
+      border-bottom-color: transparent;
+    }
+  }
+
+  &:focus-visible {
+    border-bottom-color: transparent;
+    outline: 2px solid var(--color-contrast);
+    outline-offset: 4px;
+  }
+}
+
+@media (--reduced-motion) {
+  .action {
+    transition: none;
+  }
 }
 
 @media print {

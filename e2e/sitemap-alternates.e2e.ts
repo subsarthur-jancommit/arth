@@ -36,13 +36,9 @@ test('the sitemap carries hreflang and honest dates', async ({ request }) => {
   // A page that lists nothing has no date to claim.
   expect(contact).not.toContain('<lastmod>')
 
-  // F1-06 keeps the catalogue and journal index out of machine listings,
-  // while individual published journal entries remain advertised.
-  expect(xml).not.toMatch(/<loc>[^<]*\/id\/(?:work|journal)<\/loc>/)
-  const entryDates = [
-    ...xml.matchAll(
-      /<loc>[^<]*\/id\/journal\/[^<]+<\/loc>[\s\S]*?<lastmod>([^<]+)<\/lastmod>/g
-    ),
-  ].map((match) => Date.parse(match[1] ?? ''))
-  expect(entryDates.length).toBeGreaterThan(0)
+  // F1-06 keeps the catalogue index out of machine listings. The journal's
+  // entries were advertised until F5-04 retired `/journal`; every address
+  // under it answers 410 now, so none is listed.
+  expect(xml).not.toMatch(/<loc>[^<]*\/id\/work<\/loc>/)
+  expect(xml).not.toMatch(/<loc>[^<]*\/(?:en|id)\/journal(?:\/[^<]*)?<\/loc>/)
 })

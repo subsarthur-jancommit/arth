@@ -33,6 +33,13 @@ const GONE_PATHS = [
   '/en/practice/consulting',
   '/id/practice/ai-data',
   '/en/work/practice/commission',
+  // The journal, retired in F5-04, with an entry and the Atom feed — a dotted
+  // path, which the proxy tests before its page-document guard.
+  '/id/journal',
+  '/en/journal',
+  '/en/journal/scope-is-the-deliverable',
+  '/id/journal/feed.xml',
+  '/en/journal/feed.xml',
 ] as const
 
 test.describe('a retired address answers 410, not 404 and not a redirect', () => {

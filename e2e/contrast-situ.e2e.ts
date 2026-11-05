@@ -77,8 +77,6 @@ const ROUTES = [
   '/en/work',
   '/en/work/arus-balik',
   '/id/kontak',
-  '/en/journal',
-  '/en/journal/scope-is-the-deliverable',
   '/id/konstruksi',
   '/id/work/arus-balik',
 ] as const
