@@ -22,9 +22,21 @@
   /*
    * One at a time (`docs/MOTION-SPEC.md` §13.3): each fixing waits for the
    * one before it to be driven home, so the four are read as four.
+   *
+   * On an offer page the beats are its unit's (`offer-fixings`,
+   * `lib/styles/css/dialects.css`): the first fixing waits for the plate to
+   * settle, and each next one a step after the last, on the unit's curve.
+   * The step is never shorter than a fixing takes to drive home, so §13.3's
+   * one at a time holds in every dialect: Konstruksi leaves a beat between
+   * them, Teknologi sets them back to back, and Peekabo's quick step is
+   * held to the base one. A fixing is a mark, so its own length stays.
    */
-  transition: transform var(--duration-fast) var(--ease-out-expo)
-    calc(var(--duration) + var(--fixing-order) * var(--duration-fast));
+  transition: transform var(--duration-fast)
+    var(--dialect-ease, var(--ease-out-expo))
+    calc(
+      var(--dialect-settle, var(--duration)) + var(--fixing-order) *
+        max(var(--dialect-step, var(--duration-fast)), var(--duration-fast))
+    );
 }
 
 .fixing::before,
