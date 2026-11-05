@@ -21,6 +21,11 @@ import { localizedPath } from '../lib/i18n/paths'
  * Next keeps the page just left in the tree, hidden, so the way back is
  * instant. After a switch the document holds both sheets, and every lookup
  * here asks for the visible one (e2e run 41954397719 found two `main h1`).
+ *
+ * The exchange is found by what ran, not by transition type. A press makes
+ * two view transitions in production: the first carries the `side-sheet`
+ * type and only moves the URL, the second changes the sheets and carries no
+ * type (e2e run 41983464648; `lib/motion/side-sheet.ts`).
  */
 
 const [FIRST, SECOND] = SIDES.konstruksi
@@ -148,43 +153,50 @@ async function titleHasFocus(page: Page) {
   })
 }
 
-/** The view transition that carried the exchange, once it has ended. */
+/**
+ * Every view transition a press made, once all of them have ended: React's
+ * wait for fonts and images, the URL's transition, then the 1200ms exchange
+ * fit well inside the first 2.5s on CI's runner.
+ */
 async function exchangeOf(page: Page) {
+  await page.waitForTimeout(2500)
   await page.waitForFunction(
     () =>
-      globalThis.__sheet.transitions.some(
-        (transition) =>
-          transition.types.includes('side-sheet') && transition.doneAt !== null
+      globalThis.__sheet.transitions.every(
+        (transition) => transition.doneAt !== null
       ),
     undefined,
-    { timeout: 8000 }
+    { timeout: 5000 }
   )
-  const { transitions, states } = await page.evaluate(() => globalThis.__sheet)
-  const exchange = transitions.find((transition) =>
-    transition.types.includes('side-sheet')
-  )
-  return { exchange, transitions, states }
+  return page.evaluate(() => globalThis.__sheet)
 }
 
-/** Both halves of the exchange ran, and ran their length. */
-function expectBothHalves(exchange: Exchange | undefined) {
-  const ran = JSON.stringify(exchange?.animations ?? [])
-  expect(exchange?.state, 'the exchange was skipped').toBe('ready')
+/** The transition that ran a given half, if one did. */
+function ranHalf(transitions: Exchange[], half: string) {
+  return transitions.find((transition) =>
+    transition.animations.some((animation) => animation.startsWith(half))
+  )
+}
+
+/** Both halves of the exchange ran, and the settle ran its length. */
+function expectBothHalves(transitions: Exchange[]) {
+  const ran = JSON.stringify(
+    transitions.map(({ types, state, animations }) => ({
+      types,
+      state,
+      animations,
+    }))
+  )
+  const lift = ranHalf(transitions, 'side-sheet-lift@::view-transition-old(')
+  const settle = ranHalf(
+    transitions,
+    'side-sheet-settle@::view-transition-new('
+  )
+  expect(lift, `the old sheet did not lift: ${ran}`).toBeDefined()
+  expect(settle, `the new sheet did not settle: ${ran}`).toBeDefined()
+  // SETTLE waits 400ms for the old sheet to go, then takes 800ms.
   expect(
-    exchange?.animations.some((animation) =>
-      animation.startsWith('side-sheet-lift@::view-transition-old(')
-    ),
-    `the old sheet did not lift: ${ran}`
-  ).toBe(true)
-  expect(
-    exchange?.animations.some((animation) =>
-      animation.startsWith('side-sheet-settle@::view-transition-new(')
-    ),
-    `the new sheet did not settle: ${ran}`
-  ).toBe(true)
-  // TRANSPORT then SETTLE: 400ms, then 800ms once the old sheet has gone.
-  expect(
-    (exchange?.doneAt ?? 0) - (exchange?.readyAt ?? 0),
+    (settle?.doneAt ?? 0) - (settle?.readyAt ?? 0),
     'the exchange ended before the new sheet had settled'
   ).toBeGreaterThanOrEqual(1100)
 }
@@ -222,8 +234,8 @@ test.describe('side-sheet-swap', () => {
     await page.locator(OTHER).click()
     await page.waitForURL((url) => url.pathname === TO)
 
-    const { exchange, transitions, states } = await exchangeOf(page)
-    expectBothHalves(exchange)
+    const { transitions, states } = await exchangeOf(page)
+    expectBothHalves(transitions)
     expect(
       transitions.some((transition) => transition.types.includes('set-depth')),
       'the switcher opened a detail circle'
@@ -281,8 +293,8 @@ test.describe('side-sheet-swap', () => {
     await foot.click()
     await page.waitForURL((url) => url.pathname === TO)
 
-    const { exchange } = await exchangeOf(page)
-    expectBothHalves(exchange)
+    const { transitions } = await exchangeOf(page)
+    expectBothHalves(transitions)
     expect(await titleHasFocus(page)).toBe(true)
   })
 
@@ -299,9 +311,9 @@ test.describe('side-sheet-swap', () => {
 
       await page.locator(OTHER).click()
       await page.waitForURL((url) => url.pathname === TO)
-      // Longer than React's wait for fonts and images, well short of the
-      // 1200ms the exchange takes with motion.
-      await page.waitForTimeout(900)
+      // Long enough for every transition the press makes to have run; the
+      // assertion is on how long each took, not on when it was read.
+      await page.waitForTimeout(1500)
 
       const { transitions } = await page.evaluate(() => globalThis.__sheet)
       for (const transition of transitions) {

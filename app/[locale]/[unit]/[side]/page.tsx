@@ -2,7 +2,6 @@ import cn from 'clsx'
 import { getTranslations } from 'next-intl/server'
 import { draftMode } from 'next/headers'
 import { locale as localeRootParam } from 'next/root-params'
-import { ViewTransition } from 'react'
 
 import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
@@ -24,7 +23,6 @@ import {
 } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
-import { SIDE_SHEET_ENTER, SIDE_SHEET_EXIT } from '@/lib/motion/side-sheet'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 import { DocHead } from '@/vault/blocks/doc-head'
 import { FirstStep } from '@/vault/blocks/first-step'
@@ -32,7 +30,7 @@ import { NetworkSide } from '@/vault/blocks/network-side'
 import { SideChapterTable } from '@/vault/blocks/side-chapter-table'
 import { StepSequence } from '@/vault/blocks/step-sequence'
 
-import { SideSheetLink, SideSwitcher } from './side-switcher'
+import { SideSheet, SideSheetLink, SideSwitcher } from './side-switcher'
 
 import s from './page.module.css'
 
@@ -184,17 +182,16 @@ export default async function SidePage({ params }: SidePageProps) {
         />
 
         {/*
-         * The sheet `side-sheet-swap` exchanges (`lib/motion/side-sheet.ts`):
-         * everything under the switcher, which stays where it is. Keyed by
-         * the side, so a press always leaves one sheet and enters the other
-         * rather than updating one in place, and `none` for every other kind
-         * of navigation, which keeps its own transition.
+         * The sheet `side-sheet-swap` exchanges: everything under the
+         * switcher, which stays where it is. Keyed by the side, so a press
+         * always leaves one sheet and enters the other rather than updating
+         * one in place; every other kind of navigation keeps its own
+         * transition (`SideSheet` has why the press, not only the transition
+         * type, chooses the classes).
          */}
-        <ViewTransition
+        <SideSheet
           key={side}
-          enter={SIDE_SHEET_ENTER}
-          exit={SIDE_SHEET_EXIT}
-          default="none"
+          path={localizedPath(locale, sideTemplate(unit, side))}
         >
           {/*
            * A document head (R5, direction A): who the page is for as its
@@ -312,7 +309,7 @@ export default async function SidePage({ params }: SidePageProps) {
               {tSide('backToUnit', { unit: tUnit(unit) })}
             </Link>
           </nav>
-        </ViewTransition>
+        </SideSheet>
       </article>
     </Wrapper>
   )
