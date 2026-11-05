@@ -4,7 +4,9 @@
  * Provenance: original work for this project. No third-party code copied.
  * CSS only: it follows the global reveal contract (`data-reveal` on an
  * ancestor, `--reveal-index` on the item), and has no script or loop of its
- * own.
+ * own. It works in either reveal mode: a container that arrives as a whole,
+ * or `useReveal({ perItem: true })`, where each item arrives on its own (the
+ * chapter pages' offer cards, `bab-formwork`).
  *
  * ## What the motion says
  *

@@ -9,7 +9,7 @@ import { useRef, useState, useSyncExternalStore } from 'react'
 
 import { Link } from '@/components/ui/link'
 import { useReveal } from '@/lib/hooks/use-reveal'
-import { FLIP_ID, useFlipGrid } from '@/vault/motion/flip'
+import { FLIP_ID, SIFT_MOVE, useFlipGrid } from '@/vault/motion/flip'
 import { Formwork } from '@/vault/motion/formwork'
 
 import s from './chapter-offer-grid.module.css'
@@ -132,6 +132,12 @@ function OfferCard({
  * The formwork sits on the card itself while FLIP owns only the positions of
  * list items. Filtering must never animate the reading link or change the
  * semantic list that a non-JavaScript reader sees.
+ *
+ * R6 (`docs/MOTION-SPEC.md` §13.2): `bab-formwork` is each card arriving in
+ * its form as it reaches the reader, the form struck a beat later; `bab-sift`
+ * is a market chip moving the cards that stay, 400ms `ease-out-quart`, with
+ * `--stagger-cards` between them. Under reduced motion neither happens: the
+ * cards have no form and the filter's result is simply there.
  */
 export function ChapterOfferGrid({
   offers,
@@ -162,7 +168,7 @@ export function ChapterOfferGrid({
   const groups = byType(visible.filter((offer) => offer !== entry))
   const card = { entryLabel, askLabel, readLabel, conditionLabel }
 
-  useFlipGrid(gridRef, market)
+  useFlipGrid(gridRef, market, SIFT_MOVE)
 
   return (
     <section className={cn(s.section, className)} data-epic="bab-sift">
@@ -186,6 +192,7 @@ export function ChapterOfferGrid({
           type="button"
           aria-pressed={market === 'semua'}
           className={s.filter}
+          data-press="chip"
           onClick={() => setMarket('semua')}
         >
           {allLabel}
@@ -194,6 +201,7 @@ export function ChapterOfferGrid({
           type="button"
           aria-pressed={market === 'pemerintah'}
           className={s.filter}
+          data-press="chip"
           onClick={() => setMarket('pemerintah')}
         >
           {governmentLabel}
@@ -202,6 +210,7 @@ export function ChapterOfferGrid({
           type="button"
           aria-pressed={market === 'swasta'}
           className={s.filter}
+          data-press="chip"
           onClick={() => setMarket('swasta')}
         >
           {privateLabel}
