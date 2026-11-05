@@ -181,6 +181,9 @@ async function leftBehind(page: Page) {
     return {
       depth: root.dataset.depth ?? null,
       arrival: root.dataset.arrival ?? null,
+      // The press names the root inline so React does not cancel it; the
+      // release must take that name off again.
+      rootName: root.style.getPropertyValue('view-transition-name'),
       parked: overlay
         ? overlay.getBoundingClientRect().top >= window.innerHeight
         : true,
@@ -203,7 +206,13 @@ async function pressContact(page: Page, press: 'click' | 'dblclick') {
   await page.waitForURL((url) => url.pathname === TO)
 }
 
-const CLEAN = { depth: null, arrival: null, parked: true, settling: false }
+const CLEAN = {
+  depth: null,
+  arrival: null,
+  rootName: '',
+  parked: true,
+  settling: false,
+}
 
 test.describe('set-depth', () => {
   test('a press opens a detail circle over the swap, then the title settles', async ({

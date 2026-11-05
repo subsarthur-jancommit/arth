@@ -1094,6 +1094,21 @@ overlay activates for it, and `global.css` keys the hold on the root's
 `data-depth` attribute. Navigation itself is never delayed. Back and Forward
 keep the faster panel. Covered by `e2e/set-depth.e2e.ts`.
 
+**Fixed 5 November 2026 (#71).** The hold never held in production. The
+commit a press starts moves the URL and re-keys the mark, and changes
+nothing outside a `<ViewTransition>`, so React cancelled the transition's
+root: it set `view-transition-name: none` on `<html>`, hid
+`::view-transition-group(root)` with a script animation and shrank
+`::view-transition`. The swap then showed under a circle that had barely
+opened. A strengthened `e2e/set-depth.e2e.ts` caught it (run
+42044019856): it reads the transition's animations at `ready` and fails
+on React's cancellation. React leaves the root alone when `<html>`
+already names it inline, so the press now sets `view-transition-name:
+root` (the browser's own name for it), and the release takes it off with
+`data-depth`. It stays a view transition because only a snapshot can
+hold the old page while the new one commits; the circle, its timings and
+the settle are unchanged.
+
 ### 13.11 Navigation precedence
 
 One activation starts exactly one transition. When more than one could apply,

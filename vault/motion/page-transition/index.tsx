@@ -213,6 +213,29 @@ function viewTransitionRunning() {
   }
 }
 
+/**
+ * Keeps the old page held under the circle (e2e run 42044019856, R6).
+ *
+ * The commit a `depth` press starts moves the URL and re-keys the mark, and
+ * changes nothing outside a `<ViewTransition>`. React then cancels the root
+ * of that view transition (react-dom, the host root's after-mutation step):
+ * it sets `view-transition-name: none` on `<html>`, hides
+ * `::view-transition-group(root)` and shrinks `::view-transition`, so the old
+ * page was never held and the swap showed under a circle that had barely
+ * opened. React leaves the root alone when `<html>` already names it inline,
+ * and its own restore only clears a `none`, so the press names the root
+ * `root` (the browser's own name for it) and the release takes it off.
+ */
+function holdRoot() {
+  document.documentElement.style.setProperty('view-transition-name', 'root')
+}
+
+function releaseRoot() {
+  const style = document.documentElement.style
+  if (style.getPropertyValue('view-transition-name') === 'root')
+    style.removeProperty('view-transition-name')
+}
+
 /** What a press on a link leaves for the navigation it starts. */
 interface Press {
   x: number
@@ -464,6 +487,7 @@ export function PageTransition({ maxWait = 2000 }: PageTransitionProps) {
 
         setDepth(depthStyle(pressed))
         const root = document.documentElement
+        holdRoot()
         root.dataset.depth = 'rising'
         if (closed.current) clearTimeout(closed.current)
         closed.current = setTimeout(() => {
@@ -506,6 +530,7 @@ export function PageTransition({ maxWait = 2000 }: PageTransitionProps) {
         return
       }
       delete document.documentElement.dataset.depth
+      releaseRoot()
     }
     release()
     return () => clearTimeout(retry)
@@ -520,6 +545,7 @@ export function PageTransition({ maxWait = 2000 }: PageTransitionProps) {
       if (arrival.current) clearTimeout(arrival.current)
       delete document.documentElement.dataset.depth
       delete document.documentElement.dataset.arrival
+      releaseRoot()
     },
     []
   )
