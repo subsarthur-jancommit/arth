@@ -5,6 +5,11 @@
  * that the document lacks. `Reveal` observes each promise separately, and
  * Stamp reuses its normal timing only when that row arrives. Without
  * JavaScript and under reduced motion, every mark is already visible.
+ *
+ * `promise-stamp` (`docs/MOTION-SPEC.md` §13.6): the reveal observes each
+ * row once, so a stamp is struck the first time its promise is read and
+ * never again when the reader scrolls back. The mark is in the text's ink, at
+ * a stamp's slant (`e2e/network-promise.e2e.ts`).
  */
 
 import cn from 'clsx'

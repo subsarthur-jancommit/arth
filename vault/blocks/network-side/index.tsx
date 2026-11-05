@@ -11,6 +11,13 @@
  * Motion carries sequence only. The referrer flow uses the existing Plumb CSS
  * view timeline and stamps each row as it enters. There is no pin or JavaScript
  * animation loop, and the prose never changes position.
+ *
+ * `network-money-flow` (`docs/MOTION-SPEC.md` §13.4, R6): the plumb line is
+ * drawn in ink as the flow's leader, and as its tip passes each step a node
+ * lands on it and a branch runs out to the step, on the step's own view
+ * timeline; the step's stamp is struck as it arrives. Reduced motion shows
+ * the finished drawing, and without a script the CSS still draws it as the
+ * reader scrolls, since none of it needs one.
  */
 
 import cn from 'clsx'
