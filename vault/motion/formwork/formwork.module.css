@@ -1,10 +1,12 @@
 /*
  * Formwork — the mechanism. `index.tsx` carries the argument.
  *
- * Every value is a token: the form is the palette's `--line`, dashed, its drop
- * is half the grid's gap, and its beats are the duration bands and the item
- * stagger. Only the form's `opacity` and `transform` move; the item's own
- * arrival is the global reveal's.
+ * Every value is a token: the form is the palette's `--line-strong`, dashed,
+ * set a quarter gutter outside the item so it reads as a frame of its own
+ * rather than as the item's edge; its drop is half the grid's gap, and its
+ * beats are the duration bands and the item stagger. Only the form's
+ * `opacity` and `transform` move; the item's own arrival is the global
+ * reveal's.
  */
 
 .formwork {
@@ -15,15 +17,23 @@
 .formwork::after {
   content: '';
   position: absolute;
-  inset: 0;
-  border: thin dashed var(--line);
+  inset: calc(var(--gap) * -0.25);
+  border: thin dashed var(--line-strong);
   pointer-events: none;
   opacity: 0;
   transform: translateY(calc(var(--gap) * 0.5));
 }
 
-/* Before the reveal the form stands where the item will be cast. */
-[data-reveal='hidden'] .formwork::after {
+/*
+ * Before the item arrives the form stands where it will be cast.
+ *
+ * Asked of the item as well as of its container. In per-item mode
+ * (`useReveal({ perItem: true })`) the container stays `hidden` for good and
+ * each item carries its own arrival, so a form keyed on the container alone
+ * was put up and never struck: on the chapter pages every card kept its form
+ * (R6, measured on production 5 November 2026).
+ */
+[data-reveal='hidden'] .formwork:not([data-reveal-item='visible'])::after {
   opacity: 1;
   transform: none;
 }
@@ -32,7 +42,8 @@
  * Struck once the item has arrived and held for a beat, in reading order —
  * each form a stagger behind its neighbour's.
  */
-[data-reveal='visible'] .formwork::after {
+[data-reveal='visible'] .formwork::after,
+[data-reveal] .formwork[data-reveal-item='visible']::after {
   transition:
     opacity var(--duration) var(--ease-out-expo),
     transform var(--duration) var(--ease-out-expo);
@@ -43,10 +54,12 @@
 
 /*
  * Reduced motion keeps the outcome and drops the beat (MOTION-SPEC §9.4 rule
- * 3): the form is never put up.
+ * 3): the form is never put up. The second selector matches the standing
+ * rule's weight, so it wins by coming later.
  */
 @media (--reduced-motion) {
-  [data-reveal] .formwork::after {
+  [data-reveal] .formwork::after,
+  [data-reveal='hidden'] .formwork:not([data-reveal-item='visible'])::after {
     opacity: 0;
     transition: none;
   }

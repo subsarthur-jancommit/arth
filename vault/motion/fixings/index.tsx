@@ -11,8 +11,9 @@
  * A plate that has only been put in place has not been fixed. This one
  * arrives with the reveal, as everything on the page does, and then — once it
  * is where it belongs — it is fixed: a mark at each corner, set one after
- * another around the plate, each growing from its own centre the way a fixing
- * is driven home. The plate does not move again. Nothing overshoots
+ * another around the plate, each growing from its own centre and turning
+ * upright into its cross the way a fixing is driven home. Each waits for the
+ * one before it (`offer-fixings`, `docs/MOTION-SPEC.md` §13.3). The plate does not move again. Nothing overshoots
  * (MOTION-SPEC §9.3), and only the marks' `transform` changes after arrival.
  *
  * ## Reading it

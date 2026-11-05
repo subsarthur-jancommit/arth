@@ -901,6 +901,18 @@ is available. `CLAUDE.md`'s hard reader protections continue to apply.
 | Reduced motion       | Cards appear without formwork; filtering updates results immediately.                                                                                                                                                                   |
 | Verification planned | No-JavaScript and reduced-motion states on the chapter fixture; chapter routes enter the sweep in F3-12.                                                                                                                                |
 
+**Built in R6 (5 November 2026).** `bab-formwork` did not run before this:
+the chapter grid reveals per item, its container stays `hidden`, and
+`Formwork` was keyed on the container alone, so every card kept its form
+(measured on production, opacity 1 on all seven). The form is now asked of
+the item too, stands a quarter gutter outside the card in `--line-strong`
+so it reads as a frame of its own, and is struck 800ms after its card
+arrives. `bab-sift` passes `SIFT_MOVE` to `useFlipGrid`: 400ms
+`ease-out-quart` for the cards that stay, `--stagger-cards` apart; the
+catalogue on `/work` keeps its 800ms default. The market chips are
+`data-press="chip"`, with an inked edge as INTENT for a pointer and a
+keyboard alike. Covered by `e2e/bab-offer.e2e.ts`.
+
 ### 13.3 Batas dipaku — boundaries fixed (F3-05)
 
 | Field                | Specification                                                                                        |
@@ -913,6 +925,14 @@ is available. `CLAUDE.md`'s hard reader protections continue to apply.
 | Without JavaScript   | The block and marks are present in their final state.                                                |
 | Reduced motion       | The corner marks are already in place.                                                               |
 | Verification planned | Reduced-motion state on the offer fixture.                                                           |
+
+**Built in R6 (5 November 2026).** The four fixings are set one at a time:
+each waits for the one before it to be driven home (delays 400, 600, 800
+and 1000ms, 200ms each), and each turns upright from an eighth of a turn
+into its cross as it grows. They are a gutter wide and drawn in the text's
+own ink, where they were three quarters of a gutter in `--line-strong`.
+Like `Formwork`, the hidden state is asked of the plate as well as its
+container. Covered by `e2e/bab-offer.e2e.ts`.
 
 ### 13.4 Alur uang empat langkah — four-step money flow (F3-06)
 

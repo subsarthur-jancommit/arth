@@ -93,6 +93,30 @@ const MOVED_PX = 1
 /** How many entering cards get a staggered delay before the rest arrive together. */
 const MAX_STAGGERED = 8
 
+/**
+ * How a surviving card travels, named by its tokens and their fallbacks.
+ *
+ * The catalogue's move is slow and eased at both ends, because a work's
+ * cover is large and the reader is watching it cross the page. A chapter's
+ * offer cards are text, and `bab-sift` (`docs/MOTION-SPEC.md` §13.2) asks
+ * for the standard band, eased out: the result arrives, it is not toured.
+ */
+export interface FlipMove {
+  duration: '--duration' | '--duration-slow'
+  ease: '--ease-out-quart' | '--ease-in-out-quart'
+}
+
+const CATALOGUE_MOVE: FlipMove = {
+  duration: '--duration-slow',
+  ease: '--ease-in-out-quart',
+}
+
+/** `bab-sift`: 400ms, `ease-out-quart`. */
+export const SIFT_MOVE: FlipMove = {
+  duration: '--duration',
+  ease: '--ease-out-quart',
+}
+
 function cssMs(styles: CSSStyleDeclaration, token: string, fallback: number) {
   const raw = styles.getPropertyValue(token).trim()
   if (raw === '') return fallback
@@ -117,10 +141,13 @@ function cssEase(styles: CSSStyleDeclaration, token: string, fallback: string) {
  *                  that changes every render would re-measure constantly and
  *                  animate nothing, which is worse than not running at all
  *                  because it looks like it works.
+ * @param move      how a survivor travels; the catalogue's slow two-ended
+ *                  move unless a moment names its own (`SIFT_MOVE`)
  */
 export function useFlipGrid(
   ref: React.RefObject<HTMLElement | null>,
-  signature: string
+  signature: string,
+  move: FlipMove = CATALOGUE_MOVE
 ) {
   const prefersReducedMotion = usePreferredReducedMotion()
   const previous = useRef<Map<string, Snapshot> | null>(null)
@@ -165,11 +192,19 @@ export function useFlipGrid(
     if (!first || !changed || reduced) return
 
     const styles = getComputedStyle(document.documentElement)
-    const moveMs = cssMs(styles, '--duration-slow', 800)
+    const moveMs = cssMs(
+      styles,
+      move.duration,
+      move.duration === '--duration' ? 400 : 800
+    )
     const enterMs = cssMs(styles, '--duration', 400)
     const exitMs = cssMs(styles, '--duration-fast', 200)
     const stepMs = cssMs(styles, '--stagger-cards', 70)
-    const moveEase = cssEase(styles, '--ease-in-out-quart', 'ease-in-out')
+    const moveEase = cssEase(
+      styles,
+      move.ease,
+      move.ease === '--ease-out-quart' ? 'ease-out' : 'ease-in-out'
+    )
     const enterEase = cssEase(styles, '--ease-out-quart', 'ease-out')
     /*
      * A literal, and it is the honest option rather than the tidy one.
@@ -359,5 +394,7 @@ export function useFlipGrid(
       for (const trigger of triggers) trigger.enable()
       cleanUpGhosts()
     }
-  }, [ref, signature, prefersReducedMotion])
+    // The move's two names rather than the object: a caller's literal is a
+    // new object every render, and a re-run here cancels a sift in flight.
+  }, [ref, signature, prefersReducedMotion, move.duration, move.ease])
 }
