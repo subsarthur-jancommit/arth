@@ -2,9 +2,9 @@
  * Fixings — the mechanism. `index.tsx` carries the argument.
  *
  * Every value is a token: the plate's edge is the palette's `--line` and its
- * fixings `--line-strong`, their size and inset are fractions of the grid's
- * gap, and their beats are the duration bands and the item stagger. Only the
- * fixings' `transform` moves; the plate's arrival is the global reveal's.
+ * fixings the text's own ink, their size and inset are fractions of the
+ * grid's gap, and their beats are the duration bands. Only the fixings'
+ * `transform` moves; the plate's arrival is the global reveal's.
  */
 
 .plate {
@@ -16,11 +16,15 @@
 /* A cross, in the plate's own padding at a corner. */
 .fixing {
   position: absolute;
-  inline-size: calc(var(--gap) * 0.75);
-  block-size: calc(var(--gap) * 0.75);
+  inline-size: var(--gap);
+  block-size: var(--gap);
   pointer-events: none;
+  /*
+   * One at a time (`docs/MOTION-SPEC.md` §13.3): each fixing waits for the
+   * one before it to be driven home, so the four are read as four.
+   */
   transition: transform var(--duration-fast) var(--ease-out-expo)
-    calc(var(--duration) + var(--fixing-order) * var(--stagger-items));
+    calc(var(--duration) + var(--fixing-order) * var(--duration-fast));
 }
 
 .fixing::before,
@@ -32,13 +36,13 @@
 .fixing::before {
   inset-inline: 0;
   inset-block-start: 50%;
-  border-block-start: thin solid var(--line-strong);
+  border-block-start: thin solid var(--color-secondary);
 }
 
 .fixing::after {
   inset-block: 0;
   inset-inline-start: 50%;
-  border-inline-start: thin solid var(--line-strong);
+  border-inline-start: thin solid var(--color-secondary);
 }
 
 /* Set clockwise from the first corner, after the plate has arrived. */
@@ -66,9 +70,14 @@
   inset-inline-start: calc(var(--gap) * 0.125);
 }
 
-/* Before the reveal the plate is only placed, not fixed. */
-[data-reveal='hidden'] .fixing {
-  transform: scale(0);
+/*
+ * Before the reveal the plate is only placed, not fixed: each fixing waits an
+ * eighth of a turn out, and is driven home by turning upright into its cross. Asked of
+ * the plate as well as its container, for the reason `Formwork` gives: in
+ * per-item mode the container never stops being `hidden`.
+ */
+[data-reveal='hidden'] .plate:not([data-reveal-item='visible']) .fixing {
+  transform: rotate(-45deg) scale(0);
 }
 
 /*
@@ -80,7 +89,8 @@
     transition: none;
   }
 
-  [data-reveal] .fixing {
+  [data-reveal] .fixing,
+  [data-reveal='hidden'] .plate:not([data-reveal-item='visible']) .fixing {
     transform: none;
   }
 }
