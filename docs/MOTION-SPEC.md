@@ -943,6 +943,18 @@ names are shared from `lib/motion/side-sheet.ts`; covered by
 | Content boundary     | No numbers, rates, or income simulation.                                                                                            |
 | Verification planned | No-JavaScript and reduced-motion states; `continuous-motion` confirms step prose does not move.                                     |
 
+**Built in R6 (5 November 2026).** The plumb line on `/id/peekabo/jaringan`
+is the flow's leader, drawn in the text's ink (`--plumb-ink`), where it was
+a 28% hairline. Its tip follows the bottom of the screen, so as it passes a
+step's middle the step branches off it: a node lands on the line and a
+branch runs out to the step, on each step's own view timeline
+(`--money-step`, `entry 50%` to `entry 100%`). The stamp "Tahap n" is in
+ink at a stamp's slant (`rotate`, so its strike keeps it). The words never
+move. Without a script the CSS still draws it as the reader scrolls;
+reduced motion shows it finished. Covered by `e2e/network-promise.e2e.ts`,
+which also checks the step prose for the transform `continuous-motion`
+looks for on `/work`.
+
 ### 13.5 Tiga batang disambung — three units joined (F3-07)
 
 | Field                | Specification                                                                                                                                         |
@@ -969,6 +981,14 @@ names are shared from `lib/motion/side-sheet.ts`; covered by
 | Without JavaScript   | The stamp is already visible.                                                                    |
 | Reduced motion       | The stamp is already visible.                                                                    |
 | Verification planned | Reduced-motion state on the How we work page.                                                    |
+
+**Built in R6 (5 November 2026).** The block (`vault/blocks/promise-stamp`)
+and its place on `/id/metode` already shipped in F3: each promise is a
+per-item reveal, and its "Tertulis" stamp strikes once on the primitive's
+own timing when the row arrives, never again on the way back. R6 sets the
+stamp in the text's ink at a stamp's slant, where it was a muted label, and
+adds the verification: `e2e/network-promise.e2e.ts` checks the single
+strike, no replay, and the reduced-motion and no-JavaScript states.
 
 ### 13.7 Alamat nyata disalin — real address copied (F3-09)
 

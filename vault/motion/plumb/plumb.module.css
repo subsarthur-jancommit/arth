@@ -19,7 +19,8 @@
   position: absolute;
   inset-block: 0;
   inset-inline-start: 0;
-  border-inline-start: thin solid var(--line-strong);
+  /* A block whose line is itself the subject sets its own ink. */
+  border-inline-start: thin solid var(--plumb-ink, var(--line-strong));
   transform-origin: center top;
   pointer-events: none;
 }
@@ -43,7 +44,8 @@
   inline-size: 0;
   block-size: 0;
   border-inline: calc(var(--gap) * 0.25) solid transparent;
-  border-block-start: calc(var(--gap) * 0.5) solid var(--line-strong);
+  border-block-start: calc(var(--gap) * 0.5) solid
+    var(--plumb-ink, var(--line-strong));
 }
 
 /*
