@@ -138,7 +138,11 @@ test.describe('unit dialects', () => {
     const SPEC = {
       konstruksi: { ease: 'var(--ease-out-expo)', min: 0.8, max: 1.2 },
       teknologi: { ease: 'var(--ease-out-quart)', min: 0.15, max: 0.2 },
-      peekabo: { ease: 'var(--ease-gleasing)', min: 0, max: Infinity },
+      peekabo: {
+        ease: 'var(--ease-gleasing)',
+        min: 0,
+        max: Number.POSITIVE_INFINITY,
+      },
     } as const
 
     const seen: { unit: string; duration: string; ease: string }[] = []

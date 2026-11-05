@@ -32,7 +32,9 @@ function bezierOf(value: string): number[] | null {
 }
 
 function sameCurve(a: readonly number[], b: readonly number[]) {
-  return a.every((value, index) => Math.abs(value - (b[index] ?? NaN)) < 1e-6)
+  return a.every(
+    (value, index) => Math.abs(value - (b[index] ?? Number.NaN)) < 1e-6
+  )
 }
 
 /**
