@@ -26,6 +26,23 @@
   background: transparent;
   color: inherit;
   font: inherit;
+  /* COMMIT is the shared press (`data-press`, MOTION-SPEC §9). */
+  transition: transform var(--duration-micro) var(--ease-out-quart);
+}
+
+/*
+ * INTENT, the same for a pointer and a keyboard: the chip's edge is inked
+ * before it is pressed. A step of ink rather than a fill, so it is never
+ * mistaken for the chosen market.
+ */
+.filter:hover,
+.filter:focus-visible {
+  border-color: var(--color-secondary);
+}
+
+.filter:focus-visible {
+  outline: 2px solid var(--color-contrast);
+  outline-offset: 2px;
 }
 
 /*
