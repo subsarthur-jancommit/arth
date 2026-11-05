@@ -29,6 +29,17 @@
  * sheet is never left invisible: when the lift ends with the sheet still on
  * screen, it plays back to where it was and waits there, readable.
  *
+ * ## At the unit's tempo
+ *
+ * A side page belongs to one unit, so TRANSPORT and SETTLE take that unit's
+ * dialect (`lib/styles/css/dialects.css`, F4-02): its settle and its curve,
+ * read from the sheet, which sits inside the `<main>` that carries
+ * `data-dialect`. Konstruksi exchanges its sheets over a long expo settle,
+ * Teknologi in one short quart step, Peekabo on gleasing. The values above
+ * are the fallbacks, the base grammar. INTENT, the rule under the switcher,
+ * is the press grammar and keeps its shared beat, and so does the focus
+ * hand-over.
+ *
  * ## Focus
  *
  * The new sheet's title is handed focus when it arrives. The link that held
@@ -144,7 +155,16 @@ export function SideSwitcher({ label, eyebrow, sides }: SideSwitcherProps) {
     const reduced = window.matchMedia(
       '(prefers-reduced-motion: reduce)'
     ).matches
-    const styles = getComputedStyle(document.documentElement)
+    /*
+     * Read from the sheet, not the document root: the unit's dialect is set
+     * on `<main>`, and only an element inside it can see it. The tokens are
+     * the root's, inherited, so the fallbacks read what they always did.
+     */
+    const styles = getComputedStyle(sheet)
+    const tempo = (token: string, fallback: number) =>
+      tokenMs(styles, '--dialect-settle', tokenMs(styles, token, fallback))
+    const curve = (token: string, fallback: string) =>
+      tokenEase(styles, '--dialect-ease', tokenEase(styles, token, fallback))
     const running: Animation[] = []
 
     if (arrivedBySwitch()) {
@@ -169,8 +189,8 @@ export function SideSwitcher({ label, eyebrow, sides }: SideSwitcherProps) {
             [{ transform: 'translateY(1.75rem)' }, { transform: 'none' }],
             {
               id: SETTLE,
-              duration: tokenMs(styles, '--duration-slow', 800),
-              easing: tokenEase(styles, '--ease-out-expo', 'ease-out'),
+              duration: tempo('--duration-slow', 800),
+              easing: curve('--ease-out-expo', 'ease-out'),
             }
           )
         )
@@ -188,8 +208,8 @@ export function SideSwitcher({ label, eyebrow, sides }: SideSwitcherProps) {
           ],
           {
             id: LIFT,
-            duration: tokenMs(styles, '--duration', 400),
-            easing: tokenEase(styles, '--ease-in-out-quart', 'ease-in-out'),
+            duration: tempo('--duration', 400),
+            easing: curve('--ease-in-out-quart', 'ease-in-out'),
             fill: 'forwards',
           }
         )

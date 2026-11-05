@@ -897,7 +897,10 @@ What reads them:
 - `bab-formwork`, `bab-sift` (`flip` reads its tokens from the grid, which can
   see `<main>`), `offer-fixings`, the offer measure (`dimension`) and the
   offer plate's placing;
-- `network-money-flow`'s scroll-linked branches.
+- `network-money-flow`'s scroll-linked branches;
+- `side-sheet-swap`'s TRANSPORT and SETTLE, which run on the Web Animations
+  API on the live sheets inside `<main>` and read the unit's settle and curve
+  from the sheet's computed style (§13.1).
 
 What does not: REST, INTENT and COMMIT, the press grammar of §9. Hover, focus
 and press answer the reader's hand the same way on every page, so pressable
@@ -913,8 +916,8 @@ Under reduced motion every dialect collapses at the source: no travel, no
 step, and an instant settle. `lib/styles/scripts/dialects.test.ts` holds the
 file to the table at the head of this section, and `e2e/unit-dialects.e2e.ts`
 measures `unit-method` and the reveal contract on the three unit pages, the
-absence of any dialect on the base pages, and the reduced-motion end state.
-`side-sheet-swap` takes its unit's dialect in a follow-up once #70 has landed.
+absence of any dialect on the base pages, and the reduced-motion end state;
+`e2e/side-sheet-swap.e2e.ts` runs the sheet exchange on every unit.
 
 ## 13. Arthur moment cards — design brief for later packages
 
@@ -963,6 +966,14 @@ lanes, and that commit runs in another.
   readable.
 - The new title takes focus in both motion modes.
 - Reduced motion moves nothing.
+
+**At the unit's tempo (F4-02).** A side page belongs to one unit, so
+TRANSPORT and SETTLE both run on that unit's settle and curve (§12.1): 1000ms
+`ease-out-expo` on Konstruksi, 200ms `ease-out-quart` on Teknologi, 400ms
+`ease-gleasing` on Peekabo. They are read from the sheet's computed style,
+because `data-dialect` is on `<main>`. The 400ms and 800ms above are the
+fallbacks, the base grammar. INTENT and the focus hand-over keep their shared
+beat.
 
 Covered by `e2e/side-sheet-swap.e2e.ts`.
 
