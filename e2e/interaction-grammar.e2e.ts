@@ -284,8 +284,6 @@ test.describe('interaction grammar', () => {
      */
     { path: '/id/konstruksi' },
     { path: '/id/kontak' },
-    { path: '/en/journal' },
-    { path: '/en/journal/scope-is-the-deliverable' },
   ] as const
 
   for (const { path: route } of EPIC_ROUTES)

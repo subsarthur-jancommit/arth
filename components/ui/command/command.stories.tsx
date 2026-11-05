@@ -41,11 +41,10 @@ import { CommandPalette } from './palette'
  * index now reaches Presentation previews alone.
  *
  * The first draft of this file invented a client name for a real project, and
- * that is the line this project does not cross:
- * `lib/content/journal-fallback.ts` records the reasoning, and a Storybook
- * story is a browsable catalogue, not a private test double. One of each kind,
- * so every group heading and every rail variant — a path, a client and year, a
- * date — is on screen at once.
+ * that is the line this project does not cross: a Storybook story is a
+ * browsable catalogue, not a private test double. One of each kind, so every
+ * group heading and every rail variant — a path, a client and year — is on
+ * screen at once. The journal's row left with `/journal` in F5-04.
  */
 const entries: SearchEntry[] = [
   {
@@ -99,15 +98,6 @@ const entries: SearchEntry[] = [
     description: 'Tinjauan arsitektur, enam minggu',
     href: '/id/work/arus-balik',
     meta: 'Rumah Tanjung · 2025',
-  },
-  {
-    id: 'journal:scope-is-the-deliverable',
-    kind: 'journal',
-    label: 'Lingkup adalah hasilnya',
-    description:
-      'Minggu yang dipakai memutuskan sebuah pekerjaan itu bukan apa adalah minggu yang menentukan apakah ia selesai.',
-    href: '/id/journal/scope-is-the-deliverable',
-    meta: '11 Februari 2026',
   },
 ]
 

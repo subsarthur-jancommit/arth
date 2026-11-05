@@ -1,10 +1,8 @@
 import { describe, expect, test } from 'bun:test'
 
-import { resolveJournalEntries } from './journal-fallback'
 import type { SearchEntry } from './search-index'
 import {
   buildSearchIndex,
-  journalEntries,
   matchScore,
   pageEntries,
   projectEntries,
@@ -12,6 +10,22 @@ import {
   searchHaystack,
 } from './search-index'
 import { UNITS } from './units'
+
+/*
+ * The journal entry the matcher was measured against
+ * (`docs/stages/TAHAP-30.md` §2), written out here because the journal left
+ * the index with `/journal` in F5-04. The matcher still ranks every row the
+ * palette shows, so the measurements keep their subject.
+ */
+const SCOPE_ROW: SearchEntry = {
+  id: 'page:scope',
+  kind: 'page',
+  label: 'Scope is the deliverable',
+  description:
+    'The week spent deciding what a piece of work is not is the week that decides whether it ships.',
+  href: '/en/scope',
+  meta: '11 February 2026',
+}
 
 /**
  * What these assert, and why each one is here.
@@ -121,20 +135,17 @@ describe('project entries', () => {
   })
 })
 
-describe('journal entries', () => {
-  test('the date is formatted in the reader’s locale, from the ISO string', () => {
-    const entries = resolveJournalEntries('id', null)
-    const results = journalEntries('id', entries)
-
-    expect(results.length).toBe(entries.length)
-    // Indonesian month names, not English ones — the same reason the journal
-    // index formats at render time rather than storing a formatted string.
-    expect(results.some((entry) => entry.meta?.includes('Februari'))).toBe(true)
-  })
-
-  test('every entry points at its own page', () => {
-    for (const entry of journalEntries('en', resolveJournalEntries('en', null)))
-      expect(entry.href).toStartWith('/en/journal/')
+/*
+ * Journal entries left the index with `/journal` in F5-04: the route answers
+ * `410`, so a row for one would offer a page that is gone.
+ */
+describe('the retired journal', () => {
+  test('no row points under /journal', () => {
+    for (const locale of ['en', 'id'] as const) {
+      for (const entry of buildSearchIndex(locale, { projects: null })) {
+        expect(entry.href).not.toMatch(/^\/[a-z]{2}\/journal(?:\/|$)/)
+      }
+    }
   })
 })
 
@@ -149,7 +160,6 @@ describe('the whole index', () => {
         engagement: 'Commissioned work',
       },
     ],
-    journal: resolveJournalEntries('en', null),
   })
 
   test('ids are unique, so a listbox can point at exactly one row', () => {
@@ -157,13 +167,11 @@ describe('the whole index', () => {
     expect(new Set(ids).size).toBe(ids.length)
   })
 
-  test('it carries all four kinds, pages first and writing last', () => {
+  test('it carries all three kinds, pages first and work last', () => {
     const kinds = index.map((entry) => entry.kind)
-    expect(new Set(kinds)).toEqual(
-      new Set(['page', 'unit', 'project', 'journal'])
-    )
+    expect(new Set(kinds)).toEqual(new Set(['page', 'unit', 'project']))
     expect(kinds[0]).toBe('page')
-    expect(kinds.at(-1)).toBe('journal')
+    expect(kinds.at(-1)).toBe('project')
   })
 
   test('the haystack is lowercased and holds everything the row shows', () => {
@@ -176,8 +184,7 @@ describe('the whole index', () => {
 })
 
 describe('match score', () => {
-  const journal = journalEntries('en', resolveJournalEntries('en', null))
-  const scope = journal.find((entry) => entry.label.startsWith('Scope'))
+  const scope: SearchEntry | undefined = SCOPE_ROW
   const mention: SearchEntry = {
     id: 'page:mention',
     kind: 'page',
@@ -214,10 +221,7 @@ describe('match score', () => {
   })
 
   test('an empty query leaves every entry equal, so the resting order stands', () => {
-    const index = buildSearchIndex('en', {
-      projects: null,
-      journal: resolveJournalEntries('en', null),
-    })
+    const index = [...buildSearchIndex('en', { projects: null }), SCOPE_ROW]
     for (const entry of index) {
       expect(matchScore(entry, '')).toBe(1)
       expect(matchScore(entry, '   ')).toBe(1)
@@ -239,10 +243,7 @@ describe('word order and the query as words', () => {
     year: 2025,
     engagement: 'Architecture review, six weeks',
   }
-  const index = buildSearchIndex('en', {
-    projects: [project],
-    journal: resolveJournalEntries('en', null),
-  })
+  const index = [...buildSearchIndex('en', { projects: [project] }), SCOPE_ROW]
   const find = (query: string) =>
     index.filter((entry) => matchScore(entry, query) > 0).map((e) => e.label)
   const broadMatch: SearchEntry = {
@@ -339,7 +340,6 @@ describe('an unreachable content source', () => {
     const index = await resolveSearchIndex('en', () =>
       Promise.resolve({
         projects: [{ slug: { current: 'a-project' }, title: 'A Project' }],
-        journal: resolveJournalEntries('en', null),
       })
     )
 
@@ -382,11 +382,7 @@ describe('a description the page head resolved', () => {
   test('reaches the index whether the content source answers or not', async () => {
     const answered = await resolveSearchIndex(
       'id',
-      () =>
-        Promise.resolve({
-          projects: null,
-          journal: resolveJournalEntries('id', null),
-        }),
+      () => Promise.resolve({ projects: null }),
       descriptions
     )
     const unreachable = await resolveSearchIndex(

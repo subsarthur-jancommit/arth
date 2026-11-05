@@ -30,12 +30,10 @@ import { expect, test } from '@playwright/test'
  * one scroll long is a decoration pretending to be information. Adding it
  * would have turned that rule into its opposite.
  */
-const LONG_READS = [
-  '/en/journal/scope-is-the-deliverable',
-  '/en/work/arus-balik',
-]
+// A journal entry and the journal index were here too until F5-04.
+const LONG_READS = ['/en/work/arus-balik']
 
-const SHORT = ['/id', '/en/journal', '/en/work']
+const SHORT = ['/id', '/en/work']
 
 const BAR = '[data-reading-progress-bar]'
 

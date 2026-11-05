@@ -16,10 +16,10 @@ import { BASE_URL } from '@/lib/seo/site'
  * (Until Tahap 84 it also had to be added to `PAGES` in the `/ai` machine
  * view, a second list that could drift; that route was removed.)
  *
- * Everything past the static catalogue — the journal's entries, and the CMS's
- * pages and projects when Sanity is configured — arrives already expanded
- * from `getAdvertisedRoutes()`. A fresh clone with no CMS env set still gets
- * the journal, because those pages exist without one.
+ * Everything past the static catalogue — the CMS's pages and projects when
+ * Sanity is configured — arrives already expanded from
+ * `getAdvertisedRoutes()`. The journal's entries were listed here too until
+ * F5-04 retired `/journal`.
  *
  * ## Alternates and dates — the live audit, 2026-10-05
  *
@@ -30,12 +30,12 @@ import { BASE_URL } from '@/lib/seo/site'
  * And `lastmod` is no longer the build's clock. Every static page claimed to
  * have changed at the moment of the last deploy, which teaches a search engine
  * to ignore the field (`docs/HANDOFF.md` §4.8, L6). A page that lists others
- * (`/journal`, `/work`) now takes the date of the newest page it lists; the
- * rest carry no date rather than a false one. Content routes keep their own.
+ * (`/work`) takes the date of the newest page it lists; the rest carry no
+ * date rather than a false one. Content routes keep their own.
  */
 
 /** Static pages whose content is the list of the pages beneath them. */
-const LISTINGS = new Set(['/journal', '/work'])
+const LISTINGS = new Set(['/work'])
 
 /** hreflang for one sitemap URL: the head's own map, made absolute. */
 function alternatesFor(

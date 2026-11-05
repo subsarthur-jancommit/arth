@@ -211,8 +211,9 @@ test.describe('motion', () => {
 
   test.describe('under prefers-reduced-motion', () => {
     // /en and Arthur's English pages redirect to /id (K2, R0); keep the
-    // English reduced-motion case on a page that is English: the journal.
-    for (const path of ['/id', '/en/journal']) {
+    // English reduced-motion case on a page that is English: the catalogue,
+    // since F5-04 retired the journal.
+    for (const path of ['/id', '/en/work']) {
       test(`${path} shows every line of the headline`, async ({ browser }) => {
         const { context, page } = await reducedMotionPage(browser, path)
 
@@ -512,44 +513,10 @@ test.describe('motion', () => {
     ).toBe(true)
   })
 
-  /**
-   * The journal's row title carries itself into the entry — Tahap 41.
-   *
-   * ## Proved red first
-   *
-   * Before this stage `/journal` had no morph at all: pressing a headline ran
-   * the route overlay, the screen covered, and another page appeared. Two
-   * reading surfaces on the same site, one treated as an event and one as a
-   * reload. The engine had been built and gated since Tahap 11d; only the use
-   * was missing.
+  /*
+   * The journal's row title carried itself into the entry here from Tahap 41
+   * until F5-04 retired the journal.
    */
-  test('a journal row morphs into its entry', async ({ page }) => {
-    const slug = 'scope-is-the-deliverable'
-    const name = transitionName(`journal-${slug}`)
-
-    const morph = await captureMorph(page, '/en/journal', `/en/journal/${slug}`)
-
-    expect(morph.calls, 'no view transition was started').toBeGreaterThan(0)
-    expect(morph.names, 'the shared name was never applied').toContain(name)
-
-    // A `group` only exists when the browser matched an old and a new element
-    // under one name — the difference between the title moving and the title
-    // being replaced by another that reads the same.
-    expect(
-      morph.pseudo.filter((p) => p.includes(`view-transition-group(${name})`))
-        .length,
-      `no morph pair formed; pseudo-elements seen: ${morph.pseudo.join(', ')}`
-    ).toBeGreaterThan(0)
-
-    for (const half of ['old', 'new']) {
-      expect(
-        morph.pseudo.some((p) =>
-          p.includes(`view-transition-${half}(${name})`)
-        ),
-        `the ${half} half of the pair is missing`
-      ).toBe(true)
-    }
-  })
 
   /**
    * `MOTION-SPEC.md` §9.4 rule 5 — **one shared-element morph per
@@ -566,9 +533,9 @@ test.describe('motion', () => {
    * enforced where you just added something is not a rule.
    */
   test('a navigation forms exactly one morph pair', async ({ page }) => {
+    // The journal's pair was here too until F5-04 retired it.
     const journeys: [from: string, to: string][] = [
       ['/en/work', `/en/work/${FEATURED_WORK}`],
-      ['/en/journal', '/en/journal/scope-is-the-deliverable'],
     ]
 
     for (const [from, to] of journeys) {
@@ -589,100 +556,11 @@ test.describe('motion', () => {
     }
   })
 
-  /**
-   * COMMIT on the journal index — the list stands back for the row chosen.
-   *
-   * Written entirely in CSS (`.list:has(.row:active) .row:not(:has(:active))`)
-   * rather than in component state, which is what `MOTION-SPEC.md` §9 asks
-   * for: "Write COMMIT in CSS, with `:active`". The press is held rather than
-   * clicked, because the whole state exists only while the pointer is down.
-   *
-   * Measured on the production build: rows sit at `1 / 0.7 / 0.7` (the reading
-   * recede) and go to `1 / 0.35 / 0.35` under a press.
+  /*
+   * COMMIT on the journal index — the list standing back for the row chosen,
+   * and dropping that recede under reduced motion — was held here until
+   * F5-04 retired the journal.
    */
-  test('pressing a journal row stands the others back', async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 })
-    await page.goto('/en/journal')
-    await page.waitForTimeout(1200)
-
-    const rows = page.locator('[data-journal-entry]')
-    expect(await rows.count(), 'no journal rows to press').toBeGreaterThan(1)
-
-    const opacities = () =>
-      rows.evaluateAll((nodes) =>
-        nodes.map((node) => getComputedStyle(node).opacity)
-      )
-
-    const rest = await opacities()
-
-    const target = page.locator('[data-press="entry"]').first()
-    const box = await target.boundingBox()
-    expect(box, 'the row link has no box to press').not.toBeNull()
-
-    await page.mouse.move((box?.x ?? 0) + 8, (box?.y ?? 0) + 8)
-    await page.mouse.down()
-    try {
-      await page.waitForTimeout(320)
-      const pressed = await opacities()
-
-      // Anti-vacuum: identical arrays would mean the rule never applied, and
-      // a comparison of two equal things passes just as happily.
-      expect(
-        pressed,
-        `nothing changed under a press: ${rest.join(', ')}`
-      ).not.toEqual(rest)
-
-      const receded = pressed.filter((value) => Number(value) < 0.5)
-      expect(receded.length, `no row stood back: ${pressed.join(', ')}`).toBe(
-        pressed.length - 1
-      )
-      // The chosen one stays whole.
-      expect(pressed.filter((value) => value === '1')).toHaveLength(1)
-    } finally {
-      await page.mouse.up()
-    }
-  })
-
-  test('reduced motion drops the press recede entirely', async ({
-    browser,
-  }) => {
-    const context = await browser.newContext({
-      reducedMotion: 'reduce',
-      viewport: { width: 1440, height: 900 },
-    })
-    const page = await context.newPage()
-    try {
-      await page.goto('/en/journal')
-      await page.waitForTimeout(1200)
-
-      const rows = page.locator('[data-journal-entry]')
-      const target = page.locator('[data-press="entry"]').first()
-      const box = await target.boundingBox()
-
-      await page.mouse.move((box?.x ?? 0) + 8, (box?.y ?? 0) + 8)
-      await page.mouse.down()
-      try {
-        await page.waitForTimeout(320)
-        const pressed = await rows.evaluateAll((nodes) =>
-          nodes.map((node) => getComputedStyle(node).opacity)
-        )
-        /*
-         * §9.4 rule 3 — the state still changes, the transition does not.
-         * Here the state is transient and carries no information a reader
-         * needs, so "the outcome is unchanged" means dropping it: every row
-         * stays fully legible, `CLAUDE.md` #5.
-         */
-        expect(
-          pressed.every((value) => value === '1'),
-          `rows receded under reduced motion: ${pressed.join(', ')}`
-        ).toBe(true)
-      } finally {
-        await page.mouse.up()
-      }
-    } finally {
-      await context.close()
-    }
-  })
 
   test('the overlay stands aside for a morph', async ({ page }) => {
     /*
@@ -930,19 +808,17 @@ test.describe('motion', () => {
  * anyway.
  *
  * **`/en/journal/<slug>` joined it in Tahap 41**, for the identical reason
- * and by the identical mechanism: `journal-transport` carries the row's
- * headline into the entry's `h1`, so that `h1` cannot also be split. The
- * morph **is** that page's arrival, and a line reveal on top of it would be a
- * second arrival competing with the first.
+ * and by the identical mechanism: `journal-transport` carried the row's
+ * headline into the entry's `h1`, so that `h1` could not also be split. It
+ * left with the journal in F5-04, and so did the journal index this list
+ * also read.
  *
- * Both absences are decisions; this comment is where they are written down —
- * and the test above (`a journal row morphs into its entry`) is what stops
- * the route quietly ending up with neither entrance.
+ * The practice route's absence is a decision; this comment is where it is
+ * written down.
  */
 const HEADING_ROUTES = [
   '/id',
   '/id/kontak',
-  '/en/journal',
   '/id/konstruksi',
   '/en/work',
   `/en/work/${FEATURED_WORK}`,
@@ -1185,125 +1061,4 @@ test.describe('the studio sequence is audited where it happens', () => {
       expect(found, found.join('\n')).toEqual([])
     })
   }
-})
-
-/**
- * `journal-index` — the index that knows which entry is being read.
- *
- * ## What the re-test measured
- *
- * The journal index shipped in Tahap 26 with the container reveal and nothing
- * else, and its four reveal items all sat **above the fold**: the entrance
- * fired once on the first frame and the page was static from then on.
- * Measured at four scroll positions, the three rows reported
- * `1.00 1.00 1.00` every time.
- *
- * That page's entire content is three headlines. Three headlines arriving
- * together and then holding still is the whole experience of it.
- *
- * ## Why this is scroll-led rather than pointer-led
- *
- * An index that only answers a mouse does not exist on a phone, and a journal
- * index is the page most likely to be read on one. The material layer is
- * already desktop-only by necessity; this had no such excuse.
- */
-test.describe('the journal index reads back', () => {
-  test('a row leads while the others recede, and the lead moves', async ({
-    page,
-  }) => {
-    test.setTimeout(120_000)
-    await page.setViewportSize({ width: 1280, height: 800 })
-    await page.goto('/en/journal')
-    await page.waitForTimeout(2600)
-
-    const rows = page.locator('[data-journal-entry]')
-    await expect(rows.first(), 'the index renders no rows').toBeAttached()
-
-    const height = await page.evaluate(
-      () => document.documentElement.scrollHeight
-    )
-
-    const led = new Set<string>()
-    const states: string[] = []
-
-    for (let i = 0; i <= 10; i++) {
-      await page.evaluate((y) => window.scrollTo(0, y), (height * i) / 10)
-      await page.waitForTimeout(240)
-
-      const frame = await page.evaluate(() => {
-        const all = [...document.querySelectorAll('[data-journal-entry]')]
-        return {
-          opacities: all
-            .map((row) =>
-              Number.parseFloat(getComputedStyle(row).opacity).toFixed(2)
-            )
-            .join(' '),
-          active: all.findIndex((row) => row.hasAttribute('data-active')),
-        }
-      })
-
-      states.push(frame.opacities)
-      if (frame.active >= 0) led.add(String(frame.active))
-    }
-
-    const unique = new Set(states)
-    expect(
-      unique.size,
-      `the rows reported "${[...unique].join('", "')}" across the whole page — nothing changes as the reader scrolls, which is the entire experience of a page whose content is three headlines`
-    ).toBeGreaterThan(1)
-
-    expect(
-      led.size,
-      `${led.size} row(s) ever led — an index that always leads with the same row is not reading back`
-    ).toBeGreaterThanOrEqual(2)
-  })
-
-  test('reduced motion leaves every row fully opaque', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' })
-    await page.setViewportSize({ width: 1280, height: 800 })
-    await page.goto('/en/journal')
-    await page.waitForTimeout(2600)
-    await page.evaluate(() => window.scrollTo(0, 900))
-    await page.waitForTimeout(800)
-
-    const opacities = await page.evaluate(() =>
-      [...document.querySelectorAll('[data-journal-entry]')].map((row) =>
-        Number.parseFloat(getComputedStyle(row).opacity)
-      )
-    )
-
-    expect(opacities.length, 'no rows to check').toBeGreaterThan(0)
-    expect(
-      opacities.filter((opacity) => opacity < 0.99),
-      'a row is dimmed under prefers-reduced-motion — CLAUDE.md #5 requires content to end fully visible, and the stylesheet is the layer that can promise it'
-    ).toEqual([])
-  })
-
-  test('/en/journal passes axe with a row receded', async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 800 })
-    await page.goto('/en/journal')
-    await page.waitForTimeout(2600)
-    await page.evaluate(() =>
-      window.scrollTo(0, document.documentElement.scrollHeight / 2)
-    )
-    await page.waitForTimeout(900)
-
-    const receded = await page.evaluate(
-      () =>
-        [...document.querySelectorAll('[data-journal-entry]')].filter(
-          (row) => !row.hasAttribute('data-active')
-        ).length
-    )
-    expect(
-      receded,
-      'nothing had receded, so this run proves nothing about the receded state'
-    ).toBeGreaterThan(0)
-
-    const results = await new AxeBuilder({ page }).withTags(axeTags()).analyze()
-    const found = results.violations.map(
-      (violation) =>
-        `${violation.impact}: ${violation.id} (${violation.nodes.length} node(s))`
-    )
-    expect(found, found.join('\n')).toEqual([])
-  })
 })

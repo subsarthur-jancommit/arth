@@ -19,9 +19,11 @@ const INDEX: SearchEntry[] = [
   entry('unit', '/en/practice/consulting', 'Consulting'),
   entry('project', '/en/work/arus-balik', 'Arus Balik'),
   entry('project', '/en/work/pusat-beban', 'Pusat Beban'),
+  // A journal entry until F5-04 retired the journal; the title-word case
+  // needs a title whose words its slug only partly shares.
   entry(
-    'journal',
-    '/en/journal/scope-is-the-deliverable',
+    'project',
+    '/en/work/scope-is-the-deliverable',
     'Scope is the deliverable'
   ),
 ]
@@ -58,7 +60,7 @@ describe('suggest', () => {
 
   it("finds an entry by its title's words", () => {
     expect(suggest('/en/work/scope-deliverable', INDEX, LOCALES)[0]?.href).toBe(
-      '/en/journal/scope-is-the-deliverable'
+      '/en/work/scope-is-the-deliverable'
     )
   })
 

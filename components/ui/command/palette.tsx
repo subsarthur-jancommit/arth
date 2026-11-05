@@ -204,7 +204,7 @@ function breakAfterSlashes(text: string | null): ReactNode {
 }
 
 /** The order groups appear in, which is the site's own order. */
-const KIND_ORDER: readonly SearchKind[] = ['page', 'unit', 'project', 'journal']
+const KIND_ORDER: readonly SearchKind[] = ['page', 'unit', 'project']
 
 export function CommandPalette({
   open,
@@ -300,8 +300,8 @@ export function CommandPalette({
 
     return (
       KIND_ORDER
-        // A group with nothing in it is a heading over a void — the journal
-        // group before the studio publishes, or any group the query excludes.
+        // A group with nothing in it is a heading over a void — any group
+        // the query excludes.
         .flatMap((kind) => {
           const rows = byKind.get(kind)
           if (!rows || rows.length === 0) return []
@@ -312,7 +312,7 @@ export function CommandPalette({
               /*
                * `toSorted`, and the comparison is score only: it is a stable
                * sort, so rows that answer equally well keep the order the
-               * index built them in — newest work first, newest writing first.
+               * index built them in — newest work first.
                */
               rows: rows.toSorted((a, b) => b.score - a.score),
               best: Math.max(...rows.map((row) => row.score)),
@@ -356,8 +356,8 @@ export function CommandPalette({
     onOpenChange(false)
     /*
      * SAFETY: every href in the index is built by `localizedPath` from a
-     * route this app declares — the static catalogue, a unit, a project
-     * slug, or a journal slug — so it names a real route by construction.
+     * route this app declares — the static catalogue, a unit, or a project
+     * slug — so it names a real route by construction.
      * `Route` is a compile-time brand with no runtime check behind it, and
      * this value has crossed a JSON boundary, so the guarantee is the
      * builder's rather than the type's. A slug that has been unpublished

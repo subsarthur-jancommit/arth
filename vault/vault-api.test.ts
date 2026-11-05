@@ -150,6 +150,13 @@ const DELIBERATE = {
     'reserved for F3-09 after the owner provides real identity media',
   'studio-note:portraitAlt':
     'paired with the F3-09 portrait; no dummy portrait is rendered',
+
+  // The journal entry was the sole passer of each, and it left with
+  // `/journal` in F5-04. The blocks stay in the library, as the practice
+  // page's four above did.
+  'next-practice:press': 'sole caller was the retired journal (F5-04)',
+  'next-practice:size': 'sole caller was the retired journal (F5-04)',
+  'reply-slip:data-epic': 'sole caller was the retired journal (F5-04)',
 } satisfies Record<string, string>
 
 /** Directories whose `index.tsx` declares a component this rule governs. */

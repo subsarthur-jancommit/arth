@@ -11,7 +11,7 @@ import { expect, test } from '@playwright/test'
  * approved, the head advertises only Indonesian and the Indonesian default.
  */
 test.describe('hreflang comes from the page alone', () => {
-  for (const path of ['/id', '/id/kontak', '/id/journal']) {
+  for (const path of ['/id', '/id/kontak']) {
     test(`${path} advertises only approved hreflang in the head`, async ({
       request,
     }) => {

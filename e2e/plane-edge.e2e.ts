@@ -69,7 +69,8 @@ const EPSILON = 0.5
  * covered here too: the invariant is about the geometry, not which custom
  * property produced it.
  */
-const ROUTES = ['/en/journal', '/en/work'] as const
+// The journal index was the other route here until F5-04 retired it.
+const ROUTES = ['/en/work'] as const
 
 test.describe('a depth plane covers the frame that clips it', () => {
   for (const path of ROUTES) {
