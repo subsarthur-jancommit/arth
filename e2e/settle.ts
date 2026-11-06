@@ -1,0 +1,36 @@
+import type { Page } from '@playwright/test'
+
+/**
+ * Waits until no CSS transition on the page is running, or `timeout` passes.
+ *
+ * A gate that judges what a reader sees (axe's contrast, `contrast-situ`)
+ * has to judge it at rest. A fixed sleep only says how long the slowest
+ * reveal was when the sleep was written. Since F4-02 a unit's dialect sets
+ * its own tempo (`lib/styles/css/dialects.css`): Konstruksi's arrivals run
+ * one at a time on a 1000ms settle, so a block of four takes about 2.2s, and
+ * a sleep sized to the base grammar's 400ms measured some of them mid-fade.
+ * This asks the page instead.
+ *
+ * Best effort: on timeout it returns rather than throws, so a page that keeps
+ * something transitioning is measured as it is, as it was before. Only
+ * transitions are waited for. A scroll-driven or looping CSS animation never
+ * finishes, and is not a reveal.
+ */
+export async function transitionsAtRest(page: Page, timeout = 5000) {
+  try {
+    await page.waitForFunction(
+      () =>
+        !document
+          .getAnimations()
+          .some(
+            (animation) =>
+              'transitionProperty' in animation &&
+              animation.playState === 'running'
+          ),
+      undefined,
+      { timeout }
+    )
+  } catch {
+    // Measured as it is: the gate's own fixed wait has already run.
+  }
+}

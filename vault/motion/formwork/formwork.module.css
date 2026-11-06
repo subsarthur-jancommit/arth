@@ -41,14 +41,25 @@
 /*
  * Struck once the item has arrived and held for a beat, in reading order —
  * each form a stagger behind its neighbour's.
+ *
+ * On a chapter page the beats are its unit's (`bab-formwork`,
+ * `lib/styles/css/dialects.css`): the form waits out the unit's settle, so
+ * it is struck as its item lands, and the next is struck a step later. On
+ * Konstruksi that is one form at a time over a long settle; on Teknologi, a
+ * short step each; on Peekabo, one ripple on gleasing. The form is as large
+ * as its item, so it falls for the settle, not for a mark's beat. The base
+ * grammar is the fallback.
  */
 [data-reveal='visible'] .formwork::after,
 [data-reveal] .formwork[data-reveal-item='visible']::after {
   transition:
-    opacity var(--duration) var(--ease-out-expo),
-    transform var(--duration) var(--ease-out-expo);
+    opacity var(--dialect-settle, var(--duration))
+      var(--dialect-ease, var(--ease-out-expo)),
+    transform var(--dialect-settle, var(--duration))
+      var(--dialect-ease, var(--ease-out-expo));
   transition-delay: calc(
-    var(--duration-slow) + var(--reveal-index, 0) * var(--stagger-items)
+    var(--dialect-settle, var(--duration-slow)) + var(--reveal-index, 0) *
+      var(--dialect-step, var(--stagger-items))
   );
 }
 

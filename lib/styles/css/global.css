@@ -420,6 +420,12 @@ html.screenshot {
  *   --reveal-transform : hidden-state offset (default translateY(16px))
  *   --reveal-stagger   : delay step between items (default 60ms)
  *   --reveal-duration  : per-item duration (default --duration, 400ms)
+ *
+ * On a unit's page (`data-dialect` on `<main>`, F4-02) the contract arrives at
+ * that unit's tempo: `lib/styles/css/dialects.css` retimes its duration,
+ * curve and stagger, and lends a block that set no `--reveal-transform` the
+ * unit's travel. Nothing here changes for it, and outside a unit nothing
+ * there applies.
  */
 [data-reveal] [data-reveal-item] {
   opacity: 0;

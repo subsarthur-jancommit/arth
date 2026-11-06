@@ -125,7 +125,8 @@
    */
   font-size: clamp(2.5rem, 5vw, 4rem);
   line-height: 1;
-  transition: opacity var(--duration) var(--ease-out-expo);
+  transition: opacity var(--dialect-settle, var(--duration))
+    var(--dialect-ease, var(--ease-out-expo));
 }
 
 .total {
@@ -163,9 +164,15 @@
    * Only `opacity`, and only on the whole step — never a colour transition,
    * which would animate a paint property (`CLAUDE.md` #4). The step recedes
    * as one object rather than its parts fading at different rates.
+   *
+   * At the unit's tempo on a side page (`side-buying-path`,
+   * `lib/styles/css/dialects.css`): a long settle on Konstruksi, one short
+   * step on Teknologi, gleasing on Peekabo. A work page belongs to no unit,
+   * sets no dialect, and keeps the base grammar it always had.
    */
   opacity: var(--step-recede);
-  transition: opacity var(--duration) var(--ease-out-expo);
+  transition: opacity var(--dialect-settle, var(--duration))
+    var(--dialect-ease, var(--ease-out-expo));
 
   @media (--desktop) {
     /*

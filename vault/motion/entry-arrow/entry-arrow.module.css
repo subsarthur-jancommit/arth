@@ -20,9 +20,15 @@
   transform: translate(calc(var(--gap) * -0.5), -50%);
 }
 
-/* Where the reader came in: it slides to the edge it points across, and stays. */
+/*
+ * Where the reader came in: it slides to the edge it points across, and
+ * stays. On a unit's side page it slides on that unit's curve
+ * (`lib/styles/css/dialects.css`); its length is sized to the mark, so the
+ * dialect does not stretch it.
+ */
 [data-arrived] > .arrow {
-  animation: entry var(--duration) var(--ease-out-expo) both;
+  animation: entry var(--duration) var(--dialect-ease, var(--ease-out-expo))
+    both;
 }
 
 @keyframes entry {

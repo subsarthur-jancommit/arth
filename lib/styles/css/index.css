@@ -13,4 +13,5 @@
 @import './tailwind.css';
 @import './root.css';
 @import './global.css';
+@import './dialects.css';
 @import './print.css';

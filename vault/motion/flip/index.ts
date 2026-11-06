@@ -191,21 +191,45 @@ export function useFlipGrid(
     // layout put it (`CLAUDE.md` #5).
     if (!first || !changed || reduced) return
 
-    const styles = getComputedStyle(document.documentElement)
+    /*
+     * Read from the grid, not the document root: a unit's dialect
+     * (`lib/styles/css/dialects.css`) is set on its page's `<main>`, and only
+     * an element inside it can see the values. The tokens themselves are the
+     * root's, inherited, so a grid outside a unit reads what it always did.
+     *
+     * In a dialect the cards move and arrive on the unit's settle and curve
+     * (`bab-sift` on a Konstruksi chapter: 1000ms out-expo). The interval
+     * between them stays the card beat rather than the unit's step. A sift
+     * answers the reader's own press, and Konstruksi's one-at-a-time step
+     * would make them wait seconds for the list they asked for.
+     */
+    const styles = getComputedStyle(container)
     const moveMs = cssMs(
       styles,
-      move.duration,
-      move.duration === '--duration' ? 400 : 800
+      '--dialect-settle',
+      cssMs(styles, move.duration, move.duration === '--duration' ? 400 : 800)
     )
-    const enterMs = cssMs(styles, '--duration', 400)
+    const enterMs = cssMs(
+      styles,
+      '--dialect-settle',
+      cssMs(styles, '--duration', 400)
+    )
     const exitMs = cssMs(styles, '--duration-fast', 200)
     const stepMs = cssMs(styles, '--stagger-cards', 70)
     const moveEase = cssEase(
       styles,
-      move.ease,
-      move.ease === '--ease-out-quart' ? 'ease-out' : 'ease-in-out'
+      '--dialect-ease',
+      cssEase(
+        styles,
+        move.ease,
+        move.ease === '--ease-out-quart' ? 'ease-out' : 'ease-in-out'
+      )
     )
-    const enterEase = cssEase(styles, '--ease-out-quart', 'ease-out')
+    const enterEase = cssEase(
+      styles,
+      '--dialect-ease',
+      cssEase(styles, '--ease-out-quart', 'ease-out')
+    )
     /*
      * A literal, and it is the honest option rather than the tidy one.
      *

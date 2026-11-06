@@ -515,7 +515,8 @@ export default async function ArthurDetailPage({
       values.unit === 'konstruksi' && values.side === 'pelaku-proyek'
 
     return (
-      <Wrapper theme="light">
+      // The unit's own motion dialect (`lib/styles/css/dialects.css`).
+      <Wrapper theme="light" dialect={values.unit}>
         <article className={s.page}>
           {/*
            * A document head (R5, direction A), after the approved situation
@@ -647,7 +648,7 @@ export default async function ArthurDetailPage({
   const chapterHref = `/${values.unit}/${values.side}/${values.chapter}`
 
   return (
-    <Wrapper theme="light">
+    <Wrapper theme="light" dialect={values.unit}>
       <article className={cn(s.page, s.offerPage)} data-offer-sheet="">
         {/*
          * A document head after the approved work screen: the path back to

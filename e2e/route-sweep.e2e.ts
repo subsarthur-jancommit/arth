@@ -11,6 +11,7 @@ import { PUBLISHED_LOCALES, routing } from '../lib/i18n/routing'
 import { isAwaitingContentPath } from '../lib/seo/route-status'
 import { axeTags } from './axe-tags'
 import { SITUATION_ROUTES, WORK_ROUTES } from './fixtures'
+import { transitionsAtRest } from './settle'
 
 /**
  * Route sweep — auto-discovered smoke coverage for every static page.
@@ -255,9 +256,11 @@ async function settleReveals(page: Page) {
     window.scrollTo(0, 0)
   })
 
-  // Longer than the slowest reveal (`--reveal-duration`, 700ms) plus the
-  // largest stagger, so nothing is still interpolating when axe reads it.
+  // Longer than the base grammar's slowest reveal plus its largest stagger,
+  // then until nothing is still interpolating when axe reads it: a unit's
+  // dialect can run longer than that (F4-02, `e2e/settle.ts`).
   await page.waitForTimeout(1200)
+  await transitionsAtRest(page)
 }
 
 test.describe('route sweep', () => {

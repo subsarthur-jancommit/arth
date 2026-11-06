@@ -169,7 +169,9 @@ export default async function SidePage({ params }: SidePageProps) {
   }))
 
   return (
-    <Wrapper theme="light">
+    // The unit's motion dialect (`lib/styles/css/dialects.css`), and GSAP's
+    // clock handed to Tempus: `StepSequence` runs ScrollTriggers (#6).
+    <Wrapper theme="light" dialect={unit} gsap>
       <article className={s.page}>
         <SideSwitcher
           label={tSide('switcherLabel', { unit: tUnit(unit) })}
