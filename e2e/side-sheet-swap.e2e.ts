@@ -1,6 +1,6 @@
 import { expect, type Page, test } from '@playwright/test'
 
-import { SIDES, sideTemplate } from '../lib/content/units'
+import { SIDES, sideTemplate, UNITS } from '../lib/content/units'
 import { localizedPath } from '../lib/i18n/paths'
 
 /**
@@ -19,6 +19,11 @@ import { localizedPath } from '../lib/i18n/paths'
  * Next keeps the page just left in the tree, hidden, so the way back is
  * instant. After a switch the document holds both sheets, and every lookup
  * here asks for the visible one (e2e run 41954397719 found two `main h1`).
+ *
+ * A side page speaks its unit's dialect (F4-02, `lib/styles/css/dialects.css`),
+ * so TRANSPORT and SETTLE both run on the unit's settle, not on the 400ms and
+ * 800ms above, which are the base grammar's: the expected durations are read
+ * from the page, and one test runs the exchange on every unit.
  */
 
 const [FIRST, SECOND] = SIDES.konstruksi
@@ -143,8 +148,38 @@ async function markerUnder(page: Page, selector: string) {
   )
 }
 
-/** Both halves ran, each on its own sheet, lift first. */
-function expectBothHalves(halves: Half[], from: string, to: string) {
+/**
+ * The settle of the unit whose sheet is on screen, in milliseconds, or `null`
+ * outside a dialect. Resolved in the page, so this compares against the
+ * stylesheet, not a copied number.
+ */
+async function unitSettle(page: Page): Promise<number | null> {
+  return page.evaluate(() => {
+    const main = [...document.querySelectorAll('main')].find(
+      (element) => element.getBoundingClientRect().height > 0
+    )
+    if (!main?.dataset.dialect) return null
+    const probe = document.createElement('i')
+    probe.style.transitionDuration = 'var(--dialect-settle)'
+    main.append(probe)
+    const seconds = Number.parseFloat(
+      getComputedStyle(probe).transitionDuration
+    )
+    probe.remove()
+    return Math.round(seconds * 1000)
+  })
+}
+
+/**
+ * Both halves ran, each on its own sheet, lift first, and both at `settle`:
+ * the unit's, or §13.1's 400ms and 800ms outside a dialect.
+ */
+function expectBothHalves(
+  halves: Half[],
+  from: string,
+  to: string,
+  settle: number | null
+) {
   const ran = JSON.stringify(halves)
   const lifts = halves.filter((half) => half.id === 'side-sheet-lift')
   const settles = halves.filter((half) => half.id === 'side-sheet-settle')
@@ -152,12 +187,12 @@ function expectBothHalves(halves: Half[], from: string, to: string) {
   expect(lifts.length, `the old sheet did not lift: ${ran}`).toBeGreaterThan(0)
   for (const lift of lifts) {
     expect(lift.sheet, 'a lift moved another sheet').toBe(from)
-    expect(lift.duration, 'TRANSPORT is 400ms').toBe(400)
+    expect(lift.duration, 'TRANSPORT is off its tempo').toBe(settle ?? 400)
     expect(lift.endOpacity, 'the lift does not fade').toBe(0)
   }
   expect(settles, `the new title did not settle: ${ran}`).toHaveLength(1)
   expect(settles[0]?.sheet, 'the settle moved another sheet').toBe(to)
-  expect(settles[0]?.duration, 'SETTLE is 800ms').toBe(800)
+  expect(settles[0]?.duration, 'SETTLE is off its tempo').toBe(settle ?? 800)
   expect(settles[0]?.endOpacity, 'the settle fades the title').toBeNull()
   expect(
     (lifts[0]?.at ?? 0) <= (settles[0]?.at ?? 0),
@@ -173,6 +208,7 @@ test.describe('side-sheet-swap', () => {
     await page.goto(FROM)
     await page.waitForTimeout(1500)
     const from = (await page.locator(TITLE).textContent())?.trim() ?? ''
+    const settle = await unitSettle(page)
 
     // INTENT: the rule goes to the side pointed at before anything is pressed.
     await page.locator(OTHER).hover()
@@ -190,7 +226,7 @@ test.describe('side-sheet-swap', () => {
     const { halves, types, states } = await page.evaluate(
       () => globalThis.__sheet
     )
-    expectBothHalves(halves, from, to)
+    expectBothHalves(halves, from, to, settle)
     expect(
       types.some((list) => list.includes('set-depth')),
       'the switcher opened a detail circle'
@@ -240,6 +276,7 @@ test.describe('side-sheet-swap', () => {
     await page.goto(FROM)
     await page.waitForTimeout(1500)
     const from = (await page.locator(TITLE).textContent())?.trim() ?? ''
+    const settle = await unitSettle(page)
 
     const foot = page.locator(
       `main nav:not([data-epic="side-sheet-swap"]) a[href="${TO}"]`
@@ -252,7 +289,7 @@ test.describe('side-sheet-swap', () => {
 
     const to = (await page.locator(TITLE).textContent())?.trim() ?? ''
     const { halves } = await page.evaluate(() => globalThis.__sheet)
-    expectBothHalves(halves, from, to)
+    expectBothHalves(halves, from, to, settle)
     expect(await titleHasFocus(page)).toBe(true)
   })
 
@@ -261,8 +298,9 @@ test.describe('side-sheet-swap', () => {
   }) => {
     /*
      * Every RSC request answers 5s late, so the press lands long before the
-     * next sheet can. The lift ends at 400ms with the old sheet still on
-     * screen, and it must then come back to be read.
+     * next sheet can. The lift ends at the unit's settle (400ms in the base
+     * grammar) with the old sheet still on screen, and it must then come back
+     * to be read: by twice the lift and a margin, well before the 5s.
      */
     await page.route(/[?&]_rsc=/, async (route) => {
       await new Promise((resolve) => setTimeout(resolve, 5000))
@@ -271,9 +309,10 @@ test.describe('side-sheet-swap', () => {
     await page.goto(FROM)
     await page.waitForTimeout(1500)
     const from = (await page.locator(TITLE).textContent())?.trim() ?? ''
+    const lift = (await unitSettle(page)) ?? 400
 
     await page.locator(OTHER).click()
-    await page.waitForTimeout(1300)
+    await page.waitForTimeout(2 * lift + 500)
 
     const waiting = await page.evaluate((title) => {
       const heading = [...document.querySelectorAll('main h1')].find(
@@ -288,6 +327,39 @@ test.describe('side-sheet-swap', () => {
       waiting === 'gone' || waiting === '1',
       `the lifted sheet was left at opacity ${waiting} while the page was late`
     ).toBe(true)
+  })
+
+  /*
+   * F4-02: each unit exchanges its sheets at its own tempo. Both halves run
+   * on the unit's settle, which differs between the three units (1000ms,
+   * 200ms and 400ms in `dialects.css`, read here from the page).
+   */
+  test('the exchange runs at each unit`s tempo', async ({ page }) => {
+    await record(page)
+    const seen = new Map<string, number>()
+
+    for (const unit of UNITS) {
+      const [first, second] = SIDES[unit]
+      const from = localizedPath('id', sideTemplate(unit, first))
+      const to = localizedPath('id', sideTemplate(unit, second))
+      await page.goto(from)
+      await page.waitForTimeout(1500)
+      const settle = await unitSettle(page)
+      expect(settle, `${from} speaks no dialect`).not.toBeNull()
+
+      await page.locator(`${SWITCHER} a[href="${to}"]`).click()
+      await page.waitForURL((url) => url.pathname === to)
+      await page.waitForTimeout(1500)
+
+      const { halves } = await page.evaluate(() => globalThis.__sheet)
+      expect(
+        [...new Set(halves.map((half) => half.duration))],
+        `${unit} exchanged off its tempo: ${JSON.stringify(halves)}`
+      ).toEqual([settle])
+      seen.set(unit, settle ?? 0)
+    }
+
+    expect(new Set(seen.values()).size, 'two units exchange alike').toBe(3)
   })
 
   test('under reduced motion the new sheet appears at once, its title focused', async ({
