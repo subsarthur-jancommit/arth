@@ -262,6 +262,13 @@ export function SceneShell({
   const [drew, setDrew] = useState(false)
   const handleFirstFrame = useCallback(() => setDrew(true), [])
 
+  // Same two colours, same direction as the shader's diagonal ramp, so the
+  // fallback is the same design rather than a placeholder. The CSS values go
+  // in unresolved on purpose: this path needs no conversion, so the fallback
+  // reads the tokens directly and stays correct if the palette changes under
+  // it.
+  const wash = `linear-gradient(135deg, ${colorA}, ${colorB})`
+
   if (!canRenderWebGL || !GradientScene || !resolved) {
     return (
       <div
@@ -275,14 +282,7 @@ export function SceneShell({
          * works, which is the trap Tahap 14a recorded.
          */
         data-accent-region=""
-        style={{
-          // Same two colours, same direction as the shader's diagonal ramp, so
-          // the fallback is the same design rather than a placeholder.
-          // The CSS values go in unresolved on purpose: this path needs no
-          // conversion, so the fallback reads the tokens directly and stays
-          // correct if the palette changes under it.
-          backgroundImage: `linear-gradient(135deg, ${colorA}, ${colorB})`,
-        }}
+        style={{ backgroundImage: wash }}
         aria-hidden="true"
       />
     )
@@ -293,6 +293,23 @@ export function SceneShell({
       className={cn(s.shell, className)}
       data-accent-region=""
       {...(drew && { 'data-accent-live': '' })}
+      /*
+       * The CSS wash stays until the mesh has drawn — F4-04.
+       *
+       * This branch is taken as soon as the scene's chunk has arrived, which
+       * is not the moment the canvas draws: the canvas fetches its own chunk,
+       * builds a renderer, and only then renders the frame `onFirstFrame`
+       * reports. In between, the shell painted nothing, and if the canvas
+       * never drew at all (a renderer that fails after the WebGL2 probe
+       * passed, a context the browser refuses), the hero kept no wash for
+       * good: the empty box `docs/MOTION-SPEC.md` §11.2 forbids, and the one
+       * the doc comment at the top of this file calls broken. The flat plate
+       * (`vault/webgl/plate-material`) and the picture
+       * (`vault/webgl/material-image`) already wait for a drawn frame before
+       * they step aside; this is the same rule. Once `drew` is true the
+       * gradient goes, so it never sits over the canvas it stood in for.
+       */
+      {...(!drew && { style: { backgroundImage: wash } })}
       aria-hidden="true"
     >
       <WebGLTunnel>
