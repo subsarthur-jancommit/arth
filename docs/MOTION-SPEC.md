@@ -21,6 +21,33 @@ consistent decisions, not from more animation.** A site with three timings
 and two curves, applied consistently, reads as expensive. A site with
 fifteen ad-hoc `gsap.to()` calls reads as cheap regardless of effort spent.
 
+## Moments as built (F4-01, 6 November 2026)
+
+Each named moment, the file that draws it and the e2e that proves it. §12
+and §13 describe them; this is where to find them. A moment without a
+`data-epic` mark is one the interaction-grammar report cannot list (noted).
+
+| Moment                                   | Where                                | Drawn by                                                                     | Proved by                                                     |
+| ---------------------------------------- | ------------------------------------ | ---------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `practice-morph`                         | Home → unit                          | `vault/blocks/practice-list` → `vault/blocks/unit-hero` (`<ViewTransition>`) | `motion.e2e.ts`                                               |
+| `practice-statement`                     | Unit page                            | `vault/blocks/unit-hero`, `components/effects/progress-text`                 | `unit-page.e2e.ts` (present; the scrub itself has no e2e)     |
+| `unit-method`                            | Unit page                            | `vault/blocks/capability-set`                                                | `unit-dialects.e2e.ts`                                        |
+| `side-sheet-swap` (§13.1)                | Side → other side                    | `app/[locale]/[unit]/[side]/side-switcher.tsx` (Web Animations API)          | `side-sheet-swap.e2e.ts`, `one-navigation.e2e.ts`             |
+| `side-buying-path`                       | Side page                            | `vault/blocks/step-sequence`                                                 | `side-page.e2e.ts`                                            |
+| `side-chapter-table`                     | Side page                            | `vault/blocks/side-chapter-table` (`crosshair`, `cover-preview`)             | none names it                                                 |
+| `network-money-flow` (§13.4)             | `/id/peekabo/jaringan`               | `vault/blocks/network-side` (`plumb`, `stamp`)                               | `network-promise.e2e.ts`                                      |
+| `bab-formwork`, `bab-sift` (§13.2)       | Chapter page                         | `vault/blocks/chapter-offer-grid` (`formwork`, `flip`)                       | `bab-offer.e2e.ts`                                            |
+| `offer-arrival` (§13.11), no `data-epic` | Chapter → offer                      | `vault/motion/offer-arrival` (Web Animations API)                            | `one-navigation.e2e.ts`                                       |
+| `offer-fixings` (§13.3)                  | Offer page                           | `vault/blocks/offer-boundaries` (`fixings`)                                  | `bab-offer.e2e.ts`                                            |
+| `promise-stamp` (§13.6)                  | `/id/metode`                         | `vault/blocks/promise-stamp` (`stamp`)                                       | `network-promise.e2e.ts`                                      |
+| `situation-leader` (§13.8)               | Home                                 | `vault/blocks/situation-links` (`leader`)                                    | `situation-leader.e2e.ts`                                     |
+| `three-unit-splice` (§13.5)              | `/id/layanan`, home                  | `vault/blocks/unit-sequence` (`splice`, `level`)                             | `home-sequence.e2e.ts` (markup only)                          |
+| `address-copy` (§13.7)                   | `/id/kontak`                         | `vault/blocks/copy-address` (`stamp`)                                        | `address-copy.e2e.ts`, parked by `test.fixme` until K5        |
+| `set-depth` (§13.10), no `data-epic`     | Any Arthur page → another            | `vault/motion/page-transition`, `components/ui/link`                         | `set-depth.e2e.ts`, `motion.e2e.ts`, `one-navigation.e2e.ts`  |
+| Back and Forward panel (§13.11)          | History navigation                   | `vault/motion/page-transition`, `lib/motion/use-history-navigation.ts`       | `journey.e2e.ts`, `set-depth.e2e.ts`, `one-navigation.e2e.ts` |
+| The curtain                              | First page of a session              | `vault/motion/curtain`                                                       | `entrance.e2e.ts`, `one-navigation.e2e.ts`                    |
+| Unit dialects (§12.1)                    | Unit, side, situation and work pages | `lib/styles/css/dialects.css`, `vault/motion/dialect.ts`                     | `unit-dialects.e2e.ts`, `lib/styles/scripts/dialects.test.ts` |
+
 ---
 
 ## 0. Three categories, and which rules govern each
@@ -735,8 +762,10 @@ break silently.
 
 Only when all four hold:
 
-1. The route is allowed to pay for three.js. `e2e/route-budget.e2e.ts` names
-   exactly one, and it is not a number to raise.
+1. The route has decided to pay for three.js. Three do today: home, `/work`
+   and a project page. `e2e/route-budget.e2e.ts` reports what each route
+   loads; since the fork it reports rather than forbids, so the decision is
+   the route's, written where it is made.
 2. There is a **non-WebGL path that is the same design**, not a placeholder.
    For the work plates that path is the plain `<img>` — the thing that
    shipped in Tahap 12a — which is why this was a safe place to start.
@@ -744,7 +773,9 @@ Only when all four hold:
    static import puts three.js in the page graph and Next emits it as a
    parser-initiated script, downloaded by phones and by reduced-motion
    visitors who then see the fallback. Measured at 245.6 KB gzip.
-4. The mesh is an accent on content that already reads. `CLAUDE.md` #13.
+4. The page stays usable and readable without it (`CLAUDE.md` #14; the
+   "3D is an accent" rule, #13, was retired in the fork and kept only this
+   half).
 
 ### 11.2 Never hide the DOM element on the assumption that a mesh replaced it
 
@@ -798,6 +829,15 @@ overwrote that link's 150ms COMMIT; `e2e/interaction-grammar.e2e.ts` measured
 it as `email/commit: 400ms`, outside the micro band. Mark the container, never
 the control.
 
+**One place breaks this today (flagged in F4-01, not changed).**
+`vault/blocks/next-practice`, the next-unit link at the foot of every unit
+page, carries `data-reveal-item` on the link itself, which is also
+`data-press`. The reveal's shorthand therefore replaces the link's own
+150ms COMMIT with the reveal's 400ms. The unit dialects (§12.1) leave
+`[data-press]` items out of their retiming for exactly this reason, so a
+dialect cannot slow it further, but the base case is the defect this rule
+describes. The fix belongs in the block (mark the `<aside>`, not the link).
+
 The same section adds the other half: **a noun marked `data-press` must be
 reachable at rest.** A control that only exists once a disclosure is opened is
 not hoverable, not focusable, and has no computed transition — so it cannot
@@ -850,6 +890,27 @@ opens the set once per session; and `reading-progress` marks how far the
 reader has read. These descriptions do not authorize invented buyer quotes,
 claims, counters, or client marks.
 
+**Where they are used, as built (F4-01, 6 November 2026).** "Intended use"
+above is the brief. Where the code differs, this is what a reader meets today:
+
+- On a route as intended: `dimension` (offer scope, `/metode`, `/work`'s
+  measure), `formwork` (chapter cards), `fixings` (offer boundaries), `stamp`
+  (`/metode`, the network side, the copy control), `splice` and `level`
+  (`unit-sequence` on `/layanan` and home), `plumb` (`/metode`, the network
+  side), `leader` (home's situations), `crosshair` and `cover-preview` (the
+  side table, and `/work`'s catalogue), `route-marker` (header, side switcher),
+  `north-arrow` (the wayfinder).
+- On a route, but not the one intended: `bearing` frames `/work`'s catalogue,
+  not the Konstruksi unit; `brace` steadies `/work/<slug>`'s engagements, not
+  the Teknologi unit; `crop-marks` marks `/work`'s project cards, not offer
+  cards; `entry-arrow` sits in the step sequences and the project spine, not a
+  linked-to offer block. Konstruksi's dialect still lends every unit page
+  `bearing`'s gesture (§12.1).
+- On no route: `datum` (its blocks, `unit-doors` and `engagement-writing`,
+  have no caller), `tally` (`practice-tally` has none), and `leader`'s offer
+  audience label (`offer-audience` has none). They are kept, typechecked and
+  ready, not shown.
+
 ### 12.1 Unit dialects
 
 The grammar and tokens stay shared. Only the leading primitive and tempo vary;
@@ -900,7 +961,8 @@ What reads them:
 - `network-money-flow`'s scroll-linked branches;
 - `side-sheet-swap`'s TRANSPORT and SETTLE, which run on the Web Animations
   API on the live sheets inside `<main>` and read the unit's settle and curve
-  from the sheet's computed style (§13.1).
+  from the sheet's computed style (§13.1);
+- `offer-arrival`'s card lift and title settle, the same way (§13.11, F4-03).
 
 What does not: REST, INTENT and COMMIT, the press grammar of §9. Hover, focus
 and press answer the reader's hand the same way on every page, so pressable
@@ -919,27 +981,31 @@ measures `unit-method` and the reveal contract on the three unit pages, the
 absence of any dialect on the base pages, and the reduced-motion end state;
 `e2e/side-sheet-swap.e2e.ts` runs the sheet exchange on every unit.
 
-## 13. Arthur moment cards — design brief for later packages
+## 13. Arthur moment cards
 
-These seven cards define future design work; F1-08 records them but does not
-build their templates. The explicit `data-epic` names are observability labels
-for the interaction-grammar report, not a promise that the moment is already
-implemented. The page named by each card must retain its complete static
-state; reduced motion changes the transition, never whether the information
-is available. `CLAUDE.md`'s hard reader protections continue to apply.
+F1-08 wrote these cards as a brief, before any of them was built. They are
+built now (R6, F4-02, F4-03), all but §13.7, which waits on a real contact
+channel (K5). Each card's table states what is built; its notes record how,
+when and why, and which e2e proves it. The base timings in the tables are the
+base grammar: on a unit's pages a moment runs at that unit's tempo (§12.1).
+The `data-epic` names are observability labels for the interaction-grammar
+report; two moments carry none (`set-depth`, `offer-arrival`, noted in their
+cards). The page named by each card keeps its complete static state; reduced
+motion changes the transition, never whether the information is available.
+`CLAUDE.md`'s hard reader protections continue to apply.
 
 ### 13.1 Lembar ditukar — sheet exchange (F3-03)
 
-| Field                | Specification                                                                                                                                                                                                    |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `data-epic`          | `side-sheet-swap`                                                                                                                                                                                                |
-| Trigger              | The reader activates the side switch, an ordinary link to the other side route.                                                                                                                                  |
-| Sequence and timing  | INTENT 200 ms (`ease-out-quart`): the switch marker begins to move. TRANSPORT 400 ms (`ease-in-out-quart`): the old sheet lifts and fades. SETTLE 800 ms (`ease-out-expo`): the new sheet's title block settles. |
-| Pinning              | None.                                                                                                                                                                                                            |
-| Touch                | Same sequence, triggered by a tap.                                                                                                                                                                               |
-| Without JavaScript   | The link navigates normally.                                                                                                                                                                                     |
-| Reduced motion       | The new sheet appears immediately and focus moves to its page title.                                                                                                                                             |
-| Verification planned | No-JavaScript link behavior, reduced-motion final state, and a named moment in the interaction-grammar report.                                                                                                   |
+| Field               | Specification                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `data-epic`         | `side-sheet-swap`                                                                                                                                                                                                                                                                                                                                                  |
+| Trigger             | The reader activates the side switch, an ordinary link to the other side route.                                                                                                                                                                                                                                                                                    |
+| Sequence and timing | INTENT 200 ms (`ease-out-quart`): the switch marker begins to move. TRANSPORT 400 ms (`ease-in-out-quart`): the old sheet lifts and fades. SETTLE 800 ms (`ease-out-expo`): the new sheet's title block settles. On a side page TRANSPORT and SETTLE run at the unit's settle and curve (§12.1); INTENT keeps its beat. Web Animations API, not a view transition. |
+| Pinning             | None.                                                                                                                                                                                                                                                                                                                                                              |
+| Touch               | Same sequence, triggered by a tap.                                                                                                                                                                                                                                                                                                                                 |
+| Without JavaScript  | The link navigates normally.                                                                                                                                                                                                                                                                                                                                       |
+| Reduced motion      | The new sheet appears immediately and focus moves to its page title.                                                                                                                                                                                                                                                                                               |
+| Verification        | `e2e/side-sheet-swap.e2e.ts` (both halves, focus, a late page, each unit's tempo, reduced motion); `e2e/one-navigation.e2e.ts` (a double click); `e2e/side-page.e2e.ts` (without JavaScript).                                                                                                                                                                      |
 
 **Built in R6 (5 November 2026), without a view transition.** INTENT is
 the switcher's `RouteMarker` with `previews`, 200ms `ease-out-quart`. Both
@@ -979,16 +1045,16 @@ Covered by `e2e/side-sheet-swap.e2e.ts`.
 
 ### 13.2 Kartu dari bekisting — card from formwork (F3-04)
 
-| Field                | Specification                                                                                                                                                                                                                           |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `data-epic`          | `bab-formwork` for arrival; `bab-sift` for filtering.                                                                                                                                                                                   |
-| Trigger              | A card enters through the reveal contract; the reader activates a market filter.                                                                                                                                                        |
-| Sequence and timing  | Arrival and formwork removal use the primitive's default timing. Cards arrive in reading order, spaced by `--stagger-cards` (70 ms), capped at 600 ms total. Filtering uses FLIP for 400 ms (`ease-out-quart`), as in `catalogue-sift`. |
-| Pinning              | None.                                                                                                                                                                                                                                   |
-| Touch                | Same behavior.                                                                                                                                                                                                                          |
-| Without JavaScript   | All cards are visible without formwork; the filter is not shown.                                                                                                                                                                        |
-| Reduced motion       | Cards appear without formwork; filtering updates results immediately.                                                                                                                                                                   |
-| Verification planned | No-JavaScript and reduced-motion states on the chapter fixture; chapter routes enter the sweep in F3-12.                                                                                                                                |
+| Field               | Specification                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data-epic`         | `bab-formwork` for arrival; `bab-sift` for filtering.                                                                                                                                                                                                                                                                                                                                                                                                |
+| Trigger             | A card enters through the reveal contract; the reader activates a market filter.                                                                                                                                                                                                                                                                                                                                                                     |
+| Sequence and timing | Cards arrive in reading order through the reveal contract; each card's form is struck as the card lands, a step after its neighbour's. Filtering moves the cards that stay with FLIP, `--stagger-cards` apart. All of it at the chapter's unit's tempo (§12.1): on Konstruksi a 1000 ms `ease-out-expo` settle, 400 ms between cards, and a 1000 ms sift. Outside a unit, the base: form struck 800 ms after its card, sift 400 ms `ease-out-quart`. |
+| Pinning             | None.                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Touch               | Same behavior.                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Without JavaScript  | All cards are visible without formwork; the filter is not shown.                                                                                                                                                                                                                                                                                                                                                                                     |
+| Reduced motion      | Cards appear without formwork; filtering updates results immediately.                                                                                                                                                                                                                                                                                                                                                                                |
+| Verification        | `e2e/bab-offer.e2e.ts` (forms struck, the sift on the page's settle, reduced motion, without JavaScript); the chapter fixtures in route-sweep, `no-javascript` and `motion`.                                                                                                                                                                                                                                                                         |
 
 **Built in R6 (5 November 2026).** `bab-formwork` did not run before this:
 the chapter grid reveals per item, its container stays `hidden`, and
@@ -1004,16 +1070,16 @@ keyboard alike. Covered by `e2e/bab-offer.e2e.ts`.
 
 ### 13.3 Batas dipaku — boundaries fixed (F3-05)
 
-| Field                | Specification                                                                                        |
-| -------------------- | ---------------------------------------------------------------------------------------------------- |
-| `data-epic`          | `offer-fixings`                                                                                      |
-| Trigger              | The boundaries-and-terms block enters view.                                                          |
-| Sequence and timing  | Use the `fixings` primitive's default timing; attach the four corner marks clockwise, one at a time. |
-| Pinning              | None.                                                                                                |
-| Touch                | Same behavior.                                                                                       |
-| Without JavaScript   | The block and marks are present in their final state.                                                |
-| Reduced motion       | The corner marks are already in place.                                                               |
-| Verification planned | Reduced-motion state on the offer fixture.                                                           |
+| Field               | Specification                                                                                                                                                                                                                                                  |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data-epic`         | `offer-fixings`                                                                                                                                                                                                                                                |
+| Trigger             | The boundaries-and-terms block enters view.                                                                                                                                                                                                                    |
+| Sequence and timing | Once the plate has settled, the four corner marks go in clockwise, one at a time, a step apart and never less than a fixing's own 200 ms, on the unit's curve (§12.1). On Konstruksi: 1000, 1400, 1800 and 2200 ms. Outside a unit: 400, 600, 800 and 1000 ms. |
+| Pinning             | None.                                                                                                                                                                                                                                                          |
+| Touch               | Same behavior.                                                                                                                                                                                                                                                 |
+| Without JavaScript  | The block and marks are present in their final state.                                                                                                                                                                                                          |
+| Reduced motion      | The corner marks are already in place.                                                                                                                                                                                                                         |
+| Verification        | `e2e/bab-offer.e2e.ts` (one at a time, all fixed, reduced motion, without JavaScript).                                                                                                                                                                         |
 
 **Built in R6 (5 November 2026).** The four fixings are set one at a time:
 each waits for the one before it to be driven home (delays 400, 600, 800
@@ -1025,17 +1091,17 @@ container. Covered by `e2e/bab-offer.e2e.ts`.
 
 ### 13.4 Alur uang empat langkah — four-step money flow (F3-06)
 
-| Field                | Specification                                                                                                                       |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `data-epic`          | `network-money-flow`                                                                                                                |
-| Trigger              | The reader scrolls through the referrer-path section.                                                                               |
-| Sequence and timing  | A leader line follows scroll using a CSS view timeline, like `plumb`, with no JavaScript loop. Stamp each step when it enters view. |
-| Pinning              | None; all four steps remain vertically ordered at every width.                                                                      |
-| Touch                | Same behavior.                                                                                                                      |
-| Without JavaScript   | The four steps, complete line, and stamps are visible.                                                                              |
-| Reduced motion       | Same final state as without JavaScript.                                                                                             |
-| Content boundary     | No numbers, rates, or income simulation.                                                                                            |
-| Verification planned | No-JavaScript and reduced-motion states; `continuous-motion` confirms step prose does not move.                                     |
+| Field               | Specification                                                                                                                                                                                                                                   |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data-epic`         | `network-money-flow`                                                                                                                                                                                                                            |
+| Trigger             | The reader scrolls through the referrer-path section.                                                                                                                                                                                           |
+| Sequence and timing | A leader line follows scroll using a CSS view timeline, like `plumb`, with no JavaScript loop. Each step branches off it, node then branch, on its own view timeline, eased on Peekabo's gleasing (§12.1). Stamp each step when it enters view. |
+| Pinning             | None; all four steps remain vertically ordered at every width.                                                                                                                                                                                  |
+| Touch               | Same behavior.                                                                                                                                                                                                                                  |
+| Without JavaScript  | The four steps, complete line, and stamps are visible (the CSS still draws the line as the reader scrolls).                                                                                                                                     |
+| Reduced motion      | Same final state as without JavaScript.                                                                                                                                                                                                         |
+| Content boundary    | No numbers, rates, or income simulation.                                                                                                                                                                                                        |
+| Verification        | `e2e/network-promise.e2e.ts` (the line follows, every step branches, the prose never moves, reduced motion, without JavaScript).                                                                                                                |
 
 **Built in R6 (5 November 2026).** The plumb line on `/id/peekabo/jaringan`
 is the flow's leader, drawn in the text's ink (`--plumb-ink`), where it was
@@ -1051,30 +1117,35 @@ looks for on `/work`.
 
 ### 13.5 Tiga batang disambung — three units joined (F3-07)
 
-| Field                | Specification                                                                                                                                         |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `data-epic`          | `three-unit-splice`                                                                                                                                   |
-| Trigger              | Each of the three unit steps enters the reading line.                                                                                                 |
-| Sequence and timing  | Each step settles through the reveal contract; `splice` then joins it to the following unit. `level` settles after all three steps are in place.      |
-| Pinning              | None; the three steps remain an ordinary ordered list.                                                                                                |
-| Touch                | Same scroll order, with vertical joints between cards.                                                                                                |
-| Without JavaScript   | All three steps, both joints, and the level line are present in their final state.                                                                    |
-| Reduced motion       | Same final state as without JavaScript.                                                                                                               |
-| Content boundary     | The page labels the sequence as possible, never as a completed client project; every unit and offer must remain renderable through its approval gate. |
-| Verification planned | Desktop and 390 px visual state, placeholder guard, and the interaction-grammar report when e2e is next explicitly authorised.                        |
+| Field               | Specification                                                                                                                                                                                                                        |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `data-epic`         | `three-unit-splice`                                                                                                                                                                                                                  |
+| Trigger             | Each of the three unit steps enters the reading line.                                                                                                                                                                                |
+| Sequence and timing | Each step settles through the reveal contract; `splice` then joins it to the following unit. `level` settles after all three steps are in place.                                                                                     |
+| Pinning             | None; the three steps remain an ordinary ordered list.                                                                                                                                                                               |
+| Touch               | Same scroll order, with vertical joints between cards.                                                                                                                                                                               |
+| Without JavaScript  | All three steps, both joints, and the level line are present in their final state.                                                                                                                                                   |
+| Reduced motion      | Same final state as without JavaScript.                                                                                                                                                                                              |
+| Content boundary    | The page labels the sequence as possible, never as a completed client project; every unit and offer must remain renderable through its approval gate.                                                                                |
+| Verification        | `e2e/home-sequence.e2e.ts` checks the sequence on home (three steps, the way to `/layanan`, `data-epic`); `motion.e2e.ts` checks `/id/layanan` ends visible under reduced motion. The `splice` and `level` motion itself has no e2e. |
+
+**As built (F4-01, 6 November 2026).** `vault/blocks/unit-sequence` draws it,
+on `/id/layanan` and in home's Kafe baru sequence: each step settles through
+the reveal contract, `splice` joins it to the next, and `level` settles once
+all three stand. Both pages are Arthur's, so it runs in the base grammar.
 
 ### 13.6 Janji dicap — promises stamped (F3-08)
 
-| Field                | Specification                                                                                    |
-| -------------------- | ------------------------------------------------------------------------------------------------ |
-| `data-epic`          | `promise-stamp`                                                                                  |
-| Trigger              | Each written promise enters view.                                                                |
-| Sequence and timing  | Use the `stamp` primitive's default timing, once per promise; do not replay when scrolling back. |
-| Pinning              | None.                                                                                            |
-| Touch                | Same behavior.                                                                                   |
-| Without JavaScript   | The stamp is already visible.                                                                    |
-| Reduced motion       | The stamp is already visible.                                                                    |
-| Verification planned | Reduced-motion state on the How we work page.                                                    |
+| Field               | Specification                                                                                    |
+| ------------------- | ------------------------------------------------------------------------------------------------ |
+| `data-epic`         | `promise-stamp`                                                                                  |
+| Trigger             | Each written promise enters view.                                                                |
+| Sequence and timing | Use the `stamp` primitive's default timing, once per promise; do not replay when scrolling back. |
+| Pinning             | None.                                                                                            |
+| Touch               | Same behavior.                                                                                   |
+| Without JavaScript  | The stamp is already visible.                                                                    |
+| Reduced motion      | The stamp is already visible.                                                                    |
+| Verification        | `e2e/network-promise.e2e.ts` (one strike, no replay, reduced motion, without JavaScript).        |
 
 **Built in R6 (5 November 2026).** The block (`vault/blocks/promise-stamp`)
 and its place on `/id/metode` already shipped in F3: each promise is a
@@ -1086,29 +1157,34 @@ strike, no replay, and the reduced-motion and no-JavaScript states.
 
 ### 13.7 Alamat nyata disalin — real address copied (F3-09)
 
-| Field                | Specification                                                                                                                                                       |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `data-epic`          | `address-copy`, inherited from the shared copy control.                                                                                                             |
-| Trigger              | The reader copies a real, active email address.                                                                                                                     |
-| Sequence and timing  | The copy result receives the existing 350 ms `stamp`; the surrounding About and Contact page uses only the ordinary reveal contract.                                |
-| Pinning              | None.                                                                                                                                                               |
-| Touch                | Same button and status result.                                                                                                                                      |
-| Without JavaScript   | The real address remains a selectable link; the copy control is absent.                                                                                             |
-| Reduced motion       | The copied state appears immediately.                                                                                                                               |
-| Content boundary     | A reserved-domain email or example street address is plain review text with a NOTE, never a link or copy action. No contact form exists before the security review. |
-| Verification planned | Desktop and 390 px visual state; keyboard and copy behavior when a real channel is supplied and e2e is next explicitly authorised.                                  |
+| Field               | Specification                                                                                                                                                           |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data-epic`         | `address-copy`, inherited from the shared copy control.                                                                                                                 |
+| Trigger             | The reader copies a real, active email address.                                                                                                                         |
+| Sequence and timing | The copy result receives the existing 350 ms `stamp`; the surrounding About and Contact page uses only the ordinary reveal contract.                                    |
+| Pinning             | None.                                                                                                                                                                   |
+| Touch               | Same button and status result.                                                                                                                                          |
+| Without JavaScript  | The real address remains a selectable link; the copy control is absent.                                                                                                 |
+| Reduced motion      | The copied state appears immediately.                                                                                                                                   |
+| Content boundary    | A reserved-domain email or example street address is plain review text with a NOTE, never a link or copy action. No contact form exists before the security review.     |
+| Verification        | `e2e/address-copy.e2e.ts` is written (the copy and its status, the control's absence without JavaScript) and parked with `test.fixme` until K5 supplies a real channel. |
+
+**Not built yet (F4-01, 6 November 2026).** The control exists in
+`vault/blocks/copy-address`, but the contact page's address is still a
+placeholder (K5), so by this card's own content boundary it is not a copy
+action yet. Nothing to change until K5 is decided.
 
 ### 13.8 Situasi menunjuk unit — situation points to a unit (F3-01)
 
-| Field                | Specification                                                                                                                               |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `data-epic`          | `situation-leader`                                                                                                                          |
-| Trigger              | Wide screens: hover or keyboard focus on a situation. Touch screens and viewports below 800 px: draw the line as the situation enters view. |
-| Sequence and timing  | INTENT 200 ms (`ease-out-quart`), using the `leader` primitive.                                                                             |
-| Pinning              | None.                                                                                                                                       |
-| Without JavaScript   | Each situation is a link whose text names its destination unit.                                                                             |
-| Reduced motion       | Do not draw the line; keep the destination unit named in text.                                                                              |
-| Verification planned | `keyboard-focus`; the interaction-grammar report checks keyboard INTENT.                                                                    |
+| Field               | Specification                                                                                                                                |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data-epic`         | `situation-leader`                                                                                                                           |
+| Trigger             | Wide screens: hover or keyboard focus on a situation. Touch screens and viewports below 800 px: draw the line as the situation enters view.  |
+| Sequence and timing | INTENT 200 ms (`ease-out-quart`), using the `leader` primitive.                                                                              |
+| Pinning             | None.                                                                                                                                        |
+| Without JavaScript  | Each situation is a link whose text names its destination unit.                                                                              |
+| Reduced motion      | Do not draw the line; keep the destination unit named in text.                                                                               |
+| Verification        | `e2e/situation-leader.e2e.ts` (the line, the phone's draw on arrival, reduced motion); the interaction-grammar sweep checks keyboard INTENT. |
 
 **Built in R6 (5 November 2026).** On the home page's "Pilih situasi" the
 leader has a grid track of its own between the situation and its unit, so
@@ -1124,23 +1200,24 @@ arrival, and reduced motion drawing none.
 
 Halaman Kebijakan tidak memiliki momen gerak khusus. Dokumen hukum
 dibaca sebagai lembar tenang: tidak ada pin, scrub, WebGL, entrance bertingkat,
-atau transisi isi. Navigasi biasa tetap boleh memakai aturan set-depth global
-ketika F4-03 diterapkan. Biayanya adalah halaman ini tidak menunjukkan dialek
-gerak unit; manfaatnya, status peninjauan dan isi kebijakan tidak diperlakukan
-seperti materi promosi.
+atau transisi isi. Navigasi ke dan dari halaman ini memakai `set-depth` global
+(§13.10), seperti halaman Arthur lain. Biayanya adalah halaman ini tidak
+menunjukkan dialek gerak unit (§12.1: Kebijakan tidak memasang `dialect`);
+manfaatnya, status peninjauan dan isi kebijakan tidak diperlakukan seperti
+materi promosi.
 
 ### 13.10 Masuk lebih dalam ke set — enter deeper into the set (F4-03)
 
-| Field                | Specification                                                                                                                                                                      |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `data-epic`          | `set-depth`                                                                                                                                                                        |
-| Trigger              | Navigation between Arthur pages that have no dedicated transition in the navigation table.                                                                                         |
-| Sequence and timing  | COMMIT 150 ms: the link is pressed. TRANSPORT 400 ms: a detail-circle expands from the link (`ease-in-out-quart`). SETTLE 800 ms: the destination title settles (`ease-out-expo`). |
-| Back navigation      | Use a faster closing panel (150 + 200 ms), not a shrinking morph, per §9.4 rule 7: restored scroll position can put the paired element outside the viewport.                       |
-| Interruption         | A new navigation cancels the old transition and resolves directly to the new destination's final state.                                                                            |
-| Without JavaScript   | Ordinary navigation.                                                                                                                                                               |
-| Reduced motion       | The page changes without a transition.                                                                                                                                             |
-| Verification planned | Keep `instant-navigation` and `navigation-landing` green; add coverage for Back and double activation when this is implemented.                                                    |
+| Field               | Specification                                                                                                                                                                                                                        |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `data-epic`         | `set-depth`, as a name only: no element carries it. It is the link's view-transition type (`DEPTH_TYPE`, `lib/motion/navigation-signal.ts`) and the root's `data-depth` state, so the interaction-grammar report cannot list it.     |
+| Trigger             | Navigation between Arthur pages that have no dedicated transition in the navigation table.                                                                                                                                           |
+| Sequence and timing | COMMIT 150 ms: the link is pressed. TRANSPORT 400 ms: a detail-circle expands from the link (`ease-in-out-quart`). SETTLE 800 ms: the destination title settles (`ease-out-expo`).                                                   |
+| Back navigation     | Use a faster closing panel (150 + 200 ms), not a shrinking morph, per §9.4 rule 7: restored scroll position can put the paired element outside the viewport.                                                                         |
+| Interruption        | A new navigation cancels the old transition and resolves directly to the new destination's final state.                                                                                                                              |
+| Without JavaScript  | Ordinary navigation.                                                                                                                                                                                                                 |
+| Reduced motion      | The page changes without a transition.                                                                                                                                                                                               |
+| Verification        | `e2e/set-depth.e2e.ts` (the circle, the held snapshot and React's cancellation of it, Back's panel, a double press); `e2e/one-navigation.e2e.ts` (rapid Back and Forward); `instant-navigation` and `navigation-landing` stay green. |
 
 **Built in R6 (1 November 2026).** `vault/motion/page-transition` draws it:
 a ring round the press (COMMIT, `--duration-micro`), a circle in the pressed
@@ -1210,6 +1287,19 @@ Back and Forward each end at rest (no root attribute, overlay or faded block
 left behind), and the curtain carries `Arthur` and runs once a session.
 `set-depth.e2e.ts` and `motion.e2e.ts` already cover the circle, a double press
 and Back mid-transition.
+
+**As built, row by row (F4-01, 6 November 2026).** `practice-morph` is a
+shared `<ViewTransition>`: home's unit list (`vault/blocks/practice-list`)
+names each unit `morph-practice-<unit>`, and the unit page's nameplate
+(`vault/blocks/unit-hero`) takes the same name, so the browser moves it
+(`motion.e2e.ts`). `side-sheet-swap` and `offer-arrival` run on the Web
+Animations API (§13.1). `set-depth` is the default of `<Link>`. Back and
+Forward take the closing panel from `lib/motion/use-history-navigation.ts`.
+Flagged, not changed: `offer-arrival` carries no `data-epic`, like `set-depth`
+(§13.10). Its halves are named by their animation ids (`offer-arrival-lift`,
+`offer-arrival-settle`), which the e2e reads, but the interaction-grammar
+report cannot list it. Marking the chapter grid or the offer head would let
+it.
 
 The cards are subordinate to the navigation precedence defined by the Arthur
 project context. If an implementation needs a value or behavior that conflicts
