@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
-import { FEATURED_WORK } from './fixtures'
+import { FEATURED_WORK, SITUATION_ROUTES, WORK_ROUTES } from './fixtures'
 
 /**
  * The in-page sampler's handle, declared rather than asserted at each use —
@@ -284,10 +284,22 @@ test.describe('interaction grammar', () => {
      */
     { path: '/id/konstruksi' },
     { path: '/id/kontak' },
-  ] as const
+    /*
+     * A chapter and a work page, for the two navigation moments the report
+     * could not see until F4-01's follow-up named them: `offer-arrival`,
+     * labelled on the chapter card it lifts and on the work page's head it
+     * settles, and `set-depth`, labelled on the page-transition overlay that
+     * draws its circle on every page (`MOTION-SPEC.md` §13.10, §13.11).
+     */
+    { path: SITUATION_ROUTES[0], lists: ['set-depth', 'offer-arrival'] },
+    { path: WORK_ROUTES[0], lists: ['set-depth', 'offer-arrival'] },
+  ] as const satisfies readonly { path: string; lists?: readonly string[] }[]
 
-  for (const { path: route } of EPIC_ROUTES)
-    test(`${route} reports its choreographed moments`, async ({ browser }) => {
+  for (const entry of EPIC_ROUTES)
+    test(`${entry.path} reports its choreographed moments`, async ({
+      browser,
+    }) => {
+      const route = entry.path
       /*
        * The moments a route spends, `MOTION-SPEC.md` §9.5 — measured from
        * motion that actually happened, not from what a stylesheet declares.
@@ -416,6 +428,13 @@ test.describe('interaction grammar', () => {
             names.length > 0 ? ` (${names.join(', ')})` : ''
           }${unnamed.length > 0 ? ` + ${unnamed.length} unnamed long moves` : ''}`
         )
+        /*
+         * A moment this route must list, by name. Not a floor on how many: a
+         * label the code places on this page, so a refactor that drops it
+         * fails here instead of quietly shrinking the printed list.
+         */
+        for (const name of 'lists' in entry ? entry.lists : [])
+          expect(names, `${route} does not list \`${name}\``).toContain(name)
         /*
          * There is deliberately **no** floor of "at least one named moment",
          * and that is a correction to this file's own first attempt at the

@@ -55,24 +55,33 @@ export function NextPractice({
 }: NextPracticeProps) {
   return (
     <Reveal as="aside" className={cn(s.next, className)}>
-      <Link
-        data-reveal-item
-        href={href}
-        className={s.link}
-        data-cursor="view"
-        // `MOTION-SPEC.md` §9. The name below is what acknowledges hover, so
-        // the marker sits there while the noun is this link.
-        data-press={press}
-        // Names the practice circuit in the DOM. A gate read it to prove the
-        // circuit existed until the fork removed that requirement; it stays
-        // as a hook, and only on the practice pages' own link.
-        {...(press === 'next-practice' && { 'data-next-practice': '' })}
-      >
-        <span className={cn('caption', s.eyebrow)}>{eyebrow}</span>
-        <span data-intent="" className={cn(size, s.label)}>
-          {label}
-        </span>
-      </Link>
+      {/*
+        The reveal moves this wrapper, never the link (`MOTION-SPEC.md`
+        §11.4). The reveal contract sets a `transition` shorthand on its
+        items, and a shorthand replaces an element's own: marked on the link,
+        it swapped the link's 150ms COMMIT for the reveal's 400ms. The
+        `<aside>` is the reveal's container, and an item has to sit inside
+        it, so the item is a plain wrapper around the link.
+      */}
+      <div data-reveal-item>
+        <Link
+          href={href}
+          className={s.link}
+          data-cursor="view"
+          // `MOTION-SPEC.md` §9. The name below is what acknowledges hover, so
+          // the marker sits there while the noun is this link.
+          data-press={press}
+          // Names the practice circuit in the DOM. A gate read it to prove the
+          // circuit existed until the fork removed that requirement; it stays
+          // as a hook, and only on the practice pages' own link.
+          {...(press === 'next-practice' && { 'data-next-practice': '' })}
+        >
+          <span className={cn('caption', s.eyebrow)}>{eyebrow}</span>
+          <span data-intent="" className={cn(size, s.label)}>
+            {label}
+          </span>
+        </Link>
+      </div>
     </Reveal>
   )
 }

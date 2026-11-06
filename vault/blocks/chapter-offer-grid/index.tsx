@@ -83,8 +83,14 @@ function OfferCard({
   return (
     <Formwork className={s.formwork}>
       {/* `data-offer-card`: what a press on its offer link lifts
-          (`offer-arrival`, `vault/motion/offer-arrival`). */}
-      <div className={cn(s.card, offer.entry && s.entry)} data-offer-card="">
+          (`offer-arrival`, `vault/motion/offer-arrival`). A card with its own
+          offer page carries the moment's name too, for the interaction-
+          grammar report (`docs/MOTION-SPEC.md` §13.11). */}
+      <div
+        className={cn(s.card, offer.entry && s.entry)}
+        data-offer-card=""
+        {...(offer.href && { 'data-epic': 'offer-arrival' })}
+      >
         {offer.entry ? (
           <span className={cn('caption', s.entryLabel)}>{entryLabel}</span>
         ) : null}

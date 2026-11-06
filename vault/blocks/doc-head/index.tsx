@@ -56,6 +56,13 @@ interface DocHeadProps {
   /** What the page says under its title, in its own markup. */
   children?: ReactNode
   className?: string | undefined
+  /**
+   * Names the moment that moves this head (`docs/MOTION-SPEC.md` §13), so
+   * the interaction-grammar report can list it: on a work page, the head
+   * `offer-arrival` settles. Declared rather than spread, for the reason
+   * `vault/motion/reveal` gives.
+   */
+  'data-epic'?: string | undefined
 }
 
 export function DocHead({
@@ -67,11 +74,15 @@ export function DocHead({
   facts,
   children,
   className,
+  'data-epic': epic,
 }: DocHeadProps) {
   const hasFacts = facts !== undefined && facts.length > 0
 
   return (
-    <header className={cn(s.head, hasFacts && s.withFacts, className)}>
+    <header
+      className={cn(s.head, hasFacts && s.withFacts, className)}
+      {...(epic && { 'data-epic': epic })}
+    >
       {crumbs && crumbs.length > 0 ? (
         <nav aria-label={crumbsLabel} className={s.crumbs}>
           <ol className={s.crumbList}>

@@ -587,6 +587,14 @@ export function PageTransition({ maxWait = 2000 }: PageTransitionProps) {
          * trust.
          */
         data-page-transition=""
+        /*
+         * The moment this overlay draws (`docs/MOTION-SPEC.md` §13.10), so
+         * the interaction-grammar report can list it and attribute the
+         * circle's movement to it. On the overlay rather than on every
+         * `<Link>`: the links are its trigger, nearly every link on the site
+         * is one, and the overlay is what moves.
+         */
+        data-epic="set-depth"
         data-state={state}
         data-source={source}
         data-kind={kind}
