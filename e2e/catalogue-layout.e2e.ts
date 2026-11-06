@@ -253,8 +253,9 @@ test.describe('the filter filters', () => {
  * they outlast every move, so the read came before the commit. It was not a
  * sift that made none. The retry's trace has all three `?unit=` URLs
  * prefetched at load and the commit straight after the press. Now the read
- * is taken on the first frame the grid's count changes, and the end is the
- * ghost layer's own removal.
+ * is taken on the first frame the grid's count changes. The end is the
+ * ghost layer's own removal, then each card's own arrival (the departure
+ * test says why the second one is needed).
  */
 
 /** The live grid's cards; a departing card is an `<li>` too, outside it. */
@@ -405,6 +406,35 @@ test.describe('catalogue-sift', () => {
         message: 'the ghost layer was not cleaned up',
       })
       .toBe(0)
+
+    /*
+     * Then the cards' own arrival, which is not the sift's to wait for.
+     *
+     * `/work` reveals card by card (`useReveal({ perItem: true })`), and the
+     * Konstruksi survivors are the last two works, far below the fold at load
+     * and never revealed. The sift carries them up at opacity 0, their reveal
+     * starts as they cross its line near the end of the move, and its 400ms
+     * fade outlasts the moves. Measured on production at this viewport (same
+     * dataset as CI): when the layer went, both were 200ms into that fade
+     * (0.978, 0.984), the same tail e2e run 42209223291 read (0.993, 0.999).
+     * 1.5s later both were at 1 with nothing running. So this waits until
+     * every card has arrived and nothing moves it any more, and fails if
+     * that never happens. A card stranded below 1 still fails below.
+     */
+    await expect
+      .poll(
+        () =>
+          page.evaluate((cards) => {
+            const live = [...document.querySelectorAll(cards)]
+            return live.every(
+              (node) =>
+                node.getAttribute('data-reveal-item') === 'visible' &&
+                node.getAnimations().length === 0
+            )
+          }, CARDS),
+        { message: 'a card never finished arriving after the sift' }
+      )
+      .toBe(true)
 
     const settled = await page.evaluate(
       (cards) => ({
