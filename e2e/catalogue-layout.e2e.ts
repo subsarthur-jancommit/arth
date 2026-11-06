@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, type Page, test } from '@playwright/test'
 
 /**
  * The catalogue's filter, and the motion that answers it.
@@ -234,17 +234,89 @@ test.describe('the filter filters', () => {
  * `in-out` is used deliberately and is the one case `CLAUDE.md` #2 allows: a
  * card leaves one position and arrives at another. Everything else on this
  * site is `out-*`.
+ *
+ * ## When the sift is read
+ *
+ * On the frame the grid changes, never a fixed time after the press. The
+ * sift starts in the commit that swaps the list (`vault/motion/flip` builds
+ * the ghosts and the moves in that commit's layout effect), and the commit
+ * waits on the navigation to `?unit=`, a dynamic render. How long that takes
+ * is the machine's business: from a prefetch made at load it is immediate,
+ * and without one it is a round trip.
+ *
+ * Each test used to sleep 90 to 120ms after the press and read whatever was
+ * there. On e2e run 42205072919 the departure test's first attempt ran beside
+ * the other two on one server, and its read found no ghosts (`mid.ghosts`
+ * 0). The screenshot taken a moment later already shows the filtered list,
+ * with the heading on `Konstruksi` and the count on 2. Ghosts are made in
+ * the same effect run as the moves the survivors test found in that run, and
+ * they outlast every move, so the read came before the commit. It was not a
+ * sift that made none. The retry's trace has all three `?unit=` URLs
+ * prefetched at load and the commit straight after the press. Now the read
+ * is taken on the first frame the grid's count changes. The end is the
+ * ghost layer's own removal, then each card's own arrival (the departure
+ * test says why the second one is needed).
  */
+
+/** The live grid's cards; a departing card is an `<li>` too, outside it. */
+const CARDS = 'ul li[data-flip-id]'
+/** The departing cards, in the overlay `vault/motion/flip` builds for them. */
+const GHOSTS = 'body > div[aria-hidden="true"] > li'
+/** That overlay, which goes once every animation of the sift has settled. */
+const GHOST_LAYER = 'body > div[aria-hidden="true"][style*="fixed"]'
+
+/**
+ * `/en/work`, hydrated: the masthead's reveal has run its layout effect, so
+ * React owns the page, a chip navigates in place, and the grid has measured
+ * where its cards stand. Returns how many cards it shows.
+ */
+async function openCatalogue(page: Page) {
+  await page.goto('/en/work')
+  await page.waitForLoadState('networkidle')
+  await expect(
+    page.locator('main [data-reveal]').first(),
+    'the catalogue never hydrated'
+  ).toHaveAttribute('data-reveal', /^(hidden|visible)$/)
+  return page.locator(CARDS).count()
+}
+
+/** Presses the unit chip. What follows waits on the grid, not on a clock. */
+async function pressUnit(page: Page) {
+  await page
+    .locator('[data-practice-filter] a', { hasText: UNIT_LABEL })
+    .click()
+}
+
+/** What a frame read is handed: the selectors, and the count before. */
+interface FrameArg {
+  cards: string
+  ghosts: string
+  count: number
+}
+
+/**
+ * The first frame on which `read` returns a value, and that value.
+ *
+ * `waitForFunction` polls once per animation frame and resolves only on a
+ * truthy return, so the `null` its type allows never arrives; the check
+ * below says so rather than asserting it away.
+ */
+async function onFrame<Value>(
+  page: Page,
+  read: (arg: FrameArg) => Value | null,
+  count: number
+): Promise<Value> {
+  const arg: FrameArg = { cards: CARDS, ghosts: GHOSTS, count }
+  const handle = await page.waitForFunction(read, arg, { timeout: 15_000 })
+  const value = await handle.jsonValue()
+  if (value === null) throw new Error('waitForFunction resolved on null')
+  return value
+}
+
 test.describe('catalogue-sift', () => {
   test('surviving cards animate from where they were', async ({ page }) => {
-    await page.goto('/en/work')
-    await page.waitForLoadState('networkidle')
-    await page.waitForTimeout(600)
-
-    await page
-      .locator('[data-practice-filter] a', { hasText: UNIT_LABEL })
-      .click()
-    await page.waitForTimeout(100)
+    const before = await openCatalogue(page)
+    await pressUnit(page)
 
     /*
      * `ul li[...]`, not `li[...]`. The departing cards are real `<li>`
@@ -252,29 +324,38 @@ test.describe('catalogue-sift', () => {
      * `scale(1)` -> `scale(0.98)` animation — so an unscoped selector reads
      * them as failed FLIPs. Caught by this assertion going red with
      * "started from scale(1)", which is the exit animation working correctly.
+     *
+     * Read on the first frame the grid has changed. An empty list is truthy,
+     * so a sift that animated nothing still resolves here, and fails below.
      */
-    const moving = await page.evaluate(() =>
-      [...document.querySelectorAll('ul li[data-flip-id]')].flatMap((node) =>
-        node.getAnimations().map((animation) => {
-          const timing = animation.effect?.getTiming() ?? {}
-          /*
-           * `getKeyframes` lives on `KeyframeEffect`, not on the
-           * `AnimationEffect` base type the DOM lib gives `animation.effect`.
-           * Every animation on this page is created by `element.animate()`,
-           * which returns exactly that subtype — narrowed with `instanceof`
-           * rather than asserted, so the check is earned instead of claimed.
-           */
-          const effect = animation.effect
-          const frames =
-            effect instanceof KeyframeEffect ? effect.getKeyframes() : []
-          return {
-            from: String(frames[0]?.transform ?? ''),
-            duration: Number(timing.duration ?? 0),
-            delay: Number(timing.delay ?? 0),
-            easing: String(timing.easing ?? ''),
-          }
-        })
-      )
+    const moving = await onFrame(
+      page,
+      ({ cards, count }) => {
+        const live = [...document.querySelectorAll(cards)]
+        if (live.length === count) return null
+        return live.flatMap((node) =>
+          node.getAnimations().map((animation) => {
+            const timing = animation.effect?.getTiming() ?? {}
+            /*
+             * `getKeyframes` lives on `KeyframeEffect`, not on the
+             * `AnimationEffect` base type the DOM lib gives `animation.effect`.
+             * Every animation on this page is created by `element.animate()`,
+             * which returns exactly that subtype — narrowed with `instanceof`
+             * rather than asserted, so the check is earned instead of claimed.
+             */
+            const effect = animation.effect
+            const frames =
+              effect instanceof KeyframeEffect ? effect.getKeyframes() : []
+            return {
+              from: String(frames[0]?.transform ?? ''),
+              duration: Number(timing.duration ?? 0),
+              delay: Number(timing.delay ?? 0),
+              easing: String(timing.easing ?? ''),
+            }
+          })
+        )
+      },
+      before
     )
 
     expect(
@@ -299,40 +380,73 @@ test.describe('catalogue-sift', () => {
   })
 
   test('departing cards leave, and leave nothing behind', async ({ page }) => {
-    await page.goto('/en/work')
-    await page.waitForLoadState('networkidle')
-    await page.waitForTimeout(600)
+    const before = await openCatalogue(page)
+    await pressUnit(page)
 
-    const before = await page.locator('li[data-flip-id]').count()
-
-    await page
-      .locator('[data-practice-filter] a', { hasText: UNIT_LABEL })
-      .click()
-    await page.waitForTimeout(90)
-
-    const mid = await page.evaluate(() => ({
-      ghosts: document.querySelectorAll('body > div[aria-hidden="true"] > li')
-        .length,
-      inGrid: document.querySelectorAll('ul li[data-flip-id]').length,
-    }))
+    // The commit's own frame. Its layout effect has built the ghosts, and they
+    // stay until every move of the sift has settled, so a sift that made none
+    // reads 0 here.
+    const mid = await onFrame(
+      page,
+      ({ cards, ghosts, count }) => {
+        const inGrid = document.querySelectorAll(cards).length
+        if (inGrid === count) return null
+        return { inGrid, ghosts: document.querySelectorAll(ghosts).length }
+      },
+      before
+    )
 
     expect(mid.ghosts, 'no cards were animated out').toBeGreaterThan(0)
     expect(mid.ghosts + mid.inGrid).toBe(before)
 
-    await page.waitForTimeout(2600)
+    // The end of the ghosts' own lifecycle: the layer goes once every
+    // animation of the sift has finished.
+    await expect
+      .poll(() => page.locator(GHOST_LAYER).count(), {
+        message: 'the ghost layer was not cleaned up',
+      })
+      .toBe(0)
 
-    const settled = await page.evaluate(() => ({
-      layers: document.querySelectorAll(
-        'body > div[aria-hidden="true"][style*="fixed"]'
-      ).length,
-      opacities: [...document.querySelectorAll('ul li[data-flip-id]')].map(
-        (node) => getComputedStyle(node).opacity
-      ),
-      // A ghost layer left behind would sit over the page invisibly.
-      overflows: document.documentElement.scrollWidth > window.innerWidth,
-    }))
+    /*
+     * Then the cards' own arrival, which is not the sift's to wait for.
+     *
+     * `/work` reveals card by card (`useReveal({ perItem: true })`), and the
+     * Konstruksi survivors are the last two works, far below the fold at load
+     * and never revealed. The sift carries them up at opacity 0, their reveal
+     * starts as they cross its line near the end of the move, and its 400ms
+     * fade outlasts the moves. Measured on production at this viewport (same
+     * dataset as CI): when the layer went, both were 200ms into that fade
+     * (0.978, 0.984), the same tail e2e run 42209223291 read (0.993, 0.999).
+     * 1.5s later both were at 1 with nothing running. So this waits until
+     * every card has arrived and nothing moves it any more, and fails if
+     * that never happens. A card stranded below 1 still fails below.
+     */
+    await expect
+      .poll(
+        () =>
+          page.evaluate((cards) => {
+            const live = [...document.querySelectorAll(cards)]
+            return live.every(
+              (node) =>
+                node.getAttribute('data-reveal-item') === 'visible' &&
+                node.getAnimations().length === 0
+            )
+          }, CARDS),
+        { message: 'a card never finished arriving after the sift' }
+      )
+      .toBe(true)
 
-    expect(settled.layers, 'the ghost layer was not cleaned up').toBe(0)
+    const settled = await page.evaluate(
+      (cards) => ({
+        opacities: [...document.querySelectorAll(cards)].map(
+          (node) => getComputedStyle(node).opacity
+        ),
+        // A ghost layer left behind would sit over the page invisibly.
+        overflows: document.documentElement.scrollWidth > window.innerWidth,
+      }),
+      CARDS
+    )
+
     expect(settled.opacities.every((value) => value === '1')).toBe(true)
     expect(settled.overflows).toBe(false)
   })
@@ -343,38 +457,48 @@ test.describe('catalogue-sift', () => {
     const context = await browser.newContext({ reducedMotion: 'reduce' })
     const page = await context.newPage()
     try {
-      await page.goto('/en/work')
-      await page.waitForLoadState('networkidle')
-      await page.waitForTimeout(600)
+      const before = await openCatalogue(page)
+      await pressUnit(page)
 
-      await page
-        .locator('[data-practice-filter] a', { hasText: UNIT_LABEL })
-        .click()
-      await page.waitForTimeout(120)
-
-      const running = await page.evaluate(
-        () =>
-          [...document.querySelectorAll('ul li[data-flip-id]')].flatMap(
-            (node) => node.getAnimations()
-          ).length
+      // The commit's own frame: the list has changed, and nothing moved it.
+      const settled = await onFrame(
+        page,
+        ({ cards, ghosts, count }) => {
+          const live = [...document.querySelectorAll(cards)]
+          if (live.length === count) return null
+          return {
+            cards: live.length,
+            opacities: live.map((node) => getComputedStyle(node).opacity),
+            ghosts: document.querySelectorAll(ghosts).length,
+          }
+        },
+        before
       )
-      expect(running, 'reduced motion still animated the grid').toBe(0)
-
-      await page.waitForTimeout(600)
-      const settled = await page.evaluate(() => ({
-        cards: document.querySelectorAll('ul li[data-flip-id]').length,
-        opacities: [...document.querySelectorAll('ul li[data-flip-id]')].map(
-          (node) => getComputedStyle(node).opacity
-        ),
-        ghosts: document.querySelectorAll('body > div[aria-hidden="true"] > li')
-          .length,
-      }))
 
       // The filter is a feature, not an animation: it works identically.
       expect(settled.cards).toBe(2)
       // `CLAUDE.md` #5 — content ends fully visible, never stranded.
       expect(settled.opacities.every((value) => value === '1')).toBe(true)
       expect(settled.ghosts).toBe(0)
+
+      // Two frames on, still well inside the 200 to 800ms a sift's animations
+      // run for: nothing on the grid is animating.
+      const running = await page.evaluate(
+        (cards) =>
+          new Promise<number>((resolve) => {
+            requestAnimationFrame(() =>
+              requestAnimationFrame(() =>
+                resolve(
+                  [...document.querySelectorAll(cards)].flatMap((node) =>
+                    node.getAnimations()
+                  ).length
+                )
+              )
+            )
+          }),
+        CARDS
+      )
+      expect(running, 'reduced motion still animated the grid').toBe(0)
     } finally {
       await context.close()
     }
