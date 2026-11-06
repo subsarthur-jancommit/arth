@@ -24,29 +24,33 @@ fifteen ad-hoc `gsap.to()` calls reads as cheap regardless of effort spent.
 ## Moments as built (F4-01, 6 November 2026)
 
 Each named moment, the file that draws it and the e2e that proves it. §12
-and §13 describe them; this is where to find them. A moment without a
-`data-epic` mark is one the interaction-grammar report cannot list (noted).
+and §13 describe them; this is where to find them. Every named moment carries
+its `data-epic` mark, so the interaction-grammar report
+(`e2e/interaction-grammar.e2e.ts`) lists it; the last three rows are
+mechanisms, not marked moments. `set-depth` and `offer-arrival` took their
+marks in F4-01's follow-up, which also proved the three moments that had
+none.
 
-| Moment                                   | Where                                | Drawn by                                                                     | Proved by                                                     |
-| ---------------------------------------- | ------------------------------------ | ---------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| `practice-morph`                         | Home → unit                          | `vault/blocks/practice-list` → `vault/blocks/unit-hero` (`<ViewTransition>`) | `motion.e2e.ts`                                               |
-| `practice-statement`                     | Unit page                            | `vault/blocks/unit-hero`, `components/effects/progress-text`                 | `unit-page.e2e.ts` (present; the scrub itself has no e2e)     |
-| `unit-method`                            | Unit page                            | `vault/blocks/capability-set`                                                | `unit-dialects.e2e.ts`                                        |
-| `side-sheet-swap` (§13.1)                | Side → other side                    | `app/[locale]/[unit]/[side]/side-switcher.tsx` (Web Animations API)          | `side-sheet-swap.e2e.ts`, `one-navigation.e2e.ts`             |
-| `side-buying-path`                       | Side page                            | `vault/blocks/step-sequence`                                                 | `side-page.e2e.ts`                                            |
-| `side-chapter-table`                     | Side page                            | `vault/blocks/side-chapter-table` (`crosshair`, `cover-preview`)             | none names it                                                 |
-| `network-money-flow` (§13.4)             | `/id/peekabo/jaringan`               | `vault/blocks/network-side` (`plumb`, `stamp`)                               | `network-promise.e2e.ts`                                      |
-| `bab-formwork`, `bab-sift` (§13.2)       | Chapter page                         | `vault/blocks/chapter-offer-grid` (`formwork`, `flip`)                       | `bab-offer.e2e.ts`                                            |
-| `offer-arrival` (§13.11), no `data-epic` | Chapter → offer                      | `vault/motion/offer-arrival` (Web Animations API)                            | `one-navigation.e2e.ts`                                       |
-| `offer-fixings` (§13.3)                  | Offer page                           | `vault/blocks/offer-boundaries` (`fixings`)                                  | `bab-offer.e2e.ts`                                            |
-| `promise-stamp` (§13.6)                  | `/id/metode`                         | `vault/blocks/promise-stamp` (`stamp`)                                       | `network-promise.e2e.ts`                                      |
-| `situation-leader` (§13.8)               | Home                                 | `vault/blocks/situation-links` (`leader`)                                    | `situation-leader.e2e.ts`                                     |
-| `three-unit-splice` (§13.5)              | `/id/layanan`, home                  | `vault/blocks/unit-sequence` (`splice`, `level`)                             | `home-sequence.e2e.ts` (markup only)                          |
-| `address-copy` (§13.7)                   | `/id/kontak`                         | `vault/blocks/copy-address` (`stamp`)                                        | `address-copy.e2e.ts`, parked by `test.fixme` until K5        |
-| `set-depth` (§13.10), no `data-epic`     | Any Arthur page → another            | `vault/motion/page-transition`, `components/ui/link`                         | `set-depth.e2e.ts`, `motion.e2e.ts`, `one-navigation.e2e.ts`  |
-| Back and Forward panel (§13.11)          | History navigation                   | `vault/motion/page-transition`, `lib/motion/use-history-navigation.ts`       | `journey.e2e.ts`, `set-depth.e2e.ts`, `one-navigation.e2e.ts` |
-| The curtain                              | First page of a session              | `vault/motion/curtain`                                                       | `entrance.e2e.ts`, `one-navigation.e2e.ts`                    |
-| Unit dialects (§12.1)                    | Unit, side, situation and work pages | `lib/styles/css/dialects.css`, `vault/motion/dialect.ts`                     | `unit-dialects.e2e.ts`, `lib/styles/scripts/dialects.test.ts` |
+| Moment                             | Where                                | Drawn by                                                                     | Proved by                                                     |
+| ---------------------------------- | ------------------------------------ | ---------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `practice-morph`                   | Home → unit                          | `vault/blocks/practice-list` → `vault/blocks/unit-hero` (`<ViewTransition>`) | `motion.e2e.ts`                                               |
+| `practice-statement`               | Unit page                            | `vault/blocks/unit-hero`, `components/effects/progress-text`                 | `practice-statement.e2e.ts`, `unit-page.e2e.ts`               |
+| `unit-method`                      | Unit page                            | `vault/blocks/capability-set`                                                | `unit-dialects.e2e.ts`                                        |
+| `side-sheet-swap` (§13.1)          | Side → other side                    | `app/[locale]/[unit]/[side]/side-switcher.tsx` (Web Animations API)          | `side-sheet-swap.e2e.ts`, `one-navigation.e2e.ts`             |
+| `side-buying-path`                 | Side page                            | `vault/blocks/step-sequence`                                                 | `side-page.e2e.ts`                                            |
+| `side-chapter-table`               | Side page                            | `vault/blocks/side-chapter-table` (`crosshair`, `cover-preview`)             | `side-chapter-table.e2e.ts`                                   |
+| `network-money-flow` (§13.4)       | `/id/peekabo/jaringan`               | `vault/blocks/network-side` (`plumb`, `stamp`)                               | `network-promise.e2e.ts`                                      |
+| `bab-formwork`, `bab-sift` (§13.2) | Chapter page                         | `vault/blocks/chapter-offer-grid` (`formwork`, `flip`)                       | `bab-offer.e2e.ts`                                            |
+| `offer-arrival` (§13.11)           | Chapter → offer                      | `vault/motion/offer-arrival` (Web Animations API)                            | `one-navigation.e2e.ts`                                       |
+| `offer-fixings` (§13.3)            | Offer page                           | `vault/blocks/offer-boundaries` (`fixings`)                                  | `bab-offer.e2e.ts`                                            |
+| `promise-stamp` (§13.6)            | `/id/metode`                         | `vault/blocks/promise-stamp` (`stamp`)                                       | `network-promise.e2e.ts`                                      |
+| `situation-leader` (§13.8)         | Home                                 | `vault/blocks/situation-links` (`leader`)                                    | `situation-leader.e2e.ts`                                     |
+| `three-unit-splice` (§13.5)        | `/id/layanan`, home                  | `vault/blocks/unit-sequence` (`splice`, `level`)                             | `three-unit-splice.e2e.ts`, `home-sequence.e2e.ts`            |
+| `address-copy` (§13.7)             | `/id/kontak`                         | `vault/blocks/copy-address` (`stamp`)                                        | `address-copy.e2e.ts`, parked by `test.fixme` until K5        |
+| `set-depth` (§13.10)               | Any Arthur page → another            | `vault/motion/page-transition`, `components/ui/link`                         | `set-depth.e2e.ts`, `motion.e2e.ts`, `one-navigation.e2e.ts`  |
+| Back and Forward panel (§13.11)    | History navigation                   | `vault/motion/page-transition`, `lib/motion/use-history-navigation.ts`       | `journey.e2e.ts`, `set-depth.e2e.ts`, `one-navigation.e2e.ts` |
+| The curtain                        | First page of a session              | `vault/motion/curtain`                                                       | `entrance.e2e.ts`, `one-navigation.e2e.ts`                    |
+| Unit dialects (§12.1)              | Unit, side, situation and work pages | `lib/styles/css/dialects.css`, `vault/motion/dialect.ts`                     | `unit-dialects.e2e.ts`, `lib/styles/scripts/dialects.test.ts` |
 
 ---
 
@@ -829,14 +833,17 @@ overwrote that link's 150ms COMMIT; `e2e/interaction-grammar.e2e.ts` measured
 it as `email/commit: 400ms`, outside the micro band. Mark the container, never
 the control.
 
-**One place breaks this today (flagged in F4-01, not changed).**
-`vault/blocks/next-practice`, the next-unit link at the foot of every unit
-page, carries `data-reveal-item` on the link itself, which is also
-`data-press`. The reveal's shorthand therefore replaces the link's own
-150ms COMMIT with the reveal's 400ms. The unit dialects (§12.1) leave
-`[data-press]` items out of their retiming for exactly this reason, so a
-dialect cannot slow it further, but the base case is the defect this rule
-describes. The fix belongs in the block (mark the `<aside>`, not the link).
+**Fixed in F4-01's follow-up (6 November 2026).** F4-01 found one place
+that broke this: `vault/blocks/next-practice`, the next-unit link at the foot
+of every unit page, carried `data-reveal-item` on the link itself, which is
+also `data-press`, so the reveal's shorthand replaced the link's own 150ms
+COMMIT with the reveal's 400ms. The marker now sits on a plain wrapper inside
+the `<aside>`, which is the reveal's container, and the link keeps its own
+transition. `e2e/next-practice.e2e.ts` holds it on every unit page: the link
+is not a reveal item, and once the reveal has arrived a press compresses it on
+`transform` at `--duration-micro`. The unit dialects (§12.1) still leave
+`[data-press]` items out of their retiming, so a pressable item that slips
+through is never slowed further by a unit's tempo.
 
 The same section adds the other half: **a noun marked `data-press` must be
 reachable at rest.** A control that only exists once a disclosure is opened is
@@ -989,10 +996,11 @@ channel (K5). Each card's table states what is built; its notes record how,
 when and why, and which e2e proves it. The base timings in the tables are the
 base grammar: on a unit's pages a moment runs at that unit's tempo (§12.1).
 The `data-epic` names are observability labels for the interaction-grammar
-report; two moments carry none (`set-depth`, `offer-arrival`, noted in their
-cards). The page named by each card keeps its complete static state; reduced
-motion changes the transition, never whether the information is available.
-`CLAUDE.md`'s hard reader protections continue to apply.
+report, and every moment a card names carries its own (§13.9 names none);
+`set-depth` and `offer-arrival` took theirs in F4-01's follow-up (§13.10,
+§13.11). The page named by each card keeps its complete static state;
+reduced motion changes the transition, never whether the information is
+available. `CLAUDE.md`'s hard reader protections continue to apply.
 
 ### 13.1 Lembar ditukar — sheet exchange (F3-03)
 
@@ -1117,17 +1125,17 @@ looks for on `/work`.
 
 ### 13.5 Tiga batang disambung — three units joined (F3-07)
 
-| Field               | Specification                                                                                                                                                                                                                        |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `data-epic`         | `three-unit-splice`                                                                                                                                                                                                                  |
-| Trigger             | Each of the three unit steps enters the reading line.                                                                                                                                                                                |
-| Sequence and timing | Each step settles through the reveal contract; `splice` then joins it to the following unit. `level` settles after all three steps are in place.                                                                                     |
-| Pinning             | None; the three steps remain an ordinary ordered list.                                                                                                                                                                               |
-| Touch               | Same scroll order, with vertical joints between cards.                                                                                                                                                                               |
-| Without JavaScript  | All three steps, both joints, and the level line are present in their final state.                                                                                                                                                   |
-| Reduced motion      | Same final state as without JavaScript.                                                                                                                                                                                              |
-| Content boundary    | The page labels the sequence as possible, never as a completed client project; every unit and offer must remain renderable through its approval gate.                                                                                |
-| Verification        | `e2e/home-sequence.e2e.ts` checks the sequence on home (three steps, the way to `/layanan`, `data-epic`); `motion.e2e.ts` checks `/id/layanan` ends visible under reduced motion. The `splice` and `level` motion itself has no e2e. |
+| Field               | Specification                                                                                                                                                                                                                          |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data-epic`         | `three-unit-splice`                                                                                                                                                                                                                    |
+| Trigger             | Each of the three unit steps enters the reading line.                                                                                                                                                                                  |
+| Sequence and timing | Each step settles through the reveal contract; `splice` then joins it to the following unit. `level` settles after all three steps are in place.                                                                                       |
+| Pinning             | None; the three steps remain an ordinary ordered list.                                                                                                                                                                                 |
+| Touch               | Same scroll order, with vertical joints between cards.                                                                                                                                                                                 |
+| Without JavaScript  | All three steps, both joints, and the level line are present in their final state.                                                                                                                                                     |
+| Reduced motion      | Same final state as without JavaScript.                                                                                                                                                                                                |
+| Content boundary    | The page labels the sequence as possible, never as a completed client project; every unit and offer must remain renderable through its approval gate.                                                                                  |
+| Verification        | `e2e/three-unit-splice.e2e.ts` on `/id/layanan`: each joint stays open until its step arrives, its plate after its halves, the level last and level; reduced motion is final at once. `e2e/home-sequence.e2e.ts` checks home's markup. |
 
 **As built (F4-01, 6 November 2026).** `vault/blocks/unit-sequence` draws it,
 on `/id/layanan` and in home's Kafe baru sequence: each step settles through
@@ -1210,7 +1218,7 @@ materi promosi.
 
 | Field               | Specification                                                                                                                                                                                                                        |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `data-epic`         | `set-depth`, as a name only: no element carries it. It is the link's view-transition type (`DEPTH_TYPE`, `lib/motion/navigation-signal.ts`) and the root's `data-depth` state, so the interaction-grammar report cannot list it.     |
+| `data-epic`         | `set-depth`, on the overlay that draws the circle (`vault/motion/page-transition`), so the interaction-grammar report lists it. It is also the link's view-transition type (`DEPTH_TYPE`) and the root's `data-depth` state.         |
 | Trigger             | Navigation between Arthur pages that have no dedicated transition in the navigation table.                                                                                                                                           |
 | Sequence and timing | COMMIT 150 ms: the link is pressed. TRANSPORT 400 ms: a detail-circle expands from the link (`ease-in-out-quart`). SETTLE 800 ms: the destination title settles (`ease-out-expo`).                                                   |
 | Back navigation     | Use a faster closing panel (150 + 200 ms), not a shrinking morph, per §9.4 rule 7: restored scroll position can put the paired element outside the viewport.                                                                         |
@@ -1295,11 +1303,13 @@ names each unit `morph-practice-<unit>`, and the unit page's nameplate
 (`motion.e2e.ts`). `side-sheet-swap` and `offer-arrival` run on the Web
 Animations API (§13.1). `set-depth` is the default of `<Link>`. Back and
 Forward take the closing panel from `lib/motion/use-history-navigation.ts`.
-Flagged, not changed: `offer-arrival` carries no `data-epic`, like `set-depth`
-(§13.10). Its halves are named by their animation ids (`offer-arrival-lift`,
-`offer-arrival-settle`), which the e2e reads, but the interaction-grammar
-report cannot list it. Marking the chapter grid or the offer head would let
-it.
+`offer-arrival`'s halves are named by their animation ids
+(`offer-arrival-lift`, `offer-arrival-settle`), which the e2e reads. Since
+F4-01's follow-up the moment also carries `data-epic`, on what it moves: each
+chapter card that has an offer page (the card the press lifts) and the offer
+page's head (the block that settles). `set-depth` carries it on its overlay
+(§13.10). `e2e/interaction-grammar.e2e.ts` asserts that the report lists both
+on a chapter page and on an offer page.
 
 The cards are subordinate to the navigation precedence defined by the Arthur
 project context. If an implementation needs a value or behavior that conflicts
