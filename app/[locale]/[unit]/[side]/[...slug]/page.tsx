@@ -36,6 +36,7 @@ import { FirstStep } from '@/vault/blocks/first-step'
 import { OfferBoundaries } from '@/vault/blocks/offer-boundaries'
 import { OfferPrintControl } from '@/vault/blocks/offer-print-control'
 import { OfferScope } from '@/vault/blocks/offer-scope'
+import { OfferArrival } from '@/vault/motion/offer-arrival'
 
 import s from './page.module.css'
 // Bab dan offer datang dari dokumen Sanity, jadi nilainya tidak tersedia saat
@@ -650,6 +651,9 @@ export default async function ArthurDetailPage({
   return (
     <Wrapper theme="light" dialect={values.unit}>
       <article className={cn(s.page, s.offerPage)} data-offer-sheet="">
+        {/* `offer-arrival` (§13.11): reached by a card press on its chapter,
+            the title block settles into place and takes focus. */}
+        <OfferArrival />
         {/*
          * A document head after the approved work screen: the path back to
          * the situation, the kind of work, the title, its impact, and the

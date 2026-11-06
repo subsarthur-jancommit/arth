@@ -11,6 +11,7 @@ import { Link } from '@/components/ui/link'
 import { useReveal } from '@/lib/hooks/use-reveal'
 import { FLIP_ID, SIFT_MOVE, useFlipGrid } from '@/vault/motion/flip'
 import { Formwork } from '@/vault/motion/formwork'
+import { OfferArrivalLink } from '@/vault/motion/offer-arrival'
 
 import s from './chapter-offer-grid.module.css'
 
@@ -81,7 +82,9 @@ function OfferCard({
 }) {
   return (
     <Formwork className={s.formwork}>
-      <div className={cn(s.card, offer.entry && s.entry)}>
+      {/* `data-offer-card`: what a press on its offer link lifts
+          (`offer-arrival`, `vault/motion/offer-arrival`). */}
+      <div className={cn(s.card, offer.entry && s.entry)} data-offer-card="">
         {offer.entry ? (
           <span className={cn('caption', s.entryLabel)}>{entryLabel}</span>
         ) : null}
@@ -96,15 +99,15 @@ function OfferCard({
         ) : null}
         <span className={cn('caption', s.audience)}>{offer.audience}</span>
         <span className={s.actions}>
+          {/* Chapter to offer is `offer-arrival` (§13.11): one transition,
+              so the link carries it and `set-depth` stands aside. */}
           {offer.href ? (
-            <Link
+            <OfferArrivalLink
               href={offer.href}
               className={cn('caption', s.read)}
-              data-press="offer"
-              data-intent=""
             >
               {readLabel}
-            </Link>
+            </OfferArrivalLink>
           ) : null}
           <Link
             href={offer.askHref}
