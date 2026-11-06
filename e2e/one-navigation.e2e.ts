@@ -296,19 +296,50 @@ test.describe('never stuck', () => {
     await page.locator(`main a[href="${FROM}"]`).first().click()
     await page.waitForURL((url) => url.pathname === FROM)
     await page.waitForTimeout(1500)
+    // The side to end on, as a history entry and as a page.
+    const fromEntry = await page.evaluate(() => navigation.currentEntry?.key)
+    const fromTitle = (await page.locator(TITLE).textContent()) ?? ''
+    expect(fromTitle, 'the first side has no title').not.toBe('')
     await page.locator(OTHER).click()
     await page.waitForURL((url) => url.pathname === TO)
     await page.waitForTimeout(1500)
 
-    // Back, Forward, Back, each before the last could finish.
-    await page.goBack({ waitUntil: 'commit' })
-    await page.goForward({ waitUntil: 'commit' })
-    await page.goBack({ waitUntil: 'commit' })
+    /*
+     * Back, Forward, Back, each started as soon as the one before has
+     * committed, while its cover and its settle are still running.
+     *
+     * Through the Navigation API, not `page.goBack()` and `page.goForward()`,
+     * and that is the fix for a flake. The first attempt of e2e run
+     * 42200545342 timed out with the page left on the other side. Those two
+     * methods resolve on the frame's next navigation of any kind, and Next
+     * follows every traversal with a `replaceState` of its own, which counts
+     * as one. On a slow attempt a call could resolve on the previous
+     * traversal's `replaceState`, before its own traversal had happened, so
+     * the next call was aimed from an entry the browser had not reached. A
+     * traversal's `committed` settles only when that traversal has changed the
+     * entry, and nothing else settles it. `finished` is caught so that a
+     * traversal the next one supersedes is not an unhandled rejection.
+     */
+    await page.evaluate(async () => {
+      for (const step of ['back', 'forward', 'back'] as const) {
+        const { committed, finished } = navigation[step]()
+        // `lib.dom` types both as optional; without `committed` there would
+        // be nothing to wait on, and the steps would race again.
+        if (!committed) throw new Error(`navigation.${step}() has no commit`)
+        finished?.catch(() => undefined)
+        await committed
+      }
+    })
     await page.waitForURL((url) => url.pathname === FROM)
     await page.waitForTimeout(2500)
 
+    // The entry, the address and the page all agree on where Back ended.
+    expect(
+      await page.evaluate(() => navigation.currentEntry?.key),
+      'Back ended on another history entry'
+    ).toBe(fromEntry)
     expect(new URL(page.url()).pathname).toBe(FROM)
-    await expect(page.locator(TITLE)).toBeVisible()
+    await expect(page.locator(TITLE)).toHaveText(fromTitle)
     expect(await leftovers(page)).toEqual(AT_REST)
   })
 })

@@ -658,9 +658,11 @@ export default async function ArthurDetailPage({
          * A document head after the approved work screen: the path back to
          * the situation, the kind of work, the title, its impact, and the
          * facts a buyer checks first. The title had no type class and set at
-         * body size, inside a hero held at 62 to 76svh.
+         * body size, inside a hero held at 62 to 76svh. It is the head
+         * `offer-arrival` settles, and it carries the moment's name.
          */}
         <DocHead
+          data-epic="offer-arrival"
           crumbs={[
             { label: tUnit(values.unit), href: unitTemplate(values.unit) },
             {
