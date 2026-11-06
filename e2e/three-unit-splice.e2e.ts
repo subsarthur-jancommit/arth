@@ -1,7 +1,5 @@
 import { expect, type Locator, test } from '@playwright/test'
 
-import { transitionsAtRest } from './settle'
-
 /**
  * `three-unit-splice`, three units joined into one working order
  * (`docs/MOTION-SPEC.md` §13.5, `vault/blocks/unit-sequence`).
@@ -26,6 +24,43 @@ const SPLICE = 'span:has(> [data-side="start"] + span + [data-side="end"])'
 
 declare global {
   var __arrived: number[]
+}
+
+/**
+ * Waits until nothing in the sequence is mid-transition, and fails if it
+ * never gets there.
+ *
+ * The first reading needs it, and its absence is why that reading went red
+ * on its first run (e2e run 42200545342). The server renders every joint
+ * made and the level level, which is what a reader without a script gets.
+ * Hydration then switches the block to `data-reveal="hidden"`, and that
+ * switch runs the joints' and the level's own transitions in reverse: each
+ * half from `scaleX(1)` to `scaleX(0)` after its 200ms delay, the plate's
+ * fade 600ms after that. A reading inside that window saw a waiting joint
+ * still drawn (1, and 0.427 on the retry). Open is its state at rest, and that
+ * is what is asserted. A reader does not see the reverse: the step itself
+ * fades out over the same window, under the reveal contract.
+ *
+ * `getAnimations()` brings style up to date before it answers, so a
+ * transition an attribute has just started is counted, not missed.
+ */
+async function atRest(sequence: Locator) {
+  await expect
+    .poll(
+      () =>
+        sequence.evaluate(
+          (root) =>
+            root
+              .getAnimations({ subtree: true })
+              .filter(
+                (animation) =>
+                  animation instanceof CSSTransition &&
+                  animation.playState === 'running'
+              ).length
+        ),
+      { message: 'the sequence never came to rest' }
+    )
+    .toBe(0)
 }
 
 /**
@@ -93,7 +128,9 @@ test.describe('three-unit-splice', () => {
       'hidden'
     )
 
-    // The last sequence on the page, so its end is still below the fold.
+    // The last sequence on the page, so its end is still below the fold,
+    // read once hydration's switch to the hidden state has finished moving it.
+    await atRest(sequence)
     const before = await joints(sequence)
     const waiting = before.steps.filter(
       (step) => step.halves !== null && !step.arrived
@@ -157,7 +194,7 @@ test.describe('three-unit-splice', () => {
         await new Promise((resolve) => setTimeout(resolve, 120))
       }
     })
-    await transitionsAtRest(page)
+    await atRest(sequence)
 
     const arrived = await page.evaluate(() => globalThis.__arrived)
     expect(arrived, 'an item never arrived').not.toContain(-1)
