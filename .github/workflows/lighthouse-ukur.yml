@@ -22,7 +22,9 @@ permissions:
 #   TBT, which the doc uses as the lab proxy and names as such (CLAUDE.md #19).
 # - `mobile` is Lighthouse's default: simulated throttling at 150 ms RTT,
 #   1.6 Mbps and a 4x CPU slowdown, which Lighthouse calls slow 4G. A model of
-#   a mid-range phone on a slow link, not a phone.
+#   a mid-range phone on a slow link, not a phone. `mobile-applied` imposes
+#   the same profile on the browser instead of modelling it; the script says
+#   why both are kept.
 # - The runner is a shared VM in GitHub's network, not in Indonesia. Each
 #   report's `benchmarkIndex` records how fast that machine was.
 # - Every run is a first visit: Lighthouse resets storage, so the
@@ -62,7 +64,7 @@ jobs:
       # One variant failing says nothing about the others.
       fail-fast: false
       matrix:
-        variant: [mobile, desktop, desktop-webgl]
+        variant: [mobile, mobile-applied, desktop, desktop-webgl]
 
     steps:
       - uses: actions/checkout@v7

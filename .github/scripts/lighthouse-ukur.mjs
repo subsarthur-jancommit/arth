@@ -58,7 +58,16 @@ const WEBGL_PAGES = new Set(['beranda', 'work', 'work-detail'])
  *
  * - `mobile`: Lighthouse's default, a phone-sized screen under simulated
  *   throttling (150 ms RTT, 1.6 Mbps, CPU 4x). At that width the site mounts
- *   no WebGL on any page (`lib/hooks/use-device-detection.ts`).
+ *   no WebGL on any page (`lib/hooks/use-device-detection.ts`). The page is
+ *   loaded unthrottled and the metrics are modelled from that trace
+ *   (Lantern), which is what PageSpeed Insights reports.
+ * - `mobile-applied`: the same profile applied to the browser while it loads
+ *   (`--throttling-method=devtools`), so the metrics are observed rather than
+ *   modelled. Added after the first run (42247088223): there the observed
+ *   LCP equalled the observed FCP on every page, yet the modelled LCP sat
+ *   2.1–2.8 s after the modelled FCP, because Lantern counts every request
+ *   started before the observed LCP — the async scripts included — as one
+ *   the LCP waited for. This variant tells the two apart.
  * - `desktop`: `--preset=desktop`, with WebGL switched off in the browser,
  *   so the three WebGL routes are measured on the path a desktop without
  *   WebGL takes, and no number depends on whether this runner's Chrome
@@ -69,6 +78,11 @@ const WEBGL_PAGES = new Set(['beranda', 'work', 'work-detail'])
  */
 const VARIANTS = {
   mobile: { pages: PAGES, flags: [], chrome: [] },
+  'mobile-applied': {
+    pages: PAGES,
+    flags: ['--throttling-method=devtools'],
+    chrome: [],
+  },
   desktop: {
     pages: PAGES,
     flags: ['--preset=desktop'],
@@ -282,6 +296,11 @@ function readRun(file) {
     )
     .slice(0, 6)
 
+  // What the trace itself saw. Under simulated throttling the page loads
+  // unthrottled and the metrics above are modelled from this trace, so the
+  // two can disagree; under applied throttling they are the same reading.
+  const observed = audit('metrics')?.details?.items?.[0] ?? {}
+
   return {
     ok: true,
     lcp,
@@ -289,6 +308,8 @@ function readRun(file) {
     tbt: value('total-blocking-time'),
     fcp: value('first-contentful-paint'),
     si: value('speed-index'),
+    obsFcp: observed.observedFirstContentfulPaint ?? null,
+    obsLcp: observed.observedLargestContentfulPaint ?? null,
     score: lhr.categories?.performance?.score,
     scriptKB,
     lcpNode: lcpNode
@@ -364,6 +385,8 @@ function summarise(dir, mdFile, jsonFile) {
         tbtRange: range('tbt'),
         fcp: metric('fcp'),
         si: metric('si'),
+        obsFcp: median(ok.map((run) => run.obsFcp).filter(Number.isFinite)),
+        obsLcp: median(ok.map((run) => run.obsLcp).filter(Number.isFinite)),
         score: metric('score'),
         scriptKB: metric('scriptKB'),
         representative: representative
@@ -444,19 +467,22 @@ function summarise(dir, mdFile, jsonFile) {
       if (!rep) continue
       lines.push('')
       lines.push(`- **${row.template}** \`${row.path}\` (run ${rep.run})`)
+      lines.push(
+        `  - Teramati di trace (median): FCP ${fmtMs(row.obsFcp)} ms, LCP ${fmtMs(row.obsLcp)} ms`
+      )
       if (rep.lcpNode) {
         lines.push(
-          `  - Elemen LCP: ${rep.lcpNode.label || '(tanpa label)'} — \`${rep.lcpNode.selector}\``
+          `  - Elemen LCP: ${rep.lcpNode.label.replace(/\s+/gu, ' ') || '(tanpa label)'} — \`${rep.lcpNode.selector}\``
         )
       }
       if (rep.phases.length > 0) {
         lines.push(
-          `  - Fase LCP: ${rep.phases.map((phase) => `${phase.label} ${phase.ms} ms`).join(', ')}`
+          `  - Fase LCP (teramati): ${rep.phases.map((phase) => `${phase.label} ${phase.ms} ms`).join(', ')}`
         )
       }
       if (rep.shifts.length > 0) {
         lines.push(
-          `  - Pergeseran: ${rep.shifts.map((shift) => `${shift.node} (${shift.score})`).join('; ')}`
+          `  - Pergeseran: ${rep.shifts.map((shift) => `${shift.node.replace(/\s+/gu, ' ').slice(0, 80)} (${shift.score})`).join('; ')}`
         )
       }
       for (const issue of rep.issues) {
