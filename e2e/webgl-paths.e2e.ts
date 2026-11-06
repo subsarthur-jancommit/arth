@@ -487,23 +487,35 @@ test('the hero keeps its CSS wash until the mesh has drawn', async ({
 
 for (const pathCase of PATHS) {
   test.describe(`the WebGL routes ${pathCase.label}`, () => {
-    if (pathCase.launchArgs.length > 0) {
-      test.use({ launchOptions: { args: pathCase.launchArgs } })
-    }
-
     for (const route of ROUTES) {
       for (const viewport of VIEWPORTS) {
         test(`${route.path} at ${viewport.label}`, async ({
           browser,
+          playwright,
         }, testInfo) => {
           test.setTimeout(WEBGL_TEST_BUDGET_MS)
-          const record = await visit(
-            browser,
-            route,
-            viewport,
-            pathCase,
-            path.join(testInfo.project.outputDir, 'f4-04-webgl')
-          )
+          /*
+           * A browser of its own for a path that needs launch flags.
+           * `test.use({ launchOptions })` inside a describe group is refused
+           * ("it forces a new worker"; CI on `56fd822`), and a top-level one
+           * would take WebGL from every test in this file.
+           */
+          const own =
+            pathCase.launchArgs.length > 0
+              ? await playwright.chromium.launch({ args: pathCase.launchArgs })
+              : null
+          let record: VisitRecord
+          try {
+            record = await visit(
+              own ?? browser,
+              route,
+              viewport,
+              pathCase,
+              path.join(testInfo.project.outputDir, 'f4-04-webgl')
+            )
+          } finally {
+            await own?.close()
+          }
           testInfo.annotations.push({
             type: 'webgl verdict',
             description: [
