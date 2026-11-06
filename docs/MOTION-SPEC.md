@@ -1191,6 +1191,26 @@ The Back/Forward choice follows §9.4 rule 7: restored scroll position can put
 the paired shared element outside the viewport. With JavaScript disabled, all
 these links remain ordinary navigation.
 
+**Built in F4-03 (6 November 2026).** Every row of the table now has its
+transition. `offer-arrival` was the one missing (`vault/motion/offer-arrival`):
+a chapter card's link to its offer navigates with the `morph` intent, so the
+overlay stands aside and `set-depth` draws no circle, and the press lifts the
+card out of the list (TRANSPORT) while the offer's title block rises into place
+on arrival (SETTLE, `transform` only) and takes focus. It is derived from
+`project-arrival` without the photo, and it runs on the Web Animations API, as
+`side-sheet-swap` does, because a chapter and its offers are one route and a
+view transition does not start inside one route (§13.1). Both halves take the
+unit's settle and curve (§12.1), with 400ms `ease-in-out-quart` and 800ms
+`ease-out-expo` as the fallbacks. `/work`'s `project-arrival` is unchanged.
+Reduced motion moves nothing; without a script the link is a link.
+
+`e2e/one-navigation.e2e.ts` proves what was not yet proved: a card press runs
+`offer-arrival` and nothing else, a double click on the side switcher and rapid
+Back and Forward each end at rest (no root attribute, overlay or faded block
+left behind), and the curtain carries `Arthur` and runs once a session.
+`set-depth.e2e.ts` and `motion.e2e.ts` already cover the circle, a double press
+and Back mid-transition.
+
 The cards are subordinate to the navigation precedence defined by the Arthur
 project context. If an implementation needs a value or behavior that conflicts
 with a hard rule, pause and report both statements; do not resolve the conflict

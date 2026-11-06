@@ -34,3 +34,26 @@ export async function transitionsAtRest(page: Page, timeout = 5000) {
     // Measured as it is: the gate's own fixed wait has already run.
   }
 }
+
+/**
+ * The settle of the unit whose page is on screen, in milliseconds, or `null`
+ * outside a dialect. Resolved on the rendered `<main>` (Next keeps the page
+ * just left in the tree, hidden), so a test compares against the stylesheet,
+ * not a copied number.
+ */
+export async function unitSettleMs(page: Page): Promise<number | null> {
+  return page.evaluate(() => {
+    const main = [...document.querySelectorAll('main')].find(
+      (element) => element.getBoundingClientRect().height > 0
+    )
+    if (!main?.dataset.dialect) return null
+    const probe = document.createElement('i')
+    probe.style.transitionDuration = 'var(--dialect-settle)'
+    main.append(probe)
+    const seconds = Number.parseFloat(
+      getComputedStyle(probe).transitionDuration
+    )
+    probe.remove()
+    return Math.round(seconds * 1000)
+  })
+}
