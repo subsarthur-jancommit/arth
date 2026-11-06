@@ -88,6 +88,21 @@
   grid-template-rows: minmax(0, 1fr) auto;
   gap: mobile-vw(16px);
   margin: 0;
+  /*
+   * The plate is the mask its drawing moves inside — F4-04.
+   *
+   * A plate waiting below the frame is parked at `translateY(101%)`, and its
+   * drawing already carries the entry pose the timeline gives it: shifted up
+   * by `PLATE_COUNTER` and scaled by `PLATE_ENTRY_SCALE`, because a `fromTo`
+   * renders its start at once. Without a clip of its own the drawing reached
+   * back up past the plate's top edge into the frame, so plates two and three
+   * were drawn over plate one for the whole of its dwell: over its drawing on
+   * a desktop, over its caption on a phone. Measured on production at
+   * 1440 × 900, the parked drawings reached 201px into a 517px frame. Clipped
+   * here, the wipe is the mask the comment in `index.tsx` describes: the
+   * drawing counter-moves inside the plate that carries it.
+   */
+  overflow: clip;
   background-color: var(--color-primary);
 
   @media (--desktop) {
@@ -220,10 +235,13 @@
     overflow: visible;
   }
 
+  /* In the flow nothing is parked, so nothing needs the mask, and a drawing's
+     glow keeps the room it had before the mask existed. */
   .plate,
   .plate:not(:first-child) {
     position: relative;
     inset: auto;
+    overflow: visible;
     transform: none;
   }
 

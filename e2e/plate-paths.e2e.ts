@@ -1,6 +1,7 @@
 import type { Browser, BrowserContextOptions, Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
+import { waitForEntrance } from './page-settled'
 import { webglIntent } from './webgl-intent'
 
 /**
@@ -115,5 +116,102 @@ test.describe('the plates are whole on every path', () => {
     const flat = live.locator('svg[role="img"]')
     await expect(flat).toHaveCSS('opacity', '0')
     await expect(flat.locator('title')).not.toBeEmpty()
+  })
+
+  /*
+   * Nothing waiting below the frame shows inside it — F4-04.
+   *
+   * A parked plate's drawing carries its entry pose (shifted up by 30%,
+   * scaled by 1.2) from the moment the timeline is built. Until each plate
+   * clipped its own drawing, plates two and three reached back up into the
+   * frame and were drawn over plate one for its whole dwell: over its drawing
+   * at 1440 × 900, over its caption at 390 × 844. Measured on production
+   * before the fix: 35 of these 96 points landed on a parked plate.
+   *
+   * Hit-testing respects a clip, so a point in the frame that lands on a
+   * plate other than the first is a plate showing where it must not. The
+   * canvas-drawn plates clip to the same boxes in
+   * `vault/webgl/plate-material/scene.tsx`; that half is not visible to
+   * hit-testing and is not asserted here.
+   */
+  test('while the first plate rests, no other plate shows in the frame', async ({
+    page,
+  }) => {
+    await page.goto('/id', { waitUntil: 'domcontentloaded' })
+    await waitForEntrance(page)
+
+    // The timeline exists once the second drawing carries its entry pose.
+    const posed = await page
+      .waitForFunction(
+        () => {
+          const drawing = document.querySelectorAll<HTMLElement>(
+            '[data-passage-drawing]'
+          )[1]
+          return drawing?.style.transform.includes('translate') ?? false
+        },
+        undefined,
+        { timeout: 15_000 }
+      )
+      .then(() => true)
+      .catch(() => false)
+    test.skip(!posed, 'the passage built no timeline, so nothing is parked')
+
+    await page.evaluate(() => {
+      const section = document.querySelector('section[data-passage]')
+      if (!section) return
+      const top = section.getBoundingClientRect().top + window.scrollY
+      // Inside the first plate's share: the pin has begun, the next has not.
+      window.scrollTo(0, top + window.innerHeight * 0.35)
+    })
+    // The pin scrubs with half a second of catch-up.
+    await page.waitForTimeout(1500)
+
+    const facts = await page.evaluate(() => {
+      const frame = document
+        .querySelector('[data-passage-frame]')
+        ?.getBoundingClientRect()
+      const plates = [...document.querySelectorAll('[data-passage-plate]')]
+      if (!frame || plates.length < 2) return null
+      const reach = Math.max(
+        0,
+        ...plates.slice(1).map((plate) => {
+          const box = plate
+            .querySelector('[data-passage-drawing]')
+            ?.getBoundingClientRect()
+          return box ? frame.bottom - box.top : 0
+        })
+      )
+      let sampled = 0
+      let first = 0
+      let parked = 0
+      for (let column = 1; column <= 8; column += 1) {
+        for (let row = 1; row <= 12; row += 1) {
+          const stack = document.elementsFromPoint(
+            frame.left + (frame.width * column) / 9,
+            frame.top + (frame.height * row) / 13
+          )
+          const owners = stack.map((element) =>
+            element.closest('[data-passage-plate]')
+          )
+          sampled += 1
+          if (owners.includes(plates[0] ?? null)) first += 1
+          if (owners.some((owner) => owner && owner !== plates[0])) {
+            parked += 1
+          }
+        }
+      }
+      return { reach: Math.round(reach), sampled, first, parked }
+    })
+
+    expect(facts, 'the home page has no reel').not.toBeNull()
+    if (!facts) return
+    expect(
+      facts.first,
+      'no point in the frame lands on the first plate, so this measured nothing'
+    ).toBeGreaterThan(0)
+    expect(
+      facts.parked,
+      `points, of ${facts.sampled} in the frame, that land on a plate still waiting below it (its drawing reaches ${facts.reach}px up into the frame)`
+    ).toBe(0)
   })
 })
