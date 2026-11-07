@@ -185,15 +185,17 @@ elemen LCP sudah dilukis di lukisan pertama: LCP teramati sama dengan FCP
 teramati di 12 template (misalnya `/metode` 248/248 ms dan beranda 319/319 ms,
 median run 2), dan 15 ms sesudahnya di `/work`. Elemen LCP-nya teks di layar
 pertama (judul, kutipan, atau paragraf); di `/work` dan halaman pekerjaan,
-sampul pertama. Model Lantern menganggap LCP menunggu semua yang diminta sebelum LCP
-teramati: di jejak tanpa pembatasan itu (run pertama setiap halaman, run 2)
-473–612 KB per halaman (HTML 16–35 KB,
-CSS 25–45 KB, huruf 206 KB, JavaScript 219–304 KB). FCP dimodelkan hanya dari
-yang memblokir render, sehingga dua angka itu terpisah sejauh itu.
+sampul pertama.
+
+Model Lantern menganggap LCP menunggu semua yang diminta sebelum LCP teramati.
+Di jejak tanpa pembatasan itu (laporan pertama setiap halaman, run 2) jumlahnya
+473–612 KB per halaman: HTML 16–35 KB, CSS 25–45 KB, huruf 206 KB, JavaScript
+219–304 KB. FCP dimodelkan hanya dari yang memblokir render, sehingga dua angka
+itu terpisah sejauh itu.
 
 **Dengan pembatasan yang diterapkan (`mobile-applied`),** LCP 2,51–3,24 s, dan
 **LCP sama dengan FCP di setiap halaman.** Jarak antara FCP dan LCP di model
-memang artefak model, tetapi lukisan pertama itu sendiri terlambat. Di run
+memang artefak model, tetapi lukisan pertama itu sendiri terlambat. Di laporan
 pertama setiap halaman:
 
 - HTML selesai di 0,68–0,92 s;
@@ -212,9 +214,10 @@ mendahulukan permintaan dengan cara yang tidak ditiru DevTools, hanya bisa
 dijawab ponsel (§6).
 
 **Tirai pembuka tidak terlihat oleh LCP, tetapi terlihat oleh pembaca.**
-_Filmstrip_ Lighthouse untuk `/metode` (run pertama `mobile`, dimuat tanpa
-pembatasan) menunjukkan tirai gelap bertulisan Arthur di 750 ms dan halaman di
-1125 ms, sementara LCP tercatat di 276 ms, di bawah tirai. Tirai tidak mengubah
+_Filmstrip_ Lighthouse untuk `/metode` (run 42247088223, laporan pertama
+`mobile`, dimuat tanpa pembatasan) menunjukkan tirai gelap bertulisan Arthur
+di 750 ms dan halaman di 1125 ms, sementara LCP tercatat di 276 ms, di bawah
+tirai. Tirai tidak mengubah
 angka LCP, dan pada kunjungan pertama isi halaman tampil sekitar satu detik
 sesudah LCP-nya. Itu keputusan rancangan F4-03 (tirai sekali per sesi), bukan
 cacat; dicatat supaya angka LCP tidak dibaca sebagai "isi tampil saat itu".
@@ -261,8 +264,9 @@ yang sama sesudah dikerjakan, dan di ponsel.
    pembatasan termasuk potongan rute lain yang di-_prefetch_ sesudah halaman
    dimuat (di `/metode`, lima skrip, 69 KB, di 473 ms).
 5. **Terima, dan pantau.** Bila ponsel pemilik di 4G sungguhan (§6) memberi LCP
-   di bawah 2,5 s, angka lab dibaca sebagai batas bawah jaringan yang lambat,
-   dan workflow dijalankan ulang setelah perubahan besar.
+   di bawah 2,5 s, angka lab dibaca sebagai skenario jaringan yang lambat,
+   bukan pengalaman pembaca biasa, dan workflow dijalankan ulang setelah
+   perubahan besar.
 
 ### B. TBT ponsel (beranda, unit, `/work`, halaman pekerjaan, sisi jaringan)
 
