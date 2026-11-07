@@ -1,11 +1,11 @@
 import type { Locator, Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
-import { REMOVED_IN_F3 } from './removed-in-f3'
 import {
   plateSkipReason,
   waitForCanvas,
   waitForPlate,
+  WEBGL_ARRIVAL_MS,
   WEBGL_TEST_BUDGET_MS,
   webglIntent,
 } from './webgl-intent'
@@ -35,10 +35,27 @@ import {
  * whatever that value happens to be. The threshold is on *range*, not on any
  * particular colour, so it keeps meaning the same thing if the palette or the
  * fixtures change.
+ *
+ * ## On `/work` since the follow-up to F4-04
+ *
+ * These gates were written against the home page's work grid. V1 removed that
+ * grid (decision D1, `docs/RENCANA-KONTEKS-V2.md`), and all four sat behind
+ * `test.fixme` from then on, while the same material kept running on `/work`
+ * (`app/[locale]/work/catalogue.tsx` passes `material` to `ProjectGrid`) and
+ * on every work page. They now measure the catalogue, through the same
+ * `project-card` and `material-image` they were written for; their claims are
+ * unchanged. The fourth was rebuilt, and says why.
  */
 
+/** Where the material lives now: the catalogue's grid. */
+const WORK = '/id/work'
+
+/** A catalogue card, the control that owns a plate. */
+const CARD = 'article[data-span] a[data-press="card"]'
+
 /**
- * Counters the leak probe installs into the page.
+ * Buffers and textures alive in each WebGL context, as counted by the probe in
+ * the last test.
  *
  * A real global rather than an assertion at each use: an assertion chain
  * hides a typo in the shape, and this shape is written here and read inside
@@ -46,71 +63,55 @@ import {
  */
 declare global {
   interface Window {
-    __glLive?: { buffers: number; textures: number }
+    __glLive?: Map<
+      WebGL2RenderingContext,
+      { buffers: number; textures: number }
+    >
   }
 }
 
 /**
- * Put the home page's work grid on screen and let the canvas draw.
+ * Put the catalogue's grid on screen and let the canvas draw.
  *
  * ## Why the wait is a parameter
  *
- * `/en` is the heaviest page on the site — eleven screens, a WebGL canvas,
- * and every cover in the catalogue — and the leak test below visits it four
- * times in a single test. Four `networkidle` waits on that page is what blew
- * a **90-second** budget twice on one CI runner, on a commit that touched
- * nothing on this route; the identical test had passed at the same budget on
- * the run before it. Raising the budget again would only move the number the
- * next slow runner has to beat.
+ * The leak test below comes back to this page several times. Four
+ * `networkidle` waits on the old home page blew a **90-second** budget twice
+ * on one CI runner, on a commit that touched nothing on that route; raising
+ * the budget again would only have moved the number the next slow runner had
+ * to beat. `networkidle` stays the default, because the single-visit tests
+ * each navigate once and the wait costs them nothing: the first visit fetches
+ * the plate's texture and leaves it warm in the HTTP cache. The wait was
+ * never the assertion.
  *
- * `networkidle` stays the default, because the three single-visit tests in
- * this file each navigate once and the wait costs them nothing. It is worth
- * paying for exactly once *per test*: the first visit fetches the plate's
- * texture and leaves it warm in the HTTP cache. The repeat visits below then
- * fetch nothing new, and `load` plus the 2500ms settle is what the mesh
- * actually needs — a decoded texture and at least one frame advanced.
- * Playwright's own documentation discourages `networkidle` generally; here it
- * is kept where it is cheap and dropped where it was not.
+ * ## Scrolled by Playwright, not by the page — Tahap 91
  *
- * The wait was never the assertion. The assertion is what the WebGL context
- * reports afterwards, and that is unchanged.
+ * `scrollIntoViewIfNeeded` re-checks until the element is really in view.
+ * One in-page `scrollIntoView` did not land on the old home page, whose pin
+ * moved the plate while it was being scrolled to; the catalogue has no pin,
+ * and the retrying scroll costs nothing here.
  */
 async function showWorkGrid(
   page: Page,
   wait: 'networkidle' | 'load' = 'networkidle'
 ) {
-  await page.goto('/id', { waitUntil: wait })
-  /*
-   * Scroll to the first plate, not to `#work` — Tahap 49.
-   *
-   * This scrolled the section into view, which worked only because the
-   * section began with its grid. It no longer does: `arth-passage` now opens
-   * `#work` with a pinned sequence, so `#work`'s start is two and a half
-   * screens above the first cover. The material never mounted, the
-   * `test.skip` below fired, and **two assertions stopped running while the
-   * suite still reported green** — the quietest way a gate can fail.
-   *
-   * And scrolled by Playwright rather than by the page — Tahap 91. One
-   * `scrollIntoView` inside the page does not land here, because the pin
-   * makes the document's layout depend on where you are in it: the plate
-   * moves while you scroll to it. Measured, after an in-page scroll, the
-   * plate sat at `top: 1870` in an 800px viewport and stayed there for the
-   * whole 30s budget — never on screen, never drawing. `behavior: 'instant'`
-   * did not change that; only re-checking does.
-   * `scrollIntoViewIfNeeded` retries until the element is really in view:
-   * after it the plate sits at `top: -32, bottom: 721` and hands over in
-   * about 5.8s.
-   */
-  const plate = page.locator('[data-material-shell]').first()
-  if ((await plate.count()) > 0) {
-    await plate.scrollIntoViewIfNeeded()
-  } else {
-    await page.locator('#work').first().scrollIntoViewIfNeeded()
-  }
+  await page.goto(WORK, { waitUntil: wait })
+  const plate = page.locator(CARD).first().locator('[data-material-shell]')
+  await expect(plate, `${WORK} renders no material plate`).toBeAttached()
+  await plate.scrollIntoViewIfNeeded()
 
   // The mesh needs its texture decoded and at least one frame advanced. The
   // canvas runs on Tempus, not on Playwright's idea of idle.
   await page.waitForTimeout(2500)
+}
+
+/** The first catalogue card, and the plate it owns. */
+function firstCard(page: Page) {
+  const card = page.locator(CARD).first()
+  // The stable shell, not the state attribute: `[data-material]` is removed
+  // the instant the handoff happens, so a locator built from it stops
+  // matching exactly when the behaviour under test starts working.
+  return { card, root: card.locator('[data-material-shell]') }
 }
 
 /**
@@ -157,9 +158,49 @@ async function readSettled(shell: Locator) {
   })
 }
 
+/**
+ * Waits until the plate reads `opacity` once settled, or fails after the
+ * WebGL budget: polled through `readSettled`, so a transition the mesh's
+ * first frames are holding back is waited for, never read half way.
+ */
+async function expectSettledOpacity(
+  root: Locator,
+  opacity: '0' | '1',
+  message: string
+) {
+  await expect
+    .poll(async () => (await readSettled(root)).opacity, {
+      message,
+      timeout: WEBGL_ARRIVAL_MS,
+    })
+    .toBe(opacity)
+}
+
+/**
+ * The catalogue on screen with its first plate handed over to the canvas, or
+ * the reason this run cannot ask for that — decided, then waited for
+ * (Tahap 90, `e2e/webgl-intent.ts`).
+ */
+async function drawnFirstPlate(page: Page) {
+  test.setTimeout(WEBGL_TEST_BUDGET_MS)
+  await showWorkGrid(page)
+  const intent = await webglIntent(page)
+  test.skip(!intent.intended, intent.reason)
+  await waitForCanvas(page)
+
+  const { card, root } = firstCard(page)
+  const plate = await waitForPlate(root)
+  test.skip(plate !== 'drawn', plateSkipReason(plate))
+  await expectSettledOpacity(
+    root,
+    '0',
+    'the material should be drawing before the press'
+  )
+  return { card, root }
+}
+
 test.describe('material layer', () => {
   test('no plate is ever a blank box', async ({ page }) => {
-    test.fixme(true, REMOVED_IN_F3.plates)
     /*
      * ## What this asserts, and what it deliberately does not
      *
@@ -215,34 +256,20 @@ test.describe('material layer', () => {
     const count = await shells.count()
     expect(
       count,
-      'the home grid renders no material shells at all'
+      'the catalogue renders no material shells at all'
     ).toBeGreaterThan(0)
 
     /*
      * The decision is waited for on the plate that was put on screen, and on
      * that one only — Tahap 91.
      *
-     * The old gate read every plate 2500ms after the scroll and believed
-     * whatever it saw; with a cold HTTP cache the first plate hands over at
-     * 2.3s, so it was read mid-flip (§`readSettled`). The first repair
-     * overcorrected and demanded a handover from **all four**, which measured
-     * the product against a promise it never made:
-     *
-     * ```
-     * plate 0  top   -2  on screen   hands over   (2.5-10s)
-     * plate 1  top  784  below fold  hands over   (by 10s)
-     * plate 2  top 1549  below fold  never, at 32s, picture loaded
-     * plate 3  top 1549  below fold  never, at 32s, picture loaded
-     * ```
-     *
      * A plate well below the fold is not asked to draw, and a gate that
-     * demands it anyway fails six times out of six against a working site.
-     * So the wait is on the plate `showWorkGrid` scrolled to — the same
-     * pattern the two tests below this one already use — and the rest are
-     * held to the invariant that survives either answer: marked means hidden,
-     * unmarked means visible.
+     * demands it anyway fails against a working site. So the wait is on the
+     * plate `showWorkGrid` scrolled to, and the rest are held to the invariant
+     * that survives either answer: marked means hidden, unmarked means
+     * visible.
      */
-    const onScreen = await waitForPlate(shells.first())
+    const onScreen = await waitForPlate(firstCard(page).root)
     test.skip(onScreen !== 'drawn', plateSkipReason(onScreen))
 
     const plates = await Promise.all(
@@ -278,33 +305,7 @@ test.describe('material layer', () => {
   test('COMMIT hands the plate back to the DOM before navigating', async ({
     page,
   }) => {
-    test.fixme(true, REMOVED_IN_F3.plates)
-    await showWorkGrid(page)
-
-    /*
-     * The stable shell, not the state attribute.
-     *
-     * `[data-material]` is removed the instant the handoff happens, so a
-     * locator built from it stops matching exactly when the behaviour under
-     * test starts working — and `.first()` then re-resolves to a different
-     * card. That produced a red gate pointing at the wrong thing;
-     * `vault/webgl/material-image/index.tsx` documents the split.
-     */
-    const root = page.locator('[data-material-shell]').first()
-    // Decided, then waited for — Tahap 90; `e2e/webgl-intent.ts` has why.
-    // This counted live plates once and skipped on zero, which is the skip
-    // Tahap 49 already caught hiding two assertions behind a green suite.
-    test.setTimeout(WEBGL_TEST_BUDGET_MS)
-    const intent = await webglIntent(page)
-    test.skip(!intent.intended, intent.reason)
-    await waitForCanvas(page)
-    const plate = await waitForPlate(root)
-    test.skip(plate !== 'drawn', plateSkipReason(plate))
-
-    await expect(
-      root,
-      'the material should be drawing before the press'
-    ).toHaveCSS('opacity', '0')
+    const { card, root } = await drawnFirstPlate(page)
 
     /*
      * `pointerdown` alone, deliberately — not `click()`.
@@ -313,15 +314,14 @@ test.describe('material layer', () => {
      * measurement has to land in the window between the press and the route
      * change. A full click closes that window.
      */
-    const card = page.locator('[data-press="card"]').first()
     const box = await card.boundingBox()
     if (!box) throw new Error('no card to press')
 
     /*
-     * Clamped into the viewport. A full-width plate is 816px tall in a 720px
-     * window, so its geometric centre is below the fold and a mouse event
-     * aimed there lands on nothing at all — the same shape of mistake as the
-     * Tahap 12 press gate that reported four working cards as silent.
+     * Clamped into the viewport. A tall plate's geometric centre can sit below
+     * the fold, and a mouse event aimed there lands on nothing at all — the
+     * same shape of mistake as the Tahap 12 press gate that reported four
+     * working cards as silent.
      */
     const viewport = page.viewportSize()
     const pressY = Math.min(
@@ -333,66 +333,103 @@ test.describe('material layer', () => {
 
     await expect(
       root,
+      'the press did not reach the card that owns the plate'
+    ).not.toHaveAttribute('data-material')
+    await expectSettledOpacity(
+      root,
+      '1',
       'COMMIT did not stand the material down — a ViewTransition would photograph an empty box'
-    ).toHaveCSS('opacity', '1')
+    )
 
     await page.mouse.up()
   })
 
   test('the keyboard reaches COMMIT too', async ({ page }) => {
-    test.fixme(true, REMOVED_IN_F3.plates)
-    await showWorkGrid(page)
+    const { card, root } = await drawnFirstPlate(page)
 
-    const root = page.locator('[data-material-shell]').first()
-    // Decided, then waited for — Tahap 90; `e2e/webgl-intent.ts` has why.
-    // This counted live plates once and skipped on zero, which is the skip
-    // Tahap 49 already caught hiding two assertions behind a green suite.
-    test.setTimeout(WEBGL_TEST_BUDGET_MS)
-    const intent = await webglIntent(page)
-    test.skip(!intent.intended, intent.reason)
-    await waitForCanvas(page)
-    const plate = await waitForPlate(root)
-    test.skip(plate !== 'drawn', plateSkipReason(plate))
-
-    await page.locator('[data-press="card"]').first().focus()
+    await card.focus()
 
     /*
-     * `keydown` without `keyup`. Enter on a link synthesises a click, and the
-     * navigation that follows would unmount what this is measuring.
+     * Enter on a link synthesises a click, and the navigation that follows
+     * would take the page this measures away mid-read. That click is
+     * cancelled here, in the capture phase on the card itself, which `Link`
+     * honours: the claim is about the keydown, which reaches COMMIT before
+     * any click exists (`project-card`'s `onKeyDown`), and the route change is
+     * the next stage's business, not this one's.
      */
+    await card.evaluate((link) => {
+      link.addEventListener('click', (event) => event.preventDefault(), {
+        capture: true,
+        once: true,
+      })
+    })
     await page.keyboard.down('Enter')
+
     await expect(
       root,
+      'the keydown did not reach the card that owns the plate'
+    ).not.toHaveAttribute('data-material')
+    await expectSettledOpacity(
+      root,
+      '1',
       'a keyboard press reaches TRANSPORT without ever producing a pointer event, and must stand the material down too'
-    ).toHaveCSS('opacity', '1')
+    )
+    await page.keyboard.up('Enter')
   })
 
   test('repeated mounts do not grow GPU memory', async ({ page }) => {
-    test.fixme(true, REMOVED_IN_F3.plates)
     /*
-     * Eight full navigations of the site's heaviest page, each waiting for
-     * the network to go quiet and then 2.5s for the canvas to draw. The
-     * default 30s covered that only while the runner had no CMS content to
-     * fetch; the first CI run with real images timed out here, inside
-     * `showWorkGrid`, on both the first attempt and the retry.
-     */
-    test.slow()
-
-    /*
-     * A growth test, not an absolute one, and stated that way on purpose.
-     * Three never frees GPU resources on its own (`CLAUDE.md` #15), and the
-     * number of live objects after one visit is not knowable from outside —
-     * it depends on the hero, on how many plates are in view, and on drei's
-     * shared texture cache. What is knowable is that leaving and returning
-     * three times must not leave more behind each time.
+     * ## Rebuilt in the follow-up to F4-04, and why the old one proved nothing
      *
-     * `renderer.info` is unreachable from a production page, so this counts
-     * at the API boundary instead: every `createBuffer` never matched by a
-     * `deleteBuffer` is a leak, whoever made it.
+     * The old version counted `createBuffer` against `deleteBuffer` from an
+     * init script and moved between pages with `page.goto`. A `goto` is a new
+     * document: the init script runs again and the counter starts again at
+     * zero, so "after one visit" and "after four" were two unrelated single
+     * loads. It could not see a leak, because a full navigation destroys the
+     * whole WebGL context, and everything in it, before the next count begins.
+     *
+     * Memory can only build up across navigations that keep the document, and
+     * on this site those are the client-side ones: the root canvas lives in
+     * the page tree, `cachedNavigations` keeps the page just left alive but
+     * hidden, and coming back rebuilds the r3f root in a new context
+     * (Tahap 85, `lib/webgl/components/canvas/webgl.tsx`). So this goes away
+     * from `/work` and back three times through links and Back, in one
+     * document, and counts buffers and textures **per context**: a rebuilt
+     * root is a new context with its own count, and a context the browser has
+     * dropped takes everything in it along.
+     *
+     * Three claims, after the last return:
+     *
+     * 1. one live context on screen, never two;
+     * 2. no context still alive on a canvas that has left the document — the
+     *    leak `e2e/webgl-lifecycle.e2e.ts` holds for the home page, held here
+     *    for the material layer;
+     * 3. the live context holds no more buffers or textures than the first
+     *    visit's did, give or take a small allowance: growth with the number of
+     *    visits is the leak. drei's texture cache keeps one texture per
+     *    distinct URL for the page's lifetime by design
+     *    (`vault/webgl/material-image/scene.tsx`), which is a cache, not a
+     *    leak, and why the allowance is not zero.
+     *
+     * `renderer.info` is unreachable from a production page, so this counts at
+     * the API boundary instead, whoever made the object.
      */
+    test.setTimeout(WEBGL_TEST_BUDGET_MS * 2)
+
     await page.addInitScript(() => {
-      const live = { buffers: 0, textures: 0 }
+      const live = new Map<
+        WebGL2RenderingContext,
+        { buffers: number; textures: number }
+      >()
       window.__glLive = live
+      const of = (context: WebGL2RenderingContext) => {
+        let entry = live.get(context)
+        if (!entry) {
+          entry = { buffers: 0, textures: 0 }
+          live.set(context, entry)
+        }
+        return entry
+      }
 
       const proto = WebGL2RenderingContext.prototype
       const makeBuffer = proto.createBuffer
@@ -401,60 +438,124 @@ test.describe('material layer', () => {
       const dropTexture = proto.deleteTexture
 
       proto.createBuffer = function createBuffer() {
-        live.buffers++
+        of(this).buffers++
         return makeBuffer.call(this)
       }
       proto.deleteBuffer = function deleteBuffer(buffer: WebGLBuffer | null) {
-        live.buffers--
+        if (buffer) of(this).buffers--
         return dropBuffer.call(this, buffer)
       }
       proto.createTexture = function createTexture() {
-        live.textures++
+        of(this).textures++
         return makeTexture.call(this)
       }
       proto.deleteTexture = function deleteTexture(
         texture: WebGLTexture | null
       ) {
-        live.textures--
+        if (texture) of(this).textures--
         return dropTexture.call(this, texture)
       }
     })
 
-    const live = () =>
-      page.evaluate(() => window.__glLive ?? { buffers: 0, textures: 0 })
+    /*
+     * What each context holds right now. Only contexts that allocated
+     * something count: a probe like `webglIntent`'s makes a context on a
+     * canvas that never enters the page, and allocates nothing.
+     */
+    const census = () =>
+      page.evaluate(() => {
+        const entries = [...(window.__glLive ?? new Map()).entries()].filter(
+          ([, held]) => held.buffers > 0 || held.textures > 0
+        )
+        const alive = entries.filter(([context]) => !context.isContextLost())
+        const onScreen = alive.filter(
+          ([context]) =>
+            context.canvas instanceof HTMLCanvasElement &&
+            context.canvas.isConnected
+        )
+        const held = onScreen.reduce(
+          (sum, [, counts]) => ({
+            buffers: sum.buffers + counts.buffers,
+            textures: sum.textures + counts.textures,
+          }),
+          { buffers: 0, textures: 0 }
+        )
+        return {
+          contexts: entries.length,
+          onScreen: onScreen.length,
+          detachedAlive: alive.length - onScreen.length,
+          ...held,
+        }
+      })
 
-    await showWorkGrid(page)
-    const first = await live()
+    /** Until the context on screen has uploaded the plate's picture. */
+    const drawing = () =>
+      expect
+        .poll(
+          async () => {
+            const now = await census()
+            return now.onScreen === 1 && now.textures > 0
+          },
+          {
+            message: `${WORK}: no live context on screen holding a texture`,
+            timeout: WEBGL_ARRIVAL_MS,
+          }
+        )
+        .toBe(true)
+
+    await drawnFirstPlate(page)
+    await drawing()
+    const first = await census()
 
     for (let visit = 0; visit < 3; visit++) {
       /*
-       * The unmount step: any page without a canvas will do, and its only
-       * job is to take this one off screen.
-       *
-       * It was `/en/ai` until Tahap 84 removed that route, then `/en/journal`
-       * until F5-04 did. `/id/kontak` is the nearest equivalent that
-       * survives — `e2e/route-budget.e2e.ts` allows it `gsap` and no
-       * `three`, so it carries no canvas to wait for.
+       * Away through a link, back through history: client-side both ways, so
+       * the document — and the counter — survive. `/id/kontak` carries no
+       * canvas (`e2e/route-budget.e2e.ts`), and the header links it from
+       * every page.
        */
-      await page.goto('/id/kontak', { waitUntil: 'domcontentloaded' })
-      // `load`, not `networkidle`: the first visit above already warmed the
-      // cache, so these three fetch nothing new. This is the only test that
-      // visits `/en` more than once, and it is the only one that needs the
-      // cheaper wait.
-      await showWorkGrid(page, 'load')
+      const away = page.locator('a[href$="/id/kontak"]').first()
+      await away.scrollIntoViewIfNeeded()
+      await away.click()
+      await page.waitForURL('**/id/kontak', { timeout: 30_000 })
+      await page.waitForTimeout(700)
+      await page.goBack()
+      await page.waitForURL((url) => url.pathname === WORK, {
+        timeout: 30_000,
+      })
+      await firstCard(page).root.scrollIntoViewIfNeeded()
+      await drawing()
+      await page.waitForTimeout(2500)
+      /*
+       * Counted like for like: the rebuilt context starts with the flowmap's
+       * own targets and uploads the plates' pictures as they draw. Given a
+       * bounded while to reach the first visit's texture count, so the
+       * comparison below is between two contexts that drew the same plates,
+       * not between a full one and one still filling up. Falling short is
+       * not a failure here: fewer objects cannot be a leak.
+       */
+      for (let check = 0; check < 20; check++) {
+        if ((await census()).textures >= first.textures) break
+        await page.waitForTimeout(500)
+      }
     }
-    const last = await live()
+    const last = await census()
 
-    /*
-     * A small allowance, not zero. drei's texture cache retains one texture
-     * per distinct URL for the page's lifetime by design — that is a cache,
-     * not a leak, and `vault/webgl/material-image/scene.tsx` documents why it
-     * must not be disposed. What this rejects is growth proportional to the
-     * number of visits.
-     */
+    expect(
+      last.onScreen,
+      `${last.onScreen} live contexts on screen after three returns`
+    ).toBe(1)
+    expect(
+      last.detachedAlive,
+      `a context is still alive on a canvas that left the document (${last.contexts} contexts seen)`
+    ).toBe(0)
     expect(
       last.buffers,
-      `WebGL buffers grew ${first.buffers} → ${last.buffers} across 3 revisits`
+      `WebGL buffers in the live context grew ${first.buffers} → ${last.buffers} across 3 returns`
     ).toBeLessThanOrEqual(first.buffers + 8)
+    expect(
+      last.textures,
+      `WebGL textures in the live context grew ${first.textures} → ${last.textures} across 3 returns`
+    ).toBeLessThanOrEqual(first.textures + 8)
   })
 })
