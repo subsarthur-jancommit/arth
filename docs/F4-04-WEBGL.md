@@ -195,7 +195,15 @@ Perbaikannya:
 
 Uji ini tidak dibuktikan merah di CI secara terpisah. Bukti cacatnya adalah
 tangkapan layar run 42248805090 dan pengukuran produksi di atas; logika uji
-yang sama memberi 35 dari 96 di produksi sebelum perbaikan.
+yang sama memberi 35 dari 96 di produksi sebelum perbaikan. Di run 42253810866
+(head `16056b1`, dengan perbaikan) uji ini lulus di proyek desktop dan mobile.
+
+Satu akibat yang terlihat di jalur WebGL, dan disengaja: pelat menyala yang
+masih menunggu tidak lagi digambar, karena kotak potongnya kosong. Ia menyala
+ketika pelatnya mulai masuk bingkai, bukan sejak halaman dimuat. Sebelumnya
+ketiganya menyala sejak awal justru karena bagian yang menjulur itu terlihat.
+Rekaman run 42253810866 mencatatnya: di 1440 dengan WebGL, pelat 1 menyala,
+pelat 2 dan 3 tetap datar (dan terpotong oleh pelatnya) sampai gilirannya.
 
 ## 5. Tangkapan layar
 
@@ -235,8 +243,11 @@ rekaman:
 - **390 × 844.** Ketiga rute tanpa kanvas di ketiga jalur, sesuai vonis lebar.
 
 Penilaian: jalur tanpa WebGL di ketiga rute terlihat disengaja, dengan satu
-pengecualian, lintasan beranda, yang diperbaiki di §4.2. Run pada head terakhir
-PR ini membuat ulang semua gambar dengan kedua perbaikan terpasang.
+pengecualian, lintasan beranda, yang diperbaiki di §4.2. Run 42253810866 (head
+`16056b1`, dengan kedua perbaikan) membuat ulang semua gambar: di beranda, pelat
+1 berdiri sendiri di bingkai pada kedua ukuran, dengan dan tanpa WebGL, dan
+keterangannya di 390 × 844 terbaca utuh. Run pada head terakhir PR ini membuat
+semuanya lagi.
 
 ## 6. Biaya, dari pengukuran lab F4-06
 
