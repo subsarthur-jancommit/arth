@@ -247,15 +247,27 @@ export function PlateMaterialScene({
     // The flat plate's box as drawn now, every transform above it included:
     // the reel's wipe, the drawing's counter-move, the frame's settle.
     const box = svg.getBoundingClientRect()
-    const frame = element.closest('[data-plate-clip]')?.getBoundingClientRect()
-    const left = Math.max(box.left, frame?.left ?? 0, 0)
-    const right = Math.min(box.right, frame?.right ?? size.width, size.width)
-    const top = Math.max(box.top, frame?.top ?? 0, 0)
-    const bottom = Math.min(
-      box.bottom,
-      frame?.bottom ?? size.height,
-      size.height
-    )
+    let left = Math.max(box.left, 0)
+    let right = Math.min(box.right, size.width)
+    let top = Math.max(box.top, 0)
+    let bottom = Math.min(box.bottom, size.height)
+    /*
+     * Inside every box marked as a clip above it, not only the nearest —
+     * F4-04. The frame clips the reel, and each plate clips its own drawing:
+     * a plate parked below the frame carries its drawing's entry pose, which
+     * reaches back up into the frame. The flat drawing is clipped by the
+     * plate's `overflow: clip`; this is the same clip for the lit one, which
+     * was otherwise drawn over the plate in front for its whole dwell.
+     */
+    let clip = element.closest('[data-plate-clip]')
+    while (clip) {
+      const rect = clip.getBoundingClientRect()
+      left = Math.max(left, rect.left)
+      right = Math.min(right, rect.right)
+      top = Math.max(top, rect.top)
+      bottom = Math.min(bottom, rect.bottom)
+      clip = clip.parentElement?.closest('[data-plate-clip]') ?? null
+    }
     if (box.width <= 0 || box.height <= 0 || left >= right || top >= bottom) {
       return hide()
     }
