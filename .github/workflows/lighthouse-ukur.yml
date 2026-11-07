@@ -1,0 +1,128 @@
+name: Lighthouse ukur
+permissions:
+  contents: read
+
+# F4-06 "Ukur di perangkat nyata", the lab half: Lighthouse against
+# production, on every template the package names, with a phone profile and a
+# desktop one. `.github/scripts/lighthouse-ukur.mjs` runs and summarises it;
+# `docs/F4-06-UKUR.md` carries the results, how to read them, and the owner's
+# half of the package, which is a real phone.
+#
+# ## By hand only
+#
+# `workflow_dispatch`: measuring production has nothing to do with a push, and
+# four jobs of Lighthouse are not something every PR should pay for. Actions
+# → Lighthouse ukur → Run workflow, on `main`. The summary is on the run page
+# and in the `lighthouse-ringkasan` artifact; every report is in
+# `lighthouse-<variant>`.
+#
+# The first two measurements ran from the PR that added this file, under a
+# `pull_request` trigger limited to its two files (runs 42247088223 and
+# 42249548838): GitHub dispatches a workflow only once it is on the default
+# branch. That trigger was removed before merge.
+#
+# ## Lab, not field
+#
+# - No INP. Lighthouse's navigation mode sees no interaction, so it reports
+#   TBT, which the doc uses as the lab proxy and names as such (CLAUDE.md #19).
+# - `mobile` is Lighthouse's default: simulated throttling at 150 ms RTT,
+#   1.6 Mbps and a 4x CPU slowdown, which Lighthouse calls slow 4G. A model of
+#   a mid-range phone on a slow link, not a phone. `mobile-applied` imposes
+#   the same profile on the browser instead of modelling it; the script says
+#   why both are kept.
+# - The runner is a shared VM in GitHub's network, not in Indonesia. Each
+#   report's `benchmarkIndex` records how fast that machine was.
+# - Every run is a first visit: Lighthouse resets storage, so the
+#   once-per-session entrance curtain plays on every page it measures.
+on:
+  workflow_dispatch:
+    inputs:
+      site:
+        description: Origin to measure
+        default: https://arth-test-01.vercel.app
+      runs:
+        description: Runs per page and variant; the median is reported
+        default: '3'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  LIGHTHOUSE_VERSION: 13.5.0
+  SITE: ${{ inputs.site || 'https://arth-test-01.vercel.app' }}
+  RUNS: ${{ inputs.runs || '3' }}
+
+jobs:
+  measure:
+    name: measure (${{ matrix.variant }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      # One variant failing says nothing about the others.
+      fail-fast: false
+      matrix:
+        variant: [mobile, mobile-applied, desktop, desktop-webgl]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+
+      # Pinned, so two runs a month apart measure the site and not two
+      # versions of Lighthouse. The runner's own Chrome is used, and its
+      # version is printed here and recorded in every report.
+      - name: Install Lighthouse
+        run: |
+          npm install --no-save --no-audit --no-fund --prefix "$RUNNER_TEMP/lighthouse" "lighthouse@$LIGHTHOUSE_VERSION"
+          echo "LIGHTHOUSE_BIN=$RUNNER_TEMP/lighthouse/node_modules/.bin/lighthouse" >> "$GITHUB_ENV"
+          google-chrome --version
+
+      - name: Measure
+        env:
+          VARIANT: ${{ matrix.variant }}
+        run: node .github/scripts/lighthouse-ukur.mjs measure "$VARIANT" lighthouse
+
+      - name: Upload the reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-${{ matrix.variant }}
+          path: lighthouse/
+          if-no-files-found: warn
+          retention-days: 30
+
+  report:
+    needs: measure
+    # A variant that failed still leaves the others worth reading.
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: lighthouse-*
+          path: lighthouse
+          merge-multiple: true
+
+      - name: Summarise
+        run: |
+          node .github/scripts/lighthouse-ukur.mjs summarise lighthouse ringkasan.md ringkasan.json
+          cat ringkasan.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the summary
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-ringkasan
+          path: |
+            ringkasan.md
+            ringkasan.json
+          retention-days: 90
