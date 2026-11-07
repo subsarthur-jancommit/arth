@@ -179,10 +179,10 @@ async function expectSettledOpacity(
 /**
  * The catalogue on screen with its first plate handed over to the canvas, or
  * the reason this run cannot ask for that — decided, then waited for
- * (Tahap 90, `e2e/webgl-intent.ts`).
+ * (Tahap 90, `e2e/webgl-intent.ts`). Each caller sets its own budget first;
+ * this sets none, so it never shortens a longer one.
  */
 async function drawnFirstPlate(page: Page) {
-  test.setTimeout(WEBGL_TEST_BUDGET_MS)
   await showWorkGrid(page)
   const intent = await webglIntent(page)
   test.skip(!intent.intended, intent.reason)
@@ -305,6 +305,7 @@ test.describe('material layer', () => {
   test('COMMIT hands the plate back to the DOM before navigating', async ({
     page,
   }) => {
+    test.setTimeout(WEBGL_TEST_BUDGET_MS)
     const { card, root } = await drawnFirstPlate(page)
 
     /*
@@ -318,17 +319,23 @@ test.describe('material layer', () => {
     if (!box) throw new Error('no card to press')
 
     /*
-     * Clamped into the viewport. A tall plate's geometric centre can sit below
-     * the fold, and a mouse event aimed there lands on nothing at all — the
-     * same shape of mistake as the Tahap 12 press gate that reported four
-     * working cards as silent.
+     * In the middle of the part of the card that is on screen. A tall card's
+     * geometric centre can sit below the fold, and a mouse event aimed there
+     * lands on nothing at all — the same shape of mistake as the Tahap 12
+     * press gate that reported four working cards as silent. Clamping that
+     * centre to the bottom of the viewport is not enough either: for a card
+     * whose top sits just above the fold, the clamped point is above it.
      */
-    const viewport = page.viewportSize()
-    const pressY = Math.min(
-      box.y + box.height / 2,
-      (viewport?.height ?? 720) - 40
+    const viewportHeight = page.viewportSize()?.height ?? 720
+    const visibleTop = Math.max(box.y, 0)
+    const visibleBottom = Math.min(box.y + box.height, viewportHeight)
+    if (visibleBottom - visibleTop < 2) {
+      throw new Error('the card that owns the plate is not on screen to press')
+    }
+    await page.mouse.move(
+      box.x + box.width / 2,
+      (visibleTop + visibleBottom) / 2
     )
-    await page.mouse.move(box.x + box.width / 2, pressY)
     await page.mouse.down()
 
     await expect(
@@ -345,6 +352,7 @@ test.describe('material layer', () => {
   })
 
   test('the keyboard reaches COMMIT too', async ({ page }) => {
+    test.setTimeout(WEBGL_TEST_BUDGET_MS)
     const { card, root } = await drawnFirstPlate(page)
 
     await card.focus()
