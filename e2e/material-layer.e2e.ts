@@ -54,8 +54,19 @@ const WORK = '/id/work'
 const CARD = 'article[data-span] a[data-press="card"]'
 
 /**
- * Buffers and textures alive in each WebGL context, as counted by the probe in
- * the last test.
+ * What one WebGL context holds, as the probe in the last test counts it: its
+ * live buffers and textures, the pictures uploaded into it (by URL), and the
+ * indexed draw calls made with it.
+ */
+interface GlHeld {
+  buffers: number
+  textures: number
+  pictures: Set<string>
+  draws: number
+}
+
+/**
+ * The probe's count, per context.
  *
  * A real global rather than an assertion at each use: an assertion chain
  * hides a typo in the shape, and this shape is written here and read inside
@@ -63,10 +74,7 @@ const CARD = 'article[data-span] a[data-press="card"]'
  */
 declare global {
   interface Window {
-    __glLive?: Map<
-      WebGL2RenderingContext,
-      { buffers: number; textures: number }
-    >
+    __glLive?: Map<WebGL2RenderingContext, GlHeld>
   }
 }
 
@@ -401,42 +409,73 @@ test.describe('material layer', () => {
      * the page tree, `cachedNavigations` keeps the page just left alive but
      * hidden, and coming back rebuilds the r3f root in a new context
      * (Tahap 85, `lib/webgl/components/canvas/webgl.tsx`). So this goes away
-     * from `/work` and back three times through links and Back, in one
-     * document, and counts buffers and textures **per context**: a rebuilt
-     * root is a new context with its own count, and a context the browser has
-     * dropped takes everything in it along.
+     * from `/work` and back through a link and Back, in one document, and
+     * counts buffers and textures **per context**: a rebuilt root is a new
+     * context with its own count, and a context the browser has dropped takes
+     * everything in it along.
      *
-     * Three claims, after the last return:
+     * ## What a context holds, and why the count rose once — measured
+     *
+     * The first rebuilt version compared the first visit's context with the
+     * one after three returns and failed in CI, 10 buffers against 26
+     * (run 42332367814, on both attempts). It was not a leak. A context holds
+     * a fixed base — two buffers and six textures, measured — and two things
+     * per plate, which arrive at different moments:
+     *
+     * - **its picture**, one texture, from drei's `useTexture` cache (R3F's
+     *   `useLoader`, keyed by URL), which
+     *   `vault/webgl/material-image/scene.tsx` keeps for the page's lifetime
+     *   by design. drei uploads it into the context the moment the plate's
+     *   scene mounts (`gl.initTexture`), and a plate's scene mounts once its
+     *   lazy `<img>` has loaded; the context's loss frees the GPU copy;
+     * - **its `<planeGeometry />`**, four buffers (position, normal, uv,
+     *   index; R3F disposes it on unmount), uploaded the first time the plate
+     *   is drawn in that context. When a rebuilt canvas mounts, drei's
+     *   `<Preload all />` (`lib/webgl/components/canvas/webgl.tsx`) draws
+     *   every plate already mounted, on screen or not.
+     *
+     * So the count follows how many of the catalogue's six plates have
+     * mounted, and stops there: 2 + 2 × 4 = 10 buffers on a first visit that
+     * has drawn the two plates above the fold, 2 + 6 × 4 = 26 once all six
+     * pictures have loaded and a context has taken them all. Measured on
+     * production at 1280 × 720, in one document: three seconds after a
+     * return, the rebuilt context already held all six pictures and 26
+     * buffers with two plates on screen, and neither count moved while every
+     * plate was then scrolled through; across six returns, every context left
+     * behind was lost and detached, with its buffers deleted. The old
+     * comparison set a context that had taken two plates against one that
+     * had taken six.
+     *
+     * So every count here is taken in the same state, the most a context can
+     * hold. On the first visit every plate is brought on screen until it
+     * draws (`waitForPlate`), so all six pictures load. Then, in each
+     * context: every one of those pictures held, every plate brought on
+     * screen again while the context draws, and the count settled. One return
+     * warms up, and the three after it must add **nothing** — no allowance,
+     * because the plateau is the claim. After every return:
      *
      * 1. one live context on screen, never two;
      * 2. no context still alive on a canvas that has left the document — the
      *    leak `e2e/webgl-lifecycle.e2e.ts` holds for the home page, held here
      *    for the material layer;
-     * 3. the live context holds no more buffers or textures than the first
-     *    visit's did, give or take a small allowance: growth with the number of
-     *    visits is the leak. drei's texture cache keeps one texture per
-     *    distinct URL for the page's lifetime by design
-     *    (`vault/webgl/material-image/scene.tsx`), which is a cache, not a
-     *    leak, and why the allowance is not zero.
+     * 3. after the warm-up, no more buffers or textures in the live context
+     *    than the warm-up context held.
      *
      * `renderer.info` is unreachable from a production page, so this counts at
      * the API boundary instead, whoever made the object.
      */
-    test.setTimeout(WEBGL_TEST_BUDGET_MS * 2)
+    test.setTimeout(WEBGL_TEST_BUDGET_MS * 3)
 
     await page.addInitScript(() => {
-      const live = new Map<
-        WebGL2RenderingContext,
-        { buffers: number; textures: number }
-      >()
+      const live = new Map<WebGL2RenderingContext, GlHeld>()
       window.__glLive = live
       const of = (context: WebGL2RenderingContext) => {
-        let entry = live.get(context)
-        if (!entry) {
-          entry = { buffers: 0, textures: 0 }
-          live.set(context, entry)
+        let held = live.get(context)
+        if (!held) {
+          held = { buffers: 0, textures: 0, pictures: new Set(), draws: 0 }
+          live.set(context, held)
         }
-        return entry
+        return held
       }
 
       const proto = WebGL2RenderingContext.prototype
@@ -444,6 +483,9 @@ test.describe('material layer', () => {
       const dropBuffer = proto.deleteBuffer
       const makeTexture = proto.createTexture
       const dropTexture = proto.deleteTexture
+      const upload = proto.texImage2D
+      const uploadInto = proto.texSubImage2D
+      const drawIndexed = proto.drawElements
 
       proto.createBuffer = function createBuffer() {
         of(this).buffers++
@@ -463,6 +505,36 @@ test.describe('material layer', () => {
         if (texture) of(this).textures--
         return dropTexture.call(this, texture)
       }
+
+      /*
+       * three hands a picture to the GPU as the `<img>` it was loaded into,
+       * last argument whichever call it uses, so the URL says which plate it
+       * is: the scene loads the `currentSrc` of the plate's own `<img>`.
+       */
+      proto.texImage2D = function texImage2D(
+        this: WebGL2RenderingContext,
+        ...args: unknown[]
+      ) {
+        const source = args[args.length - 1]
+        if (source instanceof HTMLImageElement) {
+          of(this).pictures.add(source.currentSrc || source.src)
+        }
+        Reflect.apply(upload, this, args)
+      }
+      proto.texSubImage2D = function texSubImage2D(
+        this: WebGL2RenderingContext,
+        ...args: unknown[]
+      ) {
+        const source = args[args.length - 1]
+        if (source instanceof HTMLImageElement) {
+          of(this).pictures.add(source.currentSrc || source.src)
+        }
+        Reflect.apply(uploadInto, this, args)
+      }
+      proto.drawElements = function drawElements(mode, count, type, offset) {
+        of(this).draws++
+        drawIndexed.call(this, mode, count, type, offset)
+      }
     })
 
     /*
@@ -472,9 +544,11 @@ test.describe('material layer', () => {
      */
     const census = () =>
       page.evaluate(() => {
-        const entries = [...(window.__glLive ?? new Map()).entries()].filter(
-          ([, held]) => held.buffers > 0 || held.textures > 0
-        )
+        const entries = [
+          ...(
+            window.__glLive ?? new Map<WebGL2RenderingContext, GlHeld>()
+          ).entries(),
+        ].filter(([, held]) => held.buffers > 0 || held.textures > 0)
         const alive = entries.filter(([context]) => !context.isContextLost())
         const onScreen = alive.filter(
           ([context]) =>
@@ -485,13 +559,15 @@ test.describe('material layer', () => {
           (sum, [, counts]) => ({
             buffers: sum.buffers + counts.buffers,
             textures: sum.textures + counts.textures,
+            draws: sum.draws + counts.draws,
           }),
-          { buffers: 0, textures: 0 }
+          { buffers: 0, textures: 0, draws: 0 }
         )
         return {
           contexts: entries.length,
           onScreen: onScreen.length,
           detachedAlive: alive.length - onScreen.length,
+          pictures: onScreen.flatMap(([, counts]) => [...counts.pictures]),
           ...held,
         }
       })
@@ -511,16 +587,99 @@ test.describe('material layer', () => {
         )
         .toBe(true)
 
+    /*
+     * The first visit: the grid on screen, then every plate brought on screen
+     * until it draws, so that every picture loads and every plate's scene
+     * mounts. A plate with no picture to draw keeps its `<img>` and is left
+     * out of every count alike; one whose picture is still arriving after the
+     * budget leaves this run unable to say what a full context holds.
+     */
     await drawnFirstPlate(page)
     await drawing()
-    const first = await census()
+    const plates: { index: number; shell: Locator; picture: string }[] = []
+    const shells = await page
+      .locator('[data-material-shell]')
+      .filter({ visible: true })
+      .all()
+    for (const [index, shell] of shells.entries()) {
+      await shell.scrollIntoViewIfNeeded()
+      const state = await waitForPlate(shell)
+      test.skip(state === 'image-pending', plateSkipReason(state))
+      if (state !== 'drawn') continue
+      const picture = await shell
+        .locator('img')
+        .evaluate((img) =>
+          img instanceof HTMLImageElement ? img.currentSrc : ''
+        )
+      plates.push({ index, shell, picture })
+    }
+    expect(
+      plates.length,
+      `${WORK}: no plate drew on the first visit`
+    ).toBeGreaterThan(0)
 
-    for (let visit = 0; visit < 3; visit++) {
+    /** Draw calls enough for a few frames with a plate on screen. */
+    const FEW_FRAMES = 12
+
+    /**
+     * The live context brought to the most it can hold, then counted once the
+     * count has stopped moving — the state every count in this test is taken
+     * in, so that contexts are compared like for like.
+     */
+    const fullContext = async (when: string) => {
+      // Every plate's scene mounted here: drei uploads the picture as the
+      // scene mounts, so a picture the context lacks names a missing plate.
+      await expect
+        .poll(
+          async () => {
+            const held = new Set((await census()).pictures)
+            return plates
+              .filter((plate) => !held.has(plate.picture))
+              .map((plate) => plate.index)
+          },
+          {
+            message: `${when}: plates whose picture never reached the live context`,
+            timeout: WEBGL_ARRIVAL_MS,
+          }
+        )
+        .toEqual([])
+
+      // Every plate drawn here: on screen while the context draws a few
+      // frames. `<Preload all />` has usually drawn them all already; this
+      // makes sure of it rather than assuming it.
+      for (const plate of plates) {
+        await plate.shell.scrollIntoViewIfNeeded()
+        const before = (await census()).draws
+        await expect
+          .poll(async () => (await census()).draws, {
+            message: `${when}: the live context drew nothing with plate ${plate.index} on screen`,
+            timeout: WEBGL_ARRIVAL_MS,
+          })
+          .toBeGreaterThanOrEqual(before + FEW_FRAMES)
+      }
+
+      // Settled: the same count three reads in a row, half a second apart,
+      // within a bounded while. A plate still uploading shows as movement.
+      let last = await census()
+      let steady = 0
+      for (let check = 0; check < 30 && steady < 3; check++) {
+        await page.waitForTimeout(500)
+        const now = await census()
+        steady =
+          now.buffers === last.buffers && now.textures === last.textures
+            ? steady + 1
+            : 0
+        last = now
+      }
+      return last
+    }
+
+    /** One return: away through a link, back through history, counted. */
+    const roundTrip = async (visit: number) => {
       /*
-       * Away through a link, back through history: client-side both ways, so
-       * the document — and the counter — survive. `/id/kontak` carries no
-       * canvas (`e2e/route-budget.e2e.ts`), and the header links it from
-       * every page.
+       * Client-side both ways, so the document — and the counter — survive.
+       * `/id/kontak` carries no canvas (`e2e/route-budget.e2e.ts`), and the
+       * header links it from every page.
        */
       const away = page.locator('a[href$="/id/kontak"]').first()
       await away.scrollIntoViewIfNeeded()
@@ -531,39 +690,41 @@ test.describe('material layer', () => {
       await page.waitForURL((url) => url.pathname === WORK, {
         timeout: 30_000,
       })
-      await firstCard(page).root.scrollIntoViewIfNeeded()
       await drawing()
-      await page.waitForTimeout(2500)
-      /*
-       * Counted like for like: the rebuilt context starts with the flowmap's
-       * own targets and uploads the plates' pictures as they draw. Given a
-       * bounded while to reach the first visit's texture count, so the
-       * comparison below is between two contexts that drew the same plates,
-       * not between a full one and one still filling up. Falling short is
-       * not a failure here: fewer objects cannot be a leak.
-       */
-      for (let check = 0; check < 20; check++) {
-        if ((await census()).textures >= first.textures) break
-        await page.waitForTimeout(500)
-      }
+      return fullContext(`return ${visit}`)
     }
-    const last = await census()
 
-    expect(
-      last.onScreen,
-      `${last.onScreen} live contexts on screen after three returns`
-    ).toBe(1)
-    expect(
-      last.detachedAlive,
-      `a context is still alive on a canvas that left the document (${last.contexts} contexts seen)`
-    ).toBe(0)
-    expect(
-      last.buffers,
-      `WebGL buffers in the live context grew ${first.buffers} → ${last.buffers} across 3 returns`
-    ).toBeLessThanOrEqual(first.buffers + 8)
-    expect(
-      last.textures,
-      `WebGL textures in the live context grew ${first.textures} → ${last.textures} across 3 returns`
-    ).toBeLessThanOrEqual(first.textures + 8)
+    const first = await fullContext('first visit')
+
+    // One warm-up and three that must add nothing.
+    const RETURNS = 4
+    const rounds: Awaited<ReturnType<typeof census>>[] = []
+    for (let visit = 1; visit <= RETURNS; visit++) {
+      const round = await roundTrip(visit)
+      rounds.push(round)
+      expect(
+        round.onScreen,
+        `return ${visit}: ${round.onScreen} live contexts on screen`
+      ).toBe(1)
+      expect(
+        round.detachedAlive,
+        `return ${visit}: a context is still alive on a canvas that left the document (${round.contexts} contexts seen)`
+      ).toBe(0)
+    }
+
+    const series = (key: 'buffers' | 'textures') =>
+      `first visit ${first[key]}, then ${rounds.map((round) => round[key]).join(' ')}`
+    const [warm, ...after] = rounds
+    if (!warm) throw new Error('no return was counted')
+    for (const [index, round] of after.entries()) {
+      expect(
+        round.buffers,
+        `WebGL buffers grew after the warm-up, at return ${index + 2}: ${series('buffers')}`
+      ).toBeLessThanOrEqual(warm.buffers)
+      expect(
+        round.textures,
+        `WebGL textures grew after the warm-up, at return ${index + 2}: ${series('textures')}`
+      ).toBeLessThanOrEqual(warm.textures)
+    }
   })
 })
