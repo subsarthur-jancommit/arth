@@ -148,7 +148,7 @@ const NOSCRIPT_STYLE =
   '[data-passage]{min-height:auto!important}' +
   '[data-passage-stage]{padding-block:0!important}' +
   '[data-passage-frame]{display:grid!important;gap:calc(var(--section-lead) * 2)!important;height:auto!important;overflow:visible!important}' +
-  '[data-passage-plate]{position:relative!important;inset:auto!important;transform:none!important}' +
+  '[data-passage-plate]{position:relative!important;inset:auto!important;overflow:visible!important;transform:none!important}' +
   '[data-passage-drawing] svg{height:auto!important;max-height:75svh!important}'
 
 interface PassageProps {
@@ -376,6 +376,13 @@ export function Passage({
                   className={s.plate}
                   data-passage-plate=""
                   data-plate-fade=""
+                  /*
+                    A clip as well as the frame — F4-04. The flat drawing
+                    is clipped by the plate's own `overflow: clip`; the lit
+                    one is drawn by the canvas, which reads every
+                    `[data-plate-clip]` above it to do the same.
+                  */
+                  data-plate-clip=""
                 >
                   <div className={s.drawing} data-passage-drawing="">
                     {plate.media}

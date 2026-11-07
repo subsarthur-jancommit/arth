@@ -36,9 +36,10 @@
  * ## What the page tells it
  *
  * `data-plate-progress` on this element (0 to 1), which the page's own
- * timeline writes as the reader scrolls; `[data-plate-clip]` above it, the
- * box the plate must stay inside; and `[data-plate-fade]` above it, whose
- * opacity the lit plate takes on.
+ * timeline writes as the reader scrolls; every `[data-plate-clip]` above it,
+ * the boxes the plate must stay inside (in the passage, the frame and the
+ * plate that carries the drawing, since F4-04); and `[data-plate-fade]` above
+ * it, whose opacity the lit plate takes on.
  */
 
 import cn from 'clsx'
