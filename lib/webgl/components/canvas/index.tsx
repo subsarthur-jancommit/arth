@@ -80,6 +80,18 @@ function whenIdle(task: () => void): () => void {
   }
 }
 
+/**
+ * Runs `task` now, or once the browser is idle when `idle` is set; returns
+ * what cancels a task still waiting.
+ */
+function startWhen(idle: boolean, task: () => void): () => void {
+  if (!idle) {
+    task()
+    return () => undefined
+  }
+  return whenIdle(task)
+}
+
 function useWebGLCanvasComponent(
   enabled: boolean,
   idle: boolean
@@ -90,7 +102,10 @@ function useWebGLCanvasComponent(
     if (!enabled || component) return
 
     let cancelled = false
-    const load = () => {
+    // Cancelled on unmount like the import itself (`CLAUDE.md` #7): a page
+    // left before the browser idled never starts loading three.js. Without
+    // `idle` the import starts at once, as it always did.
+    const cancelWait = startWhen(idle, () => {
       import('./webgl')
         .then(({ WebGLCanvas }) => {
           // Wrapped in a thunk: `setState` calls a bare function argument as
@@ -102,21 +117,11 @@ function useWebGLCanvasComponent(
           // and the page keeps whatever non-WebGL path it already renders —
           // `CLAUDE.md` #14: the site must never depend on 3D to be usable.
         })
-    }
+    })
 
-    if (!idle) {
-      load()
-      return () => {
-        cancelled = true
-      }
-    }
-
-    // Cancelled on unmount like the import itself (`CLAUDE.md` #7): a page
-    // left before the browser idled never starts loading three.js.
-    const cancelIdle = whenIdle(load)
     return () => {
       cancelled = true
-      cancelIdle()
+      cancelWait()
     }
   }, [enabled, component, idle])
 
