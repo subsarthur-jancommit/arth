@@ -5,13 +5,24 @@
  * Do NOT add Header/Footer to layout.tsx or individual pages - they render here.
  *
  * Customize the Header and Footer components for your project needs.
+ *
+ * ## No `'use client'`, and that is the point
+ *
+ * This was a Client Component, so everything it imports was one too — the
+ * footer included, which holds no state and needs no JavaScript beyond its
+ * own small islands. It renders on the server now (F4-06 perbaikan, lever B2,
+ * `docs/F4-06-UKUR.md` §4.B.2): the header, the theme, the canvas, Lenis and
+ * the rest are Client Components of their own and stay so; the footer reaches
+ * the browser as HTML and its islands. The one thing that needed a client
+ * module here, GSAP's runtime loaded with `ssr: false`, moved to
+ * `./lazy-gsap-runtime`. `app/[locale]/error.tsx` imports this from a client
+ * module, where it still renders as one, so nothing in it may depend on which
+ * side it runs on.
  */
-'use client'
 
 import cn from 'clsx'
 import type { LenisOptions } from 'lenis'
 import { useTranslations } from 'next-intl'
-import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
 
 import { Footer } from '@/components/layout/footer'
@@ -24,18 +35,7 @@ import type { Dialect } from '@/vault/motion/dialect'
 import { GridUnderlay } from '@/vault/motion/grid-underlay'
 import { Canvas } from '@/webgl/components/canvas'
 
-/**
- * GSAP's clock handed to Tempus, so tweens share one frame loop with Lenis and
- * WebGL. Loaded per page rather than from the layout: mounting it globally put
- * GSAP into every page's graph, including pages that never animate.
- */
-const GSAPRuntime = dynamic(
-  () =>
-    import('@/components/effects/gsap').then((mod) => ({
-      default: mod.GSAPRuntime,
-    })),
-  { ssr: false }
-)
+import { LazyGSAPRuntime } from './lazy-gsap-runtime'
 
 function isLenisOptions(value: boolean | LenisOptions): value is LenisOptions {
   return typeof value === 'object'
@@ -242,7 +242,7 @@ export function Wrapper({
         `g` key asks — Tata & Gerak, stage 5. Nothing is rendered until then.
       */}
       <GridUnderlay />
-      {gsap && <GSAPRuntime />}
+      {gsap && <LazyGSAPRuntime />}
       {lenis && (
         <Lenis
           root

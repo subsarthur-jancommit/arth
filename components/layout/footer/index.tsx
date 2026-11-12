@@ -35,19 +35,22 @@ import s from './footer.module.css'
  *
  * ## Where this runs
  *
- * The file declares no `'use client'` and holds no state, but it is imported
- * by `components/layout/wrapper`, which does — so in practice it renders as a
- * client component. `useTranslations` works either way: the layout wraps the
- * tree in `NextIntlClientProvider`. Written without state so it can move back
- * to the server the moment Wrapper stops needing to be a client component.
+ * On the server, since F4-06 perbaikan (lever B2): `components/layout/wrapper`
+ * stopped being a Client Component, so a page rendered on the server renders
+ * its footer there too, and only the footer's islands — the index link, the
+ * grid toggle, the marquee, the links — reach the browser as components.
+ * `app/[locale]/error.tsx` still imports the wrapper from a client module, and
+ * there the footer renders as a client component, so it stays without state
+ * and reads its words with `useTranslations`, which works on either side.
  */
 
 /*
  * Read once at module scope, never during render.
  *
  * `new Date()` inside the component body is a clock read, and under Cache
- * Components that makes the enclosing boundary dynamic. Because this footer
- * renders inside `Wrapper` (a Client Component), the effect is not a slower
+ * Components that makes the enclosing boundary dynamic. Where this footer
+ * renders as a Client Component (inside `Wrapper` until F4-06 perbaikan, and
+ * inside `app/[locale]/error.tsx` still), the effect is not a slower
  * render — React bails the whole boundary to client-side rendering, and the
  * prerendered HTML for `/en` and `/id` ships with no header, no footer and no
  * page content at all. Nothing warns: the build succeeds, dev looks correct,
@@ -64,8 +67,10 @@ const YEAR = new Date().getFullYear()
  *
  * This used to be a literal here: `studio@arth.example`, duplicating
  * `lib/content/home-fallback.ts`. The home page resolves
- * the same fields against the CMS; this footer cannot, because it renders
- * inside the client `Wrapper` and has no server data of its own. Sharing the
+ * the same fields against the CMS; this footer does not. It rendered inside
+ * the client `Wrapper` with no server data of its own, and since it renders
+ * on the server (F4-06 perbaikan) it still must not need any: `error.tsx`
+ * renders it as a client component. Sharing the
  * constant is what makes that a *fallback* rather than a second opinion, and
  * what makes wiring the CMS through later one edit instead of three. No
  * social profile is linked until Arthur's official accounts are supplied.
