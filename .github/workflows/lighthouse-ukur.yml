@@ -34,6 +34,21 @@ permissions:
 #   report's `benchmarkIndex` records how fast that machine was.
 # - Every run is a first visit: Lighthouse resets storage, so the
 #   once-per-session entrance curtain plays on every page it measures.
+#
+# ## A ref built on the runner: lab A/B, not production
+#
+# `ref` (optional) measures a commit before it reaches production. Each job
+# checks that ref out, builds it with the three public Sanity values `ci.yml`
+# already builds with, serves it with `next start` on the runner, and measures
+# localhost with the same four variants and medians. Added for F4-06 perbaikan,
+# whose fixes had to be measured before merge while PR previews answer 302 to
+# Vercel's login. The owner's permission for this change, PROSEDUR §4.6, in
+# their words: "Ya, izinkan ref".
+#
+# Such a run is a lab A/B: compare it with main built and measured the same
+# way, never with a production run. No CDN, no Vercel edge, a runner's own
+# server. Production is still re-measured after each merge, without `ref`.
+# Runs on one branch share a concurrency group, so dispatch one ref at a time.
 on:
   workflow_dispatch:
     inputs:
@@ -43,6 +58,11 @@ on:
       runs:
         description: Runs per page and variant; the median is reported
         default: '3'
+      ref:
+        description: >-
+          Optional. A commit or branch to build and serve on the runner and
+          measure instead of `site` (lab A/B against main built the same way)
+        default: ''
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -50,8 +70,10 @@ concurrency:
 
 env:
   LIGHTHOUSE_VERSION: 13.5.0
-  SITE: ${{ inputs.site || 'https://arth-test-01.vercel.app' }}
+  # With `ref`, the origin is the runner's own `next start`.
+  SITE: ${{ inputs.ref && 'http://localhost:3000' || inputs.site || 'https://arth-test-01.vercel.app' }}
   RUNS: ${{ inputs.runs || '3' }}
+  REF: ${{ inputs.ref }}
 
 jobs:
   measure:
@@ -79,6 +101,52 @@ jobs:
           npm install --no-save --no-audit --no-fund --prefix "$RUNNER_TEMP/lighthouse" "lighthouse@$LIGHTHOUSE_VERSION"
           echo "LIGHTHOUSE_BIN=$RUNNER_TEMP/lighthouse/node_modules/.bin/lighthouse" >> "$GITHUB_ENV"
           google-chrome --version
+
+      # Only with `ref`: the commit to measure, built and served the way
+      # `ci.yml` builds it and Playwright serves it. The measuring script
+      # stays this branch's, checked out above.
+      - name: Check out the ref to measure
+        if: ${{ inputs.ref }}
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
+          path: measured
+
+      - uses: oven-sh/setup-bun@v2
+        if: ${{ inputs.ref }}
+        with:
+          bun-version-file: measured/package.json
+
+      - name: Build the ref
+        if: ${{ inputs.ref }}
+        working-directory: measured
+        env:
+          NEXT_PUBLIC_SANITY_PROJECT_ID: az53j4l1
+          NEXT_PUBLIC_SANITY_DATASET: production
+          NEXT_PUBLIC_SANITY_API_VERSION: '2025-03-01'
+        run: |
+          git log -1 --format='Measuring %H %s'
+          bun install --frozen-lockfile
+          bun run build
+
+      - name: Serve the ref
+        if: ${{ inputs.ref }}
+        working-directory: measured
+        env:
+          NEXT_PUBLIC_SANITY_PROJECT_ID: az53j4l1
+          NEXT_PUBLIC_SANITY_DATASET: production
+          NEXT_PUBLIC_SANITY_API_VERSION: '2025-03-01'
+        run: |
+          nohup bun run start > "$RUNNER_TEMP/next-start.log" 2>&1 &
+          for second in $(seq 1 90); do
+            if curl -fsS -o /dev/null http://localhost:3000/id; then
+              echo "next start answered after ${second}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/next-start.log"
+          exit 1
 
       - name: Measure
         env:
@@ -116,6 +184,10 @@ jobs:
       - name: Summarise
         run: |
           node .github/scripts/lighthouse-ukur.mjs summarise lighthouse ringkasan.md ringkasan.json
+          if [ -n "$REF" ]; then
+            echo "**Lab A/B: \`$REF\` built and served on the runner, not production.**" >> "$GITHUB_STEP_SUMMARY"
+            echo >> "$GITHUB_STEP_SUMMARY"
+          fi
           cat ringkasan.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload the summary
