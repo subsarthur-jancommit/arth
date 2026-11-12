@@ -63,6 +63,15 @@ interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
    */
   webgl?: boolean
   /**
+   * Mount this page's canvas once the browser is idle, rather than as soon as
+   * the page has hydrated — F4-06 perbaikan, lever C (`docs/F4-06-UKUR.md`
+   * §4.C). Only meaningful together with `webgl`. The home page passes it:
+   * its hero holds a CSS wash until the canvas draws its first frame
+   * (`vault/webgl/scene-shell`), so nothing reads as empty while three.js
+   * waits for the main thread to rest.
+   */
+  webglWhenIdle?: boolean
+  /**
    * Which GPU simulations the root canvas mounts. Only meaningful together
    * with `webgl`, which is what mounts the canvas in the first place.
    *
@@ -172,6 +181,7 @@ export function Wrapper({
   className,
   lenis = true,
   webgl = false,
+  webglWhenIdle = false,
   simTypes,
   postprocessing = false,
   gsap = false,
@@ -186,6 +196,7 @@ export function Wrapper({
       <Header />
       <Canvas
         root={webgl}
+        idle={webglWhenIdle}
         {...(simTypes && { simTypes })}
         {...(postprocessing && { postprocessing })}
       >

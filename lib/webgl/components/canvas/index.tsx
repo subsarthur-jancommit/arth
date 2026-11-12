@@ -26,7 +26,7 @@ import {
 import type { tunnel } from '@/webgl/utils/tunnel'
 
 type WebGLCanvasComponent = ComponentType<
-  Omit<CanvasProps, 'root' | 'force' | 'children'>
+  Omit<CanvasProps, 'root' | 'force' | 'children' | 'idle'>
 >
 
 /**
@@ -45,8 +45,44 @@ type WebGLCanvasComponent = ComponentType<
  * A bare `import()` inside an effect has no module-scope reference, so nothing
  * is fetched until `isMounting` is true. `e2e/webgl-budget.e2e.ts` holds it.
  */
+/**
+ * The longest an idle-mounted canvas waits for the browser to be idle. A page
+ * whose main thread never rests still gets its canvas, this much later.
+ */
+const IDLE_TIMEOUT_MS = 2000
+
+/**
+ * Runs `task` once the browser is idle, and returns what cancels it.
+ *
+ * `requestIdleCallback` where it exists. Safari has none, so there the task
+ * waits for the page's `load` and then one more task: later than hydration,
+ * which is the point, without a guess at how long idle takes.
+ */
+function whenIdle(task: () => void): () => void {
+  // `typeof`, not `in`: the DOM types declare the method on every window, so
+  // `in` would narrow `window` itself to `never` on the Safari path below.
+  if (typeof window.requestIdleCallback === 'function') {
+    const handle = window.requestIdleCallback(task, {
+      timeout: IDLE_TIMEOUT_MS,
+    })
+    return () => window.cancelIdleCallback(handle)
+  }
+
+  let timer: number | undefined
+  const afterLoad = () => {
+    timer = window.setTimeout(task, 0)
+  }
+  if (document.readyState === 'complete') afterLoad()
+  else window.addEventListener('load', afterLoad, { once: true })
+  return () => {
+    window.removeEventListener('load', afterLoad)
+    if (timer !== undefined) window.clearTimeout(timer)
+  }
+}
+
 function useWebGLCanvasComponent(
-  enabled: boolean
+  enabled: boolean,
+  idle: boolean
 ): WebGLCanvasComponent | null {
   const [component, setComponent] = useState<WebGLCanvasComponent | null>(null)
 
@@ -54,22 +90,35 @@ function useWebGLCanvasComponent(
     if (!enabled || component) return
 
     let cancelled = false
-    import('./webgl')
-      .then(({ WebGLCanvas }) => {
-        // Wrapped in a thunk: `setState` calls a bare function argument as an
-        // updater, and a component *is* a function.
-        if (!cancelled) setComponent(() => WebGLCanvas)
-      })
-      .catch(() => {
-        // Degrade, do not throw. `component` stays null, nothing mounts, and
-        // the page keeps whatever non-WebGL path it already renders —
-        // `CLAUDE.md` #14: the site must never depend on 3D to be usable.
-      })
+    const load = () => {
+      import('./webgl')
+        .then(({ WebGLCanvas }) => {
+          // Wrapped in a thunk: `setState` calls a bare function argument as
+          // an updater, and a component *is* a function.
+          if (!cancelled) setComponent(() => WebGLCanvas)
+        })
+        .catch(() => {
+          // Degrade, do not throw. `component` stays null, nothing mounts,
+          // and the page keeps whatever non-WebGL path it already renders —
+          // `CLAUDE.md` #14: the site must never depend on 3D to be usable.
+        })
+    }
 
+    if (!idle) {
+      load()
+      return () => {
+        cancelled = true
+      }
+    }
+
+    // Cancelled on unmount like the import itself (`CLAUDE.md` #7): a page
+    // left before the browser idled never starts loading three.js.
+    const cancelIdle = whenIdle(load)
     return () => {
       cancelled = true
+      cancelIdle()
     }
-  }, [enabled, component])
+  }, [enabled, component, idle])
 
   return component
 }
@@ -146,6 +195,14 @@ type CanvasProps = PropsWithChildren<{
    * no consumer.
    */
   simTypes?: ('fluid' | 'flowmap')[]
+  /**
+   * Load three.js and mount the canvas once the browser is idle, rather than
+   * as soon as this component has hydrated — F4-06 perbaikan, lever C
+   * (`docs/F4-06-UKUR.md` §4.C). Only for a page whose scenes read as whole
+   * before their first frame; the home hero holds its CSS wash until then
+   * (`vault/webgl/scene-shell`).
+   */
+  idle?: boolean
 }>
 
 export const CanvasContext = createContext<CanvasContextValue>({
@@ -176,6 +233,7 @@ export function Canvas({
   root = false,
   force = false,
   simTypes,
+  idle = false,
   ...props
 }: CanvasProps) {
   const { isWebGL, isReducedMotion } = useDeviceDetection()
@@ -230,7 +288,7 @@ export function Canvas({
   const canMount = contextValue.active && shouldRender
   const isPrimary = canMount && claimPrimary(id)
   const isMounting = isPrimary
-  const WebGLCanvas = useWebGLCanvasComponent(isMounting)
+  const WebGLCanvas = useWebGLCanvasComponent(isMounting, idle)
 
   useEffect(() => {
     if (!canMount) return

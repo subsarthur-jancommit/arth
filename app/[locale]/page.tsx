@@ -252,8 +252,12 @@ export default async function Home() {
      * grid's material, removed here with the grid
      * (`docs/TINJAUAN-F01-F03.md` B5), and the plates read the reader's
      * scroll, not the pointer.
+     *
+     * `webglWhenIdle`: the canvas, and three.js with it, waits for the browser
+     * to be idle (F4-06 perbaikan, lever C). The hero's CSS wash holds until
+     * the first frame, so the hero never reads as empty meanwhile.
      */
-    <Wrapper theme="dark" lenis={{ anchors: true }} webgl gsap>
+    <Wrapper theme="dark" lenis={{ anchors: true }} webgl webglWhenIdle gsap>
       <Hero
         headline={content.headline}
         subline={content.subline ?? undefined}
