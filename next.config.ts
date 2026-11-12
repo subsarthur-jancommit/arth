@@ -191,6 +191,18 @@ const nextConfig: NextConfig = {
     // with the top-level `reactCompiler: true`.
     turbopackRustReactCompiler: true,
     sri: { algorithm: 'sha384' },
+    // CSS in the HTML, as `<style>` rather than `<link>` — F4-06 perbaikan,
+    // lever A1 (`docs/F4-06-UKUR.md` §4.A.1). On a slow phone link the first
+    // paint waited for the last of six or seven stylesheets (§3); inlined, the
+    // styles arrive with the HTML. The price: about 35 KB gzipped more HTML on
+    // every page (the CSS is 194–218 KB raw per page, measured on production
+    // 2026-11-12), no cross-page cache for it, and the styles carried again in
+    // the RSC payload (Next's own note in `node_modules/next/dist/docs`).
+    // Neither guard is weakened: the CSP already allows inline styles
+    // (`style-src 'self' 'unsafe-inline'`, `lib/integrations/csp.ts`), and SRI
+    // covers fetched scripts, not inline content. Kept only while it measures
+    // better than the links; production builds only.
+    inlineCss: true,
     // Not setting `cssChunking: 'graph'`. Measured on this branch it produced
     // 11 stylesheets instead of the default's 9, for identical total bytes —
     // more requests, no saving. The default 'loose' heuristic wins here.

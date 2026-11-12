@@ -250,6 +250,9 @@ export function composeCsp({
       "'unsafe-inline'",
       ...(isDev ? ["'unsafe-eval'"] : []),
     ],
+    // Load-bearing for styles too since F4-06 perbaikan: `inlineCss` in
+    // `next.config.ts` serves the site's CSS as inline `<style>` blocks, so
+    // tightening this to a nonce or hashes unstyles every page.
     'style-src': ["'self'", "'unsafe-inline'"],
     // data: — next/image blur placeholders. blob: — no current use found
     // (see DIRECTIVE_ORDER's comment) but kept as a low-risk allowance for
