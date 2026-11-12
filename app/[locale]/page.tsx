@@ -2,7 +2,6 @@ import cn from 'clsx'
 import { getTranslations } from 'next-intl/server'
 import { draftMode } from 'next/headers'
 import { locale as localeRootParam } from 'next/root-params'
-import { Suspense } from 'react'
 
 import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
@@ -294,68 +293,44 @@ export default async function Home() {
           </p>
         )}
 
-        {/*
-          Every section below the hero sits behind its own `<Suspense>` —
-          F4-06 perbaikan, lever B1 (`docs/F4-06-UKUR.md` §4.B.1). The page's
-          hydration ran as one task: 621 ms in the lab (Lighthouse, a phone
-          profile on applied slow 4G), for the header, the hero and every
-          section below them together. React
-          hydrates what is behind a boundary afterwards, in a pass it slices
-          into short tasks, and a section the reader taps first is hydrated
-          first and alone; so one boundary per section, not one for all.
-
-          The fallbacks are never shown. Everything here is prerendered and
-          suspends on nothing, so the HTML carries each section inline —
-          readable without JavaScript (`e2e/no-javascript.e2e.ts`) and part of
-          the route's App Shell, which a boundary only changes for uncached
-          or URL-dependent content.
-        */}
-        <Suspense fallback={null}>
-          <Passage plates={plates} note={tPlate('note')}>
-            <SectionHeader
-              eyebrow={t('passageEyebrow')}
-              title={t('passageTitle')}
-            />
-          </Passage>
-        </Suspense>
+        <Passage plates={plates} note={tPlate('note')}>
+          <SectionHeader
+            eyebrow={t('passageEyebrow')}
+            title={t('passageTitle')}
+          />
+        </Passage>
 
         {/*
           The three units, opened one at a time. Each panel links the unit's
           own page, which is where the sides and their situations begin.
         */}
-        <Suspense fallback={null}>
-          <PracticeList
-            id="unit"
-            className={s.section}
-            eyebrow={t('practiceEyebrow')}
-            title={t('practiceTitle')}
-            linkLabel={t('practiceLink')}
-            entries={unitEntries}
-          />
-        </Suspense>
+        <PracticeList
+          id="unit"
+          className={s.section}
+          eyebrow={t('practiceEyebrow')}
+          title={t('practiceTitle')}
+          linkLabel={t('practiceLink')}
+          entries={unitEntries}
+        />
 
-        <Suspense fallback={null}>
-          <SituationLinks
-            className={s.section}
-            situations={situations}
-            eyebrow={t('situationEyebrow')}
-            title={t('situationTitle')}
-            destinationLabel={t('situationDestination')}
-          />
-        </Suspense>
+        <SituationLinks
+          className={s.section}
+          situations={situations}
+          eyebrow={t('situationEyebrow')}
+          title={t('situationTitle')}
+          destinationLabel={t('situationDestination')}
+        />
 
         {/*
           One client, three units: one sequence after the reader's own
           situation and before how Arthur works (plan §5.1), with the way to
           the rest of them on /layanan.
         */}
-        <Suspense fallback={null}>
-          <HomeSequence
-            className={s.section}
-            locale={locale}
-            preview={isDraftMode}
-          />
-        </Suspense>
+        <HomeSequence
+          className={s.section}
+          locale={locale}
+          preview={isDraftMode}
+        />
 
         {/*
           The umbrella header's labelled paragraphs, two to a row on desktop
@@ -365,26 +340,24 @@ export default async function Home() {
           width, and each lead stays beside its own paragraph.
         */}
         {pillars.length > 0 || opening ? (
-          <Suspense fallback={null}>
-            <Reveal as="section" id="studio" className={s.section} perItem>
-              <SectionHeader reveal title={t('studioTitle')} />
-              <div className={s.statement} data-statement="header">
-                {opening ? (
-                  <p data-reveal-item className={cn('p-big', s.opening)}>
-                    {opening}
-                  </p>
-                ) : null}
-                <ol className={s.pillars}>
-                  {pillars.map((pillar) => (
-                    <li key={pillar.key} data-reveal-item className={s.pillar}>
-                      <p className="h3">{pillar.lead}</p>
-                      <p className="p">{pillar.body}</p>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            </Reveal>
-          </Suspense>
+          <Reveal as="section" id="studio" className={s.section} perItem>
+            <SectionHeader reveal title={t('studioTitle')} />
+            <div className={s.statement} data-statement="header">
+              {opening ? (
+                <p data-reveal-item className={cn('p-big', s.opening)}>
+                  {opening}
+                </p>
+              ) : null}
+              <ol className={s.pillars}>
+                {pillars.map((pillar) => (
+                  <li key={pillar.key} data-reveal-item className={s.pillar}>
+                    <p className="h3">{pillar.lead}</p>
+                    <p className="p">{pillar.body}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </Reveal>
         ) : null}
 
         {/*
@@ -394,37 +367,35 @@ export default async function Home() {
           it, the header's last paragraph as the terms the reader is offered
           in return (R5, the approved closing screen).
         */}
-        <Suspense fallback={null}>
-          {content.fallbacks.email ? (
-            <FirstStepBand
-              id="contact"
-              className={s.section}
-              terms={closingTerms}
-              eyebrow={t('actionEyebrow')}
-              title={`${actionLabel} ${actionAfter}`}
-              action={{ href: '/kontak', label: t('actionLink') }}
-            />
-          ) : (
-            <ContactBlock
-              id="contact"
-              className={s.section}
-              eyebrow={t('actionEyebrow')}
-              title={`${actionLabel} ${actionAfter}`}
-              email={content.email}
-              address={content.address}
-              addressHeading={t('addressHeading')}
-              addressIsPlaceholder={content.fallbacks.address}
-              emailLabel={t('emailLabel', { name: content.name })}
-              socials={content.socials}
-              socialsHeading={t('socialsHeading')}
-              copy={{
-                label: t('copyAddress'),
-                copied: t('addressCopied'),
-                failed: t('copyFailed'),
-              }}
-            />
-          )}
-        </Suspense>
+        {content.fallbacks.email ? (
+          <FirstStepBand
+            id="contact"
+            className={s.section}
+            terms={closingTerms}
+            eyebrow={t('actionEyebrow')}
+            title={`${actionLabel} ${actionAfter}`}
+            action={{ href: '/kontak', label: t('actionLink') }}
+          />
+        ) : (
+          <ContactBlock
+            id="contact"
+            className={s.section}
+            eyebrow={t('actionEyebrow')}
+            title={`${actionLabel} ${actionAfter}`}
+            email={content.email}
+            address={content.address}
+            addressHeading={t('addressHeading')}
+            addressIsPlaceholder={content.fallbacks.address}
+            emailLabel={t('emailLabel', { name: content.name })}
+            socials={content.socials}
+            socialsHeading={t('socialsHeading')}
+            copy={{
+              label: t('copyAddress'),
+              copied: t('addressCopied'),
+              failed: t('copyFailed'),
+            }}
+          />
+        )}
       </div>
     </Wrapper>
   )

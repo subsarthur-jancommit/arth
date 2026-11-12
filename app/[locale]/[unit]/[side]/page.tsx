@@ -2,7 +2,6 @@ import cn from 'clsx'
 import { getTranslations } from 'next-intl/server'
 import { draftMode } from 'next/headers'
 import { locale as localeRootParam } from 'next/root-params'
-import { Suspense } from 'react'
 
 import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
@@ -205,118 +204,101 @@ export default async function SidePage({ params }: SidePageProps) {
           ]}
         />
 
-        {/*
-          The sheet below its heading hydrates behind `<Suspense>`
-          boundaries, one per section, after the switcher and the heading and
-          in short tasks — F4-06 perbaikan, lever B1, as on the home page
-          (`app/[locale]/page.tsx` says why, and why the fallbacks are never
-          shown). `params` is read at the top of this page, outside every
-          boundary, so each section stays prerendered inline
-          (`e2e/no-javascript.e2e.ts`).
-        */}
         {isNetworkSide && networkContent ? (
-          <Suspense fallback={null}>
-            <NetworkSide
-              paths={networkPaths}
-              steps={buyingSteps.map((step) => ({
-                id: step.key,
-                text: step.body ? `${step.title}. ${step.body}` : step.title,
-              }))}
-              moneySteps={networkMoneySteps}
-              summary={networkContent.summary}
-              terms={networkContent.terms}
-              labels={{
-                pathsEyebrow: tNetwork('paths.eyebrow'),
-                pathsTitle: tNetwork('paths.title'),
-                chapterLabel: tNetwork('paths.chapterLabel'),
-                openPath: tNetwork('paths.open'),
-                workEyebrow: tNetwork('work.eyebrow'),
-                workTitle: tNetwork('work.title'),
-                moneyEyebrow: tNetwork('money.eyebrow'),
-                moneyTitle: tNetwork('money.title'),
-                moneyIntro: tNetwork('money.intro'),
-                stamp: tNetwork('money.stamp'),
-                termsEyebrow: tNetwork('terms.eyebrow'),
-                termsTitle: tNetwork('terms.title'),
-                sourceTitle: tNetwork('terms.source'),
-                absentTitle: tNetwork('terms.absent'),
-                conditionTitle: tNetwork('terms.condition'),
-                registrationEyebrow: tNetwork('registration.eyebrow'),
-              }}
-            />
-          </Suspense>
+          <NetworkSide
+            paths={networkPaths}
+            steps={buyingSteps.map((step) => ({
+              id: step.key,
+              text: step.body ? `${step.title}. ${step.body}` : step.title,
+            }))}
+            moneySteps={networkMoneySteps}
+            summary={networkContent.summary}
+            terms={networkContent.terms}
+            labels={{
+              pathsEyebrow: tNetwork('paths.eyebrow'),
+              pathsTitle: tNetwork('paths.title'),
+              chapterLabel: tNetwork('paths.chapterLabel'),
+              openPath: tNetwork('paths.open'),
+              workEyebrow: tNetwork('work.eyebrow'),
+              workTitle: tNetwork('work.title'),
+              moneyEyebrow: tNetwork('money.eyebrow'),
+              moneyTitle: tNetwork('money.title'),
+              moneyIntro: tNetwork('money.intro'),
+              stamp: tNetwork('money.stamp'),
+              termsEyebrow: tNetwork('terms.eyebrow'),
+              termsTitle: tNetwork('terms.title'),
+              sourceTitle: tNetwork('terms.source'),
+              absentTitle: tNetwork('terms.absent'),
+              conditionTitle: tNetwork('terms.condition'),
+              registrationEyebrow: tNetwork('registration.eyebrow'),
+            }}
+          />
         ) : (
           <>
-            <Suspense fallback={null}>
-              {buyingSteps.length > 0 ? (
-                <StepSequence
-                  label={tSide(`buying.${side}`)}
-                  steps={buyingSteps}
-                  data-epic="side-buying-path"
-                  className={s.steps}
-                />
-              ) : null}
-            </Suspense>
-            <Suspense fallback={null}>
-              {/* Only once a chapter has published offers (P4, R0). */}
-              {chapters.length > 0 && (
-                <SideChapterTable
-                  label={tSide('chaptersEyebrow')}
-                  title={tSide('chaptersTitle')}
-                  chapters={chapters}
-                  chapterLabel={tSide('chapterLabel')}
-                  typeLabel={tSide('typeLabel')}
-                  entryLabel={tSide('entryLabel')}
-                  offerCountLabel={tSide('offerCount')}
-                  className={s.chapters}
-                />
-              )}
-            </Suspense>
-            <Suspense fallback={null}>
-              {/*
-               * The reader's own button label goes on the button and its
-               * sentence stays outside it (`docs/R1-GLOSARIUM-PEMBACA.md` §6),
-               * where it was a heading over a generic "Mulai percakapan". The
-               * contact page until K5 names a channel (P4, R0).
-               */}
-              {action ? (
-                <FirstStep
-                  label={tSide('firstStepEyebrow')}
-                  body={action.after}
-                  action={{
-                    href: '/kontak',
-                    // A label, not a sentence: a stray full stop would sit
-                    // on the button before its arrow.
-                    label: action.label.replace(/\.$/u, ''),
-                  }}
-                />
-              ) : null}
-            </Suspense>
+            {buyingSteps.length > 0 ? (
+              <StepSequence
+                label={tSide(`buying.${side}`)}
+                steps={buyingSteps}
+                data-epic="side-buying-path"
+                className={s.steps}
+              />
+            ) : null}
+
+            {/* Only once a chapter has published offers (P4, R0). */}
+            {chapters.length > 0 && (
+              <SideChapterTable
+                label={tSide('chaptersEyebrow')}
+                title={tSide('chaptersTitle')}
+                chapters={chapters}
+                chapterLabel={tSide('chapterLabel')}
+                typeLabel={tSide('typeLabel')}
+                entryLabel={tSide('entryLabel')}
+                offerCountLabel={tSide('offerCount')}
+                className={s.chapters}
+              />
+            )}
+
+            {/*
+             * The reader's own button label goes on the button and its
+             * sentence stays outside it (`docs/R1-GLOSARIUM-PEMBACA.md` §6),
+             * where it was a heading over a generic "Mulai percakapan". The
+             * contact page until K5 names a channel (P4, R0).
+             */}
+            {action ? (
+              <FirstStep
+                label={tSide('firstStepEyebrow')}
+                body={action.after}
+                action={{
+                  href: '/kontak',
+                  // A label, not a sentence: a stray full stop would sit
+                  // on the button before its arrow.
+                  label: action.label.replace(/\.$/u, ''),
+                }}
+              />
+            ) : null}
           </>
         )}
 
-        <Suspense fallback={null}>
-          <nav
-            aria-label={tSide('navigationLabel', { unit: tUnit(unit) })}
-            className={s.navigation}
+        <nav
+          aria-label={tSide('navigationLabel', { unit: tUnit(unit) })}
+          className={s.navigation}
+        >
+          {/* The same exchange from the foot of the sheet (§13.11). */}
+          <SideSheetLink
+            href={sideTemplate(unit, otherSide)}
+            className={cn('caption', s.route)}
           >
-            {/* The same exchange from the foot of the sheet (§13.11). */}
-            <SideSheetLink
-              href={sideTemplate(unit, otherSide)}
-              className={cn('caption', s.route)}
-            >
-              {tSide('otherLabel', { unit: tUnit(unit) })}: {tSide(otherSide)}
-            </SideSheetLink>
-            <Link
-              href={unitTemplate(unit)}
-              className={cn('caption', s.route)}
-              data-press="chip"
-              data-intent=""
-            >
-              {tSide('backToUnit', { unit: tUnit(unit) })}
-            </Link>
-          </nav>
-        </Suspense>
+            {tSide('otherLabel', { unit: tUnit(unit) })}: {tSide(otherSide)}
+          </SideSheetLink>
+          <Link
+            href={unitTemplate(unit)}
+            className={cn('caption', s.route)}
+            data-press="chip"
+            data-intent=""
+          >
+            {tSide('backToUnit', { unit: tUnit(unit) })}
+          </Link>
+        </nav>
       </article>
     </Wrapper>
   )

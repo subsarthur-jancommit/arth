@@ -3,7 +3,6 @@ import { getTranslations } from 'next-intl/server'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { locale as localeRootParam } from 'next/root-params'
-import { Suspense } from 'react'
 
 import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
@@ -179,150 +178,133 @@ export default async function UnitPage({ params }: UnitPageProps) {
         </div>
 
         {/*
-          Every section below the stage hydrates behind its own `<Suspense>`,
-          after the hero and in short tasks — F4-06 perbaikan, lever B1, as on
-          the home page (`app/[locale]/page.tsx` says why, and why the
-          fallbacks are never shown). `params` is read at the top of this
-          page, outside every boundary, so nothing inside reads URL data and
-          each section stays prerendered inline (`e2e/no-javascript.e2e.ts`).
-        */}
-        <Suspense fallback={null}>
-          {/*
-           * The document half (R5, direction A). Its sections are headed the
-           * way the approved unit screen heads them: a small ruled label, then
-           * the words, with no second title competing with the hero's.
-           */}
-          {pillars.length > 0 ? (
-            <Reveal as="section" className={s.doc} perItem>
-              <h2 data-reveal-item className={cn('caption', s.label)}>
-                {t('pillarsTitle')}
-              </h2>
-              <ol className={s.pillars}>
-                {pillars.map((pillar) => (
-                  <li key={pillar.key} data-reveal-item className={s.pillar}>
-                    <h3 className="h3">{pillar.lead}</h3>
-                    <p className="p-big">{pillar.body}</p>
-                  </li>
-                ))}
-              </ol>
-            </Reveal>
-          ) : null}
-        </Suspense>
-        <Suspense fallback={null}>
-          <SideDoors
-            unit={unit}
-            eyebrow={t('sideEyebrow')}
-            title={t('sideTitle')}
-            linkLabel={t('sideLink')}
-            doors={sideDoorsFor(unit, content)}
-          />
-        </Suspense>
-        <Suspense fallback={null}>
-          {problems.length > 0 ? (
-            <Reveal as="section" className={s.doc} perItem>
-              <header data-reveal-item className={s.docHeader}>
-                <p className={cn('caption', s.label)}>{t('problemsEyebrow')}</p>
-                <h2 className="h2">{t('problemsTitle')}</h2>
-              </header>
-              {/* Three across on desktop, as the approved unit screen sets
+         * The document half (R5, direction A). Its sections are headed the
+         * way the approved unit screen heads them: a small ruled label, then
+         * the words, with no second title competing with the hero's.
+         */}
+        {pillars.length > 0 ? (
+          <Reveal as="section" className={s.doc} perItem>
+            <h2 data-reveal-item className={cn('caption', s.label)}>
+              {t('pillarsTitle')}
+            </h2>
+            <ol className={s.pillars}>
+              {pillars.map((pillar) => (
+                <li key={pillar.key} data-reveal-item className={s.pillar}>
+                  <h3 className="h3">{pillar.lead}</h3>
+                  <p className="p-big">{pillar.body}</p>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+        ) : null}
+
+        <SideDoors
+          unit={unit}
+          eyebrow={t('sideEyebrow')}
+          title={t('sideTitle')}
+          linkLabel={t('sideLink')}
+          doors={sideDoorsFor(unit, content)}
+        />
+
+        {problems.length > 0 ? (
+          <Reveal as="section" className={s.doc} perItem>
+            <header data-reveal-item className={s.docHeader}>
+              <p className={cn('caption', s.label)}>{t('problemsEyebrow')}</p>
+              <h2 className="h2">{t('problemsTitle')}</h2>
+            </header>
+            {/* Three across on desktop, as the approved unit screen sets
                 them: a number, then the problem in the reader's words. */}
-              <ol className={s.problems}>
-                {problems.map((problem, index) => (
-                  <li key={problem.key} data-reveal-item className={s.problem}>
-                    <span
-                      aria-hidden="true"
-                      className={cn('caption', s.problemNumber)}
-                    >
-                      {String(index + 1).padStart(2, '0')}
+            <ol className={s.problems}>
+              {problems.map((problem, index) => (
+                <li key={problem.key} data-reveal-item className={s.problem}>
+                  <span
+                    aria-hidden="true"
+                    className={cn('caption', s.problemNumber)}
+                  >
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <p className="p-big">{problem.text}</p>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+        ) : null}
+
+        {examples.length > 0 ? (
+          <Reveal as="section" className={s.section} perItem>
+            <SectionHeader
+              reveal
+              eyebrow={t('examplesEyebrow')}
+              title={t('examplesTitle')}
+            />
+            <ul className={s.cardList}>
+              {examples.map((offer) => (
+                <li key={offer._id} data-reveal-item>
+                  <Link href={offer.href} className={s.card} data-intent="">
+                    <span className={cn('caption', s.cardKind)}>
+                      {offer.jenis}
                     </span>
-                    <p className="p-big">{problem.text}</p>
-                  </li>
-                ))}
-              </ol>
-            </Reveal>
-          ) : null}
-        </Suspense>
-        <Suspense fallback={null}>
-          {examples.length > 0 ? (
-            <Reveal as="section" className={s.section} perItem>
-              <SectionHeader
-                reveal
-                eyebrow={t('examplesEyebrow')}
-                title={t('examplesTitle')}
-              />
-              <ul className={s.cardList}>
-                {examples.map((offer) => (
-                  <li key={offer._id} data-reveal-item>
-                    <Link href={offer.href} className={s.card} data-intent="">
-                      <span className={cn('caption', s.cardKind)}>
-                        {offer.jenis}
+                    <span className="h3">{offer.judul}</span>
+                    {offer.untukSiapa ? (
+                      <span className="caption">
+                        {t('forAudience', { audience: offer.untukSiapa })}
                       </span>
-                      <span className="h3">{offer.judul}</span>
-                      {offer.untukSiapa ? (
-                        <span className="caption">
-                          {t('forAudience', { audience: offer.untukSiapa })}
-                        </span>
-                      ) : null}
-                      {offer.dampak ? (
-                        <span className="p">{offer.dampak}</span>
-                      ) : null}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          ) : null}
-        </Suspense>
-        <Suspense fallback={null}>
-          {workItems.length > 0 ? (
-            <CapabilitySet
-              label={t('workEyebrow')}
-              items={workItems}
-              data-epic="unit-method"
-              className={s.work}
-            />
-          ) : null}
-        </Suspense>
-        <Suspense fallback={null}>
-          {bridges.length > 0 ? (
-            <Reveal as="section" className={s.section} perItem>
-              <SectionHeader
-                reveal
-                eyebrow={t('bridgeEyebrow')}
-                title={t('bridgeTitle')}
-              />
-              <ul className={s.bridgeList}>
-                {bridges.map((bridge) => (
-                  <li key={bridge._key} data-reveal-item className={s.bridge}>
-                    <p className="p-big">{bridge.kalimat}</p>
-                    <Link href={bridge.href} className="caption" data-intent="">
-                      {bridge.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          ) : null}
-        </Suspense>
-        <Suspense fallback={null}>
-          {/* The contact page until K5 names a channel (P4, R0). */}
-          {action ? (
-            <FirstStep
-              label={t('ctaEyebrow')}
-              title={action.label}
-              body={action.after}
-              action={{ href: '/kontak', label: t('ctaLink') }}
-            />
-          ) : null}
-        </Suspense>
-        <Suspense fallback={null}>
-          <NextPractice
-            href={unitTemplate(nextUnit)}
-            eyebrow={t('nextUnit')}
-            label={t(nextUnit)}
-            className={s.nextUnit}
+                    ) : null}
+                    {offer.dampak ? (
+                      <span className="p">{offer.dampak}</span>
+                    ) : null}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        ) : null}
+
+        {workItems.length > 0 ? (
+          <CapabilitySet
+            label={t('workEyebrow')}
+            items={workItems}
+            data-epic="unit-method"
+            className={s.work}
           />
-        </Suspense>
+        ) : null}
+
+        {bridges.length > 0 ? (
+          <Reveal as="section" className={s.section} perItem>
+            <SectionHeader
+              reveal
+              eyebrow={t('bridgeEyebrow')}
+              title={t('bridgeTitle')}
+            />
+            <ul className={s.bridgeList}>
+              {bridges.map((bridge) => (
+                <li key={bridge._key} data-reveal-item className={s.bridge}>
+                  <p className="p-big">{bridge.kalimat}</p>
+                  <Link href={bridge.href} className="caption" data-intent="">
+                    {bridge.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        ) : null}
+
+        {/* The contact page until K5 names a channel (P4, R0). */}
+        {action ? (
+          <FirstStep
+            label={t('ctaEyebrow')}
+            title={action.label}
+            body={action.after}
+            action={{ href: '/kontak', label: t('ctaLink') }}
+          />
+        ) : null}
+
+        <NextPractice
+          href={unitTemplate(nextUnit)}
+          eyebrow={t('nextUnit')}
+          label={t(nextUnit)}
+          className={s.nextUnit}
+        />
       </article>
     </Wrapper>
   )
