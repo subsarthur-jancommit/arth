@@ -12,6 +12,7 @@ import cn from 'clsx'
 import type { LenisOptions } from 'lenis'
 import { useTranslations } from 'next-intl'
 import dynamic from 'next/dynamic'
+import { Suspense } from 'react'
 
 import { Footer } from '@/components/layout/footer'
 import { Header } from '@/components/layout/header'
@@ -216,8 +217,20 @@ export function Wrapper({
           {children}
         </main>
       </Canvas>
-      {/* Footer is rendered here - do NOT add another in layout.tsx */}
-      <Footer />
+      {/*
+        Footer is rendered here - do NOT add another in layout.tsx.
+
+        Behind its own `<Suspense>`, so it hydrates after the page's first
+        screen, in a pass React slices into short tasks, rather than inside
+        the one blocking hydration of everything above it — F4-06 perbaikan,
+        lever B1 (`docs/F4-06-UKUR.md` §4.B.1). The footer is prerendered with
+        the page and suspends on nothing, so the fallback is never shown: the
+        HTML carries the footer inline, readable without JavaScript
+        (`e2e/no-javascript.e2e.ts`).
+      */}
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
       {/*
         The way back up a long page — Tata & Gerak, stage 5. After the footer
         so it is the page's last stop, and absent until two screens down, so
