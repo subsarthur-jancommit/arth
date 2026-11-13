@@ -117,8 +117,8 @@ keeps a line for re-reading it, not for discovering it.
 ### Fonts: `next/font/google`, R4 (revised 2026-10-30)
 
 `lib/styles/fonts.ts` loads three families through `next/font/google`, which
-downloads the files at build time and serves them from the site itself. No
-font file is committed to this repository. Licences read from each family's
+downloads the files at build time and serves them from the site itself. One
+font file is committed, a one-glyph cut of Inter (below). Licences read from each family's
 own `OFL.txt` in github.com/google/fonts on 2026-10-30, not from a badge or a
 listing page:
 
@@ -136,6 +136,15 @@ Geist and Instrument Serif (all SIL OFL 1.1, read 2026-10-24) left the site
 on 2026-10-30, and Syne (SIL OFL 1.1, 2017 The Syne Project Authors) in R4. `lib/scripts/generate-brand-assets.ts`
 still renders the favicon and share images with Syne until they are
 regenerated.
+
+**`lib/styles/font-files/inter-u-macron.woff2`** (F4-06 perbaikan, 2026-11-13)
+is the one font file in the repository: Inter's "ū" (U+016B), cut with
+fontTools from Inter's own `latin-ext` file as Google Fonts serves it, both
+axes kept, so the colophon's "Satūs" no longer downloads that whole file. It is
+a modified version of Inter under SIL OFL 1.1, read from `ofl/inter/OFL.txt` in
+github.com/google/fonts on 2026-11-13: no Reserved Font Name, so the subset may
+keep the name. The licence travels beside the file as `OFL-Inter.txt`, and the
+file's source, hashes and command are in `lib/styles/font-files/README.md`.
 
 ---
 
