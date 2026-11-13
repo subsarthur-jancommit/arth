@@ -19,14 +19,22 @@ import { expect, test } from '@playwright/test'
  * appears in its own face.
  *
  * Blocking is honest only inside the browser's window. Chrome holds blocked
- * text for three seconds and then shows the stand-in after all, so the claim
- * here is the pair:
+ * text for three seconds from the face's first use and then shows the
+ * stand-in after all, so the claim here is the pair:
  *
  * 1. every first-screen face declares `font-display: block`;
- * 2. every one of them finishes loading inside its three-second window,
- *    on the slow link Lighthouse's `mobile-applied` profile applies.
+ * 2. every preloaded font file (all four serve some first screen,
+ *    `lib/styles/fonts.ts`) has arrived within three seconds of the page's
+ *    first byte, on the slow link Lighthouse's `mobile-applied` profile
+ *    applies. No face can be used before the HTML that declares it starts to
+ *    arrive, so this bounds each block window from above, with network
+ *    times Chrome records exactly rather than with main-thread callbacks,
+ *    which a busy page delays.
  *
  * Together they mean no frame shows a first-screen word in a fallback face.
+ * The first version of this gate timed faces by the font-set events, and
+ * Chrome fires `loading` with an empty face list and `loadingdone` once for
+ * the whole batch, so it measured nothing per face.
  * The layout shift while the faces arrive is recorded beside them, not held:
  * blocked text is still laid out in its fallback's metrics, so a little
  * reflow can remain when the face lands, and Lighthouse reports it as CLS.
@@ -91,16 +99,8 @@ function coversBasicLatin(range: string) {
  */
 const STAND_IN = /fallback/i
 
-interface FontEvent {
-  /** Milliseconds since the page's time origin. */
-  at: number
-  kind: 'loading' | 'loadingdone' | 'loadingerror'
-  faces: { family: string; style: string; display: string; range: string }[]
-}
-
 declare global {
   interface Window {
-    __fontEvents?: FontEvent[]
     __layoutShift?: number
   }
 }
@@ -115,25 +115,6 @@ test.describe('the first screen draws its words in their own face', () => {
       testInfo.setTimeout(120_000)
 
       await page.addInitScript(() => {
-        const events: FontEvent[] = []
-        window.__fontEvents = events
-        const record =
-          (kind: FontEvent['kind']) => (event: FontFaceSetLoadEvent) => {
-            events.push({
-              at: performance.now(),
-              kind,
-              faces: event.fontfaces.map((face) => ({
-                family: face.family,
-                style: face.style,
-                display: face.display,
-                range: face.unicodeRange,
-              })),
-            })
-          }
-        document.fonts.addEventListener('loading', record('loading'))
-        document.fonts.addEventListener('loadingdone', record('loadingdone'))
-        document.fonts.addEventListener('loadingerror', record('loadingerror'))
-
         window.__layoutShift = 0
         new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
@@ -173,34 +154,55 @@ test.describe('the first screen draws its words in their own face', () => {
       })
 
       await page.goto(route, { waitUntil: 'load', timeout: 90_000 })
-      // Every face the page asked for has settled, one way or the other.
-      await page.evaluate(() => document.fonts.ready.then(() => undefined))
-      await page.waitForTimeout(500)
+      // Every face the page asked for has settled: the set reads `loaded`
+      // twice, a second apart, since text mounted late starts a face late.
+      await expect
+        .poll(
+          async () => {
+            const before = await page.evaluate(() => document.fonts.status)
+            await page.waitForTimeout(1000)
+            const after = await page.evaluate(() => document.fonts.status)
+            return before === 'loaded' && after === 'loaded'
+          },
+          { message: `${route}: the fonts never settled`, timeout: 60_000 }
+        )
+        .toBe(true)
       await cdp.send('Page.stopScreencast')
 
-      const { events, origin, shift } = await page.evaluate(() => ({
-        events: window.__fontEvents ?? [],
-        origin: performance.timeOrigin,
-        shift: window.__layoutShift ?? 0,
-      }))
-
-      // Per face: when it started loading and when it finished.
-      const faces = new Map<
-        string,
-        { display: string; range: string; start?: number; end?: number }
-      >()
-      for (const event of events) {
-        for (const face of event.faces) {
-          const key = `${face.family} ${face.style} ${face.range}`
-          const entry = faces.get(key) ?? {
+      const record = await page.evaluate(() => {
+        const navigation = performance.getEntriesByType('navigation')[0] as
+          | PerformanceNavigationTiming
+          | undefined
+        const paint = (name: string) =>
+          performance.getEntriesByName(name)[0]?.startTime ?? null
+        return {
+          origin: performance.timeOrigin,
+          shift: window.__layoutShift ?? 0,
+          firstByte: navigation?.responseStart ?? 0,
+          firstPaint: paint('first-paint'),
+          firstContentfulPaint: paint('first-contentful-paint'),
+          faces: [...document.fonts].map((face) => ({
+            family: face.family,
+            style: face.style,
             display: face.display,
-            range: face.range,
-          }
-          if (event.kind === 'loading') entry.start ??= event.at
-          else entry.end ??= event.at
-          faces.set(key, entry)
+            range: face.unicodeRange,
+            status: face.status,
+          })),
+          files: performance
+            .getEntriesByType('resource')
+            .filter((entry) => /\.woff2(\?|$)/u.test(entry.name))
+            .map((entry) => {
+              const resource = entry as PerformanceResourceTiming
+              return {
+                file: resource.name.split('/').pop() ?? resource.name,
+                preloaded: resource.initiatorType === 'link',
+                start: resource.startTime,
+                arrived: resource.responseEnd,
+              }
+            }),
         }
-      }
+      })
+      const { origin, shift } = record
 
       const outputDir = path.join('test-results', 'f4-06-fonts', name)
       await mkdir(outputDir, { recursive: true })
@@ -221,34 +223,42 @@ test.describe('the first screen draws its words in their own face', () => {
             blockPeriodMs: BLOCK_PERIOD_MS,
             layoutShift: shift,
             frames: frames.map((frame) => Math.round(frame.epochMs - origin)),
-            faces: Object.fromEntries(faces),
+            ...record,
           },
           null,
           2
         )}\n`
       )
 
-      const firstScreen = [...faces.entries()].filter(
-        ([key, face]) => coversBasicLatin(face.range) && !STAND_IN.test(key)
+      const firstScreen = record.faces.filter(
+        (face) =>
+          coversBasicLatin(face.range) &&
+          !STAND_IN.test(face.family) &&
+          face.status !== 'unloaded'
       )
       expect(
         firstScreen.length,
-        `${route}: no basic-Latin face loaded at all`
+        `${route}: no basic-Latin face was used at all`
       ).toBeGreaterThan(0)
-
-      for (const [key, face] of firstScreen) {
+      for (const face of firstScreen) {
+        const name = `${face.family} ${face.style}`
         expect(
           face.display,
-          `${route}: ${key} would show its words in a fallback face first`
+          `${route}: ${name} would show its words in a fallback face first`
         ).toBe('block')
+        expect(face.status, `${route}: ${name} failed to load`).toBe('loaded')
+      }
+
+      const preloaded = record.files.filter((file) => file.preloaded)
+      expect(
+        preloaded.length,
+        `${route}: no font file was preloaded`
+      ).toBeGreaterThan(0)
+      for (const file of preloaded) {
+        const sinceFirstByte = file.arrived - record.firstByte
         expect(
-          face.start !== undefined && face.end !== undefined,
-          `${route}: ${key} never finished loading`
-        ).toBe(true)
-        const took = (face.end ?? 0) - (face.start ?? 0)
-        expect(
-          took,
-          `${route}: ${key} took ${Math.round(took)} ms, past its ${BLOCK_PERIOD_MS} ms block, so a fallback face showed`
+          sinceFirstByte,
+          `${route}: ${file.file} arrived ${Math.round(sinceFirstByte)} ms after the first byte, past the ${BLOCK_PERIOD_MS} ms block, so a fallback face could show`
         ).toBeLessThan(BLOCK_PERIOD_MS)
       }
     })
