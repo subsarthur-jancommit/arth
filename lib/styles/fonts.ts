@@ -28,28 +28,72 @@ import { Geist_Mono, Inter, Onest } from 'next/font/google'
  * No `weight` on any of them: each ships a variable `wght` axis, so one file
  * covers every weight the styles use, and pinning weights would download a
  * static file each.
+ *
+ * ## `display: 'block'`, not `'swap'` — F4-06 perbaikan
+ *
+ * With the CSS inside the HTML (`inlineCss`, `next.config.ts`) a phone on a
+ * slow link paints about a second and a half sooner, before the typefaces
+ * have arrived. Under `swap` the text then showed in a stand-in face and
+ * reflowed when Onest and Inter landed: measured in the lab, a layout shift
+ * of up to 0.029 on seven templates, every one of them text. The owner's
+ * answer, verbatim: "SAYA INGIN DESAINNYA TERLIHAT JELAS juga". So the
+ * text waits, invisible, and appears in its own face.
+ *
+ * All four files serve some first screen, so all three families block:
+ * Onest every heading, Inter every label and the unit hero's italic
+ * subtitle, Geist Mono the home hero's index. None is dropped from the
+ * preload, and no face or axis changes.
+ *
+ * Chrome holds blocked text for three seconds at most. In the lab (applied
+ * slow 4G, 39 page loads) the last first-screen file arrived at most 2.0 s
+ * after the first paint. On a link slow enough to pass three seconds the
+ * stand-in does show, then, and swaps in when the face arrives: no worse
+ * than `swap` on that link. `e2e/font-first-paint.e2e.ts` holds the block
+ * and the timing on the home page and a unit page.
+ *
+ * Each stack's first fallback is a stand-in sized to the real face
+ * (`lib/styles/css/font-fallbacks.css`), so blocked text is laid out where
+ * the real face will draw it and nothing settles when it lands.
  */
 const display = Onest({
   subsets: ['latin'],
-  display: 'swap',
+  display: 'block',
   variable: '--next-font-display',
-  fallback: ['system-ui', 'Helvetica Neue', 'Arial', 'sans-serif'],
+  fallback: [
+    'Onest Fallback',
+    'system-ui',
+    'Helvetica Neue',
+    'Arial',
+    'sans-serif',
+  ],
 })
 
 const text = Inter({
   subsets: ['latin'],
-  display: 'swap',
+  display: 'block',
   axes: ['opsz'],
   style: ['normal', 'italic'],
   variable: '--next-font-text',
-  fallback: ['system-ui', 'Helvetica Neue', 'Arial', 'sans-serif'],
+  fallback: [
+    'Inter Fallback',
+    'system-ui',
+    'Helvetica Neue',
+    'Arial',
+    'sans-serif',
+  ],
 })
 
 const mono = Geist_Mono({
   subsets: ['latin'],
-  display: 'swap',
+  display: 'block',
   variable: '--next-font-mono',
-  fallback: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+  fallback: [
+    'Geist Mono Fallback',
+    'ui-monospace',
+    'SFMono-Regular',
+    'Menlo',
+    'monospace',
+  ],
 })
 
 const fonts = [display, text, mono]

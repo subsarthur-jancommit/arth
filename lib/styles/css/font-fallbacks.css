@@ -1,0 +1,93 @@
+/*
+ * Stand-in faces sized to the real ones — F4-06 perbaikan.
+ *
+ * `lib/styles/fonts.ts` blocks its three families, so until Onest, Inter and
+ * Geist Mono arrive their text is laid out, invisibly, in whatever comes
+ * next in the stack. That was `system-ui`, unadjusted: next/font's automatic
+ * fallback (`adjustFontFallback`) never reached the stacks here — production
+ * on 2026-11-13 read `"Onest", system-ui, …` with no fallback face in any of
+ * its 27 `@font-face` rules. Lines then wrapped differently in the stand-in,
+ * and the page settled when the real faces landed: a layout shift of
+ * 0.007–0.027 on six templates in the lab, every shifted node a line of text.
+ *
+ * Each face below is a local font made to occupy the real face's room: the
+ * same average glyph width (`size-adjust`) and the same ascent, descent and
+ * line gap. The numbers are next/font's own formula over the metrics Next
+ * ships (`node_modules/next/dist/server/capsize-font-metrics.json`):
+ *
+ *   size-adjust     = (face xWidthAvg / face unitsPerEm)
+ *                     / (local xWidthAvg / local unitsPerEm)
+ *   ascent-override = face ascent / (face unitsPerEm × size-adjust)
+ *   and the same for descent and line gap.
+ *
+ * The proportional stand-ins are measured against Arial, and listed with the
+ * fonts that share its widths: Liberation Sans and Arimo exactly, Roboto
+ * within 0.2% of its average width, so a phone without Arial still lands
+ * close. Geist Mono's stand-in is measured against Courier New, whose
+ * monospaced widths match it to 0.02%, listed with its metric twins.
+ *
+ * These are never seen while a face blocks, and only after the three-second
+ * window on a link too slow for it. Their job is that the words, when they
+ * appear, appear where the stand-in already put them.
+ */
+
+/* Onest: xWidthAvg 469 / 1000, ascent 970, descent -305, against Arial 913 / 2048. */
+@font-face {
+  font-family: 'Onest Fallback';
+  font-style: normal;
+  font-weight: 100 900;
+  src:
+    local('Arial'), local('ArialMT'), local('Liberation Sans'),
+    local('LiberationSans'), local('Arimo'), local('Roboto'),
+    local('Roboto-Regular');
+  size-adjust: 105.2%;
+  ascent-override: 92.2%;
+  descent-override: 28.99%;
+  line-gap-override: 0%;
+}
+
+/* Inter: xWidthAvg 978 / 2048, ascent 1984, descent -494, against Arial 913 / 2048. */
+@font-face {
+  font-family: 'Inter Fallback';
+  font-style: normal;
+  font-weight: 100 900;
+  src:
+    local('Arial'), local('ArialMT'), local('Liberation Sans'),
+    local('LiberationSans'), local('Arimo'), local('Roboto'),
+    local('Roboto-Regular');
+  size-adjust: 107.12%;
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0%;
+}
+
+/* The unit hero's subtitle sets Inter in italic: the italic cut of the same stand-ins. */
+@font-face {
+  font-family: 'Inter Fallback';
+  font-style: italic;
+  font-weight: 100 900;
+  src:
+    local('Arial Italic'), local('Arial-ItalicMT'),
+    local('Liberation Sans Italic'), local('LiberationSans-Italic'),
+    local('Arimo Italic'), local('Arimo-Italic'), local('Roboto Italic'),
+    local('Roboto-Italic');
+  size-adjust: 107.12%;
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0%;
+}
+
+/* Geist Mono: xWidthAvg 600 / 1000, ascent 1005, descent -295, against Courier New 1229 / 2048. */
+@font-face {
+  font-family: 'Geist Mono Fallback';
+  font-style: normal;
+  font-weight: 100 900;
+  src:
+    local('Courier New'), local('CourierNewPSMT'), local('Liberation Mono'),
+    local('LiberationMono'), local('Cousine'), local('DejaVu Sans Mono'),
+    local('DejaVuSansMono');
+  size-adjust: 99.98%;
+  ascent-override: 100.52%;
+  descent-override: 29.5%;
+  line-gap-override: 0%;
+}
