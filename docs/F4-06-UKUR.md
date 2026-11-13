@@ -442,12 +442,12 @@ tiap tabel). "Sebelum" adalah run 1 dan run 2 di §2.
   sekarang ia menunggu. Saat halaman pertama kali
   tampil dengan desainnya sendiri tidak mundur. `/work` dan halaman pekerjaan,
   yang LCP-nya gambar, jauh lebih cepat: 3,15 → 1,30 s dan 3,24 → 1,43 s.
-- **Jendela tiga detik sempit di produksi.** Huruf terakhir layar pertama tiba
-  3,0–3,1 s sesudah lukisan pertama di tiga template yang diperiksa, tepat di
-  batas jendela _block_
-  Chrome. Di sebagian muatan, huruf pengganti bisa tampil sesaat sebelum
-  hurufnya tiba. Lab di runner memberi sekitar satu detik ruang; produksi
-  tidak.
+- **Jendela tiga detik terlewati di produksi.** Dengan median ke-13 template
+  (tabel sesudah #84 di bawah), huruf terakhir layar pertama tiba sesudah
+  jendela _block_ Chrome habis di 9 template, sampai 0,42 s di `/work`; di
+  sisanya kurang dari 0,15 s sebelum habis. Jadi huruf pengganti sempat tampil
+  sesaat sebelum hurufnya tiba. Lab di runner memberi sekitar satu detik ruang;
+  produksi tidak. #84 memperbaiki sebagian besar.
 - **CLS:** kini nol di Unit, sisi jaringan, dan `/kebijakan` (sebelumnya
   0,014, 0,013, 0,007). `/pembayaran` 0,027 (sebelumnya 0,029); baru dan kecil
   di `/layanan` 0,006 dan `/kontak` 0,008. Yang tersisa berasal dari judul
@@ -544,3 +544,54 @@ tiap tabel). "Sebelum" adalah run 1 dan run 2 di §2.
 | Beranda      | 0,74 / 0,70                   | **0,70**      | 0,30                  | **0,34**      | 196 / 30                       | **148**        | 0,000                  | **0,000**   |
 | /work        | 0,77 / 0,78                   | **0,78**      | 0,31                  | **0,34**      | 35 / 0                         | **25**         | 0,000                  | **0,000**   |
 | /work/<slug> | 0,78 / 0,78                   | **0,78**      | 0,31                  | **0,35**      | 28 / 0                         | **18**         | 0,000                  | **0,000**   |
+
+### Sesudah #84: "ū" dari potongan Inter satu huruf (`ae35334`)
+
+PR #84 (`ae35334`, 13 November 2026) memotong "ū" di catatan kaki ("Satūs")
+menjadi berkas Inter sendiri, 1.704 bita, dari berkas latin-ext Inter yang
+sama (`lib/styles/font-files/README.md`). Kata dan hurufnya tidak berubah. Diukur
+ke produksi sesudah produksi menyajikan `ae35334` (11.47 UTC): run 43419902917,
+workflow yang sama tanpa `ref`, median tiga run. **Angka lab dari produksi,
+bukan angka lapangan** (aturan #19).
+
+Ponsel dengan 4G lambat yang diterapkan (`mobile-applied`). "Sisa jendela
+_block_" adalah sisa dari tiga detik Chrome saat huruf _preload_ terakhir tiba,
+dihitung dari lukisan pertama; angka negatif berarti jendela sudah habis lebih
+dulu, sehingga huruf pengganti sempat tampil.
+
+| Template      | LCP s sebelum | LCP s sesudah #80 | **LCP s sesudah #84** | Huruf _preload_ terakhir tiba, s (#80 → #84) | Sisa jendela _block_, s (#80 → #84) | Huruf tambahan, KB (#80 → #84) | CLS sesudah #84 |
+| ------------- | ------------- | ----------------- | --------------------- | -------------------------------------------- | ----------------------------------- | ------------------------------ | --------------- |
+| Beranda       | 3,04          | 3,30              | **3,22**              | 4,26 → 3,99                                  | -0,06 → 0,22                        | 130,9 → 1,9                    | 0,000           |
+| Unit          | 3,01          | 4,20              | **3,91**              | 4,25 → 3,94                                  | -0,11 → 0,15                        | 130,9 → 1,9                    | 0,000           |
+| Sisi          | 2,95          | 3,18              | **3,12**              | 4,23 → 3,92                                  | -0,09 → 0,16                        | 130,9 → 1,9                    | 0,000           |
+| Bab           | 2,79          | 4,07              | **3,80**              | 4,09 → 3,75                                  | 0,03 → 0,33                         | 130,9 → 1,9                    | 0,016           |
+| Offer         | 2,79          | 3,06              | **2,99**              | 4,07 → 3,76                                  | 0,03 → 0,32                         | 130,9 → 1,9                    | 0,000           |
+| Sisi jaringan | 2,94          | 3,16              | **3,11**              | 4,22 → 3,91                                  | -0,06 → 0,18                        | 130,9 → 1,9                    | 0,000           |
+| /layanan      | 2,70          | 2,94              | **2,84**              | 3,94 → 3,62                                  | 0,15 → 0,47                         | 131,0 → 2,0                    | 0,006           |
+| /metode       | 2,73          | 3,89              | **3,59**              | 3,94 → 3,62                                  | 0,14 → 0,45                         | 131,0 → 2,0                    | 0,000           |
+| /pembayaran   | 2,51          | 2,98              | **2,88**              | 4,01 → 3,66                                  | -0,06 → 0,26                        | 131,0 → 2,0                    | 0,027           |
+| /kebijakan    | 2,53          | 3,95              | **3,64**              | 4,02 → 3,67                                  | -0,04 → 0,27                        | 131,0 → 2,0                    | 0,000           |
+| /kontak       | 2,81          | 3,04              | **2,93**              | 4,05 → 3,71                                  | -0,00 → 0,32                        | 130,9 → 1,9                    | 0,008           |
+| /work         | 3,15          | 1,30              | **1,21**              | 4,61 → 4,29                                  | -0,42 → -0,19                       | 131,1 → 2,1                    | 0,000           |
+| /work/<slug>  | 3,24          | 1,43              | **1,49**              | 4,59 → 4,32                                  | -0,36 → -0,15                       | 130,9 → 2,0                    | 0,000           |
+
+`benchmarkIndex` runner (median): sebelum 2976, sesudah #80 2457, sesudah #84 4094.
+
+- **Unduhan "ū" hilang di produksi:** 131 KB menjadi sekitar 2 KB di ke-13
+  template.
+- **Huruf _preload_ terakhir tiba sekitar 0,3 s lebih cepat**, 3,62–3,99 s di
+  template teks (sesudah #80: 3,94–4,26 s).
+- **Teks LCP membaik di ke-11 template teks**, 0,05–0,31 s dibanding sesudah
+  #80, dan kini 2,84–3,91 s. Masih 0,1–1,1 s lebih lambat daripada sebelum
+  #80, ketika teks itu dilukis dengan huruf pengganti.
+- **Jendela _block_ kini tidak habis di ke-11 template teks:** sisanya 0,15–0,47
+  s, dari −0,11 sampai 0,15 s sesudah #80. Di `/work` dan halaman pekerjaan
+  huruf terakhir masih tiba 0,15–0,19 s sesudah jendela habis, sehingga
+  huruf pengganti bisa tampil sesaat di teks halaman itu. LCP keduanya gambar
+  (1,21 dan 1,49 s).
+- **Varian lain:** ponsel dimodelkan tidak berubah (median LCP −1 ms), desktop
+  sedikit lebih cepat (median LCP −78 ms, runner lebih cepat), desktop dengan
+  WebGL tidak berubah. CLS sama seperti sesudah #80.
+- **Yang masih bisa memperlebar jendela:** lebih sedikit bita huruf di layar
+  pertama (A2, keputusan pemilik) dan lebih sedikit yang bersaing di jalur
+  saat huruf dimuat, terutama gambar di `/work`.
