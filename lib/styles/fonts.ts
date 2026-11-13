@@ -1,4 +1,5 @@
 import { Geist_Mono, Inter, Onest } from 'next/font/google'
+import localFont from 'next/font/local'
 
 /*
  * Three roles, three families: R4, revised 2026-10-30.
@@ -96,7 +97,34 @@ const mono = Geist_Mono({
   ],
 })
 
-const fonts = [display, text, mono]
+/*
+ * Inter's "ū", from a file of its own — F4-06 perbaikan.
+ *
+ * The colophon says "Satūs" (`footer.builtOn`), and Inter's `latin` file has
+ * no "ū", so every page downloaded Inter's whole `latin-ext` file, 133,704
+ * bytes, for one letter; on a slow phone link production requested it ahead
+ * of the preloaded faces. This is that same glyph cut from that same file,
+ * 1,704 bytes, both axes kept (`lib/styles/font-files/README.md`). The word
+ * stays exactly as written, and in Inter.
+ *
+ * `unicode-range` limits it to U+016B and it is never preloaded. Only the
+ * colophon line names it, first in its stack, so for "ū" the browser takes
+ * this file and never asks for `latin-ext`; every other letter falls through
+ * to Inter. `lib/styles/glyph-coverage.test.ts` holds the copy to the glyphs
+ * these files cover.
+ */
+const textMacron = localFont({
+  src: './font-files/inter-u-macron.woff2',
+  weight: '100 900',
+  style: 'normal',
+  display: 'block',
+  preload: false,
+  adjustFontFallback: false,
+  variable: '--next-font-text-macron',
+  declarations: [{ prop: 'unicode-range', value: 'U+016B' }],
+})
+
+const fonts = [display, text, mono, textMacron]
 const fontsVariable = fonts.map((font) => font.variable).join(' ')
 
 export { fontsVariable }

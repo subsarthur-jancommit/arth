@@ -78,6 +78,14 @@ const PHONE = { width: 412, height: 823 }
 const BLOCK_PERIOD_MS = 3000
 
 /**
+ * The largest font file a page may fetch beyond the preloads: a cut of one or
+ * a few glyphs, like Inter's "ū" (1,704 bytes, `lib/styles/font-files`). A
+ * whole extra subset is far larger: Inter's `latin-ext` was 133,704 bytes,
+ * fetched by every page for that one letter until F4-06 perbaikan.
+ */
+const EXTRA_FILE_MAX_BYTES = 10_000
+
+/**
  * Whether a face's `unicode-range` covers the Latin letters a to z, which is
  * what a first screen draws with. The `latin-ext` face that the footer's
  * "ū" pulls in covers none of them and is not this gate's business. Parsed
@@ -216,6 +224,7 @@ test.describe('the first screen draws its words in their own face', () => {
               return {
                 file: resource.name.split('/').pop() ?? resource.name,
                 preloaded: resource.initiatorType === 'link',
+                size: resource.encodedBodySize,
                 start: resource.startTime,
                 arrived: resource.responseEnd,
               }
@@ -285,6 +294,15 @@ test.describe('the first screen draws its words in their own face', () => {
           window,
           `${route}: ${file.file} arrived ${Math.round(window)} ms after the first words, past the ${BLOCK_PERIOD_MS} ms block, so a fallback face could show`
         ).toBeLessThan(BLOCK_PERIOD_MS)
+      }
+
+      // No whole extra subset: whatever the copy needs beyond the preloaded
+      // faces comes from a one-glyph cut, CMS copy included.
+      for (const file of record.files.filter((entry) => !entry.preloaded)) {
+        expect(
+          file.size,
+          `${route}: ${file.file} is a whole extra font subset (${file.size} bytes); some text needs a glyph no shipped cut covers (lib/styles/glyph-coverage.test.ts)`
+        ).toBeLessThan(EXTRA_FILE_MAX_BYTES)
       }
     })
   }

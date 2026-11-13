@@ -211,6 +211,17 @@
   max-width: 46ch;
 }
 
+/*
+ * The colophon's "Satūs": its "ū" from Inter's one-glyph file, every other
+ * letter from Inter as before — F4-06 perbaikan (`lib/styles/fonts.ts`). The
+ * file comes first because the browser takes the first family whose
+ * `unicode-range` covers a letter; with Inter first, "ū" would download
+ * Inter's whole `latin-ext` file, 133,704 bytes.
+ */
+.note {
+  font-family: var(--next-font-text-macron), var(--next-font-text);
+}
+
 /* A chip, as wide as its words, not the column. */
 .gridToggle {
   align-self: flex-start;
