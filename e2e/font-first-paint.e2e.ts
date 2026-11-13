@@ -24,11 +24,13 @@ import { expect, test } from '@playwright/test'
  *
  * 1. every first-screen face declares `font-display: block`;
  * 2. every preloaded font file (all four serve some first screen,
- *    `lib/styles/fonts.ts`) has arrived within three seconds of the page's
- *    first byte, on the slow link Lighthouse's `mobile-applied` profile
- *    applies. No face can be used before the HTML that declares it starts to
- *    arrive, so this bounds each block window from above, with network
- *    times Chrome records exactly rather than with main-thread callbacks,
+ *    `lib/styles/fonts.ts`) has arrived within three seconds of the first
+ *    words the parser put into `<body>`, on the slow link Lighthouse's
+ *    `mobile-applied` profile applies. A face is first used when those words
+ *    are laid out, which cannot happen before the task that inserted them
+ *    ends, and the observer that timestamps them runs before that task's
+ *    rendering. So this bounds each block window from above. The file's
+ *    arrival is the network's own `responseEnd`, not a main-thread callback,
  *    which a busy page delays.
  *
  * Together they mean no frame shows a first-screen word in a fallback face.
@@ -102,6 +104,7 @@ const STAND_IN = /fallback/i
 declare global {
   interface Window {
     __layoutShift?: number
+    __firstWords?: number
   }
 }
 
@@ -115,6 +118,22 @@ test.describe('the first screen draws its words in their own face', () => {
       testInfo.setTimeout(120_000)
 
       await page.addInitScript(() => {
+        // When the parser first puts words into <body>: no face can be used
+        // before then. Read in a microtask, so before any layout of them.
+        const words = new MutationObserver((records) => {
+          for (const record of records) {
+            for (const node of record.addedNodes) {
+              const inBody = document.body?.contains(node) ?? false
+              if (inBody && (node.textContent ?? '').trim() !== '') {
+                window.__firstWords ??= performance.now()
+                words.disconnect()
+                return
+              }
+            }
+          }
+        })
+        words.observe(document, { childList: true, subtree: true })
+
         window.__layoutShift = 0
         new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
@@ -179,6 +198,7 @@ test.describe('the first screen draws its words in their own face', () => {
           origin: performance.timeOrigin,
           shift: window.__layoutShift ?? 0,
           firstByte: navigation?.responseStart ?? 0,
+          firstWords: window.__firstWords ?? null,
           firstPaint: paint('first-paint'),
           firstContentfulPaint: paint('first-contentful-paint'),
           faces: [...document.fonts].map((face) => ({
@@ -254,11 +274,16 @@ test.describe('the first screen draws its words in their own face', () => {
         preloaded.length,
         `${route}: no font file was preloaded`
       ).toBeGreaterThan(0)
+      const firstWords = record.firstWords
+      expect(
+        firstWords,
+        `${route}: never saw the parser put words into <body>`
+      ).not.toBeNull()
       for (const file of preloaded) {
-        const sinceFirstByte = file.arrived - record.firstByte
+        const window = file.arrived - (firstWords ?? 0)
         expect(
-          sinceFirstByte,
-          `${route}: ${file.file} arrived ${Math.round(sinceFirstByte)} ms after the first byte, past the ${BLOCK_PERIOD_MS} ms block, so a fallback face could show`
+          window,
+          `${route}: ${file.file} arrived ${Math.round(window)} ms after the first words, past the ${BLOCK_PERIOD_MS} ms block, so a fallback face could show`
         ).toBeLessThan(BLOCK_PERIOD_MS)
       }
     })
