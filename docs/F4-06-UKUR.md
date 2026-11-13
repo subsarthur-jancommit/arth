@@ -32,6 +32,10 @@ begitu.
 - **INP sungguhan hanya bisa datang dari ponsel pemilik (§6).**
 - **Tidak ada perubahan kode situs di PR ini.** Setiap temuan adalah
   pertukaran yang keputusannya milik pemilik (§5); pilihan perbaikannya di §4.
+- **Sesudah F4-06 perbaikan (§8, produksi `ac9eb5c`):** lukisan pertama ponsel
+  di 4G lambat 0,95–1,25 s dari 2,5–3,2 s; teks LCP menunggu hurufnya sendiri
+  dan tampil 0,2–1,4 s lebih lambat di 11 template, karena sebelumnya dilukis
+  dengan huruf pengganti. A3 adalah tuas berikutnya.
 
 ## 1. Cara diukur, dan batasnya
 
@@ -400,3 +404,143 @@ Catatan:
   pembaca (tidak ada Vercel Speed Insights atau pelapor `web-vitals`), dan
   situs masih `noindex`, jadi laporan CrUX publik juga belum ada. Pilihannya di
   §4.D.
+
+## 8. Sesudah F4-06 perbaikan: produksi `ac9eb5c`
+
+Yang masuk `main` lewat PR #80 (`ac9eb5c`, 13 November 2026), sesudah pemilik
+menjawab "Ya, merge #80" atas dua biaya yang dibawa kepadanya:
+
+- **CSS di dalam HTML** (`experimental.inlineCss`, §4.A butir 1);
+- **`font-display: block`** untuk Onest, Inter, dan Geist Mono. Pemilik menolak
+  teks yang tampil dulu dengan huruf pengganti lalu berganti ("SAYA INGIN
+  DESAINNYA TERLIHAT JELAS juga"), jadi teks menunggu hurufnya sendiri;
+- **huruf pengganti yang diukur seukuran huruf aslinya**
+  (`lib/styles/css/font-fallbacks.css`). Produksi sebelumnya tidak punya
+  pengganti yang disesuaikan sama sekali.
+
+Hidrasi dan kanvas beranda (#81) tidak masuk: B1 menyembunyikan isi dari
+pembaca tanpa JavaScript, dan B2 serta C tidak terukur lebih baik daripada
+selisih antar-run (lab A/B lewat masukan `ref`, #82).
+
+Diukur ulang ke produksi sesudah produksi menyajikan `ac9eb5c` (stempel di
+catatan kaki, 10.47 UTC): run 43411813922, workflow yang sama tanpa `ref`, empat
+varian, median tiga run. **Angka lab dari produksi, bukan angka lapangan**
+(aturan #19). TBT tetap proksi lab untuk INP, dan di sini tidak bisa dibaca
+sebagai perubahan karena runner sesudahnya lebih lambat (`benchmarkIndex` di
+tiap tabel). "Sebelum" adalah run 1 dan run 2 di §2.
+
+### Ringkas
+
+- **Lukisan pertama di ponsel dengan 4G lambat yang diterapkan: dari 2,5–3,2 s
+  menjadi 0,95–1,25 s di ke-13 template.** Yang tampil pertama adalah bingkai
+  dan warna halaman; teks menyusul dengan hurufnya sendiri.
+- **LCP teks tampil lebih lambat di 11 template (0,2–1,4 s), dan ini bukan
+  hurufnya yang datang lebih lambat.** Di produksi, berkas huruf yang
+  di-_preload_ tiba sekitar 4,0–4,5 s di 4G lambat, sebelum maupun sesudah
+  penggabungan. Sebelumnya, teks LCP dilukis 1,4–1,5 s sebelum hurufnya tiba
+  (tiga template yang diperiksa, tabel di bawah), jadi dengan huruf pengganti;
+  sekarang ia menunggu. Saat halaman pertama kali
+  tampil dengan desainnya sendiri tidak mundur. `/work` dan halaman pekerjaan,
+  yang LCP-nya gambar, jauh lebih cepat: 3,15 → 1,30 s dan 3,24 → 1,43 s.
+- **Jendela tiga detik sempit di produksi.** Huruf terakhir layar pertama tiba
+  3,0–3,1 s sesudah lukisan pertama di tiga template yang diperiksa, tepat di
+  batas jendela _block_
+  Chrome. Di sebagian muatan, huruf pengganti bisa tampil sesaat sebelum
+  hurufnya tiba. Lab di runner memberi sekitar satu detik ruang; produksi
+  tidak.
+- **CLS:** kini nol di Unit, sisi jaringan, dan `/kebijakan` (sebelumnya
+  0,014, 0,013, 0,007). `/pembayaran` 0,027 (sebelumnya 0,029); baru dan kecil
+  di `/layanan` 0,006 dan `/kontak` 0,008. Yang tersisa berasal dari judul
+  Onest yang patah barisnya berbeda dengan penggantinya. Semua jauh di bawah
+  0,1.
+- **Yang akan mempercepat huruf: A3, keputusan isi pemilik (§4.A butir 3).**
+  Berkas latin-ext Inter (131,6 KB) untuk "ū" di catatan kaki kini diminta
+  pada 0,9–1,5 s (sebelumnya 2,5–3,7 s), dengan prioritas di atas berkas yang
+  di-_preload_, di koneksi HTTP/2 yang sama. HTML juga membesar karena CSS ada
+  di dalamnya: 16–35 KB menjadi 39–77 KB terkompresi.
+- **Desktop:** FCP 0,34–0,43 s (sebelumnya 0,28–0,31 s) dan LCP 0,69–0,82 s
+  (sebelumnya 0,63–0,80 s), pada runner yang lebih lambat (`benchmarkIndex`
+  2364, sebelumnya 2958–3412). Semua jauh di dalam "baik"; CLS tidak berubah.
+- **Ponsel dimodelkan (`mobile`):** LCP sama atau sedikit lebih baik di 12
+  template. `/pembayaran` satu-satunya yang bergeser jauh (LCP 3,16 → 3,76 s,
+  FCP 0,92 → 1,66 s); penyebabnya belum diperiksa.
+
+### Kapan huruf tiba, sebelum dan sesudah (`mobile-applied`; LCP median, waktu huruf dari run pertama)
+
+| Template   | LCP sebelum → sesudah | Berkas _preload_ terakhir tiba, sebelum → sesudah | Berkas "ū" diminta, sebelum → sesudah |
+| ---------- | --------------------- | ------------------------------------------------- | ------------------------------------- |
+| Beranda    | 3,04 → 3,30 s         | 4,49 → 4,32 s                                     | 3,69 → 1,49 s                         |
+| Unit       | 3,01 → 4,20 s         | 4,38 → 4,21 s                                     | 2,92 → 1,08 s                         |
+| /kebijakan | 2,53 → 3,95 s         | 4,04 → 4,01 s                                     | 2,50 → 0,90 s                         |
+
+### Tabel lengkap
+
+#### Ponsel, dimodelkan (`mobile`)
+
+`benchmarkIndex` runner: sebelum run 1 4160, run 2 2428; sesudah 2977.
+
+| Template      | LCP s sebelum (run 1 / run 2) | LCP s sesudah | FCP s sebelum (run 2) | FCP s sesudah | TBT ms sebelum (run 1 / run 2) | TBT ms sesudah | CLS sebelum (terbesar) | CLS sesudah |
+| ------------- | ----------------------------- | ------------- | --------------------- | ------------- | ------------------------------ | -------------- | ---------------------- | ----------- |
+| Beranda       | 3,78 / 3,77                   | **3,77**      | 1,22                  | **1,37**      | 260 / 521                      | **412**        | 0,000                  | **0,000**   |
+| Unit          | 3,49 / 3,62                   | **3,62**      | 1,07                  | **1,11**      | 88 / 243                       | **226**        | 0,000                  | **0,000**   |
+| Sisi          | 3,48 / 3,62                   | **3,47**      | 1,07                  | **1,11**      | 51 / 172                       | **156**        | 0,000                  | **0,000**   |
+| Bab           | 3,33 / 3,39                   | **3,02**      | 1,06                  | **1,11**      | 76 / 150                       | **136**        | 0,016                  | **0,000**   |
+| Offer         | 3,33 / 3,46                   | **3,32**      | 1,11                  | **1,11**      | 67 / 150                       | **136**        | 0,000                  | **0,000**   |
+| Sisi jaringan | 3,48 / 3,62                   | **3,47**      | 1,07                  | **1,17**      | 84 / 176                       | **183**        | 0,000                  | **0,000**   |
+| /layanan      | 3,33 / 3,32                   | **3,32**      | 1,07                  | **1,11**      | 88 / 192                       | **181**        | 0,000                  | **0,000**   |
+| /metode       | 3,33 / 3,31                   | **3,32**      | 1,06                  | **1,15**      | 57 / 152                       | **140**        | 0,000                  | **0,000**   |
+| /pembayaran   | 3,18 / 3,16                   | **3,76**      | 0,92                  | **1,66**      | 66 / 116                       | **107**        | 0,000                  | **0,000**   |
+| /kebijakan    | 3,18 / 3,17                   | **3,17**      | 0,96                  | **0,96**      | 42 / 128                       | **83**         | 0,000                  | **0,000**   |
+| /kontak       | 3,41 / 3,39                   | **3,32**      | 1,07                  | **1,12**      | 67 / 151                       | **117**        | 0,000                  | **0,000**   |
+| /work         | 3,93 / 3,92                   | **3,78**      | 1,11                  | **1,21**      | 116 / 316                      | **168**        | 0,000                  | **0,000**   |
+| /work/<slug>  | 3,93 / 3,92                   | **3,92**      | 1,07                  | **1,15**      | 92 / 254                       | **226**        | 0,000                  | **0,000**   |
+
+#### Ponsel, pembatasan diterapkan (`mobile-applied`)
+
+`benchmarkIndex` runner: sebelum run 2 2976; sesudah 2457.
+
+| Template      | LCP s sebelum | LCP s sesudah | FCP s sebelum | FCP s sesudah | TBT ms sebelum | TBT ms sesudah | CLS sebelum | CLS sesudah |
+| ------------- | ------------- | ------------- | ------------- | ------------- | -------------- | -------------- | ----------- | ----------- |
+| Beranda       | 3,04          | **3,30**      | 3,04          | **1,21**      | 885            | **1122**       | 0,000       | **0,000**   |
+| Unit          | 3,01          | **4,20**      | 3,01          | **1,13**      | 332            | **440**        | 0,014       | **0,000**   |
+| Sisi          | 2,95          | **3,18**      | 2,95          | **1,14**      | 168            | **258**        | 0,000       | **0,000**   |
+| Bab           | 2,79          | **4,07**      | 2,79          | **1,12**      | 178            | **284**        | 0,016       | **0,016**   |
+| Offer         | 2,79          | **3,06**      | 2,79          | **1,11**      | 143            | **234**        | 0,000       | **0,000**   |
+| Sisi jaringan | 2,94          | **3,16**      | 2,94          | **1,16**      | 240            | **336**        | 0,013       | **0,000**   |
+| /layanan      | 2,70          | **2,94**      | 2,70          | **1,10**      | 175            | **299**        | 0,000       | **0,006**   |
+| /metode       | 2,73          | **3,89**      | 2,73          | **1,09**      | 152            | **241**        | 0,000       | **0,000**   |
+| /pembayaran   | 2,51          | **2,98**      | 2,51          | **0,95**      | 90             | **154**        | 0,029       | **0,027**   |
+| /kebijakan    | 2,53          | **3,95**      | 2,53          | **0,97**      | 93             | **153**        | 0,007       | **0,000**   |
+| /kontak       | 2,81          | **3,04**      | 2,81          | **1,05**      | 118            | **212**        | 0,000       | **0,008**   |
+| /work         | 3,15          | **1,30**      | 3,15          | **1,21**      | 427            | **557**        | 0,001       | **0,000**   |
+| /work/<slug>  | 3,24          | **1,43**      | 3,24          | **1,25**      | 360            | **502**        | 0,000       | **0,000**   |
+
+#### Desktop, tanpa WebGL (`desktop`)
+
+`benchmarkIndex` runner: sebelum run 1 3412, run 2 2958; sesudah 2364.
+
+| Template      | LCP s sebelum (run 1 / run 2) | LCP s sesudah | FCP s sebelum (run 2) | FCP s sesudah | TBT ms sebelum (run 1 / run 2) | TBT ms sesudah | CLS sebelum (terbesar) | CLS sesudah |
+| ------------- | ----------------------------- | ------------- | --------------------- | ------------- | ------------------------------ | -------------- | ---------------------- | ----------- |
+| Beranda       | 0,72 / 0,71                   | **0,79**      | 0,31                  | **0,43**      | 5 / 32                         | **30**         | 0,000                  | **0,000**   |
+| Unit          | 0,73 / 0,71                   | **0,82**      | 0,31                  | **0,42**      | 0 / 0                          | **9**          | 0,000                  | **0,000**   |
+| Sisi          | 0,72 / 0,70                   | **0,82**      | 0,31                  | **0,42**      | 0 / 0                          | **6**          | 0,000                  | **0,000**   |
+| Bab           | 0,69 / 0,70                   | **0,71**      | 0,31                  | **0,34**      | 0 / 0                          | **0**          | 0,003                  | **0,003**   |
+| Offer         | 0,69 / 0,70                   | **0,71**      | 0,31                  | **0,34**      | 0 / 0                          | **0**          | 0,000                  | **0,000**   |
+| Sisi jaringan | 0,72 / 0,70                   | **0,82**      | 0,30                  | **0,42**      | 0 / 0                          | **6**          | 0,000                  | **0,000**   |
+| /layanan      | 0,69 / 0,67                   | **0,69**      | 0,31                  | **0,36**      | 0 / 0                          | **2**          | 0,000                  | **0,000**   |
+| /metode       | 0,68 / 0,67                   | **0,79**      | 0,31                  | **0,42**      | 0 / 0                          | **0**          | 0,000                  | **0,000**   |
+| /pembayaran   | 0,64 / 0,63                   | **0,76**      | 0,28                  | **0,40**      | 0 / 0                          | **7**          | 0,000                  | **0,000**   |
+| /kebijakan    | 0,73 / 0,63                   | **0,76**      | 0,28                  | **0,40**      | 0 / 0                          | **2**          | 0,000                  | **0,000**   |
+| /kontak       | 0,69 / 0,67                   | **0,79**      | 0,31                  | **0,43**      | 0 / 0                          | **0**          | 0,000                  | **0,000**   |
+| /work         | 0,77 / 0,78                   | **0,79**      | 0,31                  | **0,35**      | 1 / 0                          | **10**         | 0,000                  | **0,000**   |
+| /work/<slug>  | 0,80 / 0,78                   | **0,79**      | 0,31                  | **0,36**      | 0 / 0                          | **2**          | 0,000                  | **0,000**   |
+
+#### Desktop dengan WebGL (`desktop-webgl`)
+
+`benchmarkIndex` runner: sebelum run 1 2439, run 2 3970; sesudah 2314.
+
+| Template     | LCP s sebelum (run 1 / run 2) | LCP s sesudah | FCP s sebelum (run 2) | FCP s sesudah | TBT ms sebelum (run 1 / run 2) | TBT ms sesudah | CLS sebelum (terbesar) | CLS sesudah |
+| ------------ | ----------------------------- | ------------- | --------------------- | ------------- | ------------------------------ | -------------- | ---------------------- | ----------- |
+| Beranda      | 0,74 / 0,70                   | **0,70**      | 0,30                  | **0,34**      | 196 / 30                       | **148**        | 0,000                  | **0,000**   |
+| /work        | 0,77 / 0,78                   | **0,78**      | 0,31                  | **0,34**      | 35 / 0                         | **25**         | 0,000                  | **0,000**   |
+| /work/<slug> | 0,78 / 0,78                   | **0,78**      | 0,31                  | **0,35**      | 28 / 0                         | **18**         | 0,000                  | **0,000**   |
