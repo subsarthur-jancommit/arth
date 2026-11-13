@@ -11,6 +11,7 @@
 @import './reset.css' layer(base);
 @import './easings.css';
 @import './tailwind.css';
+@import './font-fallbacks.css';
 @import './root.css';
 @import './global.css';
 @import './dialects.css';

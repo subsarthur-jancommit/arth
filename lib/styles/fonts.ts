@@ -50,12 +50,22 @@ import { Geist_Mono, Inter, Onest } from 'next/font/google'
  * stand-in does show, then, and swaps in when the face arrives: no worse
  * than `swap` on that link. `e2e/font-first-paint.e2e.ts` holds the block
  * and the timing on the home page and a unit page.
+ *
+ * Each stack's first fallback is a stand-in sized to the real face
+ * (`lib/styles/css/font-fallbacks.css`), so blocked text is laid out where
+ * the real face will draw it and nothing settles when it lands.
  */
 const display = Onest({
   subsets: ['latin'],
   display: 'block',
   variable: '--next-font-display',
-  fallback: ['system-ui', 'Helvetica Neue', 'Arial', 'sans-serif'],
+  fallback: [
+    'Onest Fallback',
+    'system-ui',
+    'Helvetica Neue',
+    'Arial',
+    'sans-serif',
+  ],
 })
 
 const text = Inter({
@@ -64,14 +74,26 @@ const text = Inter({
   axes: ['opsz'],
   style: ['normal', 'italic'],
   variable: '--next-font-text',
-  fallback: ['system-ui', 'Helvetica Neue', 'Arial', 'sans-serif'],
+  fallback: [
+    'Inter Fallback',
+    'system-ui',
+    'Helvetica Neue',
+    'Arial',
+    'sans-serif',
+  ],
 })
 
 const mono = Geist_Mono({
   subsets: ['latin'],
   display: 'block',
   variable: '--next-font-mono',
-  fallback: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+  fallback: [
+    'Geist Mono Fallback',
+    'ui-monospace',
+    'SFMono-Regular',
+    'Menlo',
+    'monospace',
+  ],
 })
 
 const fonts = [display, text, mono]
