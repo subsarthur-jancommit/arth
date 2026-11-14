@@ -20,6 +20,11 @@
  * lifted its mark. `plates` stays: those tests read the photographic
  * material layer of the work covers (`vault/webgl/material-image`), which
  * the drawings do not use.
+ *
+ * The F4-04 follow-ups moved the material gates to `/work`, where that layer
+ * still runs: `material-layer` first, then `material-shape` and the two
+ * material tests in `visual-substance`. `plates` is left on the home-page
+ * route of `material-occlusion` alone.
  */
 export const REMOVED_IN_F3 = {
   plates:

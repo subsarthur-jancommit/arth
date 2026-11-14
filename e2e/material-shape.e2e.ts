@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test'
 import sharp from 'sharp'
 
-import { REMOVED_IN_F3 } from './removed-in-f3'
 import {
   plateSkipReason,
   waitForCanvas,
@@ -48,7 +47,20 @@ import {
  * Against the shader before the fix, on the build that already promoted the
  * home page's lone half: this failed on every mismatched card it measured.
  * The numbers are in `docs/stages/TAHAP-86.md` §7.
+ *
+ * ## Running again since the second F4-04 follow-up
+ *
+ * V1 removed the home page's work grid (decision D1), and this sat behind
+ * `test.fixme` from then on, marked as a home-page test. It never was one: it
+ * walks every published route, and the same material kept running on
+ * `/work` and on every work page. It runs again unchanged, with one route
+ * added. The sitemap lists the six work pages but not the catalogue
+ * (`lib/seo/route-catalog.ts` carries no `/work`), and the catalogue is where
+ * every cover sits in a 4:5 box: the case this gate was written for.
  */
+
+/** The catalogue: live, linked, and absent from the sitemap. */
+const CATALOGUE = '/id/work'
 
 /**
  * Ratio disagreement, either way, below which a card is not asked.
@@ -93,15 +105,19 @@ test.describe('the material layer keeps each picture its own shape', () => {
     page,
     request,
   }) => {
-    test.fixme(true, REMOVED_IN_F3.plates)
     // Every published plate, each waited for up to WEBGL_ARRIVAL_MS — Tahap 90.
     test.setTimeout(600_000)
     await page.setViewportSize({ width: 1600, height: 900 })
 
     const xml = await (await request.get('/sitemap.xml')).text()
-    const paths = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)]
-      .map((match) => new URL(match[1] ?? '/').pathname)
-      .filter((path) => !path.endsWith('.md'))
+    const paths = [
+      ...new Set([
+        CATALOGUE,
+        ...[...xml.matchAll(/<loc>([^<]+)<\/loc>/g)]
+          .map((match) => new URL(match[1] ?? '/').pathname)
+          .filter((path) => !path.endsWith('.md')),
+      ]),
+    ]
 
     const stretched: string[] = []
     const report: string[] = []

@@ -8,7 +8,6 @@ import { contribution, legibility, tone } from '../lib/styles/scripts/luminance'
 import { material } from '../vault/motion/tokens'
 import { FEATURED_WORK } from './fixtures'
 import { waitForEntrance } from './page-settled'
-import { REMOVED_IN_F3 } from './removed-in-f3'
 import {
   plateSkipReason,
   waitForCanvas,
@@ -618,10 +617,20 @@ async function moved(
  * hid every fixed `pointer-events: none` element and caught the canvas wrapper
  * too, which made every arm read zero by construction. Both failures are
  * asserted against below rather than remembered.
+ *
+ * ## On `/work` since the second F4-04 follow-up
+ *
+ * Both gates were written against the home page's work grid. V1 removed it
+ * (decision D1), and they sat behind `test.fixme` from then on, while the
+ * same plate kept running on the catalogue (`app/[locale]/work/catalogue.tsx`
+ * passes `material` to `ProjectGrid`), through the same `project-card` and
+ * `material-image`. They measure the catalogue's first plate now, as the
+ * `material-layer` gates do since the first follow-up, and their claims are
+ * unchanged.
  */
 async function readyPlate(page: Page) {
   await page.setViewportSize({ width: 1280, height: 800 })
-  await page.goto('/id')
+  await page.goto('/id/work')
   await page.waitForTimeout(2500)
 
   /*
@@ -720,7 +729,6 @@ test.describe('the material is a material, not a picture', () => {
   )
 
   test('the plate is not frozen', async ({ page }) => {
-    test.fixme(true, REMOVED_IN_F3.plates)
     test.setTimeout(120_000)
     const { region } = await readyPlate(page)
 
@@ -755,7 +763,6 @@ test.describe('the material is a material, not a picture', () => {
   test('scrolling reaches the shader, and the surface settles', async ({
     page,
   }) => {
-    test.fixme(true, REMOVED_IN_F3.plates)
     test.setTimeout(120_000)
 
     /*
