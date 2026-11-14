@@ -24,7 +24,12 @@ export interface SideChapterRow {
   name: string
   situation: string | null
   types: readonly string[]
-  offerCount: number
+  /**
+   * The count in the reader's words, plural included: "6 pekerjaan", "1 piece
+   * of work". Formatted on the server, because a plural form cannot be made by
+   * putting a number into one fixed label.
+   */
+  offerCountText: string
   entryOffer: {
     title: string
     impact: string | null
@@ -62,7 +67,6 @@ interface SideChapterTableProps {
   chapterLabel: string
   typeLabel: string
   entryLabel: string
-  offerCountLabel: string
   className?: string | undefined
 }
 
@@ -118,7 +122,6 @@ export function SideChapterTable({
   chapterLabel,
   typeLabel,
   entryLabel,
-  offerCountLabel,
   className,
 }: SideChapterTableProps) {
   const rootRef = useRef<HTMLDivElement>(null)
@@ -194,10 +197,7 @@ export function SideChapterTable({
                   <td data-side-type="">
                     <span className={s.types}>{chapter.types.join(' · ')}</span>
                     <span className={cn('caption', s.count)}>
-                      {offerCountLabel.replace(
-                        '{count}',
-                        String(chapter.offerCount)
-                      )}
+                      {chapter.offerCountText}
                     </span>
                   </td>
                   <td>
