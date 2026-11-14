@@ -103,6 +103,15 @@ export function PlateMaterial({
   const prefersReducedMotion = usePreferredReducedMotion()
   const [element, setElement] = useState<HTMLDivElement | null>(null)
   const [drew, setDrew] = useState(false)
+  /*
+   * Forgotten whenever the plate leaves the screen with its page, as
+   * `vault/webgl/material-image` does since #86. `cachedNavigations` hides
+   * the home page rather than unmounting it, React keeps a hidden tree's
+   * state, and the canvas that lights the plate after Back is a new one:
+   * until it reports a frame, the flat drawing stays
+   * (`e2e/home-return.e2e.ts`).
+   */
+  useEffect(() => () => setDrew(false), [])
 
   // The canvas's own test (`lib/webgl/components/canvas`): if it will not
   // mount, nothing here asks it to draw.
@@ -127,6 +136,9 @@ export function PlateMaterial({
             unit={unit}
             element={element}
             onFirstFrame={() => setDrew(true)}
+            // The flat drawing again while the context is lost, until the
+            // restored one reports a frame (`use-first-frame`).
+            onContextLost={() => setDrew(false)}
           />
         </WebGLTunnel>
       )}

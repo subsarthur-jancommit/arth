@@ -26,6 +26,7 @@ import {
 } from 'three'
 
 import { useFlowmap } from '@/webgl/components/flowmap-provider'
+import { useFirstFrame } from '@/webgl/hooks/use-first-frame'
 
 import { fragmentShader, vertexShader } from './shaders'
 
@@ -124,6 +125,12 @@ interface MaterialImageSceneProps {
    * missing work. See `index.tsx`.
    */
   onFirstFrame: () => void
+  /**
+   * Called when the context is lost, so the DOM side shows its `<img>` again
+   * until the restored context reports a new first frame
+   * (`lib/webgl/hooks/use-first-frame.ts`).
+   */
+  onContextLost: () => void
 }
 
 /**
@@ -205,11 +212,12 @@ export function MaterialImageScene({
   intent,
   visible,
   onFirstFrame,
+  onContextLost,
 }: MaterialImageSceneProps) {
   const meshRef = useRef<Mesh>(null)
   const materialRef = useRef<ShaderMaterial>(null)
   const size = useThree((state) => state.size)
-  const announced = useRef(false)
+  const announce = useFirstFrame(onFirstFrame, onContextLost)
   /**
    * The loaded texture's own width ÷ height, or 0 before one has loaded.
    *
@@ -507,16 +515,10 @@ export function MaterialImageScene({
       /*
        * Everything this mesh needs in order to be visible now holds: it has a
        * texture, a measured rect, and a matrix placing it over that rect. Tell
-       * the DOM side once, so it can stop showing the `<img>`.
-       *
-       * A ref rather than state: this fires inside the frame loop, and a
-       * setState here would re-render the scene on the frame it is trying to
-       * draw.
+       * the DOM side once, so it can stop showing the `<img>`. Once, and only
+       * from a live context: `useFirstFrame`.
        */
-      if (!announced.current && live.uTexture.value) {
-        announced.current = true
-        onFirstFrame()
-      }
+      if (live.uTexture.value) announce()
     }
 
     live.uTime.value = clock.elapsedTime

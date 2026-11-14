@@ -242,6 +242,9 @@ export function MaterialImage({
 
   // Stable, and idempotent on the scene's side too (it announces once).
   const handleFirstFrame = useCallback(() => setDrew(true), [])
+  // The `<img>` again while the context is lost, until the restored one
+  // reports a frame (`lib/webgl/hooks/use-first-frame.ts`).
+  const handleContextLost = useCallback(() => setDrew(false), [])
 
   /*
    * Every condition that must hold before the DOM image may be hidden — and
@@ -294,6 +297,7 @@ export function MaterialImage({
             shearTau={material.shearTau}
             visible={isVisible}
             onFirstFrame={handleFirstFrame}
+            onContextLost={handleContextLost}
           />
         </WebGLTunnel>
       )}
