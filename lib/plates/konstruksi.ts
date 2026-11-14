@@ -19,6 +19,8 @@
  * `y` down the plate, the section with `z` up it, both on the same `x`.
  */
 
+import type { Locale } from '@/lib/i18n/routing'
+
 import {
   arc,
   circle,
@@ -29,6 +31,7 @@ import {
   sheet,
 } from './draw'
 import type { Plate } from './types'
+import { type PlateWords, plateWords } from './words'
 
 /** Plate units per metre. */
 const SCALE = 56
@@ -109,11 +112,8 @@ const SECTION_LABELS: readonly Label[] = [
   ['Lantai 2', 2.45, 5.1, 'middle', 0],
 ]
 
-const LEVELS = [
-  [0, '±0,00'],
-  [3.6, '+3,60'],
-  [7, '+7,00'],
-] as const
+/** Floor levels in metres, written "±0,00", "+3,60" in the locale's decimals. */
+const LEVELS = [0, 3.6, 7] as const
 
 /** The arrowhead on a route or a stair, in plate units. */
 const ARROW = 11
@@ -425,7 +425,7 @@ function drawAxes(draw: ReturnType<typeof sheet>) {
 }
 
 /** Dimensions, the cutting plane's trace and the north point. */
-function drawPlanMarks(draw: ReturnType<typeof sheet>) {
+function drawPlanMarks(draw: ReturnType<typeof sheet>, words: PlateWords) {
   const tick = ([cx, cy]: Point) =>
     draw.mark('tick', segment([cx - 5, cy + 5], [cx + 5, cy - 5]))
 
@@ -439,7 +439,7 @@ function drawPlanMarks(draw: ReturnType<typeof sheet>) {
     const x0 = AXES[i] ?? 0
     const x1 = AXES[i + 1] ?? 0
     const [tx, ty] = plan((x0 + x1) / 2, y - 0.14)
-    draw.text('figure', tx, ty, (x1 - x0).toFixed(2).replace('.', ','), {
+    draw.text('figure', tx, ty, words.metres(x1 - x0), {
       anchor: 'middle',
     })
   }
@@ -453,7 +453,7 @@ function drawPlanMarks(draw: ReturnType<typeof sheet>) {
     tick(plan(side, end))
   }
   const [wx, wy] = plan(side + 0.22, 2.5)
-  draw.text('figure', wx, wy, '5,00', {
+  draw.text('figure', wx, wy, words.metres(5), {
     anchor: 'middle',
     rotate: -90,
     central: true,
@@ -495,15 +495,16 @@ function drawPlanMarks(draw: ReturnType<typeof sheet>) {
       [nx, ny + r * 0.3],
     ])
   )
-  draw.text('figure', nx, ny - r - 7, 'U', {
+  draw.text('figure', nx, ny - r - 7, words.word('U'), {
     anchor: 'middle',
     weight: 600,
   })
 }
 
 /** Floor levels at the right of the section. */
-function drawLevels(draw: ReturnType<typeof sheet>) {
-  for (const [z, level] of LEVELS) {
+function drawLevels(draw: ReturnType<typeof sheet>, words: PlateWords) {
+  for (const z of LEVELS) {
+    const level = `${z === 0 ? '±' : '+'}${words.metres(z)}`
     const [lx, ly] = section(14.55, z)
     draw.mark(
       'outline',
@@ -520,6 +521,7 @@ function drawLevels(draw: ReturnType<typeof sheet>) {
 
 function drawLabels(
   draw: ReturnType<typeof sheet>,
+  words: PlateWords,
   labels: readonly Label[],
   project: Project
 ) {
@@ -529,23 +531,24 @@ function drawLabels(
       'label',
       x,
       y,
-      name.toLocaleUpperCase('id'),
+      words.upper(words.word(name)),
       rotate === 0 ? { anchor } : { anchor, rotate, central: true }
     )
   }
 }
 
-function build(): Plate {
+function build(locale: Locale): Plate {
+  const words = plateWords('konstruksi', locale)
   const draw = sheet()
   drawAxes(draw)
   drawPlan(draw)
-  drawPlanMarks(draw)
-  drawLabels(draw, PLAN_LABELS, plan)
+  drawPlanMarks(draw, words)
+  drawLabels(draw, words, PLAN_LABELS, plan)
   drawSection(draw)
-  drawLevels(draw)
-  drawLabels(draw, SECTION_LABELS, section)
-  draw.text('title', 80, 512, 'DENAH LANTAI 1')
-  draw.text('title', 80, 1066, 'POTONGAN A-A')
+  drawLevels(draw, words)
+  drawLabels(draw, words, SECTION_LABELS, section)
+  draw.text('title', 80, 512, words.word('DENAH LANTAI 1'))
+  draw.text('title', 80, 1066, words.word('POTONGAN A-A'))
   /*
    * Where the plan's sheet ends and the section's begins: under the plan's
    * title (its baseline is 512) and above the flue's cap (549). The lit model
@@ -561,4 +564,5 @@ function build(): Plate {
   )
 }
 
-export const KONSTRUKSI_PLATE: Plate = build()
+export const KONSTRUKSI_PLATE: Plate = build('id')
+export const KONSTRUKSI_PLATE_EN: Plate = build('en')
