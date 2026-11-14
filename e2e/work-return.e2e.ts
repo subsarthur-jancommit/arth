@@ -87,6 +87,13 @@ const SETTLE_MS = 1000
 /** The longest the sampler waits after Back for the plates on screen. */
 const SAMPLE_MS = 15_000
 
+/**
+ * How much longer than `SAMPLE_MS` after leaving the sampler waits for Back
+ * before it stops on its own. Back follows the leaving by at most a second
+ * here, so this is only ever reached when Back was never seen.
+ */
+const GIVE_UP_AFTER_BACK_MS = 5000
+
 /** Frames kept around each Back: from this long before it... */
 const FRAMES_BEFORE_MS = 300
 /** ...to this long after it, and no more than this many. */
@@ -142,6 +149,8 @@ declare global {
       awayAt: number | null
       /** When `/work` was on screen again. */
       backAt: number | null
+      /** Called by the test once it has seen the URL leave `/work`. */
+      markAway: () => void
     }
   }
 }
@@ -172,10 +181,21 @@ function added(before: Record<string, number>, after: Record<string, number>) {
  * `/kontak`, and Back, until every plate on screen has been drawn again and
  * the page has held still for `SETTLE_MS`, or until `SAMPLE_MS` after Back.
  * Clears what the probe counts as drawn the moment the reader leaves.
+ *
+ * ## Leaving is marked by the test, not only seen by a frame
+ *
+ * The first version noticed the reader leaving only when a frame read the
+ * URL. On a quick return the whole stay on `/kontak` can fall between two
+ * frames when the main thread is busy with the navigation, and then the
+ * sampler never knew the reader had left: no `backAt`, so no `SAMPLE_MS` cap,
+ * and the wait for it ran out at 45 s while the page sat there drawn (#86,
+ * run 43557398828, first attempt, on a quick return). The test now marks the
+ * leaving itself, once it has seen the URL change and before it presses
+ * Back, and a sampler that never sees Back stops on its own and says so.
  */
 async function startSampler(page: Page) {
   await page.evaluate(
-    ({ settleMs, sampleMs }) => {
+    ({ settleMs, sampleMs, giveUpMs }) => {
       const gl = window.__gl
       if (!gl) throw new Error('the WebGL probe is not installed')
       const sampler: NonNullable<Window['__sampler']> = {
@@ -183,17 +203,22 @@ async function startSampler(page: Page) {
         done: false,
         awayAt: null,
         backAt: null,
+        markAway: () => undefined,
       }
+      /** What counts as drawn again is what is drawn after this moment. */
+      const leave = (at: number) => {
+        if (sampler.awayAt !== null) return
+        sampler.awayAt = at
+        gl.clear()
+      }
+      sampler.markAway = () => leave(performance.now())
       window.__sampler = sampler
       let settledAt: number | null = null
 
       const tick = () => {
         const now = performance.now()
         const onWork = location.pathname.endsWith('/work')
-        if (!onWork && sampler.awayAt === null) {
-          sampler.awayAt = now
-          gl.clear()
-        }
+        if (!onWork) leave(now)
         const back = onWork && sampler.awayAt !== null
         if (back && sampler.backAt === null) sampler.backAt = now
 
@@ -231,10 +256,12 @@ async function startSampler(page: Page) {
         }
         sampler.samples.push({ at: now, back, onScreen, blank })
 
-        const { backAt } = sampler
+        const { awayAt, backAt } = sampler
         if (
           (settledAt !== null && now - settledAt >= settleMs) ||
-          (backAt !== null && now - backAt >= sampleMs)
+          (backAt !== null && now - backAt >= sampleMs) ||
+          // Back never seen: stop, and let the test name it.
+          (awayAt !== null && now - awayAt >= giveUpMs)
         ) {
           sampler.done = true
           return
@@ -243,7 +270,11 @@ async function startSampler(page: Page) {
       }
       requestAnimationFrame(tick)
     },
-    { settleMs: SETTLE_MS, sampleMs: SAMPLE_MS }
+    {
+      settleMs: SETTLE_MS,
+      sampleMs: SAMPLE_MS,
+      giveUpMs: SAMPLE_MS + GIVE_UP_AFTER_BACK_MS,
+    }
   )
 }
 
@@ -523,6 +554,8 @@ test.describe('returning to /work', () => {
       await away.scrollIntoViewIfNeeded()
       await away.click()
       await page.waitForURL('**/id/kontak', { timeout: 30_000 })
+      // Marked here, before Back, whether or not a frame has seen it yet.
+      await page.evaluate(() => window.__sampler?.markAway())
       await page.waitForTimeout(wait)
       await page.goBack()
       await page.waitForURL((url) => url.pathname === WORK, {
@@ -539,6 +572,12 @@ test.describe('returning to /work', () => {
         awayAt: window.__sampler?.awayAt ?? null,
         backAt: window.__sampler?.backAt ?? null,
       }))
+      expect
+        .soft(
+          sampled.backAt,
+          `${label}: the sampler never saw /work again after Back, so this return measured nothing`
+        )
+        .not.toBeNull()
       const back = sampled.samples.filter((sample) => sample.back)
       // Time on screen, not frame count: each blank frame lasts until the next.
       let blankMs = 0
