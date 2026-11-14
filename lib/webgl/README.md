@@ -105,6 +105,15 @@ const { isWebGL } = useDeviceDetection()
 it returns a stable getter for an element's current transform, for reading
 inside a `useFrame` loop.
 
+`useFirstFrame` is for a scene whose DOM side hides a fallback once the scene
+has drawn (`vault/webgl/material-image`, `scene-shell`, `plate-material`). It
+returns `announce`, called from the scene's `useFrame` once everything it
+needs to draw is in place. `announce` reports once, never from a lost context,
+and the hook calls `onContextLost` when the context goes, so the fallback shows
+until the restored context reports again. A DOM side that hides a fallback
+also forgets its "drew" state in an effect cleanup: a page kept hidden by
+`cachedNavigations` comes back to a new canvas.
+
 ## DOM-Synced Component
 
 ```tsx

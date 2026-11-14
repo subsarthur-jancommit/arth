@@ -14,6 +14,8 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
 import { Color, type ShaderMaterial } from 'three'
 
+import { useFirstFrame } from '@/webgl/hooks/use-first-frame'
+
 import { fragmentShader, vertexShader } from './shaders'
 
 interface GradientSceneProps {
@@ -34,6 +36,12 @@ interface GradientSceneProps {
    * announce. The shell raises `data-accent-live` from this.
    */
   onFirstFrame?: (() => void) | undefined
+  /**
+   * Called when the context is lost, so the shell puts its CSS wash back
+   * until the restored context reports a new first frame
+   * (`lib/webgl/hooks/use-first-frame.ts`).
+   */
+  onContextLost?: (() => void) | undefined
 }
 
 export function GradientScene({
@@ -42,9 +50,10 @@ export function GradientScene({
   grain,
   animate,
   onFirstFrame,
+  onContextLost,
 }: GradientSceneProps) {
   const materialRef = useRef<ShaderMaterial>(null)
-  const announced = useRef(false)
+  const announce = useFirstFrame(onFirstFrame, onContextLost)
   const viewport = useThree((state) => state.viewport)
 
   // Uniforms are created once and mutated in place. Rebuilding this object on
@@ -85,11 +94,9 @@ export function GradientScene({
 
     // The material exists and this frame is running, so the wash has a frame
     // to be in — announced once, and announced even when the clock is held
-    // still, because a still wash is still drawn.
-    if (!announced.current) {
-      announced.current = true
-      onFirstFrame?.()
-    }
+    // still, because a still wash is still drawn. Never from a lost context:
+    // `useFirstFrame`.
+    announce()
   })
 
   // Three disposes geometries and materials created via JSX when the element
