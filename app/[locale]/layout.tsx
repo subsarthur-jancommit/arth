@@ -9,6 +9,7 @@ import { locale as localeRootParam } from 'next/root-params'
 import { type PropsWithChildren, Suspense } from 'react'
 import { ReactTempus } from 'tempus/react'
 
+import { EARLY_SHORTCUT_SCRIPT } from '@/components/ui/command/early-shortcut'
 import { RealViewport } from '@/components/ui/real-viewport'
 import { APP_BASE_URL, env } from '@/lib/env'
 import { OptionalFeatures } from '@/lib/features'
@@ -243,6 +244,13 @@ export default async function AppLayout({ children }: PropsWithChildren) {
           make this component depend on a context it does not need.
         */}
         <Curtain label={SITE.name} />
+        {/*
+          Ctrl+K pressed before the header hydrates: counted here, during
+          document parse, and replayed by the search trigger once it can open
+          the palette (`components/ui/command/early-shortcut.ts`).
+        */}
+        {/* oxlint-disable-next-line react/no-danger -- a static, self-authored string with no interpolation; it must run during document parse, which no React API can do */}
+        <script dangerouslySetInnerHTML={{ __html: EARLY_SHORTCUT_SCRIPT }} />
         <NextIntlClientProvider locale={locale} messages={messages}>
           {/* Entity identity for search and answer engines, on every page — deep
           pages are landed on directly far more often than the homepage. */}

@@ -39,6 +39,39 @@ async function openWithShortcut(page: Page) {
 }
 
 test.describe('the search palette', () => {
+  test('a shortcut pressed before the page hydrates still opens it', async ({
+    page,
+  }) => {
+    /*
+     * The race `e2e/grid-underlay.e2e.ts` lost on main #308, made certain.
+     *
+     * Every script chunk is held back two seconds, so the header cannot
+     * hydrate before the press. The press comes once the page is parsed,
+     * and the parse-time listener must have counted it: proof that it landed
+     * before the trigger was listening, which is the case under test. Then
+     * the palette must open on its own once the page has hydrated, with
+     * nobody pressing again (`components/ui/command/early-shortcut.ts`).
+     */
+    test.setTimeout(60_000)
+    await page.route('**/_next/static/chunks/**/*.js', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      await route.continue()
+    })
+    await page.goto('/en/work', { waitUntil: 'domcontentloaded' })
+    await page.waitForFunction(() => window.__arthCommandShortcut !== undefined)
+
+    await page.keyboard.press('Control+k')
+    expect(
+      await page.evaluate(() => window.__arthCommandShortcut?.presses),
+      'the early listener did not count the press, so this run did not press before hydration'
+    ).toBe(1)
+
+    await expect(
+      page.getByRole('combobox'),
+      'a press before hydration was lost: the palette never opened'
+    ).toBeFocused({ timeout: 30_000 })
+  })
+
   for (const path of ['/en/work', '/id'] as const) {
     test(`${path}: the button and the shortcut both open it`, async ({
       page,
