@@ -24,6 +24,7 @@ import { organizationSchema, websiteSchema } from '@/lib/seo/schemas'
 import { SITE, siteFacts } from '@/lib/seo/site'
 import { themes } from '@/lib/styles/colors'
 import { fontsVariable } from '@/lib/styles/fonts'
+import { INLINED_STYLESHEETS_SCRIPT } from '@/lib/styles/inlined-stylesheets'
 import { OfflineNotice } from '@/vault/blocks/offline-notice'
 import { Curtain } from '@/vault/motion/curtain'
 import { PageTransition } from '@/vault/motion/page-transition'
@@ -243,6 +244,16 @@ export default async function AppLayout({ children }: PropsWithChildren) {
           make this component depend on a context it does not need.
         */}
         <Curtain label={SITE.name} />
+        {/*
+          The stylesheets this page carries inline, declared to React as
+          present, so no prefetch downloads them again
+          (`lib/styles/inlined-stylesheets.ts`). Here, during parse, after the
+          inline styles in `<head>` and before any script can prefetch.
+        */}
+        <script
+          // oxlint-disable-next-line react/no-danger -- a static, self-authored string with no interpolation; it must run during document parse, which no React API can do
+          dangerouslySetInnerHTML={{ __html: INLINED_STYLESHEETS_SCRIPT }}
+        />
         <NextIntlClientProvider locale={locale} messages={messages}>
           {/* Entity identity for search and answer engines, on every page — deep
           pages are landed on directly far more often than the homepage. */}
