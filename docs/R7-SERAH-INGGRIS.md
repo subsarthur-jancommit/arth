@@ -1,9 +1,17 @@
-# Serah Inggris R7, batch pertama (draf)
+# Serah Inggris R7, batch pertama (disetujui)
 
-Tanggal: 1 November 2026, ditinjau ulang 14 November 2026 · Status: draf,
-menunggu persetujuan pemilik per blok · Dasar: R7 di
+Tanggal: 1 November 2026, ditinjau ulang 14 November 2026 · Status:
+**disetujui pemilik 15 November 2026, "Setujui semua"**, untuk ke-57 blok di
+14 halaman; penulisan ke Sanity menunggu `ok tulis` · Dasar: R7 di
 `docs/RENCANA-REVISI-F3.md`, K2 di `docs/PROGRES-ARTHUR.md`, dan
 `docs/R1-GLOSARIUM-PEMBACA.md`
+
+**Persetujuan.** Pemilik menjawab "Setujui semua" pada 15 November 2026,
+lewat sesi koordinator, atas pertanyaan cara menangani copy Inggris R7.
+Persetujuan itu berlaku untuk setiap blok seperti tertulis di dokumen tinjauan
+rev 21 dan di file ini sejak #91 (`d24a6ea`). Status semua blok di dokumen
+tinjauan kini "Setuju". Blok mana pun yang diubah sesudah ini butuh
+persetujuan baru.
 
 Dokumen ini berisi aturan suara Inggris dan copy Inggris untuk halaman yang
 copy Indonesianya sudah disetujui dan tayang: beranda, tiga unit, enam halaman
@@ -19,12 +27,12 @@ SK-B4, ST-B4, ST-A4, SP-A4, J1, L4, P2). Blok yang tidak bertanda tetap sejak
 1 November. Bila dokumen dan file ini berbeda, kata pemilik di dokumen yang
 berlaku, lalu file ini disusulkan.
 
-Tidak ada yang ditulis ke Sanity dan tidak ada kode yang berubah. Selama K2
-belum diubah tertulis, setiap `/en` tetap dialihkan 307 ke `/id`. Blok yang
+Dokumen ini sendiri tidak menulis ke Sanity dan tidak mengubah kode. Blok yang
 disetujui ditulis di langkah sesudahnya: isi Sanity dengan izin `ok tulis`
-tersendiri (`docs/PROSEDUR-KERJA.md` §6), teks antarmuka lewat PR kode.
-Halaman `/en` baru dibuka bila semua bloknya disetujui, pengalih bahasa
-kembali, dan K2 diubah tertulis, sesuai syarat selesai R7.
+tersendiri (`docs/PROSEDUR-KERJA.md` §6), teks antarmuka lewat PR kode. K2
+kini diubah tertulis (`docs/PROGRES-ARTHUR.md`): satu segmen `/en` dibuka
+sesudah Inggrisnya tertulis di Sanity, dan sampai itu tetap dialihkan 307 ke
+`/id`. Pengalih bahasa hanya tampil di halaman yang punya padanan `/en`.
 
 ## Cara menyetujui
 

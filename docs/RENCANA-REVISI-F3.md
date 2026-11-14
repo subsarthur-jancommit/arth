@@ -402,6 +402,14 @@ aturan suara Inggris, copy Inggris untuk halaman yang copy Indonesianya sudah
 disetujui, pengalih bahasa kembali, dan K2 diubah tertulis. Selesai bila
 setiap halaman `/en` tayang seluruhnya dalam bahasa Inggris, tanpa campuran.
 
+**Keadaan 15 November 2026.** Copy Inggris untuk 14 halaman disetujui pemilik
+("Setujui semua", 57 blok, `docs/R7-SERAH-INGGRIS.md`), dan K2 diubah tertulis
+di `docs/PROGRES-ARTHUR.md`. Sisanya tahap B: kode (UI1, tombol P2, label
+gambar L4, pengalih bahasa), lalu cadangan dataset, migrasi `language`, dan
+penulisan Inggris ke Sanity dengan `ok tulis`. Segmen `/en` dibuka satu per
+satu sesudah Inggrisnya tertulis; R7 selesai saat semuanya terbuka tanpa
+campuran.
+
 ## Nasib PR #18
 
 PR #18 memuat dua jenis pekerjaan. Fondasi F2 (model Sanity, Studio, kendali
