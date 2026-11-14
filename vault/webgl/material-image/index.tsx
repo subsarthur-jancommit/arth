@@ -197,6 +197,22 @@ export function MaterialImage({
    * image, which is the fallback the component already promises.
    */
   const [drew, setDrew] = useState(false)
+  /*
+   * ...and forgotten whenever the plate leaves the screen with its page.
+   *
+   * `cachedNavigations` hides the page the reader leaves rather than
+   * unmounting it, and React keeps a hidden tree's state, so `drew` used to
+   * survive the trip. Back on `/work`, every plate that had handed over was
+   * still marked: its picture hidden from the first frame, while the canvas,
+   * which is a new one by then (`lib/webgl/components/canvas/webgl.tsx`),
+   * had drawn nothing. `e2e/work-return.e2e.ts` measures that blank.
+   *
+   * React runs this cleanup when it hides the page, and the reset is applied
+   * by the time the page is shown again. The scene that will draw the plate
+   * is a new one too, since the tunnel drops it with the page, and it says so
+   * again with its own first frame.
+   */
+  useEffect(() => () => setDrew(false), [])
   const { setRef, isVisible } = useWebGLElement<HTMLDivElement>()
   /*
    * The box the mesh is drawn into: the owner's frame, measured without
