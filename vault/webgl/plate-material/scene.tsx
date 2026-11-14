@@ -41,6 +41,7 @@ import {
 import type { Unit } from '@/lib/content/units'
 import { PLATES, type PlatePart } from '@/lib/plates'
 import { drawPlate, type PlateFaces } from '@/lib/plates/canvas'
+import { useFirstFrame } from '@/webgl/hooks/use-first-frame'
 
 import { fragmentShader, vertexShader } from './shaders'
 
@@ -179,12 +180,19 @@ interface PlateMaterialSceneProps {
   /** The DOM side's root, which holds the flat plate's `<svg>`. */
   element: HTMLElement
   onFirstFrame: () => void
+  /**
+   * Called when the context is lost, so the flat drawing shows again until
+   * the restored context reports a new first frame
+   * (`lib/webgl/hooks/use-first-frame.ts`).
+   */
+  onContextLost: () => void
 }
 
 export function PlateMaterialScene({
   unit,
   element,
   onFirstFrame,
+  onContextLost,
 }: PlateMaterialSceneProps) {
   const plate = PLATES[unit]
   const { parts } = plate
@@ -195,7 +203,7 @@ export function PlateMaterialScene({
   const [texture, setTexture] = useState<CanvasTexture | null>(null)
   const [uniforms] = useState(() => parts.map(() => createUniforms()))
   const meshes = useRef<(Mesh | null)[]>([])
-  const announced = useRef(false)
+  const announce = useFirstFrame(onFirstFrame, onContextLost)
 
   /*
    * The texture is drawn once the page's faces have loaded, so its labels
@@ -350,10 +358,8 @@ export function PlateMaterialScene({
       mesh.visible = opacity > 0.001
     })
 
-    if (!announced.current) {
-      announced.current = true
-      onFirstFrame()
-    }
+    // Once, and never from a lost context: `useFirstFrame`.
+    announce()
   })
 
   return (

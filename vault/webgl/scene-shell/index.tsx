@@ -261,6 +261,17 @@ export function SceneShell({
    */
   const [drew, setDrew] = useState(false)
   const handleFirstFrame = useCallback(() => setDrew(true), [])
+  // The CSS wash again while the context is lost, until the restored one
+  // reports a frame (`lib/webgl/hooks/use-first-frame.ts`).
+  const handleContextLost = useCallback(() => setDrew(false), [])
+  /*
+   * ...and forgotten whenever the hero leaves the screen with its page, as
+   * `vault/webgl/material-image` does since #86. `cachedNavigations` hides
+   * the page rather than unmounting it, React keeps a hidden tree's state,
+   * and the canvas that draws the wash after Back is a new one: until it
+   * reports a frame, the CSS wash stays (`e2e/home-return.e2e.ts`).
+   */
+  useEffect(() => () => setDrew(false), [])
 
   // Same two colours, same direction as the shader's diagonal ramp, so the
   // fallback is the same design rather than a placeholder. The CSS values go
@@ -322,6 +333,7 @@ export function SceneShell({
           colorB={resolved.b}
           grain={grain}
           onFirstFrame={handleFirstFrame}
+          onContextLost={handleContextLost}
           // Belt and braces: the canvas already declines to mount under
           // reduced motion, but a scene must never assume its host checked.
           animate={!prefersReducedMotion}
