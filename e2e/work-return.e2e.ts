@@ -12,6 +12,7 @@ import {
   WEBGL_TEST_BUDGET_MS,
   webglIntent,
 } from './webgl-intent'
+import { installWebglProbe } from './webgl-probe'
 
 /**
  * Coming back to `/work` with the browser's Back button: no call reaches a
@@ -41,18 +42,13 @@ import {
  *
  * ## How it is measured
  *
- * - **Calls.** An init script wraps the WebGL2 calls three makes to create,
- *   bind, upload and draw. A call made on a context that is already lost is
- *   counted by method, and the gate allows none.
- * - **What was drawn.** The same probe follows texture units, bindings, the
- *   program in use and the draw framebuffer. When a plate's program draws, it
- *   records the picture bound to that program's `uTexture` sampler, by URL.
- *   The scene loads the `currentSrc` of the plate's own `<img>`, so the URL
- *   names the plate. Draws into a cube-map face are left out: drei's
- *   `<Preload all />` renders every mesh into one when a canvas mounts, and
- *   none of that reaches the screen. A picture counts as drawn again only
- *   when a live context drew it, on a canvas the reader can see, after the
- *   reader left the page.
+ * - **Calls.** The probe in `e2e/webgl-probe.ts` wraps the WebGL2 calls three
+ *   makes to create, bind, upload and draw. A call made on a context that is
+ *   already lost is counted by method, and the gate allows none.
+ * - **What was drawn.** The same probe records the picture a plate's program
+ *   drew, by URL, leaving out drei's cube-map preload. A picture counts as
+ *   drawn again only when a live context drew it, on a canvas the reader can
+ *   see, after the reader left the page.
  * - **Blank.** On every frame from the click away until the page settles, a
  *   sampler looks at each plate on screen. A plate is blank when it is hidden
  *   as handed over (`data-material`, opacity under 0.5) and no live, visible
@@ -100,19 +96,6 @@ const FRAMES_BEFORE_MS = 300
 const FRAMES_AFTER_MS = 3000
 const FRAME_CAP = 150
 
-/** What the probe follows in one WebGL context. */
-interface GlTrack {
-  /** The active texture unit, as the `TEXTURE0 + n` enum. */
-  unit: number
-  /** The `TEXTURE_2D` bound on each unit. */
-  bound: Map<number, WebGLTexture | null>
-  /** The draw framebuffer; `null` is the canvas itself. */
-  framebuffer: WebGLFramebuffer | null
-  program: WebGLProgram | null
-  /** Pictures a plate's program drew, by URL, since the last `clear()`. */
-  drawn: Set<string>
-}
-
 /** One frame of the sampler. */
 interface Sample {
   /** `performance.now()`. */
@@ -132,16 +115,6 @@ interface Sample {
  */
 declare global {
   interface Window {
-    __gl?: {
-      contexts: Map<WebGL2RenderingContext, GlTrack>
-      /** Calls made on a context that was already lost, by method. */
-      dead: Record<string, number>
-      /** Pictures drawn since `clear()` by live contexts on visible canvases. */
-      liveDrawn: () => Set<string>
-      /** Live contexts on visible canvases. */
-      liveCount: () => number
-      clear: () => void
-    }
     __sampler?: {
       samples: Sample[]
       done: boolean
@@ -284,191 +257,7 @@ test.describe('returning to /work', () => {
   }, testInfo) => {
     test.setTimeout(WEBGL_TEST_BUDGET_MS * 4)
 
-    await page.addInitScript(() => {
-      const TEXTURE_2D = 0x0de1
-      const TEXTURE0 = 0x84c0
-      const FRAMEBUFFER = 0x8d40
-      const DRAW_FRAMEBUFFER = 0x8ca9
-      const CUBE_FACE_FIRST = 0x8515
-      const CUBE_FACE_LAST = 0x851a
-
-      const contexts = new Map<WebGL2RenderingContext, GlTrack>()
-      const dead: Record<string, number> = {}
-      /** The picture last uploaded into each texture, by URL. */
-      const pictureOf = new WeakMap<WebGLTexture, string>()
-      /** Programs built from the plate's shader: the only ones with `uCover`. */
-      const platePrograms = new WeakSet<WebGLProgram>()
-      /** Each `uTexture` location, and the program it belongs to. */
-      const samplerOf = new WeakMap<WebGLUniformLocation, WebGLProgram>()
-      /** The unit each plate program reads `uTexture` from. */
-      const unitOf = new WeakMap<WebGLProgram, number>()
-      const cubeFaces = new WeakSet<WebGLFramebuffer>()
-
-      const track = (context: WebGL2RenderingContext) => {
-        let held = contexts.get(context)
-        if (!held) {
-          held = {
-            unit: TEXTURE0,
-            bound: new Map(),
-            framebuffer: null,
-            program: null,
-            drawn: new Set(),
-          }
-          contexts.set(context, held)
-        }
-        return held
-      }
-      const visible = (context: WebGL2RenderingContext) =>
-        !context.isContextLost() &&
-        context.canvas instanceof HTMLCanvasElement &&
-        context.canvas.isConnected &&
-        context.canvas.checkVisibility()
-
-      window.__gl = {
-        contexts,
-        dead,
-        liveDrawn: () => {
-          const drawn = new Set<string>()
-          for (const [context, held] of contexts) {
-            if (!visible(context)) continue
-            for (const picture of held.drawn) drawn.add(picture)
-          }
-          return drawn
-        },
-        liveCount: () => [...contexts.keys()].filter(visible).length,
-        clear: () => {
-          for (const held of contexts.values()) held.drawn.clear()
-        },
-      }
-
-      /** False, and counted by method, when the context is already lost. */
-      const alive = (context: WebGL2RenderingContext, name: string) => {
-        if (!context.isContextLost()) return true
-        dead[name] = (dead[name] ?? 0) + 1
-        return false
-      }
-
-      const proto = WebGL2RenderingContext.prototype
-      const makeTexture = proto.createTexture
-      proto.createTexture = function createTexture() {
-        alive(this, 'createTexture')
-        return makeTexture.call(this)
-      }
-      const makeBuffer = proto.createBuffer
-      proto.createBuffer = function createBuffer() {
-        alive(this, 'createBuffer')
-        return makeBuffer.call(this)
-      }
-      // three asks for every active uniform's location once per program.
-      const locate = proto.getUniformLocation
-      proto.getUniformLocation = function getUniformLocation(program, name) {
-        const live = alive(this, 'getUniformLocation')
-        const location = locate.call(this, program, name)
-        if (live && location) {
-          if (name === 'uCover') platePrograms.add(program)
-          if (name === 'uTexture') samplerOf.set(location, program)
-        }
-        return location
-      }
-
-      /**
-       * Wraps a method that returns nothing: counted when the context is
-       * already lost, and otherwise handed to `after` once the real call ran.
-       */
-      const wrap = (
-        name:
-          | 'activeTexture'
-          | 'bindTexture'
-          | 'useProgram'
-          | 'uniform1i'
-          | 'texImage2D'
-          | 'texSubImage2D'
-          | 'texStorage2D'
-          | 'bufferData'
-          | 'bindFramebuffer'
-          | 'framebufferTexture2D'
-          | 'drawElements'
-          | 'drawArrays',
-        after?: (held: GlTrack, args: unknown[]) => void
-      ) => {
-        const original = proto[name]
-        Object.defineProperty(proto, name, {
-          configurable: true,
-          writable: true,
-          value: function (this: WebGL2RenderingContext, ...args: unknown[]) {
-            const live = alive(this, name)
-            Reflect.apply(original, this, args)
-            if (live) after?.(track(this), args)
-          },
-        })
-      }
-
-      // ...and points each sampler at its unit with `uniform1i`.
-      wrap('uniform1i', (_held, [location, unit]) => {
-        const program =
-          location instanceof WebGLUniformLocation
-            ? samplerOf.get(location)
-            : undefined
-        if (program && typeof unit === 'number') unitOf.set(program, unit)
-      })
-      wrap('useProgram', (held, [program]) => {
-        held.program = program instanceof WebGLProgram ? program : null
-      })
-      wrap('activeTexture', (held, [unit]) => {
-        if (typeof unit === 'number') held.unit = unit
-      })
-      wrap('bindTexture', (held, [target, texture]) => {
-        if (target !== TEXTURE_2D) return
-        held.bound.set(
-          held.unit,
-          texture instanceof WebGLTexture ? texture : null
-        )
-      })
-      // three uploads a picture as the `<img>` it was loaded into, last
-      // argument of either call.
-      const remember = (held: GlTrack, args: unknown[]) => {
-        const source = args.at(-1)
-        const texture = held.bound.get(held.unit)
-        if (
-          args[0] === TEXTURE_2D &&
-          texture &&
-          source instanceof HTMLImageElement
-        ) {
-          pictureOf.set(texture, source.currentSrc || source.src)
-        }
-      }
-      wrap('texImage2D', remember)
-      wrap('texSubImage2D', remember)
-      wrap('bindFramebuffer', (held, [target, framebuffer]) => {
-        if (target !== FRAMEBUFFER && target !== DRAW_FRAMEBUFFER) return
-        held.framebuffer =
-          framebuffer instanceof WebGLFramebuffer ? framebuffer : null
-      })
-      wrap('framebufferTexture2D', (held, [, , face]) => {
-        if (
-          held.framebuffer &&
-          typeof face === 'number' &&
-          face >= CUBE_FACE_FIRST &&
-          face <= CUBE_FACE_LAST
-        ) {
-          cubeFaces.add(held.framebuffer)
-        }
-      })
-      const draw = (held: GlTrack) => {
-        const { program, framebuffer } = held
-        if (!program || !platePrograms.has(program)) return
-        if (framebuffer && cubeFaces.has(framebuffer)) return
-        const unit = unitOf.get(program)
-        const texture =
-          unit === undefined ? undefined : held.bound.get(TEXTURE0 + unit)
-        const picture = texture ? pictureOf.get(texture) : undefined
-        if (picture) held.drawn.add(picture)
-      }
-      wrap('drawElements', draw)
-      wrap('drawArrays', draw)
-      wrap('texStorage2D')
-      wrap('bufferData')
-    })
+    await page.addInitScript(installWebglProbe)
 
     await page.goto(WORK, { waitUntil: 'networkidle' })
     const intent = await webglIntent(page)
