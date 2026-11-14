@@ -3,7 +3,7 @@
 import { OrthographicCamera, Preload } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
 import cn from 'clsx'
-import { Suspense, useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
 import { SheetProvider } from '@/lib/dev/theatre'
 import { bumpContextGeneration } from '@/lib/webgl/store'
@@ -85,66 +85,60 @@ export function WebGLCanvas({
   const { WebGLTunnel, DOMTunnel } = useCanvas()
 
   /*
-   * Rebuild the r3f root when React brings this tree back — Tahap 85.
+   * A new r3f canvas each time React shows this tree again: Tahap 85,
+   * corrected after `/work`.
    *
    * `components/layout/wrapper` renders `<Canvas root>` inside the page tree,
    * so every route mounts its own WebGL root. Next's `cachedNavigations`
    * keeps the previous page's tree alive but hidden, and React runs effect
-   * **cleanups** for a hidden tree while keeping its DOM. r3f tears its root
-   * down from a `useEffect` with `[]` deps, so that cleanup disposes the
-   * renderer — and the `<canvas>` element stays attached. Showing the tree
-   * again re-runs effects, but a `[]`-deps setup rebuilds nothing.
+   * **cleanups** for a hidden tree while keeping its DOM and its state. r3f
+   * tears its root down from a `useEffect` with `[]` deps: the cleanup
+   * unmounts the root and kills its context 500 ms later, and the `<canvas>`
+   * element stays attached.
    *
-   * What survives is a `position: fixed`, viewport-sized canvas whose GL
-   * context is dead, over the whole page. A dead canvas composites as flat
-   * grey, which is what the repo owner reported as the page "turning white".
-   * Measured on `/en`: mean viewport luminance **34.8** fresh against
-   * **143.2** after leaving and returning, with `isContextLost()` true on the
-   * visible canvas. `docs/stages/TAHAP-85.md` §1 has the full set.
+   * Tahap 85 found what that left: a `position: fixed`, viewport-sized canvas
+   * with a dead context over the whole page, compositing as flat grey, which
+   * the repo owner reported as the page "turning white". Measured on `/en`:
+   * mean viewport luminance **34.8** fresh against **143.2** after leaving
+   * and returning (`docs/stages/TAHAP-85.md` §1). Its answer was to change
+   * the canvas's key once the tree was back and its context had turned out
+   * lost.
    *
-   * `pointer-events: none` is why nothing else could see it: the canvas never
-   * appears in `elementsFromPoint`, and a full dump of every large element's
-   * computed style was byte-identical in both states. Only the pixels
-   * registered it.
+   * That left two defects, which `e2e/work-return.e2e.ts` measures on `/work`:
    *
-   * Changing the key is what makes the canvas element itself new, which is
-   * the part that matters — a lost context cannot be revived in place, and
-   * `ContextLossHandler` below cannot help because it lives *inside* the root
-   * that was torn down.
+   * - **The same canvas came back first.** Showing the tree re-runs r3f's
+   *   layout effect, which renders into the root it had torn down before any
+   *   effect here can run, so every scene in the tunnel mounted into that
+   *   root and sent its texture calls to the dead context. The key change
+   *   then unmounted a canvas whose root r3f had already forgotten, so that
+   *   tree was never unmounted, and stayed subscribed to the tunnel: plates
+   *   mounted later went into it too.
+   * - **A return inside r3f's 500 ms** found the context still alive, so the
+   *   key never changed; then the timer killed the context with the page on
+   *   screen.
    *
-   * Guarded on the context actually being gone rather than on the effect
-   * merely running twice, so Strict Mode's double-invoke in development does
-   * not throw away a working renderer on every mount. A canvas with no
-   * context at all counts as gone: nothing is drawing either way.
+   * So the key changes when the tree is hidden, not when it comes back. React
+   * runs this cleanup as it hides the tree, and the new key is in place by the
+   * time the tree is shown: the canvas that comes back is a new instance,
+   * with a new `<canvas>` element and context, and the old one is never
+   * rendered again. r3f unmounts each root once, on the way out. A new key
+   * is the part that matters, as before: a lost context cannot be revived in
+   * place, and `ContextLossHandler` below lives inside the root being torn
+   * down.
+   *
+   * `pointer-events: none` is still why only pixels and WebGL calls can show
+   * a defect here: the canvas never appears in `elementsFromPoint`.
    */
-  const host = useRef<HTMLDivElement>(null)
   const [generation, setGeneration] = useState(0)
-  const wasTornDown = useRef(false)
 
-  useEffect(() => {
-    if (wasTornDown.current) {
-      const canvasEl = host.current?.querySelector('canvas')
-      // SAFETY: `getContext` is overloaded on the literal `'webgl2'` and
-      // returns `WebGL2RenderingContext | null`; TypeScript widens it to
-      // `RenderingContext` because `canvasEl` arrives from `querySelector`.
-      // The `| null` is kept rather than asserted away — r3f may not have
-      // built a context at all, and the branch below treats that as gone.
-      const gl = canvasEl?.getContext('webgl2') as WebGL2RenderingContext | null
-      if (gl?.isContextLost() !== false) {
-        setGeneration((previous) => previous + 1)
-      }
-    }
-    return () => {
-      wasTornDown.current = true
-    }
-  }, [])
+  useEffect(() => () => setGeneration((previous) => previous + 1), [])
 
   if (!(WebGLTunnel && DOMTunnel)) {
     return null
   }
 
   return (
-    <div ref={host} className={cn(s.webgl, className)} {...props}>
+    <div className={cn(s.webgl, className)} {...props}>
       {/*
         `aria-hidden` on the canvas, not on the container.
 
@@ -160,8 +154,7 @@ export function WebGLCanvas({
         accessibility tree the first time someone used the API.
       */}
       <Canvas
-        // The whole point of the rebuild above: a lost GL context cannot be
-        // revived in place, so the canvas element has to be a new one.
+        // Moved on whenever the tree is hidden; see above.
         key={generation}
         aria-hidden="true"
         gl={{
