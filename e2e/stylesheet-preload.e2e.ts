@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { FEATURED_WORK } from './fixtures'
+
 /**
  * No page downloads a stylesheet it already carries inline. The owner's
  * "Ya, perbaiki", for the second of three findings left after #86.
@@ -29,7 +31,19 @@ import { expect, test } from '@playwright/test'
  * prefetch happened and that its CSS is inline, or the run proves nothing.
  */
 
-const ROUTES = ['/id', '/id/work', '/id/konstruksi'] as const
+/*
+ * The red proof (#90, run 43579872514) failed on `/id/work` alone: it links
+ * its own filter views, which share every page-level file it inlines. `/id`
+ * and `/id/konstruksi` passed, since nothing they prefetched shared their
+ * files in that run. A work page links its sibling works, which share its
+ * template's files, so it is asked as well; it was added with the fix.
+ */
+const ROUTES = [
+  '/id',
+  '/id/work',
+  '/id/konstruksi',
+  `/id/work/${FEATURED_WORK}`,
+] as const
 
 /**
  * Time left for prefetches and Chrome's check once the network has gone quiet.
