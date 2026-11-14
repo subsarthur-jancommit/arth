@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Icon } from '@/vault/primitives/icon'
 import { search } from '@/vault/primitives/icon/paths/search'
 
+import { releaseEarlyPresses, takeEarlyPresses } from './early-shortcut'
 import type { CommandPaletteProps } from './palette'
 
 import s from './command.module.css'
@@ -109,18 +110,33 @@ export function CommandTrigger({
   }, [])
 
   useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key !== 'k' || !(event.metaKey || event.ctrlKey)) return
-
-      event.preventDefault()
+    function toggle() {
       yieldTopLayer()
       setReturnToTrigger(document.activeElement === document.body)
       void load()
       setOpen((previous) => !previous)
     }
 
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key !== 'k' || !(event.metaKey || event.ctrlKey)) return
+
+      event.preventDefault()
+      toggle()
+    }
+
     document.addEventListener('keydown', onKeyDown)
-    return () => document.removeEventListener('keydown', onKeyDown)
+    /*
+     * Presses that came before this listener existed, kept by the root
+     * layout's parse-time listener (`./early-shortcut`). Replayed once this
+     * one is attached, so none is lost and none is counted twice, and after
+     * the effect rather than inside it: the toggle is a state change, which
+     * belongs to the event, not to the effect that noticed it.
+     */
+    if (takeEarlyPresses() % 2 === 1) queueMicrotask(toggle)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      releaseEarlyPresses()
+    }
   }, [load])
 
   return (
