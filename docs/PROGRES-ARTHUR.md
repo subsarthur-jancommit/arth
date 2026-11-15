@@ -4,7 +4,7 @@ Satu baris per paket kerja, diperbarui **di dalam PR paket itu sendiri** —
 bukan sesudahnya, supaya ia tidak bisa kedaluwarsa tanpa terlihat di diff.
 
 **Untuk sesi berikutnya:** baca berkas ini, lalu paket berikutnya di
-[`RENCANA-REVISI-F3.md`](./RENCANA-REVISI-F3.md) (R6, lalu R7), lalu tabel K1–K9
+[`RENCANA-REVISI-F3.md`](./RENCANA-REVISI-F3.md) (R7, tahap B), lalu tabel K1–K9
 dan tabel _Menunggu pemilik_. Itu cukup untuk mulai bekerja — tidak perlu
 membaca ulang keempat artefak atau dokumen repo.
 
@@ -46,6 +46,16 @@ Keputusan sejak 15 Oktober 2026, tanggalnya tanggal merge di `main` (WIB):
   preview, indeks katalog) disimpan persis seperti sekarang. Daftar hapus dummy
   tidak lagi berlaku untuk enam dokumen `project` dan gambarnya, karena `/work`
   memakainya. `/journal` tetap dicabut ("Ya, cabut") dan menjawab 410.
+- **15 November (keputusan):** copy Inggris R7 disetujui pemilik, "Setujui
+  semua", untuk ke-57 blok di 14 halaman seperti tertulis di
+  `docs/R7-SERAH-INGGRIS.md` (#91, `d24a6ea`) dan dokumen tinjauannya (rev 21).
+  K2 diubah tertulis sesuai R7 (tabel di bawah). Penulisan ke Sanity dan
+  migrasi medan `language` menunggu `ok tulis` tersendiri.
+- **15 November (tulis):** pemilik menjawab `ok tulis`. Medan `language` (360
+  dokumen, 2.187 nilai) dan Inggris R7 (776 medan, 370 dokumen) tertulis dan
+  terbit lewat konektor Sanity, dengan dua cadangan dan bukti sebelum dan
+  sesudah di `docs/R7-CATATAN-TULIS.md`. `/en` tetap 307 sampai kode tahap B
+  (#94, #95) merge dan segmennya dibuka per halaman.
 
 **15 Oktober 2026:** F3-01 sampai F3-11 direvisi (`docs/TINJAUAN-F01-F03.md`,
 `docs/RENCANA-REVISI-F3.md`). P1–P4 memakai usulan bawaan; protokol `ci` dan
@@ -53,7 +63,7 @@ Keputusan sejak 15 Oktober 2026, tanggalnya tanggal merge di `main` (WIB):
 
 | Keputusan          | Isi                                                                                                                                                                                                                         |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| K1, K2             | Bahasa bawaan Indonesia, `/` → `/id`, Inggris menyusul, `/en` tanpa terjemahan 307 → `/id`                                                                                                                                  |
+| K1, K2             | Bahasa bawaan Indonesia, `/` → `/id`. **K2 diubah 15 November 2026 (R7):** segmen `/en` dibuka sesudah Inggrisnya tertulis di Sanity; sampai itu 307 → `/id`. Pengalih bahasa hanya di halaman yang punya padanan `/en`     |
 | K3, K4, K6, K7, K8 | Berlaku sementara pada bawaannya; tidak memblokir                                                                                                                                                                           |
 | **K5**             | **Belum diputuskan.** Email/alamat contoh hanya dummy; kanal nyata dan waktu balas belum dipilih. Struktur F3-09 boleh ditinjau dengan dummy ber-NOTE, tetapi aktivasi kanal dan F5-06 tetap berhenti sampai K5 diputuskan. |
 | K9                 | Belum diputuskan; jatuh tempo sebelum noindex dilepas di F5-05                                                                                                                                                              |
@@ -76,10 +86,9 @@ menunggu pemilik; barisnya ada di tabel paket.
 | Proyek nyata Arthur untuk `/work`                                                           | `/work` tetap memakai enam proyek contoh templat. Keenam dokumen `project` dan 12 gambarnya **jangan dihapus** sampai pemilik siap menggantinya                  | Keputusan 1 November; #64                         |
 | Hapus `fixture-studioSettings` (sisa daftar dummy F5-04)                                    | Tidak dibaca kode mana pun. Dokumennya aman dihapus pemilik di Studio kapan saja; gambar potretnya hanya lewat CLI                                               | `_cadangan-sanity/…/DAFTAR-HAPUS.md`; #64         |
 | Blok "Kafe baru" di beranda                                                                 | Satu rangkaian di beranda, yang masih usulan                                                                                                                     | `V3-SERAH-W7-HALAMAN.md` §2; #34                  |
-| Medan `language`                                                                            | Validasi Studio meminta `language` di setiap nilai dua bahasa, sedangkan data dan kueri memakai `_key`. Menyeragamkannya butuh migrasi dataset                   | `V4-CATATAN-TULIS.md`                             |
 | Bab RWT (D5)                                                                                | RWT-01, RWT-09, dan RWT-11 ditahan                                                                                                                               | `RENCANA-KONTEKS-V2.md` §10; #26                  |
 | Offer yang ditahan untuk rangkaian Villa dan Perumahan developer                            | Kedua rangkaian belum ditulis. Layanan memuat Kafe baru dan Studio siaran                                                                                        | `V3-SERAH-W7.md`; #32                             |
-| Copy Inggris untuk R7                                                                       | R7 Dwibahasa. `/en` tanpa terjemahan tetap 307 → `/id`                                                                                                           | `RENCANA-REVISI-F3.md` R7                         |
+| Merge kode tahap B R7, lalu segmen `/en`                                                    | Inggris tertulis di Sanity 15 November. Tahap B di #94 dan #95; sesudahnya segmen dibuka per halaman. Sampai itu `/en` tetap 307 → `/id`                         | `R7-CATATAN-TULIS.md`; #93, #94, #95              |
 
 Terkait label: nama sisi Jaringan di Sanity, "Untuk jaringan penjual", berbeda
 dari glosarium keputusan 5, "Untuk yang ingin ikut menjualkan". Label pendek
@@ -147,6 +156,7 @@ tetap "Jaringan penjual"; mengubahnya perlu ok tulis (#56).
 | F4-06 susulan: CSS inline tak diunduh ulang     | #90                | —         | **PR terbuka**            | Diukur dulu: `/work` mengunduh ulang lima berkas CSS yang sudah inline, karena prefetch rute yang berbagi berkas dan React tak membaca `<style data-href>`. Satu tautan stylesheet `disabled` per berkas inline; gerbang `stylesheet-preload`. A/B lab di runner: di PR                 |
 | F4-04 susulan: Back ke `/work`                  | #86, #87           | —         | **PR terbuka**            | Diukur dulu (`work-return`): Back lambat ~0,65 s pelat kosong; Back < 500 ms kosong ≥ 14,7 s, kanvas mati; panggilan ke konteks mati tiap kembali. Kunci kanvas berganti saat halaman disembunyikan, `drew` direset (#86). Tiga uji `fixme` material kembali di `/work` (#87)           |
 | F4-04 susulan: beranda, dan konteks hilang      | #89                | —         | **PR terbuka**            | Diukur dulu: Back ke beranda menyembunyikan wash hero atau pelat lintasan tanpa gambar 0,76–0,86 s; konteks WebGL yang hilang membiarkan pelat dan wash tersembunyi. `drew` direset saat disembunyikan; bingkai pertama hanya dari konteks hidup (`useFirstFrame`)                      |
+| R7 Dwibahasa                                    | #62, #91, #93      | `d24a6ea` | **Sebagian**              | Copy Inggris disetujui pemilik 15 November 2026 ("Setujui semua", 57 blok); K2 diubah tertulis. Medan `language` dan Inggris tertulis di Sanity 15 November (`R7-CATATAN-TULIS.md`). Kode tahap B di #94 dan #95; segmen `/en` dibuka per halaman sesudahnya                            |
 | F0-02 Uji terbit menampilkan isi baru           | —                  | —         | Belum mulai               | Bergantung F0-06                                                                                                                                                                                                                                                                        |
 | F0-03 Token produksi hanya Viewer               | —                  | —         | Menunggu pemilik          | Tindakan dasbor                                                                                                                                                                                                                                                                         |
 | F0-04 Token dev dicabut                         | —                  | —         | Menunggu pemilik          | Tindakan dasbor; paling lambat sebelum F5-05                                                                                                                                                                                                                                            |
