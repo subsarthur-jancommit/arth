@@ -140,6 +140,8 @@ test.describe('the search palette', () => {
     page,
     request,
   }) => {
+    // About eighteen rows, each a full server render.
+    test.setTimeout(90_000)
     await page.goto('/en/work')
     await page.waitForTimeout(1200)
     await page.locator('[data-search-trigger]').click()
@@ -150,13 +152,16 @@ test.describe('the search palette', () => {
       .evaluateAll((rows) => rows.map((row) => row.getAttribute('href') ?? ''))
 
     expect(hrefs.length).toBeGreaterThan(5)
-    const bounced: string[] = []
-    for (const href of new Set(hrefs)) {
-      const response = await request.get(href, { maxRedirects: 0 })
-      if (response.status() !== 200)
-        bounced.push(`${href} ${response.status()}`)
-    }
-    expect(bounced, 'these results do not open as they are').toEqual([])
+    const statuses = await Promise.all(
+      [...new Set(hrefs)].map(async (href) => {
+        const response = await request.get(href, { maxRedirects: 0 })
+        return `${href} ${response.status()}`
+      })
+    )
+    expect(
+      statuses.filter((status) => !status.endsWith(' 200')),
+      'these results do not open as they are'
+    ).toEqual([])
   })
 
   test('it searches content, not only route names', async ({ page }) => {
