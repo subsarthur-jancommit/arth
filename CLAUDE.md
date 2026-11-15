@@ -177,13 +177,18 @@ itself says to revert it and never commit it.
 ### Architecture in one pass
 
 - **Routing.** Every public page lives under `app/[locale]/` (`en`, `id`;
-  `localePrefix: 'always'`). Indonesian is the default and the only published
-  locale: the root redirects to `/id`, browser language detection is off, and
-  an `/en` page without approved English answers 307 to its `/id` twin —
-  except in draft mode, so Sanity can preview English fields. That list is
-  `UNTRANSLATED_SEGMENTS` in `lib/i18n/public-locale-redirect.ts`; a new
-  Indonesian-only route is added there in the same change. Locales are defined
-  once in `lib/i18n/routing.ts`; UI strings are in `messages/{en,id}.json`
+  `localePrefix: 'always'`). Indonesian is the default: the root redirects to
+  `/id` and browser language detection is off. English opens page by page
+  (R7). Inside the segments listed in `UNTRANSLATED_SEGMENTS`, only the pages
+  in `ENGLISH_PAGES` answer in English; every other `/en` page there answers
+  307 to its `/id` twin — except in draft mode, so Sanity can preview English
+  fields. Both lists are in `lib/i18n/public-locale-redirect.ts`, and hreflang,
+  the sitemap, `/llms.txt`, the Markdown mirrors and the search index all read
+  them. A new Indonesian-only route is added to `UNTRANSLATED_SEGMENTS` in the
+  same change; a page joins `ENGLISH_PAGES` only once its approved English is
+  in Sanity and `messages/en.json`, with an entry in `e2e/english-pages.e2e.ts`
+  proving it carries no Indonesian. Locales are defined once in
+  `lib/i18n/routing.ts`; UI strings are in `messages/{en,id}.json`
   (next-intl). `app/(chrome)/` holds what sits outside the locale tree — the
   embedded Sanity Studio at `/cms`. `app/sitemap.ts`, `robots.ts` and
   `llms.txt` are generated from the same sources.
