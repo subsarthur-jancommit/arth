@@ -1,17 +1,27 @@
 import { expect, test } from '@playwright/test'
 
+import { localizedPath } from '../lib/i18n/paths'
+import { ENGLISH_PAGES, R7_PAGES } from '../lib/i18n/public-locale-redirect'
+
 import { FEATURED_WORK } from './fixtures'
 
 /**
- * Only Indonesian is approved for visitor-facing navigation. The language
- * switcher stays hidden on every page whose English R7 has not opened
- * (`ENGLISH_PAGES` in `lib/i18n/public-locale-redirect.ts`, empty until the
- * first page opens); its section-matching logic is covered by
- * `section.test.ts` meanwhile. The PR that opens a page also changes the
- * expectation for that page here.
+ * English is offered as a language choice only where R7 has opened it
+ * (`ENGLISH_PAGES` in `lib/i18n/public-locale-redirect.ts`). An open page
+ * offers both twins from either side, which `e2e/english-pages.e2e.ts`
+ * asserts page by page. Every other Indonesian page offers no switch at all,
+ * because its English address answers 307 back to it; the section-matching
+ * logic is covered by `section.test.ts`.
  */
-test.describe('unapproved English is not offered as a language choice', () => {
-  for (const path of ['/id', `/id/work/${FEATURED_WORK}`]) {
+const CLOSED = [
+  ...R7_PAGES.filter((template) => !ENGLISH_PAGES.includes(template)).map(
+    (template) => localizedPath('id', template)
+  ),
+  `/id/work/${FEATURED_WORK}`,
+]
+
+test.describe('English is offered only where it is open', () => {
+  for (const path of CLOSED) {
     test(`${path} offers no English switch`, async ({ page }) => {
       await page.goto(path)
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible()

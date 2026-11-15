@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test'
 
 /**
- * `/en` and Arthur's untranslated English pages redirect to `/id` (K2, R0); the
- * catalogue is English, so it carries the English side of these checks. The
- * journal did until F5-04 retired it.
+ * Arthur's English pages redirected to `/id` (K2, R0) until R7 opened them
+ * page by page; the catalogue is English, so it carries the English side of
+ * these checks. The journal did until F5-04 retired it.
  */
 const LOCALE_SURFACES = ['/id', '/en/work'] as const
 

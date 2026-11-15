@@ -12,11 +12,12 @@ import { FEATURED_WORK } from './fixtures'
  */
 test.describe('a dead address points the way', () => {
   /*
-   * The offer is the published page on either locale. An English address
-   * fetches an index that answers with the Indonesian one
-   * (`lib/i18n/public-locale-redirect.ts`), so `/en/work/…` is pointed at
-   * `/id/work/…` — the page the palette there opens too. On 2026-10-22 it
-   * offered `/en/work/…`.
+   * The offer is the work in the reader's language, from the index of that
+   * language (`/{locale}/search.json`). While no English page was open the
+   * English index answered with the Indonesian one
+   * (`lib/i18n/public-locale-redirect.ts`), so `/en/work/…` was pointed at
+   * `/id/work/…`; since R7 opened pages the English index is served again,
+   * with the English catalogue in it.
    */
   for (const locale of ['id', 'en'] as const) {
     test(`/${locale}: a mistyped work offers the work it was close to`, async ({
@@ -27,7 +28,7 @@ test.describe('a dead address points the way', () => {
 
       await expect(
         page.locator(
-          `#main-content [data-wayfinder] a[href="/id/work/${FEATURED_WORK}"]`
+          `#main-content [data-wayfinder] a[href="/${locale}/work/${FEATURED_WORK}"]`
         )
       ).toBeVisible()
     })

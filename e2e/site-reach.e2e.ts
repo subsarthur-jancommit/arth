@@ -52,9 +52,10 @@ import { FEATURED_WORK } from './fixtures'
  * a guess and it stays inside the requested locale.
  */
 const GUESSED: [typed: string, lands: string][] = [
-  // `/en/kontak` itself answers 307 to `/id/kontak` since R0 (K2), so the
-  // single-hop guess is the Indonesian one.
   ['/id/contact', '/id/kontak'],
+  // `/en/kontak` answered 307 to `/id/kontak` from R0 (K2) until R7 opened
+  // it, so the English guess lands in English in one hop again.
+  ['/en/contact', '/en/kontak'],
   ['/id/karya', '/id/work'],
   // The page titled "Tentang dan kontak" (R4 route names, 2026-10-30).
   ['/id/tentang', '/id/kontak'],
@@ -333,11 +334,12 @@ test.describe('every page offers a way onward', () => {
     expect(legacy.status()).toBe(308)
     expect(legacy.headers().location).toBe('/en/metode')
 
-    // Its destination is published since R5 and, untranslated, lands on the
-    // Indonesian page (K2); it is still not Sanity Studio.
+    // Its destination is published since R5 and open in English since R7
+    // (it landed on the Indonesian page until then, K2); it is still not
+    // Sanity Studio.
     const workMethod = await request.get('/en/metode')
     expect(workMethod.status()).toBe(200)
-    expect(new URL(workMethod.url()).pathname).toBe('/id/metode')
+    expect(new URL(workMethod.url()).pathname).toBe('/en/metode')
     expect(await workMethod.text()).not.toContain(
       '<title>Sanity Studio</title>'
     )

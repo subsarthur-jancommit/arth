@@ -2,12 +2,17 @@ import { describe, expect, it } from 'bun:test'
 
 import { localizedPath } from './paths'
 import {
+  ADVERTISED_LOCALES,
   ENGLISH_PAGES,
   isEnglishPage,
+  localesForTemplate,
   publicLocaleRedirect,
   R7_PAGES,
 } from './public-locale-redirect'
 import { routing } from './routing'
+
+/** No page open in English: the state from R0 until R7. */
+const NONE: readonly string[] = []
 
 describe('public locale redirect', () => {
   it('defaults to Indonesian without negotiating from the browser language', () => {
@@ -15,32 +20,34 @@ describe('public locale redirect', () => {
     expect(routing.localeDetection).toBe(false)
   })
 
-  it('sends the unapproved English home to the Indonesian home', () => {
-    expect(publicLocaleRedirect('/en')).toBe('/id')
-    expect(publicLocaleRedirect('/en/')).toBe('/id')
+  it('sends an English home that is not open to the Indonesian home', () => {
+    expect(publicLocaleRedirect('/en', NONE)).toBe('/id')
+    expect(publicLocaleRedirect('/en/', NONE)).toBe('/id')
   })
 
   it('sends untranslated Arthur pages to their Indonesian twin', () => {
-    expect(publicLocaleRedirect('/en/konstruksi')).toBe('/id/konstruksi')
-    expect(publicLocaleRedirect('/en/konstruksi/pelaku-proyek')).toBe(
+    expect(publicLocaleRedirect('/en/konstruksi', NONE)).toBe('/id/konstruksi')
+    expect(publicLocaleRedirect('/en/konstruksi/pelaku-proyek', NONE)).toBe(
       '/id/konstruksi/pelaku-proyek'
     )
-    expect(publicLocaleRedirect('/en/peekabo/jaringan/perujuk')).toBe(
+    expect(publicLocaleRedirect('/en/peekabo/jaringan/perujuk', NONE)).toBe(
       '/id/peekabo/jaringan/perujuk'
     )
-    expect(publicLocaleRedirect('/en/metode')).toBe('/id/metode')
-    expect(publicLocaleRedirect('/en/layanan')).toBe('/id/layanan')
-    expect(publicLocaleRedirect('/en/kebijakan')).toBe('/id/kebijakan')
-    expect(publicLocaleRedirect('/en/pembayaran')).toBe('/id/pembayaran')
-    expect(publicLocaleRedirect('/en/kontak')).toBe('/id/kontak')
-    expect(publicLocaleRedirect('/en/halaman/tentang')).toBe(
+    expect(publicLocaleRedirect('/en/metode', NONE)).toBe('/id/metode')
+    expect(publicLocaleRedirect('/en/layanan', NONE)).toBe('/id/layanan')
+    expect(publicLocaleRedirect('/en/kebijakan', NONE)).toBe('/id/kebijakan')
+    expect(publicLocaleRedirect('/en/pembayaran', NONE)).toBe('/id/pembayaran')
+    expect(publicLocaleRedirect('/en/kontak', NONE)).toBe('/id/kontak')
+    expect(publicLocaleRedirect('/en/halaman/tentang', NONE)).toBe(
       '/id/halaman/tentang'
     )
   })
 
-  it('sends the English search index to the published one', () => {
-    expect(publicLocaleRedirect('/en/search.json')).toBe('/id/search.json')
-    expect(publicLocaleRedirect('/id/search.json')).toBeNull()
+  it('sends the English search index to the published one while no page is open', () => {
+    expect(publicLocaleRedirect('/en/search.json', NONE)).toBe(
+      '/id/search.json'
+    )
+    expect(publicLocaleRedirect('/id/search.json', NONE)).toBeNull()
   })
 
   it('leaves the translated legacy routes and unknown paths alone', () => {
@@ -75,6 +82,21 @@ describe('English pages opened by R7', () => {
     }
   })
 
+  it('holds back the two pages whose head is still Indonesian', () => {
+    // `/layanan` and `/pembayaran` print a plain Indonesian title and
+    // description from Sanity (`ENGLISH_PAGES` records why).
+    expect(R7_PAGES.filter((page) => !ENGLISH_PAGES.includes(page))).toEqual([
+      '/layanan',
+      '/pembayaran',
+    ])
+    expect(publicLocaleRedirect('/en/layanan')).toBe('/id/layanan')
+    expect(publicLocaleRedirect('/en/pembayaran')).toBe('/id/pembayaran')
+    expect(publicLocaleRedirect('/en/kebijakan')).toBe('/id/kebijakan')
+    expect(publicLocaleRedirect('/en/peekabo/jaringan/perujuk')).toBe(
+      '/id/peekabo/jaringan/perujuk'
+    )
+  })
+
   it('serves an open page in English and keeps the pages under it closed', () => {
     const open = ['/', '/konstruksi', '/konstruksi/pelaku-proyek']
     expect(publicLocaleRedirect('/en', open)).toBeNull()
@@ -105,14 +127,31 @@ describe('English pages opened by R7', () => {
     expect(publicLocaleRedirect('/en/halaman/tentang', R7_PAGES)).toBe(
       '/id/halaman/tentang'
     )
-    expect(publicLocaleRedirect('/en/search.json', R7_PAGES)).toBe(
-      '/id/search.json'
-    )
+  })
+
+  it('serves the English search index once any page is open', () => {
+    expect(publicLocaleRedirect('/en/search.json', ['/'])).toBeNull()
+    expect(publicLocaleRedirect('/en/search.json')).toBeNull()
   })
 
   it('reads a template with or without its trailing slash', () => {
     expect(isEnglishPage('/konstruksi/', ['/konstruksi'])).toBe(true)
     expect(isEnglishPage('/', ['/'])).toBe(true)
     expect(isEnglishPage('/konstruksi', [])).toBe(false)
+  })
+})
+
+describe('the languages a page is served in', () => {
+  it('is Indonesian everywhere, and English on an open page', () => {
+    expect(localesForTemplate('/metode', ['/metode'])).toEqual(['id', 'en'])
+    expect(localesForTemplate('/metode/', ['/metode'])).toEqual(['id', 'en'])
+    expect(localesForTemplate('/layanan', ['/metode'])).toEqual(['id'])
+    expect(localesForTemplate('/work/project', ['/metode'])).toEqual(['id'])
+    expect(localesForTemplate('/metode', NONE)).toEqual(['id'])
+  })
+
+  it('advertises English once any page is open', () => {
+    expect(ENGLISH_PAGES.length).toBeGreaterThan(0)
+    expect(ADVERTISED_LOCALES).toEqual(['id', 'en'])
   })
 })

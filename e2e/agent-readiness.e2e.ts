@@ -9,6 +9,8 @@ import { expect, test } from '@playwright/test'
  * means the suite was holding the *wrong* identity in place rather than
  * guarding the right one.
  */
+import { localizedPath } from '../lib/i18n/paths'
+import { ENGLISH_PAGES } from '../lib/i18n/public-locale-redirect'
 import { AI_CRAWLERS } from '../lib/seo/robots-policy'
 import { SITE } from '../lib/seo/site'
 const NEXT_VARY_FIELDS = [
@@ -249,10 +251,10 @@ test.describe('Markdown content negotiation', () => {
   test('supports explicit Markdown aliases without an Accept header', async ({
     request,
   }) => {
-    // Only approved Indonesian routes have public Markdown mirrors.
-    // markdownPathForRoute('/id') is '/id.md'; English previews are not
-    // advertised as public documents until their copy is approved.
-    for (const path of ['/id.md', '/id/kontak.md']) {
+    // Only approved routes have public Markdown mirrors: every Indonesian
+    // one, and in English the pages R7 has opened. markdownPathForRoute('/id')
+    // is '/id.md'.
+    for (const path of ['/id.md', '/id/kontak.md', '/en.md', '/en/kontak.md']) {
       const response = await request.get(path)
       expect(response.status(), path).toBe(200)
       expect(response.headers()['content-type'], path).toBe(
@@ -261,7 +263,8 @@ test.describe('Markdown content negotiation', () => {
       expect(await response.text(), path).toContain(`| ${SITE.name}`)
     }
 
-    for (const path of ['/en.md', '/en/kontak.md']) {
+    // An English page R7 has not opened is no public document.
+    for (const path of ['/en/layanan.md', '/en/pembayaran.md']) {
       const response = await request.get(path, { maxRedirects: 0 })
       expect(response.status(), `${path} should not publish English copy`).toBe(
         404
@@ -365,7 +368,14 @@ test.describe('machine-readable discovery files', () => {
     const sitemapPaths = [...sitemapBody.matchAll(/<loc>([^<]+)<\/loc>/g)].map(
       (match) => new URL(match[1] ?? '').pathname
     )
-    expect(sitemapPaths.some((path) => path.startsWith('/en/'))).toBe(false)
+    // English only where R7 has opened it (`ENGLISH_PAGES`).
+    expect(
+      sitemapPaths
+        .filter((path) => path === '/en' || path.startsWith('/en/'))
+        .sort()
+    ).toEqual(
+      ENGLISH_PAGES.map((template) => localizedPath('en', template)).sort()
+    )
     for (const locale of ['en', 'id']) {
       expect(sitemapPaths).not.toContain(`/${locale}/work`)
       expect(sitemapPaths).not.toContain(`/${locale}/journal`)

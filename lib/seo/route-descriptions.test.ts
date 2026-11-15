@@ -2,6 +2,7 @@ import { describe, expect, it, spyOn } from 'bun:test'
 
 import type { HowWeWorkContent } from '@/lib/content/how-we-work-content'
 import type { SequenceContent } from '@/lib/content/sequence-content'
+import { R7_PAGES } from '@/lib/i18n/public-locale-redirect'
 import type { Locale } from '@/lib/i18n/routing'
 
 import { STATIC_ROUTES } from './route-catalog'
@@ -97,6 +98,21 @@ describe('resolveRouteDescriptions', () => {
     )
 
     expect(asked.toSorted()).toEqual(['en', 'id'])
+    // English only where R7 has opened the page: `/layanan` is not open.
+    expect([...descriptions.keys()].toSorted()).toEqual([
+      '/en/metode',
+      '/id/layanan',
+      '/id/metode',
+    ])
+  })
+
+  it('reads English for every page once all of R7 is open', async () => {
+    const descriptions = await resolveRouteDescriptions(
+      ['en', 'id'],
+      sources(),
+      R7_PAGES
+    )
+
     expect([...descriptions.keys()].toSorted()).toEqual([
       '/en/layanan',
       '/en/metode',

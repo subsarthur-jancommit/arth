@@ -109,29 +109,37 @@ test.describe('the search palette', () => {
   }
 
   /*
-   * English is not a published locale, so an English index could only list
-   * Arthur's pages under descriptions nobody approved, linked to `/en`
-   * addresses that answer 307 anyway — 13 of its 22 rows, measured on
-   * production 2026-10-22. The index answers the way those pages do
-   * (`lib/i18n/public-locale-redirect.ts`).
+   * The English index follows its pages (`lib/i18n/public-locale-redirect.ts`).
+   * While no page was open in English it answered 307 to the Indonesian one:
+   * 13 of its 22 rows then linked to `/en` addresses that bounced, measured on
+   * production 2026-10-22. Since R7 opened pages it is served, and lists only
+   * the open ones and the English catalogue; `english-pages.e2e.ts` reads
+   * what it says.
    */
-  test('the English index answers with the published one', async ({
+  test('the English index is served, in English addresses', async ({
     request,
   }) => {
     const response = await request.get('/en/search.json', { maxRedirects: 0 })
-    expect(response.status()).toBe(307)
+    expect(response.status()).toBe(200)
+
+    const hrefs = ((await response.json()) as { href: string }[]).map(
+      ({ href }) => href
+    )
+    expect(hrefs.length).toBeGreaterThan(5)
     expect(
-      new URL(response.headers().location ?? '', 'http://x').pathname
-    ).toBe('/id/search.json')
+      hrefs.filter((href) => href !== '/en' && !href.startsWith('/en/'))
+    ).toEqual([])
   })
 
   /*
-   * The reader's side of the same answer. `/en/work` still renders, so its
-   * palette still has to work: the fetch follows the 307, and every row is a
-   * published page rather than an `/en` address that bounces. On 2026-10-22
-   * the first row here was `/en`. Read on `/en/journal` until F5-04.
+   * The reader's side of the same answer: no row bounces. On 2026-10-22 the
+   * first row on `/en/work` was `/en`, which answered 307. Read on
+   * `/en/journal` until F5-04.
    */
-  test('/en/work: every result is a published page', async ({ page }) => {
+  test('/en/work: every result opens without a redirect', async ({
+    page,
+    request,
+  }) => {
     await page.goto('/en/work')
     await page.waitForTimeout(1200)
     await page.locator('[data-search-trigger]').click()
@@ -142,10 +150,13 @@ test.describe('the search palette', () => {
       .evaluateAll((rows) => rows.map((row) => row.getAttribute('href') ?? ''))
 
     expect(hrefs.length).toBeGreaterThan(5)
-    expect(
-      hrefs.filter((href) => href !== '/id' && !href.startsWith('/id/')),
-      'these results lead outside the published locale'
-    ).toEqual([])
+    const bounced: string[] = []
+    for (const href of new Set(hrefs)) {
+      const response = await request.get(href, { maxRedirects: 0 })
+      if (response.status() !== 200)
+        bounced.push(`${href} ${response.status()}`)
+    }
+    expect(bounced, 'these results do not open as they are').toEqual([])
   })
 
   test('it searches content, not only route names', async ({ page }) => {

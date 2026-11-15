@@ -34,11 +34,11 @@ import { CommandPalette } from './palette'
  * A slice of the **real** index, copied from what production's
  * `/id/search.json` served on 2026-10-22 — not written to look like one.
  *
- * Indonesian because `/en/search.json` answers 307 to that index
- * (`lib/i18n/public-locale-redirect.ts`), so these are the rows on English
- * pages too. The English rows this story used to carry had drifted from what
- * `/en/search.json` served — only `page:/metode` still matched — and that
- * index now reaches Presentation previews alone.
+ * Indonesian because `/en/search.json` answered 307 to that index when this
+ * was written (`lib/i18n/public-locale-redirect.ts`), so these were the rows
+ * on English pages too. The English rows this story used to carry had drifted
+ * from what `/en/search.json` served — only `page:/metode` still matched.
+ * Since R7 opened pages in English that index is served again.
  *
  * The first draft of this file invented a client name for a real project, and
  * that is the line this project does not cross: a Storybook story is a

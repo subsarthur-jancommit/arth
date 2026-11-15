@@ -12,6 +12,8 @@
 import { describe, expect, it } from 'bun:test'
 
 import { SIDES, sideTemplate, UNITS } from '@/lib/content/units'
+import { localizedPath } from '@/lib/i18n/paths'
+import { ENGLISH_PAGES } from '@/lib/i18n/public-locale-redirect'
 import { PUBLISHED_LOCALES } from '@/lib/i18n/routing'
 
 import {
@@ -22,10 +24,23 @@ import {
 } from './routes'
 
 describe('the static route catalogue', () => {
-  it('advertises only approved public locales', () => {
+  it('advertises every page in Indonesian, and English only where R7 opened it', () => {
     expect(PUBLISHED_LOCALES).toEqual(['id'])
-    expect(STATIC_ROUTES.every((route) => route.locale === 'id')).toBe(true)
-    expect(STATIC_ROUTES.some((route) => route.path === '/en/metode')).toBe(
+    expect(
+      STATIC_ROUTES.filter((route) => route.locale === 'id').map(
+        (route) => route.path
+      )
+    ).toEqual(
+      STATIC_ROUTE_TEMPLATES.map((route) => localizedPath('id', route.path))
+    )
+    expect(
+      STATIC_ROUTES.filter((route) => route.locale === 'en')
+        .map((route) => route.path)
+        .toSorted()
+    ).toEqual(
+      ENGLISH_PAGES.map((template) => localizedPath('en', template)).toSorted()
+    )
+    expect(STATIC_ROUTES.some((route) => route.path === '/en/layanan')).toBe(
       false
     )
   })

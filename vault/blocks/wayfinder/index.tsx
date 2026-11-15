@@ -22,9 +22,10 @@
  * links still stand, and an empty "did you mean" would be a promise kept by
  * nobody. A failed fetch is silent for the same reason.
  *
- * On an English address that request answers with the Indonesian index
- * (`lib/i18n/public-locale-redirect.ts`), so what is offered is always a
- * published page, in Indonesian.
+ * The English index follows its pages (`lib/i18n/public-locale-redirect.ts`):
+ * it lists the pages R7 has opened in English and the English catalogue, so
+ * what is offered on an English address opens in English. While no page was
+ * open, that request answered with the Indonesian index instead.
  *
  * ## The moment
  *

@@ -2,7 +2,8 @@ import { expect, test } from '@playwright/test'
 
 import { SIDES, sideTemplate, UNITS } from '../lib/content/units'
 import { localizedPath } from '../lib/i18n/paths'
-import { PUBLISHED_LOCALES } from '../lib/i18n/routing'
+import { localesForTemplate } from '../lib/i18n/public-locale-redirect'
+import { routing } from '../lib/i18n/routing'
 
 /**
  * The six side pages orient the reader with a buying path (the network side
@@ -13,13 +14,16 @@ import { PUBLISHED_LOCALES } from '../lib/i18n/routing'
  * The chapter table is not required here: it renders only once a chapter
  * has published offers (owner decision P4, R0), and none has yet. Its
  * behaviour is covered against fixtures in F3-12, once F2-09 exists.
- * English answers 307 to these pages (K2, R0), so only `/id` is visited.
+ * English is visited where R7 has opened it (`localesForTemplate`); a side
+ * it has not opened answers 307 to `/id` (K2, R0).
  */
 test.describe('side pages', () => {
-  for (const locale of PUBLISHED_LOCALES) {
+  for (const locale of routing.locales) {
     for (const unit of UNITS) {
       for (const side of SIDES[unit]) {
-        const path = localizedPath(locale, sideTemplate(unit, side))
+        const template = sideTemplate(unit, side)
+        if (!localesForTemplate(template).includes(locale)) continue
+        const path = localizedPath(locale, template)
 
         test(`${path} presents its reader path`, async ({ page }) => {
           const response = await page.goto(path)

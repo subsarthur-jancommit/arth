@@ -16,6 +16,7 @@
 import { describe, expect, it } from 'bun:test'
 
 import { localizedPath } from '@/lib/i18n/paths'
+import { ENGLISH_PAGES } from '@/lib/i18n/public-locale-redirect'
 import { routing } from '@/lib/i18n/routing'
 import { BASE_URL } from '@/lib/seo/site'
 
@@ -57,13 +58,25 @@ describe('generatePageMetadata', () => {
     // Underscore, not hyphen. `og:locale` is `language_TERRITORY`; the
     // hyphenated BCP 47 tag belongs in `<html lang>` and hreflang, and a
     // consumer reading it here silently falls back to its own default.
-    const en = openGraphOf(generatePageMetadata({ url: '/en/work/x' }))
-    const id = openGraphOf(generatePageMetadata({ url: '/id/work/x' }))
+    // `/metode` is open in English (R7), so each twin names the other.
+    expect(ENGLISH_PAGES).toContain('/metode')
+    const en = openGraphOf(generatePageMetadata({ url: '/en/metode' }))
+    const id = openGraphOf(generatePageMetadata({ url: '/id/metode' }))
 
     expect(en.locale).toBe('en_US')
     expect(id.locale).toBe('id_ID')
     expect(en.alternateLocale).toEqual(['id_ID'])
     expect(id.alternateLocale).toEqual(['en_US'])
+  })
+
+  it('names an English alternate only where English is open', () => {
+    // A work page has no approved English: its Indonesian card claims none,
+    // and an English preview of it names the Indonesian page it stands for.
+    const id = openGraphOf(generatePageMetadata({ url: '/id/work/x' }))
+    const en = openGraphOf(generatePageMetadata({ url: '/en/work/x' }))
+
+    expect(id.alternateLocale).toEqual([])
+    expect(en.alternateLocale).toEqual(['id_ID'])
   })
 
   it('falls back to the default locale for unlocalized routes', () => {
@@ -75,11 +88,18 @@ describe('generatePageMetadata', () => {
   })
 
   it('declares hreflang only for approved translations on a localized path', () => {
-    const languages = generatePageMetadata({ url: '/id/metode' }).alternates
-      ?.languages
-    expect(languages).toMatchObject({
+    expect(
+      generatePageMetadata({ url: '/id/metode' }).alternates?.languages
+    ).toEqual({
       'id-ID': '/id/metode',
+      'en-US': '/en/metode',
       'x-default': '/id/metode',
+    })
+    expect(
+      generatePageMetadata({ url: '/id/layanan' }).alternates?.languages
+    ).toEqual({
+      'id-ID': '/id/layanan',
+      'x-default': '/id/layanan',
     })
   })
 })
