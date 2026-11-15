@@ -4,8 +4,11 @@ import { FEATURED_WORK } from './fixtures'
 
 /**
  * Only Indonesian is approved for visitor-facing navigation. The language
- * switcher remains hidden until there is a second approved destination;
- * its section-matching logic is covered by `section.test.ts` meanwhile.
+ * switcher stays hidden on every page whose English R7 has not opened
+ * (`ENGLISH_PAGES` in `lib/i18n/public-locale-redirect.ts`, empty until the
+ * first page opens); its section-matching logic is covered by
+ * `section.test.ts` meanwhile. The PR that opens a page also changes the
+ * expectation for that page here.
  */
 test.describe('unapproved English is not offered as a language choice', () => {
   for (const path of ['/id', `/id/work/${FEATURED_WORK}`]) {

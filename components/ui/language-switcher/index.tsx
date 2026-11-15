@@ -20,12 +20,15 @@ import s from './language-switcher.module.css'
 const SECTIONS = 'main [data-region][id], main section[id]'
 
 /**
- * LanguageSwitcher — one link per approved public language. On an approved
- * page it disappears while only one language is public, because a switcher
- * without a choice is noise and would advertise an unavailable destination.
- * On an unpublished locale's preview or old deep link, the one approved
+ * LanguageSwitcher — one link per language the current page can be read in.
+ * On a page whose English R7 has opened (`ENGLISH_PAGES` in
+ * `lib/i18n/public-locale-redirect.ts`) that is ID and EN, from either side.
+ * On every other Indonesian page it disappears, because a switcher without a
+ * choice is noise and would advertise a destination that answers 307. On an
+ * English page that is not open (a preview or an old deep link) the approved
  * language remains visible as an exit; `locales.ts` owns that asymmetry and
- * records its cost.
+ * records its cost. Until the first page opens, it renders nowhere on the
+ * Indonesian site.
  *
  * Provenance: original work for this project. No third-party code copied.
  *
@@ -85,7 +88,7 @@ export function LanguageSwitcher({
   const active = useLocale()
   const t = useTranslations('language')
   const router = useRouter()
-  const visibleLocales = localesForLanguageSwitcher(active)
+  const visibleLocales = localesForLanguageSwitcher(active, pathname)
 
   if (visibleLocales.length === 0) return null
 
