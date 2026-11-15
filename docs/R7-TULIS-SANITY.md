@@ -1,8 +1,9 @@
 # R7: rencana tulis ke Sanity
 
 Disusun 15 November 2026 menurut `docs/PROSEDUR-KERJA.md` §6 langkah 2.
-**Belum ada yang ditulis ke Sanity.** Rencana ini menunggu `ok tulis` pemilik
-untuk tiga langkah di bawah, dengan angka uji kering yang tercantum di sini.
+**Sudah dijalankan 15 November 2026**, sesudah `ok tulis` pemilik. Hasil,
+bukti, dan penyimpangan dari rencana ada di `docs/R7-CATATAN-TULIS.md`. Teks di
+bawah dibiarkan seperti rencana yang disetujui.
 
 Proyek `az53j4l1`, dataset `production`. Tidak ada penghapusan dokumen, tidak
 ada teks Indonesia yang berubah, dan tidak ada deploy skema atau Studio.
