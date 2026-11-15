@@ -2,7 +2,7 @@
   "nav": {
     "primary": "Primary",
     "work": "Work",
-    "studio": "Working method",
+    "studio": "How we work",
     "services": "Services",
     "payment": "Payment",
     "journal": "Journal",
@@ -29,7 +29,7 @@
     "emailLabel": "Email {name}",
     "copyAddress": "Copy address",
     "addressCopied": "Copied",
-    "copyFailed": "Couldn't copy — select the address above",
+    "copyFailed": "Could not copy. Select the address above.",
     "socialsHeading": "Elsewhere",
     "heroCta": "Choose your situation",
     "heroCtaContact": "Get in touch",
@@ -39,9 +39,9 @@
     "passageEyebrow": "Working drawings",
     "passageTitle": "One café, worked on by three units.",
     "practiceEyebrow": "Unit",
-    "practiceTitle": "Arthur's three units",
+    "practiceTitle": "Arthur’s three units",
     "practiceLink": "Open unit",
-    "draftPreview": "Sanity draft preview — this content is not published.",
+    "draftPreview": "Sanity draft preview: this content is not published.",
     "unitEyebrow": "Three units",
     "unitTitle": "Start with the right unit",
     "unitLink": "Open unit",
@@ -50,21 +50,21 @@
     "situationDestination": "To",
     "actionEyebrow": "First step",
     "actionFallback": "Tell us the problem.",
-    "actionAfterFallback": "We will decide which unit should work first.",
+    "actionAfterFallback": "We decide which unit works first.",
     "actionLink": "Go to the contact page",
-    "sequenceLink": "See every sequence"
+    "sequenceLink": "See all sequences"
   },
   "contactPage": {
     "eyebrow": "About and contact",
-    "title": "Three units. One way to hold the work.",
-    "lead": "Arthur is the umbrella for Konstruksi, Teknologi, and Peekabo. The problem is read first; the unit that works is decided afterwards.",
+    "title": "Three units. One way of handling the work.",
+    "lead": "Arthur is the umbrella for three units: Konstruksi for construction, Teknologi for systems, and Peekabo, our agency. We read the problem first, then decide which unit does the work.",
     "heroAction": "See contact status",
     "ownerEyebrow": "Owner statement",
-    "ownerTitle": "From Arthur's owner.",
-    "regionsEyebrow": "Service area",
+    "ownerTitle": "From Arthur’s owner.",
+    "regionsEyebrow": "Where we work",
     "regionsTitle": "Three areas, stated plainly.",
-    "regionsIntro": "Arthur works for needs in Subang, Purwakarta, and Bandung. This is a service area, not an office address.",
-    "regionsLabel": "Arthur service areas",
+    "regionsIntro": "Arthur takes on work in Subang, Purwakarta, and Bandung. This list shows where we work, not an office address.",
+    "regionsLabel": "Arthur’s service areas",
     "contactEyebrow": "Contact",
     "contactReadyTitle": "Choose the channel you use.",
     "whatsapp": "Send via WhatsApp",
@@ -74,10 +74,10 @@
     "socials": "Official accounts",
     "copy": "Copy address",
     "copied": "Copied",
-    "copyFailed": "Couldn't copy — select the address above",
-    "draftPreview": "Sanity draft preview — this content is not published.",
+    "copyFailed": "Could not copy. Select the address above.",
+    "draftPreview": "Sanity draft preview: this content is not published.",
     "metaTitle": "About and contact Arthur",
-    "metaDescription": "Arthur's structure, service area, and current contact status."
+    "metaDescription": "Arthur’s structure, where we work, and the status of our contact channels."
   },
   "policyPage": {
     "eyebrow": "Fixed document",
@@ -131,11 +131,11 @@
     "switchTo": "Switch to {language}"
   },
   "footer": {
-    "contact": "Commissions",
+    "contact": "Enquiries",
     "elsewhere": "Elsewhere",
     "colophon": "Colophon",
     "rights": "© {year} {name}.",
-    "builtOn": "Built on Satūs by darkroom.engineering, MIT licensed. Type is Onest, Inter and Geist Mono.",
+    "builtOn": "Built on Satūs by darkroom.engineering, MIT licensed. Type is Onest, Inter, and Geist Mono.",
     "index": "Index",
     "backToTop": "Back to top",
     "showGrid": "Show the grid",
@@ -171,7 +171,7 @@
   "notFound": {
     "label": "Error",
     "message": "Page not found",
-    "description": "The page you’re looking for doesn’t exist or has been moved.",
+    "description": "The page you are looking for does not exist or has been moved.",
     "tryPrefix": "Try",
     "home": "Go home",
     "title": "Page not found",
@@ -211,7 +211,7 @@
     "sideLink": "See the work",
     "problemsEyebrow": "Problems we answer",
     "problemsTitle": "What usually holds your work back.",
-    "examplesEyebrow": "Example work",
+    "examplesEyebrow": "Examples of the work",
     "examplesTitle": "One example for each kind of work.",
     "forAudience": "For {audience}",
     "workEyebrow": "How the work runs",
@@ -229,7 +229,7 @@
     "siap-pakai": "Ready to use",
     "paham-teknis": "Developers and technical teams",
     "pemilik-usaha": "Business owners and brands",
-    "jaringan": "The seller network",
+    "jaringan": "Sales network",
     "navigationLabel": "Explore the {unit} unit",
     "otherLabel": "{unit} for other readers",
     "backToUnit": "Back to {unit}",
@@ -238,9 +238,9 @@
     "chaptersEyebrow": "Find the situation",
     "chaptersTitle": "The situations we hear most often.",
     "chapterLabel": "Situation",
-    "typeLabel": "Work type",
+    "typeLabel": "Kind of work",
     "entryLabel": "Start here",
-    "offerCount": "{count} pieces of work",
+    "offerCount": "{count, plural, one {# piece of work} other {# pieces of work}}",
     "firstStepEyebrow": "First step",
     "buyersLabel": "For",
     "buying": {
@@ -329,7 +329,7 @@
       "title": "Commission comes from transactions, not recruitment.",
       "source": "Where commission comes from",
       "absent": "What is not part of it",
-      "condition": "Payment condition"
+      "condition": "Payment conditions"
     },
     "registration": {
       "eyebrow": "Registration"
@@ -436,7 +436,7 @@
     "notSold": "What we do not sell",
     "regionsEyebrow": "Reach",
     "regionsTitle": "Where we work",
-    "regionCount": "{count} regions",
+    "regionCount": "{count, plural, one {# area} other {# areas}}",
     "formatEyebrow": "Format of the work"
   }
 }
