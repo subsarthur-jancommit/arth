@@ -263,12 +263,19 @@ test.describe('Markdown content negotiation', () => {
       expect(await response.text(), path).toContain(`| ${SITE.name}`)
     }
 
-    // An English page R7 has not opened is no public document.
-    for (const path of ['/en/layanan.md', '/en/pembayaran.md']) {
+    // An English page R7 has not opened is no public document: its alias
+    // follows the page to the Indonesian one, as the HTML does.
+    for (const [path, twin] of [
+      ['/en/layanan.md', '/id/layanan.md'],
+      ['/en/pembayaran.md', '/id/pembayaran.md'],
+    ] as const) {
       const response = await request.get(path, { maxRedirects: 0 })
       expect(response.status(), `${path} should not publish English copy`).toBe(
-        404
+        307
       )
+      expect(
+        new URL(response.headers().location ?? '', 'http://x').pathname
+      ).toBe(twin)
     }
   })
 

@@ -1,4 +1,8 @@
 import { SIDES, UNITS } from '@/lib/content/units'
+import {
+  markdownPathForRoute,
+  routePathFromMarkdown,
+} from '@/lib/seo/markdown-path'
 
 import { type Locale, PUBLISHED_LOCALES } from './routing'
 
@@ -86,7 +90,9 @@ export const R7_PAGES: readonly string[] = [
  * (`metadata.title`, `metadata.description` on the first sequence and on the
  * `cara-kami-dibayar` page), which hold Indonesian only, and R7 approved no
  * English for them. Opened as they are, an English page would carry an
- * Indonesian title and description.
+ * Indonesian title and description. `/metode` reads the same kind of title
+ * field, but R7 UI1 approved an English title for that page
+ * (`methodPage.title`), so its English head takes that instead.
  */
 export const ENGLISH_PAGES: readonly string[] = [
   '/',
@@ -135,6 +141,12 @@ export const ADVERTISED_LOCALES: readonly Locale[] =
 /**
  * The `/id` twin of an untranslated English path, or `null` to leave it.
  *
+ * A Markdown alias (`/en/konstruksi/pelaku-proyek.md`) follows its page: it
+ * is served where the page is, and sent to the Indonesian alias where the page
+ * is sent to its twin. Read as a plain path, the `.md` kept an open side page
+ * from matching `ENGLISH_PAGES` while its first segment still matched, so its
+ * mirror answered 307 (`e2e/english-pages.e2e.ts` caught it).
+ *
  * `englishPages` is a parameter only so tests can open pages; the proxy uses
  * the default.
  */
@@ -142,6 +154,12 @@ export function publicLocaleRedirect(
   pathname: string,
   englishPages: readonly string[] = ENGLISH_PAGES
 ): string | null {
+  const page = routePathFromMarkdown(pathname)
+  if (page !== null) {
+    const twin = publicLocaleRedirect(page, englishPages)
+    return twin === null ? null : markdownPathForRoute(twin)
+  }
+
   if (pathname === '/en' || pathname === '/en/') {
     return isEnglishPage('/', englishPages) ? null : '/id'
   }

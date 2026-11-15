@@ -231,9 +231,9 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  // English remains a supported Sanity field/preview locale, but the public
-  // site has not approved English for Arthur's pages yet (K2). Their `/en`
-  // address answers 307 to the Indonesian twin; draft mode is exempt so
+  // English is approved page by page (R7, `ENGLISH_PAGES`). An Arthur page
+  // that is not open answers 307 at its `/en` address, and so does its
+  // Markdown alias, to the Indonesian twin (K2); draft mode is exempt so
   // Presentation can still preview the English fields.
   const indonesianPath = request.cookies.has(DRAFT_MODE_COOKIE)
     ? null

@@ -166,7 +166,10 @@ export async function generateMetadata() {
   const requested = await localeRootParam()
   const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
 
-  const { data, isDraftMode } = await howWeWorkForRequest(locale, false)
+  const [{ data, isDraftMode }, t] = await Promise.all([
+    howWeWorkForRequest(locale, false),
+    getTranslations({ locale, namespace: 'methodPage' }),
+  ])
   if (!data) return { robots: { index: false } }
 
   const keywords = data.metadata?.keywords
@@ -175,7 +178,16 @@ export async function generateMetadata() {
   const description = howWeWorkDescription(data)
 
   return generatePageMetadata({
-    title: data.metadata?.title ?? 'Metode kerja',
+    /*
+     * `metadata.title` is a plain Sanity string, so what the Studio writes
+     * there is Indonesian and may title the Indonesian page only. Otherwise
+     * the head takes the title the page's heading shows (`methodPage.title`,
+     * its English approved in R7 UI1). The literal that stood here put
+     * "Metode kerja" in the English head (`e2e/english-pages.e2e.ts`).
+     */
+    title:
+      (locale === routing.defaultLocale ? data.metadata?.title : null) ??
+      t('title'),
     ...(description && { description }),
     ...(keywords && { keywords }),
     noIndex: isDraftMode || data.metadata?.noIndex === true,

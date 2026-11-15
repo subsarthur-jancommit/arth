@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'bun:test'
 
+import { markdownPathForRoute } from '@/lib/seo/markdown-path'
+
 import { localizedPath } from './paths'
 import {
   ADVERTISED_LOCALES,
@@ -127,6 +129,33 @@ describe('English pages opened by R7', () => {
     expect(publicLocaleRedirect('/en/halaman/tentang', R7_PAGES)).toBe(
       '/id/halaman/tentang'
     )
+  })
+
+  it('sends a Markdown alias where its page goes', () => {
+    const open = ['/', '/konstruksi', '/konstruksi/pelaku-proyek']
+    // Served where the page is open, the side page among them.
+    expect(publicLocaleRedirect('/en.md', open)).toBeNull()
+    expect(publicLocaleRedirect('/en/konstruksi.md', open)).toBeNull()
+    expect(
+      publicLocaleRedirect('/en/konstruksi/pelaku-proyek.md', open)
+    ).toBeNull()
+    // Sent to the Indonesian alias where the page is sent to its twin.
+    expect(
+      publicLocaleRedirect('/en/konstruksi/pemilik-bangunan.md', open)
+    ).toBe('/id/konstruksi/pemilik-bangunan.md')
+    expect(publicLocaleRedirect('/en/layanan.md', open)).toBe('/id/layanan.md')
+    expect(publicLocaleRedirect('/en.md', NONE)).toBe('/id.md')
+    // Indonesian, the root alias and unknown aliases are left alone.
+    expect(publicLocaleRedirect('/id/kontak.md', open)).toBeNull()
+    expect(publicLocaleRedirect('/index.md', open)).toBeNull()
+    expect(publicLocaleRedirect('/missing.md', open)).toBeNull()
+  })
+
+  it('serves the Markdown alias of every open page', () => {
+    for (const page of ENGLISH_PAGES) {
+      const alias = markdownPathForRoute(localizedPath('en', page))
+      expect(publicLocaleRedirect(alias)).toBeNull()
+    }
   })
 
   it('serves the English search index once any page is open', () => {

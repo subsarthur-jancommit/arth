@@ -190,7 +190,9 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = (
      */
     {
       path: '/metode',
-      label: { en: 'Working method', id: 'Metode kerja' },
+      // The page's own title (`methodPage.title`); R7 UI1 approved "How we
+      // work" for it and for the navigation label.
+      label: { en: 'How we work', id: 'Metode kerja' },
       changeFrequency: 'monthly',
       priority: 0.7,
     },
