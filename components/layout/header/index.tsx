@@ -674,9 +674,10 @@ export function Header() {
           {t('cta')}
         </Link>
         {/*
-          The language switcher's place, last on the right. It renders nothing
-          while Indonesian is the only published language, and takes this
-          place when R7 publishes English.
+          The language switcher's place, last on the right (R4). It takes this
+          place only on a page whose English R7 has opened, and on an English
+          page as the way back; elsewhere it renders nothing, so the row keeps
+          its shape until the first page opens (`ENGLISH_PAGES`).
         */}
         <LanguageSwitcher className={s.language} />
       </div>

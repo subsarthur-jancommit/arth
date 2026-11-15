@@ -1,4 +1,4 @@
-import { UNITS } from '@/lib/content/units'
+import { SIDES, UNITS } from '@/lib/content/units'
 
 /**
  * First segments under `/en` whose pages carry Indonesian editorial content,
@@ -36,15 +36,76 @@ export const UNTRANSLATED_SEGMENTS: readonly string[] = [
   'search.json',
 ]
 
-/** The `/id` twin of an untranslated English path, or `null` to leave it. */
-export function publicLocaleRedirect(pathname: string): string | null {
-  if (pathname === '/en' || pathname === '/en/') return '/id'
+/**
+ * The fourteen pages whose English the owner approved for R7 ("Setujui
+ * semua", 15 November 2026, `docs/R7-SERAH-INGGRIS.md`): the home page, the
+ * three units, the six sides, `/metode`, `/layanan`, `/pembayaran` and
+ * `/kontak`. The only pages `ENGLISH_PAGES` may open.
+ */
+export const R7_PAGES: readonly string[] = [
+  '/',
+  ...UNITS.map((unit) => `/${unit}`),
+  ...UNITS.flatMap((unit) => SIDES[unit].map((side) => `/${unit}/${side}`)),
+  '/metode',
+  '/layanan',
+  '/pembayaran',
+  '/kontak',
+]
+
+/**
+ * Arthur's pages whose English is open: approved by the owner, written to
+ * Sanity, and served at `/en`. Every other page under the segments above
+ * keeps answering 307 to its `/id` twin.
+ *
+ * Locale-free templates (`/`, `/konstruksi`, `/konstruksi/pelaku-proyek`),
+ * not segments, and always a subset of `R7_PAGES`. R7 did not cover the
+ * situation and work pages under each side (`docs/R7-SERAH-INGGRIS.md` §17),
+ * so opening the `konstruksi` segment would serve those in English chrome
+ * around Indonesian copy, which is the mixture K2 exists to prevent.
+ *
+ * K2 as changed on 15 November 2026 (`docs/PROGRES-ARTHUR.md`): a page opens
+ * once its English is in Sanity and every code string it shows is on `main`,
+ * one page at a time, each in its own PR with an e2e proof that the page
+ * carries no Indonesian. That same PR makes `lib/seo/alternates.ts` and the
+ * sitemap read this list. The language switcher
+ * (`components/ui/language-switcher`) offers English on exactly these pages,
+ * so it can never point at a 307.
+ *
+ * Empty until the first page opens.
+ */
+export const ENGLISH_PAGES: readonly string[] = []
+
+/** `/konstruksi/` and `/konstruksi` are one template; `/` stays `/`. */
+function normalTemplate(template: string): string {
+  return template.length > 1 ? template.replace(/\/+$/, '') : template
+}
+
+/** Whether a locale-free template's page is open in English. */
+export function isEnglishPage(
+  template: string,
+  englishPages: readonly string[] = ENGLISH_PAGES
+): boolean {
+  return englishPages.includes(normalTemplate(template))
+}
+
+/**
+ * The `/id` twin of an untranslated English path, or `null` to leave it.
+ *
+ * `englishPages` is a parameter only so tests can open pages; the proxy uses
+ * the default.
+ */
+export function publicLocaleRedirect(
+  pathname: string,
+  englishPages: readonly string[] = ENGLISH_PAGES
+): string | null {
+  if (pathname === '/en' || pathname === '/en/') {
+    return isEnglishPage('/', englishPages) ? null : '/id'
+  }
 
   const match = /^\/en(\/([^/]+)(?:\/.*)?)$/.exec(pathname)
   if (!match) return null
 
-  const [, rest, segment] = match
-  return segment && UNTRANSLATED_SEGMENTS.includes(segment)
-    ? `/id${rest}`
-    : null
+  const [, rest = '', segment] = match
+  if (!segment || !UNTRANSLATED_SEGMENTS.includes(segment)) return null
+  return isEnglishPage(rest, englishPages) ? null : `/id${rest}`
 }
