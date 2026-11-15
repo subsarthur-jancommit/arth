@@ -1,4 +1,5 @@
 import cn from 'clsx'
+import { getTranslations } from 'next-intl/server'
 import type { PortableTextBlock } from 'next-sanity'
 import { draftMode } from 'next/headers'
 import { locale as localeRootParam } from 'next/root-params'
@@ -31,13 +32,17 @@ async function paymentForRequest(locale: Locale, stega = true) {
 /**
  * The reading template for one fixed `page` document, like `/kebijakan`
  * without its legal-review note. Every sentence is the Sanity document's
- * (V6); the code holds only the eyebrow and the contact action, the same
- * header action the home and `/layanan` use.
+ * (V6); the code holds only the eyebrow and the contact action. The action
+ * is the header's own (`nav.cta`), so its words come from `messages` in both
+ * locales rather than from this file (R7, block P2).
  */
 export default async function PaymentPage() {
   const requested = await localeRootParam()
   const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
-  const { content, isDraftMode } = await paymentForRequest(locale)
+  const [{ content, isDraftMode }, tNav] = await Promise.all([
+    paymentForRequest(locale),
+    getTranslations('nav'),
+  ])
 
   if (!content) return <LocalizedNotFound />
 
@@ -71,7 +76,7 @@ export default async function PaymentPage() {
             className={cn('caption', s.actionLink)}
             data-press="chip"
           >
-            Ceritakan masalahnya
+            {tNav('cta')}
           </Link>
         </p>
       </article>

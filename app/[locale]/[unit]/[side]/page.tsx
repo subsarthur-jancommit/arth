@@ -133,7 +133,7 @@ export default async function SidePage({ params }: SidePageProps) {
         situation: chapter.situasi,
         types: chapter.jenis ?? [],
         networkPath: chapter.jalurJaringan ?? null,
-        offerCount: chapter.jumlahOffer,
+        offerCountText: tSide('offerCount', { count: chapter.jumlahOffer }),
         entryOffer: chapter.pintuMasuk?.judul
           ? {
               title: chapter.pintuMasuk.judul,
@@ -253,7 +253,6 @@ export default async function SidePage({ params }: SidePageProps) {
                 chapterLabel={tSide('chapterLabel')}
                 typeLabel={tSide('typeLabel')}
                 entryLabel={tSide('entryLabel')}
-                offerCountLabel={tSide('offerCount')}
                 className={s.chapters}
               />
             )}
