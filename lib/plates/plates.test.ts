@@ -2,7 +2,7 @@ import { describe, expect, it } from 'bun:test'
 
 import { UNITS } from '@/lib/content/units'
 
-import { MARK_STYLES, PLATES, TEXT_STYLES } from './index'
+import { MARK_STYLES, plateFor, PLATES, PLATES_EN, TEXT_STYLES } from './index'
 
 /**
  * What a plate has to be for both of its renderers to draw it: finite, inside
@@ -83,6 +83,55 @@ describe('working-drawing plates', () => {
       // "A-A" names a cutting plane and is the one hyphen a drawing needs.
       const words = plate.texts.flatMap((text) => text.lines)
       expect(words.filter((line) => /[–—]|\s-\s/u.test(line))).toEqual([])
+    })
+  }
+})
+
+/*
+ * The English plates (R7, block L4, approved 15 November 2026): the same
+ * drawing, only the words changed, and no Indonesian left in them.
+ */
+describe('working-drawing plates in English', () => {
+  /** Lines that read the same in both languages: numbers and the cut letter. */
+  const NEUTRAL = new Set(['1', '2', '3', '4', '01', 'A', 'BAR'])
+
+  it('picks the plate by locale', () => {
+    for (const unit of UNITS) {
+      expect(plateFor(unit, 'id')).toBe(PLATES[unit])
+      expect(plateFor(unit, 'en')).toBe(PLATES_EN[unit])
+    }
+  })
+
+  for (const unit of UNITS) {
+    const id = PLATES[unit]
+    const en = PLATES_EN[unit]
+
+    it(`${unit}: draws the same marks, with its text in the same places`, () => {
+      expect(en.viewBox).toEqual(id.viewBox)
+      expect(en.marks).toEqual(id.marks)
+      expect(en.parts).toEqual(id.parts)
+      expect(en.texts.map(({ role, x }) => [role, x])).toEqual(
+        id.texts.map(({ role, x }) => [role, x])
+      )
+      // A run with more lines may move up by half a line to stay centred.
+      const moved = en.texts.filter(
+        (text, i) => Math.abs(text.y - (id.texts[i]?.y ?? text.y)) > 8
+      )
+      expect(moved).toEqual([])
+    })
+
+    it(`${unit}: keeps no Indonesian line`, () => {
+      const indonesian = new Set(id.texts.flatMap((text) => text.lines))
+      const left = en.texts
+        .flatMap((text) => text.lines)
+        .filter((line) => indonesian.has(line) && !NEUTRAL.has(line))
+      expect(left).toEqual([])
+    })
+
+    it(`${unit}: writes decimals with a point, and no dash between words`, () => {
+      const lines = en.texts.flatMap((text) => text.lines)
+      expect(lines.filter((line) => /\d,\d/u.test(line))).toEqual([])
+      expect(lines.filter((line) => /[–—]|\s-\s/u.test(line))).toEqual([])
     })
   }
 })

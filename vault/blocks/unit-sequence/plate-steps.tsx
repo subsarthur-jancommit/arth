@@ -13,6 +13,7 @@
 
 import type { SequenceContent } from '@/lib/content/sequence-content'
 import type { Unit } from '@/lib/content/units'
+import type { Locale } from '@/lib/i18n/routing'
 import { Plate } from '@/vault/blocks/plate'
 
 import type { SequenceStep } from './index'
@@ -28,6 +29,8 @@ export function plateSteps(
   sequence: SequenceContent,
   plateCopy: (unit: Unit) => PlateCopy,
   options: {
+    /** The words inside the drawings are the reader's (R7, block L4). */
+    locale: Locale
     /**
      * The same drawings, with the same alt text, already sit higher on the
      * page (the home page's passage). The plates still head their steps for
@@ -35,14 +38,19 @@ export function plateSteps(
      * reader is not read three long descriptions a second time.
      */
     repeated?: boolean
-  } = {}
+  }
 ): SequenceStep[] {
   return sequence.langkah.map((step) => {
     const unit = step.unit.kunci
     const copy = plateCopy(unit)
     const drawsThisWork = step.offer.some((offer) => offer.judul === copy.job)
     const plate = (
-      <Plate unit={unit} title={copy.title} description={copy.description} />
+      <Plate
+        unit={unit}
+        locale={options.locale}
+        title={copy.title}
+        description={copy.description}
+      />
     )
 
     return {

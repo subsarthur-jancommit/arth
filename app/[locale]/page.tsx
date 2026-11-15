@@ -231,9 +231,10 @@ export default async function Home() {
      * everywhere else the flat plate is all there is, and the whole drawing.
      */
     media: (
-      <PlateMaterial unit={unit.value}>
+      <PlateMaterial unit={unit.value} locale={locale}>
         <Plate
           unit={unit.value}
+          locale={locale}
           title={tPlate(`${unit.value}.title`)}
           description={tPlate(`${unit.value}.description`)}
         />

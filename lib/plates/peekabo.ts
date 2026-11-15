@@ -12,6 +12,8 @@
  * Plate units throughout.
  */
 
+import type { Locale } from '@/lib/i18n/routing'
+
 import {
   circle,
   type Point,
@@ -22,6 +24,7 @@ import {
   wrap,
 } from './draw'
 import type { Plate } from './types'
+import { plateWords } from './words'
 
 const HEADER = [80, 138, 1125, 78] as const
 const FOOTER = [80, 966, 1125, 80] as const
@@ -218,20 +221,33 @@ function glyph(i: number, x: number, y: number, w: number, h: number) {
   }
 }
 
-function build(): Plate {
+function build(locale: Locale): Plate {
+  const words = plateWords('peekabo', locale)
   const draw = sheet()
 
   {
     const [x, y, w, h] = HEADER
     draw.mark('card', rectangle(x, y, w, h))
-    draw.text('nodeTitle', x + 24, y + 48, 'Pembukaan cabang atau gerai', {
-      size: 26,
-      weight: 700,
-    })
-    draw.text('note', x + w - 24, y + 46, 'Untuk usaha F&B, ritel, jasa', {
-      size: 14,
-      anchor: 'end',
-    })
+    draw.text(
+      'nodeTitle',
+      x + 24,
+      y + 48,
+      words.word('Pembukaan cabang atau gerai'),
+      {
+        size: 26,
+        weight: 700,
+      }
+    )
+    draw.text(
+      'note',
+      x + w - 24,
+      y + 46,
+      words.word('Untuk usaha F&B, ritel, jasa'),
+      {
+        size: 14,
+        anchor: 'end',
+      }
+    )
   }
 
   for (const [name, left, right] of COLUMNS) {
@@ -242,7 +258,7 @@ function build(): Plate {
         [right, 274],
       ])
     )
-    draw.text('label', left + 10, 262, name.toLocaleUpperCase('id'), {
+    draw.text('label', left + 10, 262, words.upper(words.word(name)), {
       size: 13,
     })
   }
@@ -254,20 +270,23 @@ function build(): Plate {
         [210, top],
       ])
     )
-    draw.text('label', 84, top + 26, name.toLocaleUpperCase('id'), { size: 13 })
+    draw.text('label', 84, top + 26, words.upper(words.word(name)), {
+      size: 13,
+    })
   }
 
   for (const [x, y, w, h, name, note, drawing] of CARDS) {
     draw.mark('card', rectangle(x, y, w, h))
-    draw.text('nodeTitle', x + 18, y + 30, name, { leading: 1.22 })
-    const lines = name.split('\n').length
+    const title = words.word(name)
+    draw.text('nodeTitle', x + 18, y + 30, title, { leading: 1.22 })
+    const lines = title.split('\n').length
     if (note) {
       const width = (drawing === 'frames' ? 270 : w) - 36
       draw.text(
         'nodeNote',
         x + 18,
         y + 30 + lines * 21 + 4,
-        wrap(note, 13, width),
+        wrap(words.word(note), 13, width),
         {
           leading: 1.36,
         }
@@ -291,7 +310,7 @@ function build(): Plate {
       draw.mark('ringDash', circle(centre, 34))
       draw.mark('ringDash', circle(centre, 48))
       draw.mark('solid', rectangle(centre[0] - 15, centre[1] - 5.5, 30, 11))
-      draw.text('note', centre[0] + 56, centre[1] + 4, 'kafe', {
+      draw.text('note', centre[0] + 56, centre[1] + 4, words.word('kafe'), {
         size: 11,
       })
     }
@@ -304,13 +323,13 @@ function build(): Plate {
       'nodeTitle',
       x + 24,
       y + 48,
-      'Target, lingkup, dan laporan disepakati tertulis.'
+      words.word('Target, lingkup, dan laporan disepakati tertulis.')
     )
     draw.text(
       'nodeTitle',
       x + w - 24,
       y + 48,
-      'Kami tidak menjanjikan jangkauan atau penjualan.',
+      words.word('Kami tidak menjanjikan jangkauan atau penjualan.'),
       { anchor: 'end' }
     )
   }
@@ -318,4 +337,5 @@ function build(): Plate {
   return draw.done('peekabo', [50, 108, 1185, 968])
 }
 
-export const PEEKABO_PLATE: Plate = build()
+export const PEEKABO_PLATE: Plate = build('id')
+export const PEEKABO_PLATE_EN: Plate = build('en')

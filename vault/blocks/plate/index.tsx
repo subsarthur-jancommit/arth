@@ -2,10 +2,11 @@ import cn from 'clsx'
 import type { CSSProperties } from 'react'
 
 import type { Unit } from '@/lib/content/units'
+import type { Locale } from '@/lib/i18n/routing'
 import {
   LABEL_HALO,
   MARK_STYLES,
-  PLATES,
+  plateFor,
   type PlateMark,
   type PlateText,
   TEXT_STYLES,
@@ -42,6 +43,8 @@ import s from './plate.module.css'
 
 interface PlateProps {
   unit: Unit
+  /** The words inside the drawing are the reader's (R7, block L4). */
+  locale: Locale
   /** The drawing's name, which is what assistive technology announces. */
   title: string
   /** What the drawing shows, in sentences. */
@@ -127,8 +130,14 @@ function renderText(text: PlateText) {
   )
 }
 
-export function Plate({ unit, title, description, className }: PlateProps) {
-  const plate = PLATES[unit]
+export function Plate({
+  unit,
+  locale,
+  title,
+  description,
+  className,
+}: PlateProps) {
+  const plate = plateFor(unit, locale)
 
   return (
     <svg

@@ -48,6 +48,7 @@ import { type ComponentType, type ReactNode, useEffect, useState } from 'react'
 import type { Unit } from '@/lib/content/units'
 import { useDeviceDetection } from '@/lib/hooks/use-device-detection'
 import { usePreferredReducedMotion } from '@/lib/hooks/use-sync-external'
+import type { Locale } from '@/lib/i18n/routing'
 import { WebGLTunnel } from '@/webgl/components/tunnel'
 
 import type { PlateMaterialScene as PlateMaterialSceneType } from './scene'
@@ -89,6 +90,8 @@ function usePlateScene(enabled: boolean): SceneComponent | null {
 
 interface PlateMaterialProps {
   unit: Unit
+  /** The flat plate's locale (`vault/blocks/plate`), passed to the lit one. */
+  locale: Locale
   /** The flat plate, `vault/blocks/plate`. */
   children: ReactNode
   className?: string | undefined
@@ -96,6 +99,7 @@ interface PlateMaterialProps {
 
 export function PlateMaterial({
   unit,
+  locale,
   children,
   className,
 }: PlateMaterialProps) {
@@ -134,6 +138,7 @@ export function PlateMaterial({
               three.js out of the initial graph. */}
           <Scene
             unit={unit}
+            locale={locale}
             element={element}
             onFirstFrame={() => setDrew(true)}
             // The flat drawing again while the context is lost, until the

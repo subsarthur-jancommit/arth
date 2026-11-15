@@ -46,11 +46,15 @@ export default async function ThreeUnitsPage() {
         {sequences.map((sequence) => {
           // Each step headed by its unit's drawing when it draws this work
           // (`vault/blocks/unit-sequence/plate-steps.tsx` holds the rule).
-          const steps = plateSteps(sequence, (unit) => ({
-            job: tPlate(`${unit}.job`),
-            title: tPlate(`${unit}.title`),
-            description: tPlate(`${unit}.description`),
-          }))
+          const steps = plateSteps(
+            sequence,
+            (unit) => ({
+              job: tPlate(`${unit}.job`),
+              title: tPlate(`${unit}.title`),
+              description: tPlate(`${unit}.description`),
+            }),
+            { locale }
+          )
 
           return (
             <UnitSequence
