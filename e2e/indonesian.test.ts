@@ -7,21 +7,16 @@ import id from '@/messages/id.json'
 
 import { indonesianWords, sameAsTwin, wordsOf } from './indonesian'
 
+/** A message catalogue: strings, nested under keys (`messages/*.json`). */
+type Messages = string | { readonly [key: string]: Messages }
+
 /** Every string in a message file, by its dotted key. */
-function strings(messages: unknown, prefix = ''): Map<string, string> {
+function strings(messages: Messages, prefix = ''): Map<string, string> {
+  if (typeof messages === 'string') return new Map([[prefix, messages]])
   const found = new Map<string, string>()
-  if (typeof messages === 'string') {
-    found.set(prefix, messages)
-    return found
-  }
-  if (messages && typeof messages === 'object') {
-    for (const [key, value] of Object.entries(messages)) {
-      for (const [path, text] of strings(
-        value,
-        prefix ? `${prefix}.${key}` : key
-      ))
-        found.set(path, text)
-    }
+  for (const [key, value] of Object.entries(messages)) {
+    const path = prefix ? `${prefix}.${key}` : key
+    for (const [each, text] of strings(value, path)) found.set(each, text)
   }
   return found
 }

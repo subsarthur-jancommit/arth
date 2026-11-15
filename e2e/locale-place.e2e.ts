@@ -2,7 +2,6 @@ import { expect, test } from '@playwright/test'
 
 import { localizedPath } from '../lib/i18n/paths'
 import { ENGLISH_PAGES, R7_PAGES } from '../lib/i18n/public-locale-redirect'
-
 import { FEATURED_WORK } from './fixtures'
 
 /**

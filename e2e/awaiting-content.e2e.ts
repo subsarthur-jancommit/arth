@@ -2,7 +2,6 @@ import { expect, test } from '@playwright/test'
 
 import { ENGLISH_PAGES, R7_PAGES } from '../lib/i18n/public-locale-redirect'
 import { AWAITING_CONTENT } from '../lib/seo/awaiting-content'
-
 import { SITUATION_ROUTES, WORK_ROUTES } from './fixtures'
 
 /**

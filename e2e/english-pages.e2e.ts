@@ -4,7 +4,6 @@ import { localizedPath } from '../lib/i18n/paths'
 import { ENGLISH_PAGES, R7_PAGES } from '../lib/i18n/public-locale-redirect'
 import { type Locale, LOCALE_TAGS } from '../lib/i18n/routing'
 import { markdownPathForRoute } from '../lib/seo/markdown-path'
-
 import { indonesianWords, sameAsTwin } from './indonesian'
 
 /**
@@ -146,7 +145,7 @@ test('every opened English page is one R7 translated', () => {
 for (const template of ENGLISH_PAGES) {
   const english = localizedPath('en', template)
   const indonesian = localizedPath('id', template)
-  const twins: Record<Locale, string> = { en: english, id: indonesian }
+  const twins = { en: english, id: indonesian } satisfies Record<Locale, string>
 
   test.describe(english, () => {
     // Two full page loads per test, on CI's software renderer.
