@@ -161,6 +161,7 @@ export default async function UnitPage({ params }: UnitPageProps) {
           <figure className={s.plate}>
             <Plate
               unit={unit}
+              locale={locale}
               title={tPlate(`${unit}.title`)}
               description={tPlate(`${unit}.description`)}
               className={s.plateDrawing}

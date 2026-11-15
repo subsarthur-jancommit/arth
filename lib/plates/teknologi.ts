@@ -13,6 +13,8 @@
  * Plate units throughout; there is no model in metres behind a diagram.
  */
 
+import type { Locale } from '@/lib/i18n/routing'
+
 import {
   circle,
   type Point,
@@ -23,6 +25,7 @@ import {
   wrap,
 } from './draw'
 import type { Plate } from './types'
+import { plateWords } from './words'
 
 /** Lane name, top edge, bottom edge. */
 const LANES = [
@@ -175,12 +178,18 @@ const EDGES: readonly Edge[] = [
   ],
 ]
 
-function build(): Plate {
+function build(locale: Locale): Plate {
+  const words = plateWords('teknologi', locale)
   const draw = sheet()
 
   for (const [name, top, bottom] of LANES) {
     draw.mark('lane', segment([70, top], [1205, top]))
-    draw.text('label', 84, (top + bottom) / 2 + 5, name.toLocaleUpperCase('id'))
+    draw.text(
+      'label',
+      84,
+      (top + bottom) / 2 + 5,
+      words.upper(words.word(name))
+    )
   }
   draw.mark('lane', segment([70, 1048], [1205, 1048]))
   draw.mark('lane', segment([200, 150], [200, 1048]))
@@ -189,19 +198,27 @@ function build(): Plate {
     draw.arrow(kind === 'solid' ? 'edge' : 'edgeDash', points, 11)
     if (label) {
       const [text, x, y] = label
-      draw.text('label', x, y, text.toLocaleUpperCase('id'), { size: 12.5 })
+      draw.text('label', x, y, words.upper(words.word(text)), {
+        size: 12.5,
+      })
     }
   }
 
   for (const [x, y, w, h, name, note] of STEPS) {
     draw.mark('node', rectangle(x, y, w, h))
     if (note) {
-      draw.text('nodeTitle', x + 18, y + 33, name)
-      draw.text('nodeNote', x + 18, y + 57, wrap(note, 13, w - 36), {
-        leading: 1.38,
-      })
+      draw.text('nodeTitle', x + 18, y + 33, words.word(name))
+      draw.text(
+        'nodeNote',
+        x + 18,
+        y + 57,
+        wrap(words.word(note), 13, w - 36),
+        {
+          leading: 1.38,
+        }
+      )
     } else {
-      draw.text('nodeTitle', x + 18, y + h / 2 + 6, name)
+      draw.text('nodeTitle', x + 18, y + h / 2 + 6, words.word(name))
     }
   }
 
@@ -215,14 +232,25 @@ function build(): Plate {
       [cx - hw, cy],
     ])
   )
-  draw.text('figure', cx, cy - 4, ['Bahan', 'menipis?'], {
+  // The question in as many lines as fit the diamond, centred on it: two in
+  // Indonesian, three in English, where "running low?" is wider than its
+  // middle (R7, block L4).
+  const question = words.word('Bahan\nmenipis?').split('\n')
+  const halfLine = (13 * 1.2) / 2
+  draw.text('figure', cx, cy - 4 - (question.length - 2) * halfLine, question, {
     anchor: 'middle',
     leading: 1.2,
   })
 
-  draw.text('note', 500, 201, 'juga saat tidak ada admin yang berjaga', {
-    size: 13,
-  })
+  draw.text(
+    'note',
+    500,
+    201,
+    words.word('juga saat tidak ada admin yang berjaga'),
+    {
+      size: 13,
+    }
+  )
 
   // A reference to sheet 01: the table ordered from is the one on the plan.
   draw.mark('bubble', circle([222, 319], 14))
@@ -235,4 +263,5 @@ function build(): Plate {
   return draw.done('teknologi', [40, 120, 1200, 960])
 }
 
-export const TEKNOLOGI_PLATE: Plate = build()
+export const TEKNOLOGI_PLATE: Plate = build('id')
+export const TEKNOLOGI_PLATE_EN: Plate = build('en')

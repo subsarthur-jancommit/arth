@@ -50,7 +50,7 @@ export async function HomeSequence({
       title: tPlate(`${unit}.title`),
       description: tPlate(`${unit}.description`),
     }),
-    { repeated: true }
+    { locale, repeated: true }
   )
 
   return (

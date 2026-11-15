@@ -39,7 +39,8 @@ import {
 } from 'three'
 
 import type { Unit } from '@/lib/content/units'
-import { PLATES, type PlatePart } from '@/lib/plates'
+import type { Locale } from '@/lib/i18n/routing'
+import { plateFor, type PlatePart } from '@/lib/plates'
 import { drawPlate, type PlateFaces } from '@/lib/plates/canvas'
 import { useFirstFrame } from '@/webgl/hooks/use-first-frame'
 
@@ -177,6 +178,8 @@ function pose(
 
 interface PlateMaterialSceneProps {
   unit: Unit
+  /** The flat plate's locale, so the lit one draws the same words. */
+  locale: Locale
   /** The DOM side's root, which holds the flat plate's `<svg>`. */
   element: HTMLElement
   onFirstFrame: () => void
@@ -190,11 +193,12 @@ interface PlateMaterialSceneProps {
 
 export function PlateMaterialScene({
   unit,
+  locale,
   element,
   onFirstFrame,
   onContextLost,
 }: PlateMaterialSceneProps) {
-  const plate = PLATES[unit]
+  const plate = plateFor(unit, locale)
   const { parts } = plate
   const gl = useThree((state) => state.gl)
   const size = useThree((state) => state.size)

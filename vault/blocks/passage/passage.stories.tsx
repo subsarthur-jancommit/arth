@@ -56,6 +56,7 @@ export const WithPlates: Story = {
         media: (
           <Plate
             unit="konstruksi"
+            locale="id"
             title="Denah lantai 1 dan potongan sebuah kafe"
             description="Denah dan potongan sebuah kafe di ruko sewa."
           />
@@ -69,6 +70,7 @@ export const WithPlates: Story = {
         media: (
           <Plate
             unit="teknologi"
+            locale="id"
             title="Diagram alur pesanan"
             description="Empat lajur: tamu, sistem, dapur, dan pemasok."
           />
@@ -82,6 +84,7 @@ export const WithPlates: Story = {
         media: (
           <Plate
             unit="peekabo"
+            locale="id"
             title="Papan kampanye pembukaan"
             description="Tiga kolom waktu dan tiga baris tujuan."
           />

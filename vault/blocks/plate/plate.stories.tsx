@@ -8,7 +8,8 @@ import { Plate } from './index'
  * WebGL; on a stage page the same data is also lit as WebGL material.
  *
  * The words passed here are the alt text, which the pages take from
- * `messages/` (`plates.<unit>`); the labels inside the drawing are part of it.
+ * `messages/` (`plates.<unit>`); the labels inside the drawing are part of it,
+ * and follow `locale` (R7, block L4).
  */
 const meta = {
   title: 'Vault/Blocks/Plate',
@@ -30,6 +31,7 @@ type Story = StoryObj<typeof meta>
 export const Konstruksi: Story = {
   args: {
     unit: 'konstruksi',
+    locale: 'id',
     title: 'Denah lantai 1 dan potongan A-A sebuah kafe di ruko sewa',
     description:
       'Denah memperlihatkan teras, ruang duduk, tangga, bar, dapur, dan gudang bahan.',
@@ -39,6 +41,7 @@ export const Konstruksi: Story = {
 export const Teknologi: Story = {
   args: {
     unit: 'teknologi',
+    locale: 'id',
     title: 'Diagram alur pesanan dari meja sampai pemasok',
     description: 'Empat lajur: tamu, sistem, dapur, dan pemasok.',
   },
@@ -47,8 +50,21 @@ export const Teknologi: Story = {
 export const Peekabo: Story = {
   args: {
     unit: 'peekabo',
+    locale: 'id',
     title: 'Papan kampanye pembukaan cabang atau gerai',
     description:
       'Tiga kolom waktu dan tiga baris tujuan: perhatian, kepercayaan, dan penjualan.',
+  },
+}
+
+/** The same plan with its words in English (R7, block L4). */
+export const KonstruksiInEnglish: Story = {
+  args: {
+    unit: 'konstruksi',
+    locale: 'en',
+    title:
+      'Konstruksi working drawing: the ground floor plan and a section of a café in a rented shophouse',
+    description:
+      'The plan shows the terrace, the seating, the stair, the bar, the serving hatch, the kitchen, the store, and the sink.',
   },
 }
