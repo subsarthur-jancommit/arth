@@ -7,7 +7,7 @@ import { expect, test } from '@playwright/test'
 
 import { SIDES, type Unit, UNITS } from '../lib/content/units'
 import { publicLocaleRedirect } from '../lib/i18n/public-locale-redirect'
-import { PUBLISHED_LOCALES, routing } from '../lib/i18n/routing'
+import { routing } from '../lib/i18n/routing'
 import { isAwaitingContentPath } from '../lib/seo/route-status'
 import { axeTags } from './axe-tags'
 import { SITUATION_ROUTES, WORK_ROUTES } from './fixtures'
@@ -150,13 +150,11 @@ function toRoutes(relativePagePath: string): string[] {
     .reduce<Expansion[]>(
       (paths, segment) => {
         if (segment === '[locale]') {
-          // The English root redirects to /id until its copy is approved.
-          // Its redirect is asserted in default-language.e2e.ts; the route
-          // sweep must not count /en as an independently rendered page.
-          const locales =
-            staticSegments.length === 1 ? PUBLISHED_LOCALES : routing.locales
+          // Every locale; an English page R7 has not opened answers 307 and
+          // is filtered out below (`publicLocaleRedirect`), which since R7
+          // also covers the English home page that this once excluded here.
           return paths.flatMap((entry) =>
-            locales.map((locale) => ({
+            routing.locales.map((locale) => ({
               ...entry,
               path: `${entry.path}/${locale}`,
             }))

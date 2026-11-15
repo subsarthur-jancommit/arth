@@ -14,7 +14,7 @@ import { RealViewport } from '@/components/ui/real-viewport'
 import { APP_BASE_URL, env } from '@/lib/env'
 import { OptionalFeatures } from '@/lib/features'
 import { localizedPath } from '@/lib/i18n/paths'
-import { PUBLISHED_LOCALES } from '@/lib/i18n/routing'
+import { localesForTemplate } from '@/lib/i18n/public-locale-redirect'
 import { isLocale, LOCALE_TAGS, ogLocale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
 import { SanityLive } from '@/lib/integrations/sanity/live'
@@ -129,9 +129,12 @@ export async function generateMetadata(): Promise<Metadata> {
       // Underscore, not the hyphenated tag `<html lang>` takes below.
       // See `ogLocale` — OpenGraph is not BCP 47.
       locale: ogLocale(locale),
-      alternateLocale: PUBLISHED_LOCALES.filter(
-        (other) => other !== locale
-      ).map(ogLocale),
+      // The home page's own languages, the same as its hreflang
+      // (`localesForTemplate`): this card is the home page's, and a page
+      // with a card of its own replaces it whole.
+      alternateLocale: localesForTemplate('/')
+        .filter((other) => other !== locale)
+        .map(ogLocale),
     },
     twitter: {
       card: 'summary_large_image',

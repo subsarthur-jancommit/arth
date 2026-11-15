@@ -259,9 +259,10 @@ export function CommandPalette({
    * empty and the designed empty state shows — the palette must never be the
    * thing that breaks a page it was opened from.
    *
-   * On an English page the request is answered with a 307 to
-   * `/id/search.json` (`lib/i18n/public-locale-redirect.ts`), and `fetch`
-   * follows it: the rows are the published Indonesian index.
+   * On an English page the rows are the English index, which lists the pages
+   * R7 has opened and the English catalogue
+   * (`lib/i18n/public-locale-redirect.ts`). While no page was open it answered
+   * with a 307 to `/id/search.json`, and `fetch` followed it.
    */
   useEffect(() => {
     if (given) return

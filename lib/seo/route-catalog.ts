@@ -9,6 +9,7 @@ import {
   unitTemplate,
 } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
+import { isEnglishPage } from '@/lib/i18n/public-locale-redirect'
 import { PUBLISHED_LOCALES, type Locale } from '@/lib/i18n/routing'
 import { isAwaitingContent } from '@/lib/seo/awaiting-content'
 import { type Localized, SITE } from '@/lib/seo/site'
@@ -189,7 +190,9 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = (
      */
     {
       path: '/metode',
-      label: { en: 'Working method', id: 'Metode kerja' },
+      // The page's own title (`methodPage.title`); R7 UI1 approved "How we
+      // work" for it and for the navigation label.
+      label: { en: 'How we work', id: 'Metode kerja' },
       changeFrequency: 'monthly',
       priority: 0.7,
     },
@@ -257,9 +260,23 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = (
   ] satisfies StaticRoute[]
 ).filter((route) => !isAwaitingContent(route.path))
 
+/** One catalogue entry, expanded to one locale. */
+function localize(route: StaticRoute, locale: Locale): LocalizedStaticRoute {
+  return {
+    ...route,
+    label: route.label[locale],
+    description: route.description?.[locale] ?? null,
+    template: route.path,
+    locale,
+    path: localizedPath(locale, route.path),
+  }
+}
+
 /**
- * Every static route with approved visitor-facing copy. English stays out of
- * machine surfaces until its translation is approved.
+ * Every static route with approved visitor-facing copy: each page in the
+ * published locale, then the English of each page R7 has opened
+ * (`ENGLISH_PAGES`, `lib/i18n/public-locale-redirect.ts`). An English page
+ * that is not open stays out of every machine surface.
  *
  * This is what gets *advertised*: the sitemap, `/llms.txt`, and the
  * Markdown-representation lookup in `lib/seo/alternates.ts` all read
@@ -268,14 +285,11 @@ export const STATIC_ROUTE_TEMPLATES: readonly StaticRoute[] = (
  * that disagrees with the sitemap asks a search engine to crawl one URL and
  * index another.
  */
-export const STATIC_ROUTES: readonly LocalizedStaticRoute[] =
-  PUBLISHED_LOCALES.flatMap((locale) =>
-    STATIC_ROUTE_TEMPLATES.map((route) => ({
-      ...route,
-      label: route.label[locale],
-      description: route.description?.[locale] ?? null,
-      template: route.path,
-      locale,
-      path: localizedPath(locale, route.path),
-    }))
-  )
+export const STATIC_ROUTES: readonly LocalizedStaticRoute[] = [
+  ...PUBLISHED_LOCALES.flatMap((locale) =>
+    STATIC_ROUTE_TEMPLATES.map((route) => localize(route, locale))
+  ),
+  ...STATIC_ROUTE_TEMPLATES.filter((route) => isEnglishPage(route.path)).map(
+    (route) => localize(route, 'en')
+  ),
+]

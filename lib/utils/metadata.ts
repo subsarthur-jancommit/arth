@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 
 import { env } from '@/lib/env'
-import { localeFromPath } from '@/lib/i18n/paths'
+import { localeFromPath, templateFromLocalizedPath } from '@/lib/i18n/paths'
+import { localesForTemplate } from '@/lib/i18n/public-locale-redirect'
 import { ogLocale, routing } from '@/lib/i18n/routing'
 import { routeAlternates } from '@/lib/seo/alternates'
 import { BASE_URL, SITE } from '@/lib/seo/site'
@@ -119,6 +120,7 @@ export function generatePageMetadata(
   // and they drifted apart the moment locale prefixes existed.
   const fullUrl = `${BASE_URL}${url}`
   const pageLocale = localeFromPath(url)
+  const template = templateFromLocalizedPath(url)
   const imageUrl = image?.url ?? '/opengraph-image.png'
   const imageWidth = image?.width ?? 1200
   const imageHeight = image?.height ?? 630
@@ -141,9 +143,15 @@ export function generatePageMetadata(
       // language alternative to declare, which is also why `alternateLocale`
       // below is empty for them.
       locale: ogLocale(pageLocale ?? routing.defaultLocale),
-      alternateLocale: pageLocale
-        ? routing.locales.filter((l) => l !== pageLocale).map(ogLocale)
-        : [],
+      // The page's other languages, the same as its hreflang
+      // (`localesForTemplate`): English only where R7 has opened it. It used
+      // to name every locale, so each Indonesian page claimed an English one.
+      alternateLocale:
+        pageLocale && template
+          ? localesForTemplate(template)
+              .filter((other) => other !== pageLocale)
+              .map(ogLocale)
+          : [],
       type,
       images: [
         {

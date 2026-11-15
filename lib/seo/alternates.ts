@@ -5,13 +5,20 @@ import {
   localizedPath,
   templateFromLocalizedPath,
 } from '@/lib/i18n/paths'
-import { LOCALE_TAGS, PUBLISHED_LOCALES, routing } from '@/lib/i18n/routing'
+import { localesForTemplate } from '@/lib/i18n/public-locale-redirect'
+import { LOCALE_TAGS, routing } from '@/lib/i18n/routing'
 import { markdownPathForRoute } from '@/lib/seo/markdown-path'
 import { STATIC_ROUTES } from '@/lib/seo/route-catalog'
 
 /**
- * hreflang for one localized path: every locale under its BCP 47 tag, plus
- * `x-default`. Root-relative; `undefined` for a route with no locale prefix.
+ * hreflang for one localized path: every locale the page is served in, under
+ * its BCP 47 tag, plus `x-default`. Root-relative; `undefined` for a route
+ * with no locale prefix, or one served in a locale it is not advertised in
+ * (an English page R7 has not opened, such as `/en/work`).
+ *
+ * The locales are the page's own (`localesForTemplate`): Indonesian
+ * everywhere, and English on a page R7 has opened, so a bilingual page names
+ * both and every other page names Indonesian alone.
  *
  * Shared by the page head (`routeAlternates`, below) and `app/sitemap.ts`,
  * so the two places a search engine reads alternates from cannot disagree.
@@ -21,17 +28,14 @@ export function languageAlternates(
 ): Record<string, string> | undefined {
   const template = templateFromLocalizedPath(path)
   const pageLocale = localeFromPath(path)
-  if (
-    !template ||
-    !pageLocale ||
-    !PUBLISHED_LOCALES.some((locale) => locale === pageLocale)
-  ) {
-    return undefined
-  }
+  if (!template || !pageLocale) return undefined
+
+  const locales = localesForTemplate(template)
+  if (!locales.includes(pageLocale)) return undefined
 
   return {
     ...Object.fromEntries(
-      PUBLISHED_LOCALES.map((locale) => [
+      locales.map((locale) => [
         LOCALE_TAGS[locale],
         localizedPath(locale, template),
       ])

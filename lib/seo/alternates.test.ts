@@ -10,7 +10,8 @@
 
 import { describe, expect, it } from 'bun:test'
 
-import { LOCALE_TAGS, PUBLISHED_LOCALES } from '@/lib/i18n/routing'
+import { ENGLISH_PAGES } from '@/lib/i18n/public-locale-redirect'
+import { LOCALE_TAGS } from '@/lib/i18n/routing'
 
 import { routeAlternates } from './alternates'
 import { STATIC_ROUTES } from './route-catalog'
@@ -42,20 +43,30 @@ describe('routeAlternates', () => {
     }
   })
 
-  it('advertises only approved translations plus x-default', () => {
-    const languages = alternates('/id/metode').languages
-
-    for (const locale of PUBLISHED_LOCALES) {
-      expect(languages?.[LOCALE_TAGS[locale]]).toBe(`/${locale}/metode`)
+  it('advertises every language the page is served in, plus x-default', () => {
+    // Open in English since R7, so both twins name both.
+    expect(ENGLISH_PAGES).toContain('/metode')
+    for (const path of ['/id/metode', '/en/metode']) {
+      expect(alternates(path).languages).toEqual({
+        [LOCALE_TAGS.id]: '/id/metode',
+        [LOCALE_TAGS.en]: '/en/metode',
+        'x-default': '/id/metode',
+      })
     }
-
-    expect(languages?.['x-default']).toBe('/id/metode')
-    expect(alternates('/en/metode').languages).toBeUndefined()
   })
 
   it('does not present an unapproved locale as a translation', () => {
-    expect(alternates('/en').languages).toBeUndefined()
-    expect(alternates('/id').languages?.['en-US']).toBeUndefined()
+    // Not opened by R7: Indonesian alone, and no hreflang on the English
+    // address (which answers 307 anyway).
+    expect(ENGLISH_PAGES).not.toContain('/layanan')
+    expect(alternates('/id/layanan').languages).toEqual({
+      [LOCALE_TAGS.id]: '/id/layanan',
+      'x-default': '/id/layanan',
+    })
+    expect(alternates('/en/layanan').languages).toBeUndefined()
+    // A work page has no approved English at all.
+    expect(alternates('/id/work/x').languages?.['en-US']).toBeUndefined()
+    expect(alternates('/en/work').languages).toBeUndefined()
   })
 
   it('advertises no hreflang for an unlocalized route', () => {

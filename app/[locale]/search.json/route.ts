@@ -3,12 +3,8 @@ import {
   resolveSearchIndex,
   type SearchEntry,
 } from '@/lib/content/search-index'
-import {
-  isLocale,
-  PUBLISHED_LOCALES,
-  type Locale,
-  routing,
-} from '@/lib/i18n/routing'
+import { ADVERTISED_LOCALES } from '@/lib/i18n/public-locale-redirect'
+import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
 import { sanityFetch } from '@/lib/integrations/sanity/live'
 import { projectsQuery } from '@/lib/integrations/sanity/queries'
@@ -33,11 +29,12 @@ import { resolveRouteDescriptions } from '@/lib/seo/route-descriptions'
  * never treated as a page document and never negotiated into Markdown, and it
  * carries its locale in the path rather than in a header.
  *
- * One thing runs before that skip: `/en/search.json` answers 307 to
- * `/id/search.json` outside draft mode, like every untranslated English page
- * (`lib/i18n/public-locale-redirect.ts` records why). So this handler
- * renders `en` only for Presentation previews, and `generateStaticParams`
- * builds the published locales alone.
+ * One thing runs before that skip: the English index follows its pages
+ * (`lib/i18n/public-locale-redirect.ts` records why). While no page is open
+ * in English, `/en/search.json` answers 307 to `/id/search.json` outside
+ * draft mode; once one is, it is served and lists only the open pages and the
+ * work catalogue (`pageEntries`). `generateStaticParams` builds every
+ * advertised locale (`ADVERTISED_LOCALES`).
  *
  * ## `'use cache'` wraps the builder, not the handler
  *
@@ -47,7 +44,7 @@ import { resolveRouteDescriptions } from '@/lib/seo/route-descriptions'
  */
 
 export function generateStaticParams() {
-  return PUBLISHED_LOCALES.map((locale) => ({ locale }))
+  return ADVERTISED_LOCALES.map((locale) => ({ locale }))
 }
 
 async function buildIndex(locale: Locale): Promise<SearchEntry[]> {

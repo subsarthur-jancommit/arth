@@ -1,5 +1,8 @@
 import { describe, expect, test } from 'bun:test'
 
+import { ENGLISH_PAGES, R7_PAGES } from '@/lib/i18n/public-locale-redirect'
+import { STATIC_ROUTE_TEMPLATES } from '@/lib/seo/route-catalog'
+
 import type { SearchEntry } from './search-index'
 import {
   buildSearchIndex,
@@ -38,19 +41,32 @@ const SCOPE_ROW: SearchEntry = {
  */
 
 describe('page entries', () => {
-  test('every static route reaches the palette, in both languages', () => {
+  test('every page reaches the palette of each language it is served in', () => {
     const en = pageEntries('en')
     const id = pageEntries('id')
 
-    expect(en.length).toBe(id.length)
+    // Every page in Indonesian; in English the pages R7 has opened, because a
+    // row for any other would link to an address that answers 307.
+    expect(id.map((entry) => entry.id)).toEqual(
+      STATIC_ROUTE_TEMPLATES.map((route) => `page:${route.path}`)
+    )
+    expect(en.map((entry) => entry.id)).toEqual(
+      STATIC_ROUTE_TEMPLATES.filter((route) =>
+        ENGLISH_PAGES.includes(route.path)
+      ).map((route) => `page:${route.path}`)
+    )
     expect(en.length).toBeGreaterThan(UNITS.length)
+    // With every R7 page open, English lists every page.
+    expect(pageEntries('en', undefined, R7_PAGES).length).toBe(id.length)
 
     // Same routes, different prose — the failure this catches is an
     // Indonesian palette carrying English labels, which is exactly what
     // `route-catalog.ts` was localized to prevent.
-    expect(en.map((entry) => entry.id)).toEqual(id.map((entry) => entry.id))
+    const twins = id.filter((entry) =>
+      en.some((other) => other.id === entry.id)
+    )
     expect(en.map((entry) => entry.label)).not.toEqual(
-      id.map((entry) => entry.label)
+      twins.map((entry) => entry.label)
     )
   })
 

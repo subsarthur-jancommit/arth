@@ -1,4 +1,5 @@
 import { localizedPath } from '@/lib/i18n/paths'
+import { localesForTemplate } from '@/lib/i18n/public-locale-redirect'
 import type { Locale } from '@/lib/i18n/routing'
 import {
   NO_ROUTE_DESCRIPTIONS,
@@ -103,9 +104,18 @@ function joinMeta(
  */
 export function pageEntries(
   locale: Locale,
-  descriptions: RouteDescriptions = NO_ROUTE_DESCRIPTIONS
+  descriptions: RouteDescriptions = NO_ROUTE_DESCRIPTIONS,
+  englishPages?: readonly string[]
 ): SearchEntry[] {
-  const pages = STATIC_ROUTE_TEMPLATES.map((route) => {
+  /*
+   * Only the pages served in this locale: every page in Indonesian, and in
+   * English the pages R7 has opened. An English row for a page that is not
+   * open would link to an address that answers 307 to Indonesian.
+   */
+  const served = STATIC_ROUTE_TEMPLATES.filter((route) =>
+    localesForTemplate(route.path, englishPages).includes(locale)
+  )
+  const pages = served.map((route) => {
     const isUnitPage = isUnit(route.path.replace(/^\//, ''))
     const href = localizedPath(locale, route.path)
 

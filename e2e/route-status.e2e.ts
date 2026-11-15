@@ -94,14 +94,11 @@ test.describe('the pages that do answer are untouched by all of it', () => {
       expect(response.status()).toBe(200)
     })
 
-    // Untranslated, so its English address answers with the Indonesian
-    // twin rather than a page (K2, R0).
-    test(`/en/${unit} answers 307 to /id/${unit}`, async ({ request }) => {
+    // Opened in English by R7; it answered 307 to `/id/${unit}` from R0
+    // (K2) until then. What it says is read in `english-pages.e2e.ts`.
+    test(`/en/${unit} answers 200`, async ({ request }) => {
       const response = await request.get(`/en/${unit}`, { maxRedirects: 0 })
-      expect(response.status()).toBe(307)
-      expect(
-        new URL(response.headers().location ?? '', 'http://x').pathname
-      ).toBe(`/id/${unit}`)
+      expect(response.status()).toBe(200)
     })
   }
 

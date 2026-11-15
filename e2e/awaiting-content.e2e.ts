@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test'
 
+import { ENGLISH_PAGES, R7_PAGES } from '../lib/i18n/public-locale-redirect'
 import { AWAITING_CONTENT } from '../lib/seo/awaiting-content'
+import { SITUATION_ROUTES, WORK_ROUTES } from './fixtures'
 
 /**
  * R0 of the F3 revision (`docs/RENCANA-REVISI-F3.md`), owner decision P4:
@@ -49,16 +51,24 @@ test.describe('a page awaiting content is not a page yet', () => {
   })
 })
 
+/*
+ * The Arthur pages R7 has not opened in English: the two whose head is still
+ * Indonesian, the policy page, and the situation and work pages under the
+ * open unit sides, which have no English yet (`ENGLISH_PAGES`). The open
+ * ones are read in `e2e/english-pages.e2e.ts`.
+ */
+const NOT_OPEN = [
+  ...R7_PAGES.filter((template) => !ENGLISH_PAGES.includes(template)),
+  '/kebijakan',
+  ...[...SITUATION_ROUTES, ...WORK_ROUTES].map((path) =>
+    path.replace(/^\/id/, '')
+  ),
+]
+
 test.describe('English is offered only where it is written', () => {
-  for (const [from, to] of [
-    ['/en/konstruksi', '/id/konstruksi'],
-    ['/en/konstruksi/pelaku-proyek', '/id/konstruksi/pelaku-proyek'],
-    ['/en/peekabo/jaringan', '/id/peekabo/jaringan'],
-    ['/en/kontak', '/id/kontak'],
-    ['/en/layanan', '/id/layanan'],
-    ['/en/kebijakan', '/id/kebijakan'],
-    ['/en/pembayaran', '/id/pembayaran'],
-  ] as const) {
+  for (const [from, to] of NOT_OPEN.map(
+    (template) => [`/en${template}`, `/id${template}`] as const
+  )) {
     test(`${from} answers 307 to ${to}`, async ({ request }) => {
       const response = await request.get(from, { maxRedirects: 0 })
       expect(response.status()).toBe(307)

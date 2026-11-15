@@ -11,7 +11,11 @@ import {
   sequenceContent,
 } from '@/lib/content/sequence-content'
 import { localizedPath } from '@/lib/i18n/paths'
-import { PUBLISHED_LOCALES, type Locale } from '@/lib/i18n/routing'
+import {
+  ADVERTISED_LOCALES,
+  localesForTemplate,
+} from '@/lib/i18n/public-locale-redirect'
+import type { Locale } from '@/lib/i18n/routing'
 import {
   howWeWorkDescription,
   threeUnitsDescription,
@@ -95,11 +99,17 @@ const HEAD_DESCRIBED_ROUTES: readonly HeadDescribedRoute[] = [
  * catalog's own description, and the failure is logged rather than silent.
  *
  * A page the catalog no longer advertises (`lib/seo/awaiting-content.ts`) is
- * not read at all.
+ * not read at all, and neither is a page in a locale it is not served in (an
+ * English page R7 has not opened): its English head would be read from
+ * Indonesian fields.
+ *
+ * `locales` defaults to every advertised locale, so `/llms.txt` gets the
+ * English head of each open page beside the Indonesian one.
  */
 export async function resolveRouteDescriptions(
-  locales: readonly Locale[] = PUBLISHED_LOCALES,
-  sources: PageHeadSources = PUBLISHED_SOURCES
+  locales: readonly Locale[] = ADVERTISED_LOCALES,
+  sources: PageHeadSources = PUBLISHED_SOURCES,
+  englishPages?: readonly string[]
 ): Promise<RouteDescriptions> {
   const advertised = new Set(STATIC_ROUTE_TEMPLATES.map((route) => route.path))
   const routes = HEAD_DESCRIBED_ROUTES.filter((route) =>
@@ -108,19 +118,23 @@ export async function resolveRouteDescriptions(
 
   const resolved = await Promise.all(
     locales.flatMap((locale) =>
-      routes.map(async ({ template, describe }) => {
-        const path = localizedPath(locale, template)
-        try {
-          const description = await describe(locale, sources)
-          return description === null ? [] : [[path, description] as const]
-        } catch (error) {
-          console.warn(
-            `[route-descriptions] ${path}: content source unreachable, printing the catalog's own description.`,
-            error
-          )
-          return []
-        }
-      })
+      routes
+        .filter(({ template }) =>
+          localesForTemplate(template, englishPages).includes(locale)
+        )
+        .map(async ({ template, describe }) => {
+          const path = localizedPath(locale, template)
+          try {
+            const description = await describe(locale, sources)
+            return description === null ? [] : [[path, description] as const]
+          } catch (error) {
+            console.warn(
+              `[route-descriptions] ${path}: content source unreachable, printing the catalog's own description.`,
+              error
+            )
+            return []
+          }
+        })
     )
   )
 

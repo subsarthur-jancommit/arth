@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test'
 
 import { SIDES, UNITS } from '../lib/content/units'
-import { PUBLISHED_LOCALES } from '../lib/i18n/routing'
+import { localesForTemplate } from '../lib/i18n/public-locale-redirect'
+import { routing } from '../lib/i18n/routing'
 
 /**
  * Each unit has a page, exactly one URL, and exposes its two reader sides.
@@ -30,9 +31,11 @@ import { PUBLISHED_LOCALES } from '../lib/i18n/routing'
  */
 
 test.describe('unit pages', () => {
-  // Only published locales render a unit page; English answers 307 (R0).
-  for (const locale of PUBLISHED_LOCALES) {
+  // Every locale the unit page is served in: Indonesian, and English where
+  // R7 has opened it (`localesForTemplate`); elsewhere English answers 307.
+  for (const locale of routing.locales) {
     for (const unit of UNITS) {
+      if (!localesForTemplate(`/${unit}`).includes(locale)) continue
       test(`/${locale}/${unit} is a page about the unit`, async ({ page }) => {
         const response = await page.goto(`/${locale}/${unit}`)
         expect(response?.status(), 'the unit page must exist').toBe(200)
