@@ -85,20 +85,25 @@ export const R7_PAGES: readonly string[] = [
  * (`components/ui/language-switcher`) offers English on exactly these pages,
  * so it can never point at a 307.
  *
- * Twelve of the fourteen are open. `/layanan` and `/pembayaran` wait: their
- * head takes its title and description from plain Sanity fields
+ * All fourteen are open. `/layanan` and `/pembayaran` opened last: their head
+ * takes its title and description from plain Sanity fields
  * (`metadata.title`, `metadata.description` on the first sequence and on the
- * `cara-kami-dibayar` page), which hold Indonesian only, and R7 approved no
- * English for them. Opened as they are, an English page would carry an
- * Indonesian title and description. `/metode` reads the same kind of title
- * field, but R7 UI1 approved an English title for that page
- * (`methodPage.title`), so its English head takes that instead.
+ * `cara-kami-dibayar` page), which hold Indonesian only, so an English page
+ * opened on them would have carried an Indonesian title and description. The
+ * owner approved an English title and description for each on 15 November
+ * 2026 (R7 blocks L-meta and P-meta, `docs/R7-SERAH-INGGRIS.md`), and their
+ * English head now takes those from `messages/en.json`
+ * (`lib/seo/page-descriptions.ts`), while the Indonesian head still reads the
+ * Studio's fields. `/metode` did the same first, with the English title R7
+ * UI1 approved for it (`methodPage.title`).
  */
 export const ENGLISH_PAGES: readonly string[] = [
   '/',
   ...UNITS.map((unit) => `/${unit}`),
   ...UNITS.flatMap((unit) => SIDES[unit].map((side) => `/${unit}/${side}`)),
   '/metode',
+  '/layanan',
+  '/pembayaran',
   '/kontak',
 ]
 

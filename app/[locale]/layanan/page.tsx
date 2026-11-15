@@ -7,7 +7,7 @@ import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
 import { sequenceContent } from '@/lib/content/sequence-content'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
-import { threeUnitsDescription } from '@/lib/seo/page-descriptions'
+import { threeUnitsHead } from '@/lib/seo/page-descriptions'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 import { UnitSequence } from '@/vault/blocks/unit-sequence'
 import { plateSteps } from '@/vault/blocks/unit-sequence/plate-steps'
@@ -85,14 +85,22 @@ export async function generateMetadata() {
 
   if (!first) return { robots: { index: false } }
 
-  // The rule `/llms.txt`, the search index and the Markdown mirror apply too
-  // (`lib/seo/route-descriptions.ts`), so they cannot disagree with it.
-  const description = threeUnitsDescription(first)
+  /*
+   * The first sequence's SEO fields are plain strings, so what the Studio
+   * writes there is Indonesian and heads the Indonesian page only. The English
+   * head is the one the owner approved for the page (R7 L-meta,
+   * `lib/seo/page-descriptions.ts`). `/llms.txt`, the search index and the
+   * Markdown mirror apply the same rule (`lib/seo/route-descriptions.ts`), so
+   * they cannot disagree with it. The keywords are plain strings as well.
+   */
+  const { title, description } = await threeUnitsHead(locale, first)
+  const keywords =
+    locale === routing.defaultLocale ? first.metadata?.keywords : null
 
   return generatePageMetadata({
-    title: first.metadata?.title ?? 'Layanan',
+    title,
     ...(description && { description }),
-    ...(first.metadata?.keywords && { keywords: first.metadata.keywords }),
+    ...(keywords && { keywords }),
     noIndex: isDraftMode || first.metadata?.noIndex === true,
     url: `/${locale}/layanan`,
   })

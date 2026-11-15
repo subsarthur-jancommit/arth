@@ -1,9 +1,12 @@
+import { readFileSync } from 'node:fs'
+
 import { expect, type Page, test } from '@playwright/test'
 
 import { localizedPath } from '../lib/i18n/paths'
 import { ENGLISH_PAGES, R7_PAGES } from '../lib/i18n/public-locale-redirect'
 import { type Locale, LOCALE_TAGS } from '../lib/i18n/routing'
 import { markdownPathForRoute } from '../lib/seo/markdown-path'
+import { SITE } from '../lib/seo/site'
 import { indonesianWords, sameAsTwin } from './indonesian'
 
 /**
@@ -38,8 +41,10 @@ import { indonesianWords, sameAsTwin } from './indonesian'
  *
  * Its hreflang names both twins, the language switcher offers both from
  * either side, its Markdown mirror is English, and the English search index
- * lists it. Pages that are not open keep answering 307 to Indonesian, which
- * `e2e/awaiting-content.e2e.ts` asserts.
+ * lists it. `/layanan` and `/pembayaran` also carry, word for word, the
+ * English head the owner approved for them, since their Indonesian head is a
+ * plain Sanity field. Pages that are not open keep answering 307 to
+ * Indonesian, which `e2e/awaiting-content.e2e.ts` asserts.
  */
 
 interface Readable {
@@ -140,7 +145,99 @@ test('every opened English page is one R7 translated', () => {
   // Anti-vacuum: a spec looping over an empty list passes.
   expect(ENGLISH_PAGES.length).toBeGreaterThan(0)
   for (const template of ENGLISH_PAGES) expect(R7_PAGES).toContain(template)
+  // And R7 is whole: all fourteen are open, `/layanan` and `/pembayaran`
+  // last, so every check below reads both of them too.
+  expect(ENGLISH_PAGES.toSorted()).toEqual(R7_PAGES.toSorted())
 })
+
+/**
+ * The head the owner approved for an English page, read from disk as
+ * `e2e/indonesian.test.ts` reads the catalogue: once typegen has run,
+ * `messages/en.json` resolves to next-intl's generated declaration, which
+ * `tsc` rejects as an import.
+ */
+function approvedHead(namespace: 'servicesPage' | 'paymentPage') {
+  const catalogue = JSON.parse(
+    readFileSync('messages/en.json', 'utf8')
+  ) as Record<string, Record<string, string | undefined> | undefined>
+  const title = catalogue[namespace]?.metaTitle
+  const description = catalogue[namespace]?.metaDescription
+  if (!title || !description) {
+    throw new Error(`messages/en.json holds no head for ${namespace}`)
+  }
+  return { title, description }
+}
+
+/*
+ * The two pages whose Indonesian head reads a plain Sanity field
+ * (`metadata.title`, `metadata.description`), which holds Indonesian only.
+ * Their English head is the one the owner approved on 15 November 2026 (R7
+ * L-meta and P-meta, `lib/seo/page-descriptions.ts`), every surface that
+ * describes them says the same, and the Indonesian head stays the Studio's.
+ */
+for (const [template, namespace] of [
+  ['/layanan', 'servicesPage'],
+  ['/pembayaran', 'paymentPage'],
+] as const) {
+  const english = localizedPath('en', template)
+  const indonesian = localizedPath('id', template)
+
+  test(`${english} is headed with the English the owner approved`, async ({
+    page,
+    request,
+  }) => {
+    test.setTimeout(90_000)
+    const { title, description } = approvedHead(namespace)
+    const titled = `${title} | ${SITE.name}`
+    const head = async () =>
+      page.evaluate(() => {
+        const meta = (selector: string) =>
+          document.head.querySelector(selector)?.getAttribute('content') ?? null
+        return {
+          title: document.title,
+          description: meta('meta[name="description"]'),
+          ogTitle: meta('meta[property="og:title"]'),
+          ogDescription: meta('meta[property="og:description"]'),
+          ogImageAlt: meta('meta[property="og:image:alt"]'),
+          twitterTitle: meta('meta[name="twitter:title"]'),
+          twitterDescription: meta('meta[name="twitter:description"]'),
+          twitterImageAlt: meta('meta[name="twitter:image:alt"]'),
+        }
+      })
+
+    await open(page, english)
+    expect(await head()).toEqual({
+      title: titled,
+      description,
+      ogTitle: titled,
+      ogDescription: description,
+      ogImageAlt: title,
+      twitterTitle: titled,
+      twitterDescription: description,
+      twitterImageAlt: title,
+    })
+
+    // The Markdown mirror and the English search index describe it alike.
+    const mirror = await request.get(markdownPathForRoute(english))
+    expect(mirror.status()).toBe(200)
+    expect(await mirror.text()).toContain(`\n${description}\n`)
+    const rows = (await (await request.get('/en/search.json')).json()) as {
+      href: string
+      description: string
+    }[]
+    expect(rows.find((row) => row.href === english)?.description).toBe(
+      description
+    )
+
+    // The Indonesian twin keeps the head the Studio wrote, in Indonesian.
+    await open(page, indonesian)
+    const twin = await head()
+    expect(twin.title).not.toBe(titled)
+    expect(indonesianWords(twin.title)).not.toEqual([])
+    expect(twin.description).not.toBe(description)
+    expect(indonesianWords(twin.description ?? '')).not.toEqual([])
+  })
+}
 
 for (const template of ENGLISH_PAGES) {
   const english = localizedPath('en', template)

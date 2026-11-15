@@ -18,7 +18,8 @@ import {
 import type { Locale } from '@/lib/i18n/routing'
 import {
   howWeWorkDescription,
-  threeUnitsDescription,
+  paymentHead,
+  threeUnitsHead,
 } from '@/lib/seo/page-descriptions'
 import {
   type RouteDescriptions,
@@ -74,18 +75,23 @@ const HEAD_DESCRIBED_ROUTES: readonly HeadDescribedRoute[] = [
       return content ? howWeWorkDescription(content) : null
     },
   },
+  /*
+   * The two heads below read a plain Sanity field in Indonesian and the
+   * owner's approved English in English (`threeUnitsHead`, `paymentHead`), so
+   * an English surface never prints the Studio's Indonesian description.
+   */
   {
     template: '/layanan',
     describe: async (locale, sources) => {
       const [first] = await sources.sequences(locale)
-      return first ? threeUnitsDescription(first) : null
+      return first ? (await threeUnitsHead(locale, first)).description : null
     },
   },
   {
     template: '/pembayaran',
     describe: async (locale, sources) => {
       const content = await sources.fixedPage?.(locale, 'cara-kami-dibayar')
-      return content?.metadata.description ?? null
+      return (await paymentHead(locale, content ?? null)).description
     },
   },
 ]

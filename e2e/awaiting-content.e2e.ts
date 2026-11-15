@@ -52,10 +52,11 @@ test.describe('a page awaiting content is not a page yet', () => {
 })
 
 /*
- * The Arthur pages R7 has not opened in English: the two whose head is still
- * Indonesian, the policy page, and the situation and work pages under the
- * open unit sides, which have no English yet (`ENGLISH_PAGES`). The open
- * ones are read in `e2e/english-pages.e2e.ts`.
+ * The Arthur pages R7 has not opened in English: the policy page, and the
+ * situation and work pages under the open unit sides, which have no English
+ * yet. R7 opened all fourteen of its own pages (`ENGLISH_PAGES`), so the
+ * first line below adds none today, and would add any page closed again. The
+ * open ones are read in `e2e/english-pages.e2e.ts`.
  */
 const NOT_OPEN = [
   ...R7_PAGES.filter((template) => !ENGLISH_PAGES.includes(template)),

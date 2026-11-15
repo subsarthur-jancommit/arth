@@ -13,6 +13,13 @@ rev 21 dan di file ini sejak #91 (`d24a6ea`). Status semua blok di dokumen
 tinjauan kini "Setuju". Blok mana pun yang diubah sesudah ini butuh
 persetujuan baru.
 
+**Persetujuan L-meta dan P-meta.** Dua blok kepala halaman ditambahkan
+sesudah itu: L-meta untuk `/layanan` dan P-meta untuk `/pembayaran`. Pemilik
+menyetujui keempat teksnya pada 15 November 2026, lewat sesi koordinator, atas
+pertanyaan "Approve the four English meta texts to open /layanan and
+/pembayaran?": "Setujui keempatnya". Keduanya masuk lewat PR kode
+(`messages/en.json`), bukan Sanity.
+
 Dokumen ini berisi aturan suara Inggris dan copy Inggris untuk halaman yang
 copy Indonesianya sudah disetujui dan tayang: beranda, tiga unit, enam halaman
 pembaca (termasuk `/peekabo/jaringan`), `/metode`, `/layanan`, `/pembayaran`,
@@ -2131,6 +2138,17 @@ Baris tebal memisahkan tiga gambar. Di setiap gambar: judul, uraian, nama gambar
 | `lib/plates/peekabo.ts`      | Target, lingkup, dan laporan disepakati tertulis.                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Targets, scope, and reports are agreed in writing.                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | `lib/plates/peekabo.ts`      | Kami tidak menjanjikan jangkauan atau penjualan.                                                                                                                                                                                                                                                                                                                                                                                                                                                             | We do not promise reach or sales.                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 
+### L-meta · Kepala halaman
+
+_Baru, disetujui tersendiri._ Judul dan deskripsi di kepala halaman: `<title>`, `meta description`, dan kartu bagikan `og:` dan `twitter:`, termasuk teks alternatif gambarnya. Halaman membacanya dari rangkaian pertama, `arthur-rangkaian-kafe-baru`. Di Sanity keduanya medan teks biasa, bukan larik per bahasa, jadi hanya memuat satu bahasa, yaitu Indonesia; karena itu `/en/layanan` belum dibuka bersama dua belas halaman lain di #97. Kepala Inggris membaca kunci `messages` di bawah, seperti judul `/metode` membaca `methodPage.title` (UI1). Kepala Indonesia tetap membaca Sanity.
+
+- `metadata.title`, Inggrisnya di `servicesPage.metaTitle`
+  - ID: Satu klien, tiga unit: konstruksi, sistem, dan pemasaran
+  - EN: One client, three units: construction, systems, and marketing
+- `metadata.description`, Inggrisnya di `servicesPage.metaDescription`
+  - ID: Rangkaian yang mungkin dari tiga unit Arthur di Subang, Purwakarta, dan Bandung. Setiap unit tetap bisa dibeli sendiri.
+  - EN: A possible sequence across Arthur’s three units in Subang, Purwakarta, and Bandung. Each unit can also be hired on its own.
+
 ## 14. `/pembayaran`
 
 Dokumen `page` `arthur-page-cara-kami-dibayar`. Isinya Portable Text; versi
@@ -2197,6 +2215,17 @@ _Baru._ Tombol di akhir halaman. Pada draf 1 November tombol ini hanya disebut d
 - Tombol di `app/[locale]/pembayaran/page.tsx`, belum punya kunci `messages`
   - ID: Ceritakan masalahnya
   - EN: Tell us the problem
+
+### P-meta · Kepala halaman
+
+_Baru, disetujui tersendiri._ Sama dengan L-meta: `metadata.title` dan `metadata.description` dokumen `arthur-page-cara-kami-dibayar` adalah medan teks biasa yang memuat Indonesia saja. Kepala Inggris membaca kunci `messages` di bawah; kepala Indonesia tetap membaca Sanity. Judul Inggrisnya sama dengan `judul` di P1.
+
+- `metadata.title`, Inggrisnya di `paymentPage.metaTitle`
+  - ID: Cara kami dibayar, tertulis sebelum kerja dimulai
+  - EN: How we are paid, set in writing before work starts
+- `metadata.description`, Inggrisnya di `paymentPage.metaDescription`
+  - ID: Dari mana kami dibayar dan apa yang Anda tanggung, tertulis sebelum kerja dimulai.
+  - EN: Where our pay comes from and what costs fall on you, set in writing before work starts.
 
 ## 15. Teks antarmuka (blok UI1)
 
@@ -2322,4 +2351,5 @@ per batch.
 | 15                   | `messages/id.json` dan `messages/en.json` di `7d08f34`; kunci yang dipakai halaman di `app/[locale]/`                                                                                                                                                                                |
 | 16, 17               | Glosarium §1, §3, §9; `app/[locale]/pembayaran/page.tsx`; halaman produksi                                                                                                                                                                                                           |
 | Tinjauan 14 November | Dokumen tinjauan pemilik (rev 21); ekspor publik `production` 14 November 2026 (391 dokumen, sama dengan 31 Oktober); `messages/*.json` dan `lib/plates/*.ts` di `438eeec`; halaman produksi `/id/peekabo/jaringan`, `/id/metode`, `/id/layanan`, `/id/pembayaran`, dan `/id/kontak` |
+| L-meta, P-meta       | Persetujuan pemilik 15 November 2026, "Setujui keempatnya"; teks Indonesia dari API publik `production` hari itu (`metadata.title`, `metadata.description`), sama dengan kepala `/id/layanan` dan `/id/pembayaran` di produksi                                                       |
 | 18                   | Hitungan kata dari ekspor yang sama: `bab` 5.560 kata (kartu 1.591), judul 51 pekerjaan pembuka 237 kata, kartu 305 pekerjaan 5.391 kata, 52 halaman pekerjaan 7.164 kata                                                                                                            |

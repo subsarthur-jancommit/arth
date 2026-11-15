@@ -1,10 +1,11 @@
 import { describe, expect, it, spyOn } from 'bun:test'
 
+import type { FixedPageContent } from '@/lib/content/fixed-page-content'
 import type { HowWeWorkContent } from '@/lib/content/how-we-work-content'
 import type { SequenceContent } from '@/lib/content/sequence-content'
-import { R7_PAGES } from '@/lib/i18n/public-locale-redirect'
 import type { Locale } from '@/lib/i18n/routing'
 
+import { paymentHead, threeUnitsHead } from './page-descriptions'
 import { STATIC_ROUTES } from './route-catalog'
 import {
   type PageHeadSources,
@@ -50,6 +51,21 @@ const sequence: SequenceContent = {
     keywords: null,
     noIndex: null,
   },
+}
+
+const payment: FixedPageContent = {
+  _id: 'arthur-page-cara-kami-dibayar',
+  title: 'Cara kami dibayar',
+  content: [],
+  excerpt: null,
+  metadata: {
+    title: 'Cara kami dibayar',
+    description: 'Cara pembayaran, seperti ditulis di Studio.',
+    keywords: null,
+    noIndex: false,
+  },
+  publishedAt: null,
+  _updatedAt: '2026-11-15T00:00:00Z',
 }
 
 function sources(overrides: Partial<PageHeadSources> = {}): PageHeadSources {
@@ -98,7 +114,22 @@ describe('resolveRouteDescriptions', () => {
     )
 
     expect(asked.toSorted()).toEqual(['en', 'id'])
-    // English only where R7 has opened the page: `/layanan` is not open.
+    // Every R7 page is open, so each is described in English too.
+    expect([...descriptions.keys()].toSorted()).toEqual([
+      '/en/layanan',
+      '/en/metode',
+      '/id/layanan',
+      '/id/metode',
+    ])
+  })
+
+  it('reads no English for a page that is not open', async () => {
+    const descriptions = await resolveRouteDescriptions(
+      ['en', 'id'],
+      sources(),
+      ['/metode']
+    )
+
     expect([...descriptions.keys()].toSorted()).toEqual([
       '/en/metode',
       '/id/layanan',
@@ -106,19 +137,35 @@ describe('resolveRouteDescriptions', () => {
     ])
   })
 
-  it('reads English for every page once all of R7 is open', async () => {
+  /*
+   * `/layanan` and `/pembayaran` read their Indonesian description from a
+   * plain Sanity field, so an English surface that printed it would print
+   * Indonesian. They say what their English head says: the description the
+   * owner approved (`lib/seo/page-descriptions.ts`).
+   */
+  it("says what an English head says, never the Studio's Indonesian", async () => {
     const descriptions = await resolveRouteDescriptions(
       ['en', 'id'],
-      sources(),
-      R7_PAGES
+      sources({ fixedPage: () => Promise.resolve(payment) })
     )
+    const layanan = (await threeUnitsHead('en', sequence)).description
+    const pembayaran = (await paymentHead('en', payment)).description
 
-    expect([...descriptions.keys()].toSorted()).toEqual([
-      '/en/layanan',
-      '/en/metode',
-      '/id/layanan',
-      '/id/metode',
-    ])
+    // Anti-vacuum: both English heads have a description to say.
+    expect(layanan).toBeString()
+    expect(pembayaran).toBeString()
+    expect(descriptions.get('/en/layanan') ?? null).toBe(layanan)
+    expect(descriptions.get('/en/pembayaran') ?? null).toBe(pembayaran)
+
+    // Not the plain field's Indonesian, which the Indonesian pages keep.
+    expect(layanan).not.toBe('Rangkaian, seperti ditulis di Studio.')
+    expect(pembayaran).not.toBe('Cara pembayaran, seperti ditulis di Studio.')
+    expect(descriptions.get('/id/layanan')).toBe(
+      'Rangkaian, seperti ditulis di Studio.'
+    )
+    expect(descriptions.get('/id/pembayaran')).toBe(
+      'Cara pembayaran, seperti ditulis di Studio.'
+    )
   })
 
   it('describes only pages the catalog advertises', async () => {
