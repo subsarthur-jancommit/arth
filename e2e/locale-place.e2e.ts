@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 import { localizedPath } from '../lib/i18n/paths'
 import { ENGLISH_PAGES, R7_PAGES } from '../lib/i18n/public-locale-redirect'
-import { FEATURED_WORK } from './fixtures'
+import { FEATURED_WORK, SITUATION_ROUTES } from './fixtures'
 
 /**
  * English is offered as a language choice only where R7 has opened it
@@ -16,6 +16,9 @@ const CLOSED = [
   ...R7_PAGES.filter((template) => !ENGLISH_PAGES.includes(template)).map(
     (template) => localizedPath('id', template)
   ),
+  // R7 opened all fourteen of its pages, so the line above adds none; a
+  // situation page under an open side is an Arthur page that stays closed.
+  SITUATION_ROUTES[0],
   `/id/work/${FEATURED_WORK}`,
 ]
 

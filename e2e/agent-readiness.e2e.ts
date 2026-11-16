@@ -263,11 +263,16 @@ test.describe('Markdown content negotiation', () => {
       expect(await response.text(), path).toContain(`| ${SITE.name}`)
     }
 
-    // An English page R7 has not opened is no public document: its alias
-    // follows the page to the Indonesian one, as the HTML does.
+    // An English page R7 did not open is no public document: its alias
+    // follows the page to the Indonesian one, as the HTML does. R7 opened all
+    // fourteen of its pages; the policy page and the situation pages under
+    // each side stay closed.
     for (const [path, twin] of [
-      ['/en/layanan.md', '/id/layanan.md'],
-      ['/en/pembayaran.md', '/id/pembayaran.md'],
+      ['/en/kebijakan.md', '/id/kebijakan.md'],
+      [
+        '/en/teknologi/siap-pakai/kuliner.md',
+        '/id/teknologi/siap-pakai/kuliner.md',
+      ],
     ] as const) {
       const response = await request.get(path, { maxRedirects: 0 })
       expect(response.status(), `${path} should not publish English copy`).toBe(

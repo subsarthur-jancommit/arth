@@ -11,6 +11,7 @@ import { fixedPageContent } from '@/lib/content/fixed-page-content'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { RichText } from '@/lib/integrations/sanity/components/rich-text'
 import { pageDocumentPath } from '@/lib/integrations/sanity/utils/link'
+import { paymentHead } from '@/lib/seo/page-descriptions'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 
 import s from './page.module.css'
@@ -89,12 +90,18 @@ export async function generateMetadata() {
   const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
   // Never put Stega source maps in the head.
   const { content } = await paymentForRequest(locale, false)
+  /*
+   * `metadata.title` and `metadata.description` are plain Sanity strings, so
+   * they head the Indonesian page only; the English head is the one the
+   * owner approved for the page (R7 P-meta, `lib/seo/page-descriptions.ts`).
+   * `/llms.txt`, the search index and the Markdown mirror apply the same rule
+   * (`lib/seo/route-descriptions.ts`), so they cannot disagree with it.
+   */
+  const { title, description } = await paymentHead(locale, content)
 
   return generatePageMetadata({
-    title: content?.metadata.title ?? content?.title ?? 'Pembayaran',
-    ...(content?.metadata.description && {
-      description: content.metadata.description,
-    }),
+    title,
+    ...(description && { description }),
     noIndex: !content || content.metadata.noIndex,
     // The route, not the slug: the document kept `cara-kami-dibayar` when
     // its address became `/pembayaran` (`FIXED_PAGE_ROUTES`).

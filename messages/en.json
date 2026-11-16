@@ -421,7 +421,13 @@
     "situation": "Situation",
     "offer": "Work in this step",
     "possible": "A possible sequence",
-    "action": "Tell us the problem"
+    "action": "Tell us the problem",
+    "metaTitle": "One client, three units: construction, systems, and marketing",
+    "metaDescription": "A possible sequence across Arthur’s three units in Subang, Purwakarta, and Bandung. Each unit can also be hired on its own."
+  },
+  "paymentPage": {
+    "metaTitle": "How we are paid, set in writing before work starts",
+    "metaDescription": "Where our pay comes from and what costs fall on you, set in writing before work starts."
   },
   "methodPage": {
     "eyebrow": "Arthur",

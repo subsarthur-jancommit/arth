@@ -13,7 +13,7 @@ import { describe, expect, it } from 'bun:test'
 
 import { SIDES, sideTemplate, UNITS } from '@/lib/content/units'
 import { localizedPath } from '@/lib/i18n/paths'
-import { ENGLISH_PAGES } from '@/lib/i18n/public-locale-redirect'
+import { ENGLISH_PAGES, R7_PAGES } from '@/lib/i18n/public-locale-redirect'
 import { PUBLISHED_LOCALES } from '@/lib/i18n/routing'
 
 import {
@@ -40,9 +40,13 @@ describe('the static route catalogue', () => {
     ).toEqual(
       ENGLISH_PAGES.map((template) => localizedPath('en', template)).toSorted()
     )
-    expect(STATIC_ROUTES.some((route) => route.path === '/en/layanan')).toBe(
-      false
-    )
+    // Every R7 page is open, so every static route has its English twin, and
+    // nothing outside R7 has one.
+    expect(
+      STATIC_ROUTES.filter((route) => route.locale === 'en')
+        .map((route) => route.template)
+        .toSorted()
+    ).toEqual(R7_PAGES.toSorted())
   })
 
   it('keeps the catalogue and journal pages out of machine route listings', () => {

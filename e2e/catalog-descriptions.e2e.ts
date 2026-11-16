@@ -14,7 +14,14 @@ import { expect, test } from '@playwright/test'
  *
  * Both pages discriminate: the catalog keeps no line of its own for them
  * (2026-10-23), so a surface that stops reading the head's description
- * prints none and fails here.
+ * prints none and fails here. `/pembayaran` reads its description the same
+ * way and keeps a structural line for a failed read, which says something
+ * else, so it discriminates too.
+ *
+ * Each is read in both languages. The English heads of `/layanan` and
+ * `/pembayaran` take the description the owner approved instead of the
+ * Studio's plain Indonesian field (`lib/seo/page-descriptions.ts`), so an
+ * English surface still reading that field would fail here.
  *
  * ## Why only prerendered surfaces are compared
  *
@@ -26,7 +33,14 @@ import { expect, test } from '@playwright/test'
  * avoid. `lib/seo/markdown-document.test.ts` holds the mirror to the rule.
  */
 
-const HEAD_DESCRIBED_PAGES = ['/id/metode', '/id/layanan'] as const
+const HEAD_DESCRIBED_PAGES = [
+  '/id/metode',
+  '/id/layanan',
+  '/id/pembayaran',
+  '/en/metode',
+  '/en/layanan',
+  '/en/pembayaran',
+] as const
 
 /** Undoes the five escapes React writes into an attribute value. */
 function unescapeAttribute(value: string): string {
@@ -40,7 +54,9 @@ function unescapeAttribute(value: string): string {
 
 test.describe('catalog descriptions follow the page head', () => {
   for (const path of HEAD_DESCRIBED_PAGES) {
-    test(`${path}: /llms.txt and /id/search.json say what the head says`, async ({
+    const index = `/${path.split('/')[1]}/search.json`
+
+    test(`${path}: /llms.txt and ${index} say what the head says`, async ({
       request,
     }) => {
       const page = await request.get(path, { maxRedirects: 0 })
@@ -53,12 +69,12 @@ test.describe('catalog descriptions follow the page head', () => {
       expect(content, `${path} has no meta description`).toBeTruthy()
       const head = unescapeAttribute(content ?? '')
 
-      const index: { href: string; description: string }[] = await (
-        await request.get('/id/search.json')
+      const rows: { href: string; description: string }[] = await (
+        await request.get(index)
       ).json()
       expect(
-        index.find((entry) => entry.href === path)?.description,
-        `/id/search.json row for ${path}`
+        rows.find((entry) => entry.href === path)?.description,
+        `${index} row for ${path}`
       ).toBe(head)
 
       // `- [label](https://…/id/metode): description`, one line per page.

@@ -95,11 +95,13 @@ describe('generatePageMetadata', () => {
       'en-US': '/en/metode',
       'x-default': '/id/metode',
     })
+    // A situation page, which R7 did not translate, names Indonesian alone.
+    const situation = '/id/teknologi/siap-pakai/kuliner'
     expect(
-      generatePageMetadata({ url: '/id/layanan' }).alternates?.languages
+      generatePageMetadata({ url: situation }).alternates?.languages
     ).toEqual({
-      'id-ID': '/id/layanan',
-      'x-default': '/id/layanan',
+      'id-ID': situation,
+      'x-default': situation,
     })
   })
 })

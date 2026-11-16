@@ -84,19 +84,20 @@ describe('English pages opened by R7', () => {
     }
   })
 
-  it('holds back the two pages whose head is still Indonesian', () => {
+  it('opens all fourteen, the two with an approved English head last', () => {
     // `/layanan` and `/pembayaran` print a plain Indonesian title and
-    // description from Sanity (`ENGLISH_PAGES` records why).
-    expect(R7_PAGES.filter((page) => !ENGLISH_PAGES.includes(page))).toEqual([
-      '/layanan',
-      '/pembayaran',
-    ])
-    expect(publicLocaleRedirect('/en/layanan')).toBe('/id/layanan')
-    expect(publicLocaleRedirect('/en/pembayaran')).toBe('/id/pembayaran')
+    // description from Sanity, so they waited for the English head the owner
+    // approved on 15 November 2026 (`ENGLISH_PAGES` records why).
+    expect(ENGLISH_PAGES.toSorted()).toEqual(R7_PAGES.toSorted())
+    expect(publicLocaleRedirect('/en/layanan')).toBeNull()
+    expect(publicLocaleRedirect('/en/pembayaran')).toBeNull()
+    // Outside R7 nothing opens: the policy page, and the situation and work
+    // pages under each side.
     expect(publicLocaleRedirect('/en/kebijakan')).toBe('/id/kebijakan')
     expect(publicLocaleRedirect('/en/peekabo/jaringan/perujuk')).toBe(
       '/id/peekabo/jaringan/perujuk'
     )
+    expect(publicLocaleRedirect('/en/layanan/lain')).toBe('/id/layanan/lain')
   })
 
   it('serves an open page in English and keeps the pages under it closed', () => {

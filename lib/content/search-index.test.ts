@@ -56,8 +56,14 @@ describe('page entries', () => {
       ).map((route) => `page:${route.path}`)
     )
     expect(en.length).toBeGreaterThan(UNITS.length)
-    // With every R7 page open, English lists every page.
-    expect(pageEntries('en', undefined, R7_PAGES).length).toBe(id.length)
+    // Every R7 page is open, `/layanan` and `/pembayaran` last, so English
+    // lists every page Indonesian does.
+    expect(ENGLISH_PAGES.toSorted()).toEqual(R7_PAGES.toSorted())
+    expect(en.length).toBe(id.length)
+    // A page that is not open would have no English row.
+    expect(
+      pageEntries('en', undefined, ['/metode']).map((entry) => entry.href)
+    ).toEqual(['/en/metode'])
 
     // Same routes, different prose — the failure this catches is an
     // Indonesian palette carrying English labels, which is exactly what

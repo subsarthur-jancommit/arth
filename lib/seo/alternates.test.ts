@@ -45,25 +45,28 @@ describe('routeAlternates', () => {
 
   it('advertises every language the page is served in, plus x-default', () => {
     // Open in English since R7, so both twins name both.
-    expect(ENGLISH_PAGES).toContain('/metode')
-    for (const path of ['/id/metode', '/en/metode']) {
-      expect(alternates(path).languages).toEqual({
-        [LOCALE_TAGS.id]: '/id/metode',
-        [LOCALE_TAGS.en]: '/en/metode',
-        'x-default': '/id/metode',
-      })
+    for (const template of ['/metode', '/layanan', '/pembayaran']) {
+      expect(ENGLISH_PAGES).toContain(template)
+      for (const path of [`/id${template}`, `/en${template}`]) {
+        expect(alternates(path).languages).toEqual({
+          [LOCALE_TAGS.id]: `/id${template}`,
+          [LOCALE_TAGS.en]: `/en${template}`,
+          'x-default': `/id${template}`,
+        })
+      }
     }
   })
 
   it('does not present an unapproved locale as a translation', () => {
-    // Not opened by R7: Indonesian alone, and no hreflang on the English
-    // address (which answers 307 anyway).
-    expect(ENGLISH_PAGES).not.toContain('/layanan')
-    expect(alternates('/id/layanan').languages).toEqual({
-      [LOCALE_TAGS.id]: '/id/layanan',
-      'x-default': '/id/layanan',
+    // A situation page, which R7 did not translate: Indonesian alone, and no
+    // hreflang on the English address (which answers 307 anyway).
+    const situation = '/teknologi/siap-pakai/kuliner'
+    expect(ENGLISH_PAGES).not.toContain(situation)
+    expect(alternates(`/id${situation}`).languages).toEqual({
+      [LOCALE_TAGS.id]: `/id${situation}`,
+      'x-default': `/id${situation}`,
     })
-    expect(alternates('/en/layanan').languages).toBeUndefined()
+    expect(alternates(`/en${situation}`).languages).toBeUndefined()
     // A work page has no approved English at all.
     expect(alternates('/id/work/x').languages?.['en-US']).toBeUndefined()
     expect(alternates('/en/work').languages).toBeUndefined()

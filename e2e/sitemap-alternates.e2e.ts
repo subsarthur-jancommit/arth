@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test'
 
 import { localizedPath } from '../lib/i18n/paths'
 import { ENGLISH_PAGES } from '../lib/i18n/public-locale-redirect'
+import { FEATURED_WORK } from './fixtures'
 
 /**
  * The sitemap names only approved translations, and claims no date it cannot
@@ -31,7 +32,7 @@ test('the sitemap carries hreflang and honest dates', async ({ request }) => {
   expect(xml).toContain('xmlns:xhtml="http://www.w3.org/1999/xhtml"')
 
   // Opened in English by R7: both twins listed, each naming both.
-  for (const template of ['/kontak', '/metode']) {
+  for (const template of ['/kontak', '/metode', '/layanan', '/pembayaran']) {
     const indonesian = localizedPath('id', template)
     const english = localizedPath('en', template)
     for (const path of [indonesian, english]) {
@@ -42,8 +43,9 @@ test('the sitemap carries hreflang and honest dates', async ({ request }) => {
     }
   }
 
-  // Not opened: Indonesian alone, and no English entry.
-  for (const template of ['/layanan', '/pembayaran']) {
+  // Not opened: Indonesian alone, and no English entry. R7 opened all
+  // fourteen of its pages; a work page, which it did not cover, stays closed.
+  for (const template of [`/work/${FEATURED_WORK}`]) {
     const indonesian = localizedPath('id', template)
     const block = urlBlock(xml, indonesian)
     expect(hreflangOf(block, 'id-ID'), indonesian).toBe(indonesian)
