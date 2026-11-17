@@ -96,11 +96,23 @@
   margin: 0;
   margin-block-start: var(--space-4);
   padding: 0;
+
+  /*
+   * The rule above each route belongs to the row's place in the list, not to
+   * the link: on the link it took the link's rounded corners and curved down
+   * at both ends (CI's 390 and 1440 screenshots, run 44149519825). Here it is
+   * a straight line the width of the column, and the link keeps its corners
+   * for the tint alone.
+   */
+  & > li {
+    border-block-start: 1px solid var(--line);
+  }
 }
 
 /*
- * A route: a row with a rule above it, the reader label and an arrow.
- * 56px tall, past the 44px floor.
+ * A route: the reader label and an arrow, under its list item's rule.
+ * 56px tall, past the 44px floor. The tint on hover, focus and press reaches
+ * 8px past the words on each side, inside the gutter.
  */
 .route {
   position: relative;
@@ -111,7 +123,6 @@
   min-block-size: 56px;
   padding-inline: var(--space-8);
   margin-inline: calc(-1 * var(--space-8));
-  border-block-start: 1px solid var(--line);
   border-radius: var(--radius-input);
   font-family: var(--font-text);
   font-size: var(--type-body);
@@ -190,7 +201,6 @@
 
 .joinRoute {
   justify-content: flex-start;
-  border-block-start: 0;
 
   & .arrow {
     margin-inline-start: auto;
