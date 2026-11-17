@@ -23,7 +23,7 @@ import {
   sheet,
   wrap,
 } from './draw'
-import type { Plate } from './types'
+import type { Plate, PlateLegend } from './types'
 import { plateWords } from './words'
 
 const HEADER = [80, 138, 1125, 78] as const
@@ -316,25 +316,34 @@ function build(locale: Locale): Plate {
     }
   }
 
+  const terms = words.word('Target, lingkup, dan laporan disepakati tertulis.')
+  const promise = words.word('Kami tidak menjanjikan jangkauan atau penjualan.')
   {
     const [x, y, w, h] = FOOTER
     draw.mark('card', rectangle(x, y, w, h))
-    draw.text(
-      'nodeTitle',
-      x + 24,
-      y + 48,
-      words.word('Target, lingkup, dan laporan disepakati tertulis.')
-    )
-    draw.text(
-      'nodeTitle',
-      x + w - 24,
-      y + 48,
-      words.word('Kami tidak menjanjikan jangkauan atau penjualan.'),
-      { anchor: 'end' }
-    )
+    draw.text('nodeTitle', x + 24, y + 48, terms)
+    draw.text('nodeTitle', x + w - 24, y + 48, promise, { anchor: 'end' })
   }
 
-  return draw.done('peekabo', [50, 108, 1185, 968])
+  /*
+   * The legend: each row, the aim, with the cards it holds read down each
+   * column from the first; then the two sentences the footer states.
+   */
+  const legend: PlateLegend = {
+    groups: ROWS.map(([name, top], index) => {
+      const bottom = ROWS[index + 1]?.[1] ?? FOOTER[1]
+      return {
+        heading: words.upper(words.word(name)),
+        // `filter` makes a new array, so sorting it leaves `CARDS` alone.
+        items: CARDS.filter(([, y]) => y >= top && y < bottom)
+          .sort(([ax, ay], [bx, by]) => ax - bx || ay - by)
+          .map(([, , , , card]) => words.word(card).replaceAll('\n', ' ')),
+      }
+    }),
+    statements: [terms, promise],
+  }
+
+  return draw.done('peekabo', [50, 108, 1185, 968], legend)
 }
 
 export const PEEKABO_PLATE: Plate = build('id')

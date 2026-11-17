@@ -57,6 +57,15 @@ import s from './passage.module.css'
  * whether or not the reel is moving. Nothing in the reel is focusable, so
  * no focus target can sit in a parked plate.
  *
+ * ## The plate's words, readable (G2)
+ *
+ * Each drawing arrives with its legend (`vault/blocks/plate/legend.tsx`):
+ * the words the drawing sets at its own scale, set again as HTML at 16px and
+ * 14px. On a desktop it takes a column beside the drawing inside the drawing's
+ * cell, where the drawing's proportions leave room; on a phone it sits under
+ * the drawing, naming only its groups while the reel is pinned. The layout is
+ * the stylesheet's; this component only runs the reel.
+ *
  * ## Whole without motion, and whole without JavaScript
  *
  * A reel that rests on its first plate hides the other two, so the reel is

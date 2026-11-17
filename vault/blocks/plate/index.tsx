@@ -12,6 +12,8 @@ import {
   TEXT_STYLES,
 } from '@/lib/plates'
 
+import { PlateLegend } from './legend'
+
 import s from './plate.module.css'
 
 /**
@@ -28,7 +30,8 @@ import s from './plate.module.css'
  * under reduced motion and without JavaScript, and the one a screen reader
  * reads. It is not a placeholder for the lit version. It is server-rendered,
  * has no script, and is already the drawing, in the ink of whatever ground it
- * sits on: paper lines with a faint glow on a stage, ink lines in a document.
+ * sits on: paper lines on a stage, ink lines in a document, never glowing
+ * (G2).
  *
  * ## What a reader is told
  *
@@ -49,6 +52,14 @@ interface PlateProps {
   title: string
   /** What the drawing shows, in sentences. */
   description: string
+  /**
+   * The drawing's words set as HTML after it (`./legend.tsx`, G2). On by
+   * default; off where the same plate already stands higher on the page with
+   * its legend.
+   */
+  legend?: boolean
+  /** The sentence that the café is an example, set under the legend. */
+  note?: string | undefined
   className?: string | undefined
 }
 
@@ -130,28 +141,38 @@ function renderText(text: PlateText) {
   )
 }
 
+/**
+ * The drawing, then its legend as the drawing's sibling. A sibling rather
+ * than a wrapper, so the `<svg>` stays the direct child that
+ * `vault/webgl/plate-material` measures and steps aside.
+ */
 export function Plate({
   unit,
   locale,
   title,
   description,
+  legend = true,
+  note,
   className,
 }: PlateProps) {
   const plate = plateFor(unit, locale)
 
   return (
-    <svg
-      viewBox={plate.viewBox.join(' ')}
-      role="img"
-      className={cn(s.plate, className)}
-      data-plate={unit}
-    >
-      <title>{title}</title>
-      <desc>{description}</desc>
-      {plate.marks.map((mark) => (
-        <path key={mark.role} d={mark.d} style={markStyle(mark)} />
-      ))}
-      {plate.texts.map(renderText)}
-    </svg>
+    <>
+      <svg
+        viewBox={plate.viewBox.join(' ')}
+        role="img"
+        className={cn(s.plate, className)}
+        data-plate={unit}
+      >
+        <title>{title}</title>
+        <desc>{description}</desc>
+        {plate.marks.map((mark) => (
+          <path key={mark.role} d={mark.d} style={markStyle(mark)} />
+        ))}
+        {plate.texts.map(renderText)}
+      </svg>
+      {legend ? <PlateLegend legend={plate.legend} note={note} /> : null}
+    </>
   )
 }

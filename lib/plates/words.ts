@@ -114,6 +114,18 @@ export const PLATE_WORDS_EN: Readonly<
   },
 }
 
+/**
+ * The sentence that goes with every plate shown: the café is an example, not
+ * a project. The owner's approved words, the same as `plates.note` in
+ * `messages/` (R7), reused rather than written again; `plates.test.ts` fails
+ * if the two drift. Here so the plate's own blocks can set it without a
+ * translation call (G2).
+ */
+export const PLATE_NOTE: Readonly<Record<Locale, string>> = {
+  id: 'Rangkaian yang mungkin, bukan proyek yang pernah kami kerjakan.',
+  en: 'A possible sequence, not a project we have done.',
+}
+
 /** How one plate writes its words in one locale. */
 export interface PlateWords {
   /** The word itself in Indonesian, or its approved English. */

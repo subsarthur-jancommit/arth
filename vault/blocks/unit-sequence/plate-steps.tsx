@@ -14,6 +14,7 @@
 import type { SequenceContent } from '@/lib/content/sequence-content'
 import type { Unit } from '@/lib/content/units'
 import type { Locale } from '@/lib/i18n/routing'
+import { PLATE_NOTE } from '@/lib/plates'
 import { Plate } from '@/vault/blocks/plate'
 
 import type { SequenceStep } from './index'
@@ -44,12 +45,19 @@ export function plateSteps(
     const unit = step.unit.kunci
     const copy = plateCopy(unit)
     const drawsThisWork = step.offer.some((offer) => offer.judul === copy.job)
+    /*
+     * With its legend and the note that the café is an example (G2), unless
+     * the plate is repeated: then the passage above already carries both,
+     * once.
+     */
     const plate = (
       <Plate
         unit={unit}
         locale={options.locale}
         title={copy.title}
         description={copy.description}
+        legend={!options.repeated}
+        note={options.repeated ? undefined : PLATE_NOTE[options.locale]}
       />
     )
 

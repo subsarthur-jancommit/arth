@@ -24,7 +24,7 @@ import {
   sheet,
   wrap,
 } from './draw'
-import type { Plate } from './types'
+import type { Plate, PlateLegend } from './types'
 import { plateWords } from './words'
 
 /** Lane name, top edge, bottom edge. */
@@ -260,7 +260,24 @@ function build(locale: Locale): Plate {
     weight: 600,
   })
 
-  return draw.done('teknologi', [40, 120, 1200, 960])
+  /*
+   * The legend: each lane and the steps that sit in it, in the order the
+   * flow takes them, the decision with the lane it is drawn in.
+   */
+  const legend: PlateLegend = {
+    groups: LANES.map(([name, top, bottom]) => ({
+      heading: words.upper(words.word(name)),
+      items: [
+        ...STEPS.filter(([, y]) => y >= top && y < bottom).map(
+          ([, , , , step]) => words.word(step)
+        ),
+        ...(cy >= top && cy < bottom ? [question.join(' ')] : []),
+      ],
+    })),
+    statements: [],
+  }
+
+  return draw.done('teknologi', [40, 120, 1200, 960], legend)
 }
 
 export const TEKNOLOGI_PLATE: Plate = build('id')
