@@ -206,8 +206,10 @@ describe('plate legends', () => {
   it('reuses the approved sentence that the café is an example', () => {
     // Read as files: `messages/en.json` carries generated next-intl types
     // that a JSON import resolves to instead.
-    const note = (locale: 'id' | 'en'): unknown =>
-      JSON.parse(readFileSync(`messages/${locale}.json`, 'utf8')).plates?.note
+    const note = (locale: 'id' | 'en') =>
+      String(
+        JSON.parse(readFileSync(`messages/${locale}.json`, 'utf8')).plates?.note
+      )
     expect(PLATE_NOTE.id).toBe(note('id'))
     expect(PLATE_NOTE.en).toBe(note('en'))
   })
