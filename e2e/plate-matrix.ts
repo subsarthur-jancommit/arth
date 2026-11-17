@@ -64,6 +64,8 @@ export interface PlateMatrixState {
   frames: number
   /** The canvases plate textures were uploaded from. */
   textures: HTMLCanvasElement[]
+  /** Compile logs of plate shaders that failed: a variant that never drew. */
+  errors: string[]
 }
 
 declare global {
@@ -92,6 +94,7 @@ export function installPlateMatrix(options: PlateMatrixOptions): void {
     draws: 0,
     frames: 0,
     textures: [],
+    errors: [],
   }
   window.__plateMatrix = state
 
@@ -169,6 +172,20 @@ export function installPlateMatrix(options: PlateMatrixOptions): void {
       shader,
       `${source.slice(0, start)}${sources[variant]}`
     )
+  }
+
+  const compile = proto.compileShader
+  proto.compileShader = function compileShader(
+    this: WebGL2RenderingContext,
+    shader: WebGLShader
+  ) {
+    compile.call(this, shader)
+    if (
+      plateShaders.has(shader) &&
+      this.getShaderParameter(shader, this.COMPILE_STATUS) !== true
+    ) {
+      state.errors.push(this.getShaderInfoLog(shader) ?? 'no log')
+    }
   }
 
   proto.attachShader = function attachShader(

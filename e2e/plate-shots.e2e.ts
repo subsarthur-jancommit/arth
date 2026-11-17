@@ -115,6 +115,13 @@ for (const shape of ['desktop', 'phone'] as const) {
         try {
           const intent = await webglIntent(page)
           const facts: Record<string, unknown> = { intent }
+          // The pin is GSAP's, built once the page has hydrated.
+          await page
+            .locator('.pin-spacer > section[data-passage]')
+            .waitFor({ state: 'attached', timeout: 15_000 })
+            .catch(() => {
+              // Reported by the check below.
+            })
           for (const [name, fraction] of HOME_STOPS) {
             const pinned = await page.evaluate((at) => {
               const section = document.querySelector<HTMLElement>(

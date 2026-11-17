@@ -79,8 +79,14 @@ interface Opened {
   close: () => Promise<void>
 }
 
-/** Scrolls to a fraction of the passage's pin. */
+/** Scrolls to a fraction of the passage's pin, once GSAP has built it. */
 async function scrollPin(page: Page, fraction: number) {
+  await page
+    .locator('.pin-spacer > section[data-passage]')
+    .waitFor({ state: 'attached', timeout: 15_000 })
+    .catch(() => {
+      // Reported below, with what was found instead.
+    })
   const found = await page.evaluate((at) => {
     const section = document.querySelector<HTMLElement>('section[data-passage]')
     const spacer = section?.parentElement
@@ -212,6 +218,7 @@ function matrixState(
       textures: state.textures.map(
         (canvas) => `${canvas.width}x${canvas.height}`
       ),
+      errors: state.errors,
     }
   })
 }
@@ -285,6 +292,7 @@ async function record(page: Page, testInfo: TestInfo, extra: object = {}) {
   // variant it names.
   expect(state.draws, 'the plate made no draw call').toBeGreaterThan(0)
   expect(state.seen, 'no plate shader was compiled').toBeGreaterThan(0)
+  expect(state.errors, 'a plate shader did not compile').toEqual([])
   if (state.variant !== 'shipped') {
     expect(state.rewritten, 'the variant never reached the shader').toBe(
       state.seen
