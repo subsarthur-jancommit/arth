@@ -236,7 +236,7 @@ export function TextReveal({
          * is undone and the original text nodes, which React rendered, come
          * back. A replaying reveal keeps its split, because it rises again.
          */
-        ...(once && { onComplete: () => instance.revert() }),
+        ...(once ? { onComplete: () => instance.revert() } : {}),
       })
 
       // useGSAP reverts tweens and ScrollTriggers created in this scope, but
