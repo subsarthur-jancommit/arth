@@ -554,22 +554,26 @@ for (const dpr of DPRS) {
          * `linesClass` is empty), so a line is any `<div>` it put inside the
          * headline: the masks are the headline's children, the lines theirs.
          */
-        const caught = await page
+        const splitWhileMoving = await page
           .waitForFunction(
-            () =>
-              [
+            () => {
+              const lines = [
                 ...document.querySelectorAll(
                   '[data-epic="hero-arrival"] h1 > div > div'
                 ),
-              ].some((part) => {
+              ]
+              const moving = lines.some((part) => {
                 const { transform } = getComputedStyle(part)
                 return transform !== 'none' && !/,\s*0\)$/u.test(transform)
-              }),
+              })
+              return moving ? lines.length : false
+            },
             undefined,
             { timeout: 15_000, polling: 16 }
           )
-          .then(() => true)
-          .catch(() => false)
+          .then(async (handle) => Number(await handle.jsonValue()))
+          .catch(() => 0)
+        const caught = splitWhileMoving > 0
         if (caught) await headlineShot(page, 'G-moving')
 
         await waitForEntrance(page)
@@ -642,10 +646,17 @@ for (const dpr of DPRS) {
         await write(
           testInfo,
           'facts.json',
-          JSON.stringify({ viewport: VIEWPORT, dpr, caught, ...chain }, null, 2)
+          JSON.stringify(
+            { viewport: VIEWPORT, dpr, caught, splitWhileMoving, ...chain },
+            null,
+            2
+          )
         )
+        // Anti-vacuum: the headline was split, while it moved or once it
+        // settled. A reveal may hand the plain text back when it completes
+        // (SplitText's `revert()`), so settled alone cannot be required.
         expect(
-          chain.split,
+          Math.max(splitWhileMoving, chain.split),
           'the headline was never split, so G measured nothing'
         ).toBeGreaterThan(0)
       } finally {
