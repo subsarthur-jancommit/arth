@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'bun:test'
+import { readFileSync } from 'node:fs'
 
 import { UNITS } from '@/lib/content/units'
-import english from '@/messages/en.json'
-import indonesian from '@/messages/id.json'
 
 import {
   MARK_STYLES,
@@ -205,7 +204,11 @@ describe('plate legends', () => {
   }
 
   it('reuses the approved sentence that the café is an example', () => {
-    expect(PLATE_NOTE.id).toBe(indonesian.plates.note)
-    expect(PLATE_NOTE.en).toBe(english.plates.note)
+    // Read as files: `messages/en.json` carries generated next-intl types
+    // that a JSON import resolves to instead.
+    const note = (locale: 'id' | 'en'): unknown =>
+      JSON.parse(readFileSync(`messages/${locale}.json`, 'utf8')).plates?.note
+    expect(PLATE_NOTE.id).toBe(note('id'))
+    expect(PLATE_NOTE.en).toBe(note('en'))
   })
 })
