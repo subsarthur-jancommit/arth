@@ -16,7 +16,10 @@ import {
  * Tempus (`CLAUDE.md` #6), and run in its order. The owner's technical
  * reference (§6) read that order from the code: the canvas advanced at order
  * 1, Lenis at 5, GSAP at 10, so the canvas could draw a frame from the scroll
- * and the progress the previous frame left. This logs it in the page itself.
+ * and the progress the previous frame left. This logs it in the page itself,
+ * and since G2 holds the order that replaced it: the canvas draws last
+ * (`lib/webgl/components/raf`, `WEBGL_FRAME_ORDER`), from the progress
+ * written in the same frame.
  *
  * ## How it is logged
  *
@@ -275,6 +278,26 @@ test('one frame: what is written, and when the canvas draws from it', async ({
       tally.withProgressAndDraw,
       `frames with both a progress write and a plate draw: ${JSON.stringify(tally)}`
     ).toBeGreaterThan(3)
+
+    // Writers first: Lenis before GSAP, GSAP before the canvas, in every
+    // frame that has them (`lib/webgl/components/raf`, G2).
+    expect(
+      tally.scrollAfterProgress,
+      'frames where Lenis wrote the scroll after GSAP wrote the progress'
+    ).toBe(0)
+    expect(
+      both.filter(
+        (frame) =>
+          !(frame.order.indexOf('draw') > frame.order.indexOf('progress'))
+      ),
+      'frames where the canvas drew before GSAP wrote the progress'
+    ).toEqual([])
+
+    // And the canvas draws from the progress written in the same frame.
+    expect(
+      both.filter((frame) => frame.drawn !== frame.written),
+      "frames the canvas drew from another frame's progress"
+    ).toEqual([])
   } finally {
     await context.close()
   }
