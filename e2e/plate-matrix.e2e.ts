@@ -540,13 +540,18 @@ for (const dpr of DPRS) {
         const page = await context.newPage()
         await page.goto('/id', { waitUntil: 'domcontentloaded' })
 
-        // Moving: the first moment a split line is still below its mask.
+        /*
+         * Moving: the first moment a split line is still below its mask.
+         * SplitText gives its lines and masks no class here (its default
+         * `linesClass` is empty), so a line is any `<div>` it put inside the
+         * headline: the masks are the headline's children, the lines theirs.
+         */
         const caught = await page
           .waitForFunction(
             () =>
               [
                 ...document.querySelectorAll(
-                  '[data-epic="hero-arrival"] h1 .split-line > *, [data-epic="hero-arrival"] h1 .split-line'
+                  '[data-epic="hero-arrival"] h1 > div > div'
                 ),
               ].some((part) => {
                 const { transform } = getComputedStyle(part)
@@ -595,8 +600,9 @@ for (const dpr of DPRS) {
             }
             node = node.parentElement
           }
+          // The masks SplitText wrapped the lines in: the headline's children.
           const split = document.querySelectorAll(
-            '[data-epic="hero-arrival"] h1 .split-line'
+            '[data-epic="hero-arrival"] h1 > div'
           ).length
           return { split, facts }
         })
