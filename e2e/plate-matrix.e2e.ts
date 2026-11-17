@@ -124,11 +124,14 @@ async function holdProgress(page: Page, progress: number) {
 
 /**
  * Paints the page's ground paper. Only the document's own ground: `<main>`
- * stays clear, because the canvas is drawn behind it.
+ * stays clear, because the canvas is drawn behind it. The hero's wash is
+ * held back while it is on: the canvas draws it over the whole viewport, so
+ * it, not the page, is the ground behind a lit plate (run #367, rows A–C).
  */
 async function paperGround(page: Page, on: boolean) {
   await page.evaluate(
     ([paper, apply]) => {
+      if (window.__plateMatrix) window.__plateMatrix.hideWash = apply
       const id = 'plate-matrix-paper'
       document.querySelector(`#${id}`)?.remove()
       if (!apply) return
