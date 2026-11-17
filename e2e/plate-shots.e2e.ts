@@ -117,7 +117,9 @@ for (const shape of ['desktop', 'phone'] as const) {
           const facts: Record<string, unknown> = { intent }
           for (const [name, fraction] of HOME_STOPS) {
             const pinned = await page.evaluate((at) => {
-              const section = document.querySelector('section[data-passage]')
+              const section = document.querySelector<HTMLElement>(
+                'section[data-passage]'
+              )
               const spacer = section?.parentElement
               if (!section || !spacer?.classList.contains('pin-spacer')) {
                 return false

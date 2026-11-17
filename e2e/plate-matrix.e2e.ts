@@ -82,7 +82,7 @@ interface Opened {
 /** Scrolls to a fraction of the passage's pin. */
 async function scrollPin(page: Page, fraction: number) {
   const found = await page.evaluate((at) => {
-    const section = document.querySelector('section[data-passage]')
+    const section = document.querySelector<HTMLElement>('section[data-passage]')
     const spacer = section?.parentElement
     if (!section || !spacer?.classList.contains('pin-spacer')) return false
     const top = spacer.getBoundingClientRect().top + window.scrollY
