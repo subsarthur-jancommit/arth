@@ -165,7 +165,7 @@
 
   @media (--desktop) {
     grid-template-rows: minmax(0, 1fr);
-    grid-template-columns: minmax(0, 1fr) minmax(0, 18rem);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
     gap: desktop-vw(32px);
   }
 }
@@ -187,9 +187,10 @@
       display: inline;
     }
 
+    /* The same separator as between names (`vault/blocks/plate`): the
+       space after the dot is where the run may wrap. */
     & [data-plate-legend-group] + [data-plate-legend-group]::before {
-      content: '·';
-      margin-inline: 0.4em;
+      content: '\00a0·\0020';
       color: var(--text-muted);
     }
 

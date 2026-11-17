@@ -53,7 +53,17 @@ function legendWords(page: Page, scope: string): Promise<LegendWord[]> {
     for (const [attribute, kind] of Object.entries(kinds)) {
       for (const element of root.querySelectorAll(`[${attribute}]`)) {
         const box = element.getBoundingClientRect()
-        let unclipped = true
+        // Inside the legend's own box too: a word that runs out of its
+        // column lands on whatever is beside it, clipped or not.
+        const legend = element
+          .closest('[data-plate-legend]')
+          ?.getBoundingClientRect()
+        let unclipped =
+          !legend ||
+          (box.left >= legend.left - 1 &&
+            box.right <= legend.right + 1 &&
+            box.top >= legend.top - 1 &&
+            box.bottom <= legend.bottom + 1)
         let clip = element.closest('[data-plate-clip]')
         while (clip) {
           const edge = clip.getBoundingClientRect()
@@ -112,8 +122,20 @@ async function withPage<T>(
   }
 }
 
+/**
+ * Where each plate rests in the pin, fully arrived (`vault/blocks/passage`:
+ * plates share 0.08 to 0.8, each after the first arrives in its share's first
+ * 30%; the frame settles by 0.15).
+ */
+const RESTS = [0.16, 0.42, 0.66] as const
+
 /** Scrolls the home page's pin to the first plate's rest. */
 async function restOnFirstPlate(page: Page) {
+  await restOn(page, RESTS[0])
+}
+
+/** Scrolls the home page's pin to a fraction of its length. */
+async function restOn(page: Page, fraction: number) {
   // The pin is GSAP's, built once the page has hydrated.
   await page
     .locator('.pin-spacer > section[data-passage]')
@@ -121,17 +143,17 @@ async function restOnFirstPlate(page: Page) {
     .catch(() => {
       // Reported by the check below.
     })
-  const pinned = await page.evaluate(() => {
+  const pinned = await page.evaluate((at) => {
     const section = document.querySelector<HTMLElement>('section[data-passage]')
     const spacer = section?.parentElement
     if (!section || !spacer?.classList.contains('pin-spacer')) return false
     const top = spacer.getBoundingClientRect().top + window.scrollY
     window.scrollTo(
       0,
-      Math.round(top + (spacer.offsetHeight - section.offsetHeight) * 0.16)
+      Math.round(top + (spacer.offsetHeight - section.offsetHeight) * at)
     )
     return true
-  })
+  }, fraction)
   expect(pinned, 'the passage is not pinned').toBe(true)
 }
 
@@ -157,9 +179,23 @@ test.describe('plate legends', () => {
         await page.waitForTimeout(1500)
         expectReadable(
           await legendWords(page, FIRST_PLATE),
-          `home ${viewport.width}`,
+          `home ${viewport.width}, plate 1`,
           ['heading', 'item']
         )
+        // The other two at their own rests: Peekabo's legend is the longest.
+        for (const [index, fraction] of RESTS.entries()) {
+          if (index === 0) continue
+          await restOn(page, fraction)
+          await page.waitForTimeout(1500)
+          expectReadable(
+            await legendWords(
+              page,
+              `[data-passage-plate]:nth-child(${index + 1})`
+            ),
+            `home ${viewport.width}, plate ${index + 1}`,
+            ['heading', 'item', 'statement']
+          )
+        }
       })
     })
   }

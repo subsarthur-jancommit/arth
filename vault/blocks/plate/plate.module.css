@@ -40,7 +40,9 @@
  */
 .legend {
   display: grid;
-  align-content: end;
+  /* `safe`: a legend taller than its cell overflows at its end, where the
+     plate clips it, never at its start, where its first heading is. */
+  align-content: safe end;
   gap: 0.75rem;
   min-width: 0;
 }
@@ -61,7 +63,7 @@
   font-family: var(--font-mono);
   font-size: 0.875rem;
   font-weight: 500;
-  line-height: 1.45;
+  line-height: 1.4;
   letter-spacing: 0.04em;
   color: var(--text-muted);
 }
@@ -74,13 +76,18 @@
 .item,
 .statement {
   font-size: 1rem;
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
-/* A thin separator between names, drawn rather than written. */
+/*
+ * A thin separator between names, drawn rather than written: a no-break
+ * space before the dot, a plain space after it. The names sit side by side
+ * with no space between their elements, so that last space is the only
+ * place a line may break between two of them; without it a run like
+ * "Bar·Dapur·Kompor·Olah" could not wrap and ran out of its column.
+ */
 .item + .item::before {
-  content: '·';
-  margin-inline: 0.4em;
+  content: '\00a0·\0020';
   color: var(--text-muted);
 }
 
