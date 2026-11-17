@@ -644,10 +644,20 @@ for (const dpr of DPRS) {
           'facts.json',
           JSON.stringify({ viewport: VIEWPORT, dpr, caught, ...chain }, null, 2)
         )
+        /*
+         * The anti-vacuum guard, moved to where the split now lives — G1.
+         * It read the masks once the headline had settled. Since G1
+         * `TextReveal` undoes its split the moment the last line lands (the
+         * masks were clipping the descenders at rest, "teks kopong"), so a
+         * settled headline is plain text and `split` is 0 by design: it stays
+         * in `facts.json` as the record of that. What proves G saw a split
+         * is the moving frame, caught while the lines were still below their
+         * masks.
+         */
         expect(
-          chain.split,
-          'the headline was never split, so G measured nothing'
-        ).toBeGreaterThan(0)
+          caught,
+          'the headline was never caught split, so G measured nothing'
+        ).toBe(true)
       } finally {
         await context.close()
         await quiet.close()
