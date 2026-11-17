@@ -345,7 +345,14 @@ test.describe('returning to the home page', () => {
       await startSampler(page)
 
       // Client-side both ways, so the document and the probe survive.
-      const away = page.locator('a[href$="/id/kontak"]').first()
+      /*
+       * A link a reader can press — G1. The first `/id/kontak` link in the
+       * document is now the menu sheet's Kontak, which the desktop row keeps
+       * `display: none` (the sheet is the same nav), and waiting for it to
+       * scroll into view never ends. `:visible` takes the bar's action, which
+       * leads to the same page on every route.
+       */
+      const away = page.locator('a[href$="/id/kontak"]:visible').first()
       await away.scrollIntoViewIfNeeded()
       await away.click()
       await page.waitForURL('**/id/kontak', { timeout: 30_000 })

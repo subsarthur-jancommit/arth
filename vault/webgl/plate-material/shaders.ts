@@ -68,10 +68,12 @@ export const fragmentShader = /* glsl */ `
     // What leans away dims a little, as a lit model does in a dark room.
     float depth = clamp(1.0 + vDepth / (uFocal * 1.4), 0.45, 1.0);
 
-    // The light that sweeps the part as it turns, then is gone.
+    // The light that sweeps the part as it turns, then is gone. Written as
+    // one minus a rising step: GLSL leaves smoothstep undefined when its
+    // first edge is not below its second, which the falling form relied on.
     float scan = uScan < 0.0
       ? 0.0
-      : smoothstep(0.06, 0.0, abs(1.0 - vLocal.y - uScan));
+      : 1.0 - smoothstep(0.0, 0.06, abs(1.0 - vLocal.y - uScan));
 
     vec3 colour = (line + halo * 0.6) * depth * (1.0 + scan * 0.9);
 
