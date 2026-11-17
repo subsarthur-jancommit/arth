@@ -198,6 +198,12 @@
     & [data-plate-legend-statement] {
       display: none;
     }
+
+    /* With the names hidden, the heading's gap before them would stand
+       before the dot alone and leave the separator lopsided. */
+    & [data-plate-legend-heading] {
+      margin-inline-end: 0;
+    }
   }
 }
 
