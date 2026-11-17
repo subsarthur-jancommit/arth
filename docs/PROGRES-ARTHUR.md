@@ -3,10 +3,10 @@
 Satu baris per paket kerja, diperbarui **di dalam PR paket itu sendiri** —
 bukan sesudahnya, supaya ia tidak bisa kedaluwarsa tanpa terlihat di diff.
 
-**Untuk sesi berikutnya:** baca berkas ini, lalu paket berikutnya di
-[`RENCANA-REVISI-F3.md`](./RENCANA-REVISI-F3.md) (R7, tahap B), lalu tabel K1–K9
-dan tabel _Menunggu pemilik_. Itu cukup untuk mulai bekerja — tidak perlu
-membaca ulang keempat artefak atau dokumen repo.
+**Untuk sesi berikutnya:** baca berkas ini, lalu goal berikutnya di
+[`RENCANA-VISUAL-GERAK.md`](./RENCANA-VISUAL-GERAK.md) (G1 dan G2 lebih dulu),
+lalu tabel K1–K9 dan tabel _Menunggu pemilik_. Itu cukup untuk mulai bekerja —
+tidak perlu membaca ulang keempat artefak atau dokumen repo.
 
 **Bekerja dari workspace lain?** [`KONTEKS-TIM.md`](./KONTEKS-TIM.md) memuat
 tautan keempat dokumen konteks, urutan kewenangannya, pagar yang berlaku terus,
@@ -56,6 +56,11 @@ Keputusan sejak 15 Oktober 2026, tanggalnya tanggal merge di `main` (WIB):
   terbit lewat konektor Sanity, dengan dua cadangan dan bukti sebelum dan
   sesudah di `docs/R7-CATATAN-TULIS.md`. `/en` tetap 307 sampai kode tahap B
   (#94, #95) merge dan segmennya dibuka per halaman.
+- **17 November (keputusan):** pemilik mengusung konsep kasar beranda (navbar
+  pill, hero dengan ilustrasi kafe matte, dan tiga kebutuhan) dan menetapkan
+  targetnya: "Target utamanya adalah estetika dengan animasi yang kompleks."
+  Rencananya di `docs/RENCANA-VISUAL-GERAK.md`. Addendum teknis pemilik di
+  `docs/SOLUSI-TEKNIS-VISUAL-GERAK.md` menjadi rujukannya.
 
 **15 Oktober 2026:** F3-01 sampai F3-11 direvisi (`docs/TINJAUAN-F01-F03.md`,
 `docs/RENCANA-REVISI-F3.md`). P1–P4 memakai usulan bawaan; protokol `ci` dan
