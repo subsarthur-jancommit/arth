@@ -74,59 +74,63 @@
   }
 }
 
+/*
+ * The hero's action — G1: the header's own, "Ceritakan kebutuhan", and the
+ * same shape as the header's: a 48px filled pill in the text face, the
+ * strongest control on the screen (the reference's §3 and §4).
+ *
+ * It was an outlined, uppercase 12 to 14px label to `#situasi` that filled
+ * on hover. The fill is now its rest; hover and keyboard focus deepen it in
+ * 170ms (one state reached two ways, `MOTION-SPEC.md` §9), a press deepens it
+ * further in 110ms, and nothing scales: the reading layer holds still.
+ */
 .heroCta {
-  display: inline-block;
-  /*
-   * Family, size and leading come from the `cta` utility now — Tahap 36.
-   *
-   * They were hand-rolled here, and `font-size: mobile-vw(12px)` floors at
-   * 10.24px on a 320px screen, under the 11px readability floor
-   * `typography.ts` set on purpose. `e2e/scale-continuity.e2e.ts` found it:
-   * one element on the whole site, and the only one.
-   *
-   * Only the tracking stays local, because this control is set uppercase and
-   * the scale's -0.01em is for lower case.
-   */
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--control-cta);
+  padding-inline: var(--space-24);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+  font-family: var(--font-text);
+  font-size: var(--type-body);
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: none;
   text-decoration: none;
-  color: var(--color-secondary);
-  padding: mobile-vw(16px) mobile-vw(24px);
-  /* Outline rather than border: it does not change the box, so the magnetic
-     wrapper's transform has nothing to fight. */
-  outline: 1px solid var(--color-secondary);
-  outline-offset: -1px;
-  /*
-   * INTENT and COMMIT, `MOTION-SPEC.md` §9.
-   *
-   * The fill was 400ms — the standard band, twice what §9 gives INTENT. A
-   * call to action that takes 400ms to acknowledge a pointer is the one
-   * control on the page that most needs to feel answered.
-   */
-  transition:
-    background-color var(--duration-fast) var(--ease-gleasing),
-    color var(--duration-fast) var(--ease-gleasing),
-    transform var(--duration-micro) var(--ease-out-quart);
-
-  @media (--desktop) {
-    /* No `font-size` here either: `cta` already runs 12 to 14 as one curve. */
-    padding: desktop-vw(16px) desktop-vw(32px);
-  }
+  white-space: nowrap;
+  --press-scale: 1;
+  transition: background-color var(--feedback-hover) var(--ease-state);
 
   @media (--hover) {
     &:hover {
-      background-color: var(--color-secondary);
-      color: var(--color-primary);
+      background-color: color-mix(
+        in oklab,
+        var(--color-secondary) 86%,
+        var(--color-primary)
+      );
     }
   }
 
-  /* INTENT from the keyboard — the same state hover produces, not just a
-     ring. See the note in `header.module.css`. */
   &:focus-visible {
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
-    outline: 2px solid var(--color-contrast);
-    outline-offset: 4px;
+    background-color: color-mix(
+      in oklab,
+      var(--color-secondary) 86%,
+      var(--color-primary)
+    );
+    outline: var(--ring-width) solid var(--color-contrast);
+    outline-offset: var(--ring-offset);
+  }
+
+  &:active {
+    background-color: color-mix(
+      in oklab,
+      var(--color-secondary) 74%,
+      var(--color-primary)
+    );
+    transition-duration: var(--feedback-press);
   }
 }
 

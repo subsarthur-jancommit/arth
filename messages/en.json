@@ -56,6 +56,20 @@
     "actionLink": "Go to the contact page",
     "sequenceLink": "See all sequences"
   },
+  "need": {
+    "building": "Buildings & projects",
+    "systems": "Systems & operations",
+    "market": "Market & sales",
+    "join": "Join",
+    "for": {
+      "pelaku-proyek": "For people running projects",
+      "pemilik-bangunan": "For building owners",
+      "siap-pakai": "For owners who want it ready to use",
+      "paham-teknis": "For developers and technical teams",
+      "pemilik-usaha": "For business owners and brands",
+      "jaringan": "For people who want to help sell"
+    }
+  },
   "contactPage": {
     "eyebrow": "About and contact",
     "title": "Three units. One way of handling the work.",

@@ -50,10 +50,17 @@ export function Theme({
   children,
   theme,
   global,
+  grain = true,
 }: {
   children: React.ReactNode
   theme: ThemeName
   global?: boolean
+  /**
+   * The paper's grain. On by default; the home page turns it off since G1,
+   * because the reference's §3 keeps texture out from behind the headline,
+   * body text, focus rings and buttons, and puts it inside the illustration.
+   */
+  grain?: boolean
 }) {
   // `currentTheme` defaults to the route's `theme` prop but can still be
   // overridden at runtime via the `setTheme` action. When the prop changes
@@ -154,7 +161,7 @@ export function Theme({
         negative `z-index` and is therefore the one surface this layer cannot
         reach.
       */}
-      <NoiseTexture className={s.grain} />
+      {grain ? <NoiseTexture className={s.grain} /> : null}
       {provided}
     </div>
   )

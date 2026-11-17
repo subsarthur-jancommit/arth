@@ -5,16 +5,18 @@ import { locale as localeRootParam } from 'next/root-params'
 
 import { LocalizedNotFound } from '@/app/[locale]/not-found'
 import { Wrapper } from '@/components/layout/wrapper'
+import { Link } from '@/components/ui/link'
 import { SectionHeader } from '@/components/ui/section-header'
 import { resolveHomeContent } from '@/lib/content/home-fallback'
 import { canRenderPublicContent } from '@/lib/content/public-content-guard'
 import {
   isSideOf,
   isUnit,
+  type Side,
+  SIDES,
   sideTemplate,
   type Unit,
   UNITS,
-  unitTemplate,
 } from '@/lib/content/units'
 import { isLocale, type Locale, routing } from '@/lib/i18n/routing'
 import { isConfigured } from '@/lib/integrations/registry'
@@ -28,6 +30,7 @@ import {
 import { ContactBlock } from '@/vault/blocks/contact-block'
 import { FirstStepBand } from '@/vault/blocks/first-step-band'
 import { Hero } from '@/vault/blocks/hero'
+import { type Need, NeedChooser } from '@/vault/blocks/need-chooser'
 import { Passage } from '@/vault/blocks/passage'
 import { Plate } from '@/vault/blocks/plate'
 import { PracticeList } from '@/vault/blocks/practice-list'
@@ -107,12 +110,14 @@ export default async function Home() {
   const requested = await localeRootParam()
   const locale: Locale = isLocale(requested) ? requested : routing.defaultLocale
 
-  const [{ settings, units, isDraftMode }, t, tUnit, tPlate] =
+  const [{ settings, units, isDraftMode }, t, tUnit, tPlate, tNav, tNeed] =
     await Promise.all([
       fetchHomeForRequest(locale),
       getTranslations('home'),
       getTranslations('unit'),
       getTranslations('plates'),
+      getTranslations('nav'),
+      getTranslations('need'),
     ])
 
   const content = resolveHomeContent(locale, settings)
@@ -242,6 +247,47 @@ export default async function Home() {
     ),
   }))
 
+  /*
+   * The need chooser — G1 (`vault/blocks/need-chooser`). Three needs, each
+   * leading to its unit's buyer pages in the order the unit opens with
+   * (`SIDES`), two, two and one; the seller network is "Bergabung", apart.
+   * A need whose unit the page does not open (no approved name or summary)
+   * is left out, as everywhere else on this page. Its one line is the unit's
+   * own approved header line (`unit.judul`), the line the hero's index
+   * carried under each unit's name until G1.
+   */
+  const NEED_UNITS = [
+    { key: 'building', unit: 'konstruksi', sides: SIDES.konstruksi },
+    { key: 'systems', unit: 'teknologi', sides: SIDES.teknologi },
+    { key: 'market', unit: 'peekabo', sides: [SIDES.peekabo[0]] },
+  ] as const satisfies readonly {
+    key: 'building' | 'systems' | 'market'
+    unit: Unit
+    sides: readonly Side[]
+  }[]
+  const routeLabel = (side: Side) => tNeed(`for.${side}` as const)
+  const needs: Need[] = NEED_UNITS.flatMap(({ key, unit, sides }) => {
+    const entry = unitEntries.find((candidate) => candidate.value === unit)
+    if (!entry) return []
+    return [
+      {
+        key,
+        title: tNeed(key),
+        description: entry.line,
+        routes: sides.map((side) => ({
+          href: sideTemplate(unit, side),
+          label: routeLabel(side),
+        })),
+      },
+    ]
+  })
+  const seller = SIDES.peekabo[1]
+  const join = {
+    href: sideTemplate('peekabo', seller),
+    title: tNeed('join'),
+    label: routeLabel(seller),
+  }
+
   const actionLabel = settings?.ajakan?.label ?? t('actionFallback')
   const actionAfter = settings?.ajakan?.sesudahnya ?? t('actionAfterFallback')
 
@@ -253,35 +299,35 @@ export default async function Home() {
      * (`docs/TINJAUAN-F01-F03.md` B5), and the plates read the reader's
      * scroll, not the pointer.
      */
-    <Wrapper theme="dark" lenis={{ anchors: true }} webgl gsap>
+    <Wrapper
+      theme="dark"
+      lenis={{ anchors: true }}
+      webgl
+      gsap
+      // No paper grain behind the headline (the reference's §3); the hero's
+      // art carries its own texture.
+      grain={false}
+    >
       <Hero
         headline={content.headline}
         subline={content.subline ?? undefined}
         /*
-         * The hero's counterweight (Tahap 67): the index in the top right,
-         * headline and action bottom left. The labels are the unit list's
-         * own, so the hero names exactly what the page opens below.
+         * The one action, the header's own: "Ceritakan kebutuhan", to the
+         * contact page until G0 names a real channel.
          */
-        index={{
-          label: t('heroIndexLabel'),
-          items: unitEntries.map((unit) => ({
-            label: unit.label,
-            note: unit.line,
-            href: unitTemplate(unit.value),
-          })),
-        }}
         action={
-          /* oxlint-disable-next-line react/forbid-elements -- a same-page jump must keep working when JavaScript is disabled */
-          <a
-            href="#situasi"
+          <Link
+            href="/kontak"
             className={cn('cta', s.heroCta)}
             data-press="cta"
             data-intent=""
           >
-            {t('heroCta')}
-          </a>
+            {tNav('ctaNeed')}
+          </Link>
         }
       />
+
+      {needs.length > 0 ? <NeedChooser needs={needs} join={join} /> : null}
 
       <div className={s.sections}>
         {isDraftMode && (

@@ -106,6 +106,12 @@ interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
    * on every page, and they keep the base grammar here too.
    */
   dialect?: Dialect | undefined
+  /**
+   * The paper's grain behind the whole page (`components/layout/theme`). The
+   * home page turns it off since G1: the reference's §3 keeps texture inside
+   * the illustration, never behind the headline or body text.
+   */
+  grain?: boolean
 }
 
 /**
@@ -175,12 +181,13 @@ export function Wrapper({
   postprocessing = false,
   gsap = false,
   dialect,
+  grain = true,
   ...props
 }: WrapperProps) {
   const t = useTranslations('footer')
 
   return (
-    <Theme theme={theme} global>
+    <Theme theme={theme} global grain={grain}>
       {/* Header is rendered here - do NOT add another in layout.tsx */}
       <Header />
       <Canvas

@@ -6,26 +6,21 @@
  * `clip` rather than `hidden`: `overflow: hidden` creates a scroll container,
  * which can be focus-scrolled by the browser and shift the layout. `clip`
  * clips without that side effect.
+ *
+ * No `will-change` on the heading — G1. It held every heading that uses this
+ * component on a compositor layer of its own for as long as the page was
+ * open, to prevent a "pre-split flash" it could not prevent: `will-change`
+ * changes how an element is composited, not when a script runs. Text on a
+ * layer of its own can lose its subpixel antialiasing and draw lighter than
+ * the same text beside it, which is the opposite of the solid headline the
+ * reference asks for. GSAP moves the split lines while they rise, and the
+ * browser layers them for exactly as long as they move.
  */
 .reveal {
-  /* Prevents the pre-split flash of unmasked text on slow hydration. */
-  will-change: transform;
-
   :global(.split-line),
   :global(.split-word),
   :global(.split-char) {
     overflow: clip;
-  }
-}
-
-/*
- * Reduced motion: the component never splits, so there is nothing to unmask.
- * Dropping will-change avoids holding a compositor layer for an element that
- * will not animate.
- */
-@media (--reduced-motion) {
-  .reveal {
-    will-change: auto;
   }
 }
 

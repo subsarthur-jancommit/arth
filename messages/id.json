@@ -56,6 +56,20 @@
     "actionLink": "Ke halaman kontak",
     "sequenceLink": "Lihat semua rangkaian"
   },
+  "need": {
+    "building": "Bangunan & proyek",
+    "systems": "Sistem & operasional",
+    "market": "Pasar & penjualan",
+    "join": "Bergabung",
+    "for": {
+      "pelaku-proyek": "Untuk pelaku proyek",
+      "pemilik-bangunan": "Untuk pemilik bangunan",
+      "siap-pakai": "Untuk yang ingin hasil siap pakai",
+      "paham-teknis": "Untuk yang paham teknis",
+      "pemilik-usaha": "Untuk pemilik usaha dan brand",
+      "jaringan": "Untuk yang ingin ikut menjualkan"
+    }
+  },
   "contactPage": {
     "eyebrow": "Tentang dan kontak",
     "title": "Tiga unit. Satu cara memegang pekerjaan.",
