@@ -1,3 +1,14 @@
+/*
+ * The pill navbar — G1 (`docs/SOLUSI-TEKNIS-VISUAL-GERAK.md` §4).
+ *
+ * Below 1024px: wordmark, compact utilities and the Menu button, with the
+ * navigation as a sheet. From 1024px: three zones on one grid row. The row
+ * folds earlier than the site's 800px breakpoint because the reference asks
+ * for the menu to come early rather than for text to shrink: at 1024 the
+ * three zones hold in Indonesian and English with the search shown as its
+ * icon, and below it they did not (`index.tsx`). `lib/styles/css/global.css`
+ * holds the page still under the sheet up to the same width.
+ */
 .header {
   position: fixed;
   top: 0;
@@ -6,13 +17,10 @@
   z-index: 20;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--gap);
+  gap: var(--space-12);
   /*
-   * Height comes from `--header-height` (lib/styles/layout.mjs), which until
-   * now was declared and never consumed. Anything that needs to clear the bar
-   * — `scroll-padding-top` in global.css, a page that starts at the very top —
-   * reads the same token instead of guessing a number.
+   * Height from `--header-height` (lib/styles/layout.mjs): 58px on a phone,
+   * 72 at 1440. Everything that clears the bar reads the same token.
    */
   height: var(--header-height);
   padding-inline: var(--safe);
@@ -25,63 +33,15 @@
   --header-dark: 0;
 
   /*
-   * Three zones on desktop, with the nav on the centre — Tahap 87.
-   *
-   * This was `space-between` on four items, which is not a layout but a
-   * division of leftover space: each item sat wherever the others' widths
-   * pushed it. Measured on the production build, the nav's centre ran 138px
-   * left of the header's at 800 and 313px left at 1920, its start wandered
-   * across columns 4 and 5, and the Indonesian labels moved it again. The
-   * repo owner reported it from `/studio` as not symmetric and not placed.
-   *
-   * Two equal outer tracks put the `auto` middle track on the header's centre
-   * at every width and in every language — and the header's centre is the
-   * page grid's, because both are inset by the same `--safe`. The wordmark
-   * holds the left edge and the search + language group the right, mirrored.
-   *
-   * Not the 12-column page grid, which was checked first: at 800px a column
-   * is 33px, the language switcher is 88px and the nav 187px, and columns
-   * 5–8 together are 180px. The content does not fit the columns it would be
-   * asked to sit in; three zones give the symmetry without the squeeze.
-   * `docs/stages/TAHAP-87.md` §2.
-   *
-   * `minmax(max-content, 1fr)` on the outer tracks, and the floor was
-   * measured, not assumed. The first shape was `minmax(0, 1fr)`, and in
-   * `next dev` — where the nav carries a fourth link, Storybook, as it also
-   * does in any build with `NEXT_PUBLIC_STORYBOOK_URL` set — the search and
-   * language group (220.5px) outgrew its 219px track at 800px and spilled
-   * left, leaving the nav and the search trigger **1px apart**. A zero floor
-   * lets a track shrink under content that cannot wrap, and the overflow
-   * lands in the gap. With the content as the floor, the two tracks stay
-   * equal whenever everything fits, and when it does not the short one gives
-   * up only the difference: the nav moves off centre by exactly what the
-   * group needs — 14.6px at `/en` 800 with four links, measured; 0.00px at
-   * 1024 and above, and with the three links production ships — and the
-   * `--gap` between items is never eaten.
+   * The three zones: `auto minmax(0, 1fr) auto`. The capsule is centred in
+   * the middle track — the space the wordmark and the right zone leave —
+   * never by absolute centring, which could run it into either end.
    */
-  @media (--desktop) {
+  @media (width >= 1024px) {
     display: grid;
-    grid-template-columns: minmax(max-content, 1fr) auto minmax(
-        max-content,
-        1fr
-      );
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    column-gap: var(--space-24);
   }
-  /*
-   * The ground is a pseudo-element now — Tahap 53.
-   *
-   * It was `background-color` + `backdrop-filter` + `border-bottom` on this
-   * element. Two of those were right and one was the thing being fixed: a
-   * hairline is a *cut*, and the header sits over artwork, so the bar
-   * announced itself as a strip laid on top of the work.
-   *
-   * Masking has to happen on a layer of its own because a mask applies to the
-   * element's content as well — masking `.header` itself would fade the
-   * wordmark and the nav along with the ground.
-   *
-   * No `isolation` needed to keep that layer in: `position: fixed` with a
-   * `z-index` already makes this element a stacking context, so the ground's
-   * `z-index: -1` lands behind the header's own content and no further.
-   */
 }
 
 .header[data-theme='dark'],
@@ -90,107 +50,66 @@
 }
 
 /*
- * The translucent ground, and its edge.
- *
- * A blur rather than a solid strip for the reason this bar has always
- * carried: the header sits over artwork, and a solid band cuts the top off
- * every image behind it, while a blur keeps the work continuous and the type
- * legible.
- *
- * The mask is what Tahap 53 adds. Magic UI's `progressive-blur` gets this
- * effect by stacking **eight** `backdrop-filter` layers with rising radii; on
- * a fixed bar hanging over a scrolling page that is eight composite passes a
- * frame, and its cost cannot be profiled in this environment — `CLAUDE.md`
- * #19 forbids shipping "that is cheap" as a claim. The technique is taken and
- * the code is not: one layer, one mask, one pass. `docs/PROVENANCE.md` records
- * the distinction.
- *
- * It extends past the bar so the fade finishes *below* the header rather than
- * inside it, which is the difference between a soft edge and a bar with a
- * blurry bottom.
+ * Two solid grounds, crossfaded by opacity (R4). Solid since G1: the
+ * reference asks for no more than a solid bar, and it takes away the blur and
+ * the masked fade the bar carried, which made the type over artwork the one
+ * thing on the page with a moving ground. Each ground is fixed to its own
+ * ink, and only their opacity moves (CLAUDE.md #4).
  */
 .header::before,
 .header::after {
   content: '';
   position: absolute;
-  inset-inline: 0;
-  inset-block: 0 calc(-1 * mobile-vw(16px));
+  inset: 0;
   z-index: -1;
   pointer-events: none;
-  backdrop-filter: blur(mobile-vw(12px));
-  /*
-   * `black`/`transparent` keywords, not a hex: a mask reads only the alpha
-   * channel, so the colour is structural rather than a design value, and
-   * `lib/styles/scripts/token-rules.test.ts` bans the hex spelling of it.
-   */
-  mask-image: linear-gradient(to bottom, black 62%, transparent);
   transition: opacity var(--duration-fast) var(--ease-out-expo);
-
-  @media (--desktop) {
-    inset-block: 0 calc(-1 * desktop-vw(24px));
-    backdrop-filter: blur(desktop-vw(12px));
-  }
 }
 
-/*
- * Two grounds, crossfaded — R4. The bar's theme can change under a reader as
- * a dark section passes beneath it, and a ground that changed colour in one
- * frame would flash. Each ground is fixed to its own ink, and only their
- * opacity moves (CLAUDE.md #4). Both carry the blur, so neither state loses
- * it; while one rests at zero the cost of the second is not measured here
- * (#19).
- */
 .header::before {
-  background-color: color-mix(in oklab, var(--color-paper) 82%, transparent);
+  background-color: var(--color-paper);
   opacity: calc(1 - var(--header-dark));
 }
 
 .header::after {
-  background-color: color-mix(in oklab, var(--color-ink) 82%, transparent);
+  background-color: var(--color-ink);
   opacity: var(--header-dark);
 }
 
+/*
+ * The wordmark: display type, not a nav item, and the only place on the bar
+ * where the display face appears, which is what makes it read as the mark.
+ */
 .brand {
-  /*
-   * The wordmark is display type, not a nav item, and it is the only place on
-   * the header where the display face (Onest since R4) appears, which is
-   * what makes it read as the mark rather than as another link.
-   */
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-block-size: var(--control-link);
   font-family: var(--font-display);
   font-weight: 700;
   letter-spacing: -0.03em;
-  /*
-   * scale-exempt: the wordmark is a mark, not text, and it is 20px at both
-   * design anchors on purpose — a brand that shrinks on mobile reads as an
-   * accident. `p-big` would take it to 16 at 375.
-   */
-  font-size: mobile-vw(20px);
-  line-height: 100%;
+  /* scale-exempt: the wordmark is a mark, not text. */
+  font-size: 20px;
+  line-height: 1;
   text-decoration: none;
   color: var(--color-secondary);
-  flex-shrink: 0;
 
-  @media (--desktop) {
-    /* scale-exempt: see the note on the mobile size above. */
-    font-size: desktop-vw(20px);
-    /*
-     * Tahap 87: the left track, held at its start. Without `justify-self` a
-     * grid item stretches, and this link's hit area would have grown across
-     * the whole left third of the header.
-     */
-    grid-column: 1;
+  @media (width >= 1024px) {
+    /* scale-exempt: the mark, at the row's size. */
+    font-size: 22px;
     justify-self: start;
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-contrast);
-    outline-offset: 4px;
+    outline: var(--ring-width) solid var(--color-contrast);
+    outline-offset: var(--ring-offset);
+    border-radius: var(--radius-hairline);
   }
 }
 
 /*
  * One nav, two shapes — the fork. It is a `popover="auto"` (`index.tsx` has
- * why): on desktop the header's row, on a phone a sheet MENU opens.
+ * why): from 1024px the capsule, below it a sheet Menu opens.
  *
  * The browser's `[popover]` rule hides a popover that is not open and dresses
  * an open one as a centred dialog — `inset: 0`, `margin: auto`, a border, a
@@ -210,42 +129,41 @@
   color: inherit;
   overflow: visible;
 
-  /*
-   * The middle track — the header's centre. Tahap 87. Positioned, as the
-   * route marker's containing block (`vault/motion/route-marker`).
-   */
-  @media (--desktop) {
-    grid-column: 2;
+  /* The middle track, centred in it: the capsule. */
+  @media (width >= 1024px) {
     display: block;
-    position: relative;
+    justify-self: center;
+    min-inline-size: 0;
   }
 
   /*
-   * Shut on a phone until MENU opens it: the author default, which also keeps
-   * it shut in a browser without `popover`, where the attribute means nothing
-   * and the browser's own rule is absent.
+   * Shut below 1024px until Menu opens it: the author default, which also
+   * keeps it shut in a browser without `popover`, where the attribute means
+   * nothing and the browser's own rule is absent.
    */
-  @media (--mobile) {
+  @media (width < 1024px) {
     display: none;
   }
 }
 
 /*
- * The phone's sheet. It starts under the bar and fills the rest of the
- * screen, so the header — and MENU, now reading "Close" — stays where it was.
- * `:is()` lets one rule serve the popover and the no-`popover` fallback
- * (`data-open`): it forgives the selector it cannot parse, where a plain list
- * would be dropped whole.
+ * The sheet. It starts under the bar and fills the rest of the screen, so
+ * the bar — and Menu, now reading "Tutup" — stays where it was, which is
+ * also what lets it close on a phone held sideways: the way out is never
+ * scrolled away, and the sheet scrolls under it. `:is()` lets one rule serve
+ * the popover and the no-`popover` fallback (`data-open`): it forgives the
+ * selector it cannot parse, where a plain list would be dropped whole.
  */
-@media (--mobile) {
+@media (width < 1024px) {
   :is(.nav:popover-open, .nav[data-open]) {
     display: flex;
     flex-direction: column;
+    gap: var(--space-24);
     position: fixed;
     inset: var(--header-height) 0 0;
     /* Above the page when it is not in the top layer (`data-open`). */
     z-index: 1;
-    padding: mobile-vw(16px) var(--safe) mobile-vw(40px);
+    padding: var(--space-24) var(--safe) var(--space-32);
     background-color: var(--color-primary);
     color: var(--color-secondary);
     overflow-y: auto;
@@ -253,184 +171,455 @@
   }
 }
 
-.navList {
-  display: flex;
-  align-items: center;
-  gap: mobile-vw(20px);
-  list-style: none;
+/* The sheet's title. The capsule needs none. */
+.sheetTitle {
   margin: 0;
-  padding: 0;
-
-  @media (--mobile) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-    /* The sheet's words are fitted to this column (`.navLink`). */
-    container-type: inline-size;
-    inline-size: 100%;
-  }
-
-  @media (--desktop) {
-    gap: desktop-vw(28px);
-  }
-}
-
-.navItem {
-  display: flex;
-  align-items: center;
-
-  @media (--mobile) {
-    /* Comfortable touch target — 44px is the floor, not a target to hit
-       exactly. */
-    min-height: 44px;
-  }
-}
-
-.navLink {
+  font-family: var(--font-text);
+  font-size: var(--type-caption);
+  line-height: var(--type-nav-leading);
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  text-decoration: none;
-  /*
-   * 62% against either ground clears WCAG AA comfortably in both themes.
-   * Measured pairs are in `lib/styles/scripts/contrast-baseline.json`, which
-   * is empty — nothing here is an accepted exception.
-   */
   color: var(--text-muted);
-  /* INTENT already in band; `transform` added for COMMIT (§9). */
-  transition:
-    color var(--duration-fast) var(--ease-out-expo),
-    transform var(--duration-micro) var(--ease-out-quart);
 
-  @media (--hover) {
-    &:hover {
-      color: var(--color-secondary);
-      text-decoration: none;
-    }
-  }
-
-  &[aria-current] {
-    color: var(--color-secondary);
-  }
-
-  /*
-   * INTENT, reached from the keyboard.
-   *
-   * The outline below is a *focus indicator* — a separate obligation, and one
-   * axe already checks. It is not the acknowledgment: §9 says INTENT is one
-   * state reachable two ways, and a keyboard reader who only ever gets a ring
-   * is reading a different page from a pointer user. Outside the `--hover`
-   * query on purpose: focus happens on every device.
-   */
-  &:focus-visible {
-    color: var(--color-secondary);
-    outline: 2px solid var(--color-contrast);
-    outline-offset: 4px;
-    border-radius: var(--radius-hairline);
-  }
-
-  /*
-   * On a phone the same links are the sheet's words — the fork: display
-   * type, each word fitted to its own longest word since R4 (E8.1;
-   * `--fit-chars` per link, set by `index.tsx`, with the nameplate's 0.72em
-   * per character, until the measured `--fit-size` replaces it). Before R4
-   * they shared the size of the longest word among them. "Journal" was 71px
-   * on a 390px phone, "Jurnal" 83; `14svh` caps
-   * a phone on its side, where width is plentiful and height is not. Onest at
-   * 700 reaches at most 0.639em a character over the route words (headless
-   * Chrome, 2026-10-30), inside that 0.72.
-   *
-   * `12vw` for a browser with neither `cqi` nor `svh` — behind `@supports`,
-   * because a declaration that holds a `var()` is never dropped at parse
-   * time: written as two lines, the fitted one always won and, invalid only
-   * later, fell to body size (found in review).
-   */
-  @media (--mobile) {
-    display: block;
-    padding-block: mobile-vw(4px);
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 12vw;
-
-    /*
-     * `--fit-size` is the measured size, each word its own (R4, E8.1), set by
-     * `index.tsx` once the face has loaded; until then, and without a
-     * script, the per-character estimate from this word's own count.
-     */
-    @supports (width: 1cqi) and (height: 1svh) {
-      font-size: min(
-        var(--fit-size, calc(100cqi / (var(--fit-chars, 7) * 0.72))),
-        14svh
-      );
-    }
-    line-height: 0.95;
-    letter-spacing: -0.04em;
-    text-transform: none;
-    /* A multi-word label wraps rather than shrinking every word (index.tsx). */
-    white-space: normal;
-    text-wrap: balance;
-
-    /*
-     * "You are here" by more than a step of ink. Review measured the muted
-     * and full inks at about 1.8:1 against each other — under the 3:1 a
-     * state change should carry — and in forced colours they are one colour.
-     * An underline survives both.
-     */
-    &[aria-current] {
-      text-decoration-line: underline;
-      text-decoration-thickness: 0.06em;
-      text-underline-offset: 0.12em;
-    }
-  }
-}
-
-/* On the phone's sheet the current word is underlined instead. */
-.marker {
-  @media (--mobile) {
+  @media (width >= 1024px) {
     display: none;
   }
 }
 
-/* The development-only Storybook link stays off the phone's sheet. */
-.navAside {
-  @media (--mobile) {
+/*
+ * The capsule: 52px, with a 4px inset, so each link inside is 44px. The
+ * 1px line is part of the inset (3px padding inside it), which keeps the
+ * capsule at 52 and the links at 44 rather than at 54 and 44.
+ */
+.capsule {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  @media (width >= 1024px) {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-4);
+    block-size: var(--control-capsule);
+    padding: calc(var(--control-inset) - 1px);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-pill);
+  }
+}
+
+.item {
+  display: flex;
+
+  @media (width < 1024px) {
+    border-block-end: 1px solid var(--line);
+  }
+}
+
+/*
+ * A route. The label and the hit box never move: hover, focus and press all
+ * read on `.glow`, the pill behind the label, and the link's own press
+ * compression (`[data-press]:active`, global.css) is set to nothing.
+ */
+.link {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--control-link);
+  padding-inline: var(--space-16);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-text);
+  font-size: var(--type-nav);
+  line-height: var(--type-nav-leading);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  color: var(--color-secondary);
+  text-decoration: none;
+  --press-scale: 1;
+  transition: color var(--feedback-hover) var(--ease-state);
+
+  &:focus-visible {
+    /*
+     * The ring, 2px and 3px out. The capsule does not clip it (no
+     * `overflow` there), and it is not the current route's pill: a focused
+     * current link shows both.
+     */
+    outline: var(--ring-width) solid var(--color-contrast);
+    outline-offset: var(--ring-offset);
+  }
+
+  /* On the sheet: a row of display type, 30px, the full width. */
+  @media (width < 1024px) {
+    flex: 1;
+    justify-content: flex-start;
+    min-block-size: 56px;
+    padding-inline: 0;
+    border-radius: var(--radius-input);
+    font-family: var(--font-display);
+    /* scale-exempt: the sheet's links, 24 to 32px by the reference. */
+    font-size: 30px;
+    line-height: 1.1;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    white-space: normal;
+  }
+}
+
+.label {
+  position: relative;
+}
+
+/*
+ * The pill behind the label. Hover and keyboard focus show it in 170ms; a
+ * press deepens it and settles it to 0.98 in 110ms, inside the link's fixed
+ * box, so no neighbour moves. A real element rather than `::before`:
+ * `e2e/interaction-grammar.e2e.ts` reads the control and what is inside it,
+ * and a pseudo-element is invisible to it.
+ */
+.glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-color: color-mix(
+    in oklab,
+    var(--color-secondary) 10%,
+    transparent
+  );
+  opacity: 0;
+  transform: scale(1);
+  pointer-events: none;
+  transition:
+    opacity var(--feedback-hover) var(--ease-state),
+    transform var(--feedback-press) var(--ease-state),
+    background-color var(--feedback-press) var(--ease-state);
+
+  /* On the sheet the pill reaches a little past the words. */
+  @media (width < 1024px) {
+    inset: 4px -8px;
+  }
+}
+
+@media (--hover) {
+  .link:hover .glow {
+    opacity: 1;
+  }
+}
+
+.link:focus-visible .glow {
+  opacity: 1;
+}
+
+.link:active .glow {
+  opacity: 1;
+  background-color: color-mix(
+    in oklab,
+    var(--color-secondary) 18%,
+    transparent
+  );
+  transform: scale(0.98);
+}
+
+/*
+ * The current route: a contrasting pill inside the capsule, with
+ * `aria-current`. It does not depend on hover and stays when the pointer
+ * leaves.
+ */
+.link[aria-current='page'] {
+  color: var(--color-primary);
+}
+
+.link[aria-current='page'] .glow {
+  opacity: 1;
+  background-color: var(--color-secondary);
+}
+
+.link[aria-current='page']:active .glow {
+  background-color: color-mix(
+    in oklab,
+    var(--color-secondary) 84%,
+    var(--color-primary)
+  );
+}
+
+/*
+ * On the sheet the current route is underlined instead of filled: a filled
+ * full-width row read as a button there. An underline also survives forced
+ * colours, where the muted and full inks are one colour.
+ */
+@media (width < 1024px) {
+  .link[aria-current='page'] {
+    color: var(--color-secondary);
+  }
+
+  .link[aria-current='page'] .glow {
+    background-color: color-mix(
+      in oklab,
+      var(--color-secondary) 10%,
+      transparent
+    );
+  }
+
+  .link[aria-current='page'] .label {
+    text-decoration-line: underline;
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.14em;
+  }
+}
+
+/* The development-only Storybook link stays off the sheet. */
+.aside {
+  @media (width < 1024px) {
     display: none;
   }
 }
 
 .externalMark {
   margin-left: 0.25em;
-  /* Decorative: the link text already names the destination. */
   display: inline-block;
 }
 
 /*
- * MENU and Close, in a box both words fit — R4, E8.5.
- *
- * The two labels share one grid cell, so the box is sized by the wider word
- * whichever is showing: "Tutup" no longer runs out of the outline "Menu"
- * drew, and nothing beside the button moves when the label changes.
+ * The sheet's second list: Layanan, Pembayaran, Kontak. Quieter than the
+ * routes above it, at 24px, and absent from the row.
  */
-.menuToggle {
-  display: none;
-  place-items: center;
-  background: none;
-  border: thin solid var(--line);
-  border-radius: 999px;
-  color: var(--color-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  cursor: pointer;
-  padding-inline: mobile-vw(14px);
-  min-height: 44px;
-  min-width: 44px;
+.secondary {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 
-  @media (--mobile) {
-    display: grid;
+  @media (width >= 1024px) {
+    display: none;
+  }
+}
+
+.secondaryLink {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--control-link);
+  font-family: var(--font-text);
+  /* scale-exempt: the sheet's second list, at the reference's 24px floor. */
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--feedback-hover) var(--ease-state);
+
+  @media (--hover) {
+    &:hover {
+      color: var(--color-secondary);
+    }
+  }
+
+  &[aria-current='page'] {
+    color: var(--color-secondary);
+    text-decoration-line: underline;
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.16em;
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-contrast);
-    outline-offset: 4px;
+    color: var(--color-secondary);
+    outline: var(--ring-width) solid var(--color-contrast);
+    outline-offset: var(--ring-offset);
+    border-radius: var(--radius-hairline);
+  }
+}
+
+/*
+ * The action on the sheet, where the bar has no room for it: under 640px.
+ * From 640px the bar's own is shown and this one is not.
+ */
+.sheetCta {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--control-cta);
+  padding-inline: var(--space-24);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+  font-family: var(--font-text);
+  font-size: var(--type-body);
+  line-height: 1;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color var(--feedback-hover) var(--ease-state);
+
+  &:active {
+    background-color: color-mix(
+      in oklab,
+      var(--color-secondary) 78%,
+      var(--color-primary)
+    );
+    transition-duration: var(--feedback-press);
+  }
+
+  &:focus-visible {
+    outline: var(--ring-width) solid var(--color-contrast);
+    outline-offset: var(--ring-offset);
+  }
+
+  @media (width >= 640px) {
+    display: none;
+  }
+}
+
+/*
+ * The right zone: search, the language switcher, and the action at the end.
+ * Pushed to the right on the narrow bar, where it shares a flex row with the
+ * wordmark and Menu; on the row it is the grid's third track.
+ */
+.tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  margin-inline-start: auto;
+
+  @media (width >= 1024px) {
+    gap: var(--space-12);
+    margin-inline-start: 0;
+    justify-self: end;
+  }
+}
+
+/*
+ * Search, compact: its icon alone, a 44px target, with the word still its
+ * name for a screen reader. The word and the ⌘K hint come back from 1280px,
+ * where the row has room for them. Two classes, so this outranks the
+ * trigger's own module whatever order the two stylesheets load in.
+ */
+.tools .search {
+  position: relative;
+  justify-content: center;
+  min-block-size: var(--control-link);
+  min-inline-size: var(--control-link);
+  padding-block: 0;
+  padding-inline: 0;
+  border-radius: var(--radius-pill);
+  border-color: var(--line-strong);
+
+  @media (width < 1280px) {
+    & > :not(:first-child) {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+
+  @media (width >= 1280px) {
+    padding-inline: var(--space-16);
+  }
+}
+
+.language {
+  /* Outside the sheet on purpose: a preference, reachable while it is shut. */
+  flex-shrink: 0;
+}
+
+/*
+ * The action: 48px, filled, the strongest thing on the bar, so the
+ * navigation reads quieter beside it. Hover and keyboard focus deepen it in
+ * 170ms (one state reached two ways, `MOTION-SPEC.md` §9); a press deepens
+ * it further in 110ms. It does not scale: the target stays fixed.
+ */
+.cta {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--control-cta);
+  padding-inline: var(--space-24);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+  font-family: var(--font-text);
+  font-size: var(--type-nav);
+  line-height: var(--type-nav-leading);
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  --press-scale: 1;
+  transition: background-color var(--feedback-hover) var(--ease-state);
+
+  @media (width >= 640px) {
+    display: inline-flex;
+  }
+
+  @media (--hover) {
+    &:hover {
+      background-color: color-mix(
+        in oklab,
+        var(--color-secondary) 86%,
+        var(--color-primary)
+      );
+    }
+  }
+
+  &:focus-visible {
+    background-color: color-mix(
+      in oklab,
+      var(--color-secondary) 86%,
+      var(--color-primary)
+    );
+    outline: var(--ring-width) solid var(--color-contrast);
+    outline-offset: var(--ring-offset);
+  }
+
+  &:active {
+    background-color: color-mix(
+      in oklab,
+      var(--color-secondary) 74%,
+      var(--color-primary)
+    );
+    transition-duration: var(--feedback-press);
+  }
+}
+
+.ctaLabel {
+  position: relative;
+}
+
+/*
+ * Menu and Tutup, in a box both words fit — R4, E8.5. The two labels share
+ * one grid cell, so the box is sized by the wider word whichever is showing,
+ * and nothing beside the button moves when the label changes. 44px tall.
+ */
+.menuToggle {
+  display: grid;
+  place-items: center;
+  min-block-size: var(--control-link);
+  min-inline-size: var(--control-link);
+  padding-inline: var(--space-16);
+  background: none;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  color: var(--color-secondary);
+  font-family: var(--font-text);
+  font-size: var(--type-nav);
+  line-height: var(--type-nav-leading);
+  font-weight: 500;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: var(--ring-width) solid var(--color-contrast);
+    outline-offset: var(--ring-offset);
+  }
+
+  @media (width >= 1024px) {
+    display: none;
   }
 }
 
@@ -442,127 +631,43 @@
   }
 }
 
-.language {
-  /* Outside the sheet on purpose: a preference, reachable while it is shut. */
-  flex-shrink: 0;
-}
-
 /*
- * The first step, at the end of the row (R4): an outlined pill in the nav's
- * own caption type. Only from 1100px: below that the five routes, search and
- * this would not share one line, and the routes come first.
- */
-.cta {
-  display: none;
-  align-items: center;
-  min-height: 36px;
-  padding-inline: desktop-vw(16px);
-  border: thin solid currentColor;
-  border-radius: 999px;
-  color: var(--color-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: transform var(--duration-micro) var(--ease-out-quart);
-
-  @media (min-width: 1100px) {
-    display: inline-flex;
-  }
-
-  /*
-   * INTENT, one state reached two ways (`MOTION-SPEC.md` §9): the pill fills,
-   * under a pointer and under the keyboard's focus alike, the way the home
-   * page's own call to action does. A ring alone would acknowledge a cursor
-   * and not a keyboard (`e2e/interaction-grammar.e2e.ts`).
-   */
-  @media (--hover) {
-    &:hover {
-      background-color: var(--color-secondary);
-      color: var(--color-primary);
-    }
-  }
-
-  &:focus-visible {
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
-    outline: 2px solid var(--color-contrast);
-    outline-offset: 4px;
-  }
-}
-
-/*
- * The words arrive in order when the sheet opens: each rises from below and
- * fades in, one `--stagger-items` apart. `@starting-style` is the state they
+ * The sheet arrives in order: each row fades in and rises 8px, one
+ * `--stagger-items` apart, in 260ms (the reference's 220 to 320ms for a
+ * panel, at most 8px of travel). `@starting-style` is the state they
  * transition from, so this needs no script and no frame loop — only
- * `transform` and `opacity` move. Closing is instant: the exit is faster than
- * the entrance (`MOTION-SPEC.md`), and here it is the fastest there is.
+ * `transform` and `opacity` move. Closing is instant.
  */
-@media (--mobile) {
-  :is(.nav:popover-open, .nav[data-open]) .navItem {
+@media (width < 1024px) {
+  :is(.nav:popover-open, .nav[data-open]) :is(.item, .secondary > li) {
     transition:
-      opacity var(--duration) var(--ease-out-expo),
-      transform var(--duration) var(--ease-out-expo);
+      opacity 260ms var(--ease-state),
+      transform 260ms var(--ease-state);
     transition-delay: calc(var(--item, 0) * var(--stagger-items));
   }
 
   @starting-style {
-    :is(.nav:popover-open, .nav[data-open]) .navItem {
+    :is(.nav:popover-open, .nav[data-open]) :is(.item, .secondary > li) {
       opacity: 0;
-      transform: translate3d(0, mobile-vw(24px), 0);
+      transform: translate3d(0, 8px, 0);
     }
   }
 }
 
 @media (--reduced-motion) {
   /*
-   * The open-state selector, repeated: at `.navItem` alone this would lose to
+   * The open-state selector, repeated: at `.item` alone this would lose to
    * the rule above, and so does `global.css`'s kill switch, which sets a
    * duration the shorthand above overrides.
    */
-  .navLink,
-  .cta,
   .header::before,
   .header::after,
-  :is(.nav:popover-open, .nav[data-open]) .navItem {
+  .link,
+  .glow,
+  .secondaryLink,
+  .sheetCta,
+  .cta,
+  :is(.nav:popover-open, .nav[data-open]) :is(.item, .secondary > li) {
     transition: none;
-  }
-}
-
-/*
- * The search trigger.
- *
- * `margin-inline-start: auto` is deliberately absent: the nav already
- * consumes the free space through the header's `justify-content:
- * space-between`, and adding one here would push the language switcher off
- * the end on a narrow viewport.
- */
-.search {
-  flex-shrink: 0;
-}
-
-/*
- * Search and language, placed as one group — Tahap 87.
- *
- * On desktop it takes the right track and sits against its end, mirroring
- * the wordmark at the opposite `--safe` edge. The space inside it is the
- * nav's own rhythm (`.navList`), so the header carries one spacing rather
- * than two.
- *
- * Below the breakpoint it is `display: contents`: its two children stay the
- * header's flex items exactly as they were before the group existed, with the
- * menu button after them in the markup (the fork; it used to sit before them,
- * moved past by an `order` on the language switcher). A `<div>` has no role
- * for `contents` to strip.
- */
-.tools {
-  display: contents;
-
-  @media (--desktop) {
-    grid-column: 3;
-    justify-self: end;
-    display: flex;
-    align-items: center;
-    gap: desktop-vw(28px);
   }
 }
