@@ -18,104 +18,71 @@ import { BRAND_NAME } from '@/lib/brand'
 import { UNITS, unitTemplate } from '@/lib/content/units'
 import { usePathname } from '@/lib/i18n/navigation'
 import { isAwaitingContent } from '@/lib/seo/awaiting-content'
-import { RouteMarker } from '@/vault/motion/route-marker'
 
 import s from './header.module.css'
 
 /**
- * Site header.
+ * Site header — the pill navbar of G1 (`docs/RENCANA-VISUAL-GERAK.md`).
  *
- * Replaces the Satūs starter header, which showed a "Satūs" wordmark, the raw
- * pathname as a debug readout, and links to darkroom's own repository. Useful
- * while forking; not something to ship on a studio's site.
+ * ## Three zones
  *
- * ## The home page holds the sections; Contact is the one shortcut
+ * The owner's technical reference, §4 (`docs/SOLUSI-TEKNIS-VISUAL-GERAK.md`):
+ * the wordmark on the left, the navigation capsule in the middle, the call to
+ * action and the utilities on the right, on a grid of
+ * `auto minmax(0, 1fr) auto`. The capsule is centred in the space the two
+ * ends leave, never absolutely, so it cannot run into either of them.
  *
- * The home page is one long page (`docs/ROADMAP.md` §1.2), and until Tahap 54
- * this header rendered its four section anchors alongside the three routes —
- * seven links, two of them duplicating a route's own name. `ROUTE_LINKS`
- * below carries the argument and the count.
+ * Four destinations in the capsule — Konstruksi, Teknologi, Peekabo, Cara
+ * kerja — and one action, "Ceritakan kebutuhan", to the contact page. Kontak,
+ * Layanan and Pembayaran left the row: they are the menu's second list and
+ * the footer's index, so nothing became unreachable, and the action already
+ * leads to the contact page.
  *
- * Most sections remain part of the home page's reading flow. F1-06 adds one
- * direct shortcut to Contact because it is a top-level destination; the other
- * four links point to Arthur's three units and work-method page.
+ * Exactly one link carries `aria-current="page"`, and on the home page none
+ * does: the wordmark is the way home and is never "current".
  *
- * ## Locale
+ * ## States, all in CSS
  *
- * Every internal link goes through `components/ui/link`, which routes through
- * next-intl so the reader's language survives the navigation. `usePathname`
- * here is next-intl's too — it returns the path with the prefix stripped, so
- * active-state comparison is template-against-template. Using the bare
- * `next/navigation` version compares `/id` against `/`, which is never equal,
- * and every item renders inactive. See `components/ui/link/link.test.ts`.
+ * Hover shows a soft pill behind the label; the label and the hit box do not
+ * move. The current route is a contrasting pill inside the capsule, which a
+ * pointer leaving does not take away. Focus is a 2px ring 3px out, which the
+ * capsule does not clip and which is not the current route's pill. A press
+ * deepens the pill and settles it to 0.98 inside the link's fixed box, so no
+ * neighbour moves. The pill is a real element (`.glow`), not a
+ * pseudo-element, so `e2e/interaction-grammar.e2e.ts` can read it.
  *
- * ## One navigation, which on a phone is a popover — the fork
+ * ## One navigation, which below 1024px is a sheet — the fork
  *
- * MENU was a React state toggle over a dropdown of three 11px mono links.
- * With scripting off the button did nothing and the nav stayed
- * `display: none`, so a phone had no route links in its header at all; only
- * the footer led anywhere (the design-critique workflow, deferred item 9).
+ * The nav **is** a `popover="auto"` and Menu its `popovertarget`: the
+ * browser opens it, closes it on Escape or a tap outside and returns focus
+ * to the button, with or without a script. From 1024px the same element is
+ * the capsule. One element, not two: a second nav for the sheet put a hidden
+ * copy of every route link, and a second `aria-current`, into the desktop
+ * page (five gates walked into it).
  *
- * Now the nav **is** a `popover="auto"`, and MENU its `popovertarget`: the
- * browser opens it, closes it on Escape or a tap outside, returns focus to
- * the button — none of it needs a script. On a phone it is a sheet under the
- * bar with the current destinations at display size; on desktop the same element is
- * the header's row, as it always was.
+ * The row folds at 1024px, not at the site's 800px breakpoint: the reference
+ * asks for the menu to come early rather than for text to shrink, and 1024
+ * is where the three zones still hold in both languages.
  *
- * One element, not two. The first version of this rendered a second nav for
- * the sheet, and that put a hidden copy of every route link — and a second
- * `aria-current` — into the desktop page. Five gates walked into it, each
- * reasonably: a "first link to /en/practice/…" or "every `[data-press]`" that
- * landed on a link nobody could see. The sheet is generated from the same
- * five destinations as desktop navigation, while the footer repeats only
- * the three units and work-method page.
- *
- * What the script adds (each from review): the button reads "Close" while
- * the sheet is open, read from the element so a tap before hydration counts;
- * focus landing anywhere outside the sheet closes it, and what it covers is
- * `inert` while it covers it, so neither Tab nor a screen reader ends up on
- * content hidden under an opaque sheet; a link that navigates closes it,
- * because each page renders its own header and Next keeps the previous page
- * in a hidden `<Activity>` — without this, Back reveals that page with its
- * sheet still open; MENU targets its own nav by reference, because that
- * `<Activity>` also means two `#header-nav` in one document; crossing into
- * desktop closes it; and a browser without `popover` gets a plain toggle with
- * `aria-expanded`, Escape, a tap outside, and focus handed back.
+ * What the script adds, each from review: the button reads "Close" while the
+ * sheet is open, read from the element so a tap before hydration counts, and
+ * says so in `aria-expanded` once hydrated; Tab and Shift+Tab stay inside
+ * the open sheet and its button (the focus trap); focus landing anywhere
+ * else closes it, and what it covers is `inert` while it covers it; a link
+ * that navigates closes it, because Next keeps the previous page in a hidden
+ * `<Activity>` and Back would reveal it still open; Menu targets its own nav
+ * by reference, because that `<Activity>` also means two `#header-nav` in
+ * one document; crossing into the row closes it; and a browser without
+ * `popover` gets a plain toggle with Escape, a tap outside and focus handed
+ * back.
  *
  * ## The bar follows the page — R4
  *
- * The navbar plan in `docs/RENCANA-REVISI-F3.md` (R4), built:
- *
- * - **The rule previews.** `RouteMarker` with `previews`: it goes to the link
- *   pointed at or focused, and slides back to the current one.
- * - **The ground is the page's.** A page can paint a section in the other
- *   theme (a unit page's dark opening on a light page). The bar takes the
- *   theme of the section under it, read by an `IntersectionObserver` on a
- *   one-pixel line through its middle, and crossfades its ground by opacity.
- *   No frame loop: an observer is called only when a section crosses.
- * - **The sheet's words are measured, each its own.** E8.1: every route word
- *   is set as large as its own widest word allows, measured in the face it is
- *   drawn in; the per-character estimate stays as the size before a script
- *   runs, and without one.
- * - **Close fits its box.** E8.5: both labels are in the button at once, the
- *   one not showing hidden, so the box is the wider word's and never changes.
- * - **The right side is composed.** Search, the first step ("Ceritakan
- *   masalahnya", to the contact page, from 1100px where the row has room),
- *   and the language switcher's place for R7, in that order.
- *
- * The plan's list named seven destinations; this keeps five, the R4 row's
- * number and the one the brief for this build asked for. Two more entries in
- * `ROUTE_LINKS` add Layanan and Pembayaran.
- *
- * Not built: the plan's "sembunyi dan muncul", the bar stepping aside going
- * down the page. It was, and CI took it back out. This site anchors more to
- * the bar than the bar itself: the journal's reading progress sits on its
- * edge (`vault/motion/reading-progress`), sticky plates and the project
- * spine sit under it, the search palette hangs from it, and tests open the
- * menu and the routes after scrolling. With the bar gone those were left
- * floating over text — `e2e/contrast-situ.e2e.ts` measured the journal's
- * words at 1:1 under the stranded progress bar. It comes back once every
- * element anchored to `--header-height` follows the bar too.
+ * A page can paint a section in the other theme (a unit page's dark opening
+ * on a light page, the home page's paper need chooser under its dark hero).
+ * The bar takes the theme of the section under it, read by an
+ * `IntersectionObserver` on a one-pixel line through its middle, and
+ * crossfades between two solid grounds by opacity. No frame loop.
  */
 
 // In local dev, link straight to the Storybook dev server. In deployed builds,
@@ -131,56 +98,36 @@ const STORYBOOK_ENABLED =
   Boolean(process.env.NEXT_PUBLIC_STORYBOOK_URL)
 
 /**
- * The primary navigation: three units, the work-method page, and contact.
- *
+ * From this width the three zones share one row; below it the capsule and
+ * the second list are the Menu's sheet. `header.module.css` and the scroll
+ * hold in `lib/styles/css/global.css` use the same 1024px.
+ */
+const ROW_QUERY = '(min-width: 1024px)'
+
+/*
  * Locale-free templates: `components/ui/link` adds the prefix itself, and
- * handing it `/en/work` would produce `/en/en/work`.
+ * handing it `/en/konstruksi` would produce `/en/en/konstruksi`.
  *
- * ## Why this list has five destinations
- *
- * Until Tahap 54 this nav rendered the home page's four in-page anchors
- * (`#work`, `#practice`, `#studio`, `#contact`) *and* three routes. On `/en`
- * that shipped **seven** links inside one `<nav aria-label="Primary">`,
- * of which two pairs carried the same accessible name and different
- * destinations — `Work` → `#work` beside `Work` → `/en/work`, and the same
- * for `Studio`. A reader cannot tell those apart, and a screen-reader user
- * walking the link list gets the ambiguity twice.
- *
- * It also broke this file's own rule three lines further down: the row is
- * capped at one line, and seven is not one line.
- *
- * The nav now answers the Arthur map directly: three units, Metode kerja,
- * and Kontak. The catalogue and journal indexes remain addressable but are
- * not promoted in navigation. The wordmark to the left is the home link and
- * carries `aria-label="<brand> —
- * home"`; a fourth item spelling "Home" beside it would be the same duplicate
- * this change removes.
+ * A destination whose page is still awaiting published content is left out
+ * (`lib/seo/awaiting-content.ts`): a link that lands on a 404 is worse than
+ * one link fewer.
  */
 const UNIT_LINKS = UNITS.map((unit) => ({
   href: unitTemplate(unit),
-  labelKey: unit,
-}))
+  unit,
+})).filter(({ href }) => !isAwaitingContent(href))
 
-/*
- * A destination whose page is still awaiting published content is left out
- * (`lib/seo/awaiting-content.ts`): a primary link that lands on a 404 is
- * worse than one link fewer.
- */
-const ROUTE_LINKS = [
-  ...UNIT_LINKS.map((link) => ({ ...link, kind: 'unit' as const })),
-  { href: '/metode', labelKey: 'studio' as const, kind: 'nav' as const },
-  { href: '/kontak', labelKey: 'contact' as const, kind: 'nav' as const },
-].filter(({ href }) => !isAwaitingContent(href))
+/** The capsule's fourth destination: how Arthur works (`/metode`). */
+const METHOD_HREF = '/metode'
 
-/** The size the sheet's words are measured at, and their tracking there. */
-const FIT_PROBE = 100
-const SHEET_TRACKING = -0.04
+/** The menu's second list: reachable here and from the footer's index. */
+const SECONDARY_LINKS = [
+  { href: '/layanan', labelKey: 'services' },
+  { href: '/pembayaran', labelKey: 'payment' },
+  { href: '/kontak', labelKey: 'contact' },
+] as const
 
-/**
- * The share of the column a fitted word may take. The canvas measures the
- * advance, and a glyph's ink can reach a little past it.
- */
-const FIT_MARGIN = 0.96
+const CONTACT_HREF = '/kontak'
 
 /**
  * Whether this browser has the popover API.
@@ -213,6 +160,17 @@ function isOpen(nav: HTMLElement) {
 }
 
 /**
+ * The stops of the open sheet's focus trap, in order: the button first, then
+ * every visible link or button inside the sheet.
+ */
+function trapStops(button: HTMLElement, nav: HTMLElement) {
+  return [
+    button,
+    ...nav.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'),
+  ].filter((node) => node.getClientRects().length > 0)
+}
+
+/**
  * A store that never changes, for a value read once on the client — the
  * shape `lib/hooks/use-device-detection.ts` uses for the same need.
  */
@@ -231,14 +189,19 @@ export function Header() {
   const [fallbackOpen, setFallbackOpen] = useState(false)
   /*
    * Whether the browser owns the open state. True on the server, so the
-   * server render carries no `aria-expanded`: with a popover the browser
-   * computes that state itself, and an explicit "false" baked into the HTML
-   * would contradict it for a reader with no script.
+   * server render carries no `aria-expanded` for a reader with no script:
+   * there the popover's own state is all there is.
    */
   const native = useSyncExternalStore(
     subscribeNever,
     supportsPopover,
     () => true
+  )
+  /* Hydrated: false in the server render, true from the first client one. */
+  const hydrated = useSyncExternalStore(
+    subscribeNever,
+    () => true,
+    () => false
   )
   const nav = useRef<HTMLElement>(null)
   const menuButton = useRef<HTMLButtonElement>(null)
@@ -262,23 +225,6 @@ export function Header() {
     () => supportsPopover() && (nav.current?.matches(':popover-open') ?? false),
     () => false
   )
-
-  /*
-   * Each route word is fitted to its own longest *word* — R4, E8.1.
-   *
-   * Until R4 the words shared one size, fitted to the longest word among all
-   * of them, so "Kontak" was set as small as "Konstruksi". Now each link
-   * carries its own count, which is the size the server renders and the size
-   * a reader without a script keeps: `lib/styles/css/global.css`
-   * `.nameplate-title` measured the face's widest glyph run at 0.72em per
-   * character, and the sheet uses the same figure. Once the face has loaded,
-   * the effect below measures the real words and replaces the estimate.
-   *
-   * A multi-word label still wraps (`header.module.css`), so no single word
-   * can overflow and none shrinks for its neighbour.
-   */
-  const fitChars = (label: string) =>
-    Math.max(...label.split(/\s+/).map((word) => Array.from(word).length))
 
   const closeMenu = useCallback(() => {
     const element = nav.current
@@ -333,13 +279,9 @@ export function Header() {
 
     /*
      * What has to hold the instant the sheet opens is wired to the element,
-     * from mount, and reads the element's own state — not React's `open`.
-     * That follows the popover's `toggle` event, which the browser queues,
-     * and the effect that used to attach these listeners ran after it: a
-     * Shift+Tab inside that gap found nothing listening, and the sheet stayed
-     * open over whatever took focus. CI caught it, once, as a flaky
-     * `phone-menu` run on the way to `main`.
-     *
+     * from mount, and reads the element's own state — not React's `open`,
+     * which follows the popover's queued `toggle` event. A Shift+Tab inside
+     * that gap once found nothing listening (CI, a flaky `phone-menu` run).
      * `beforetoggle` is dispatched synchronously, before the sheet shows, so
      * what it covers is `inert` from the first frame the sheet is on screen.
      */
@@ -349,13 +291,10 @@ export function Header() {
     }
 
     /*
-     * Focus landing anywhere outside the open sheet closes it — the fork,
-     * from review. `popover="auto"` is not modal, and the sheet is opaque:
-     * a Tab past the last link, a Shift+Tab from MENU to search, the skip
-     * link — each put focus on something under the sheet, where no one could
-     * see it (WCAG 2.4.11), and search opened its palette underneath.
-     * Listening on the document, not the nav, is what catches the paths
-     * that never pass through the sheet at all.
+     * Focus landing anywhere outside the open sheet closes it. With the trap
+     * below a keyboard cannot get there by Tab, but a script, the skip link
+     * or a click on the bar can, and the sheet is opaque: whatever took focus
+     * would sit under it, unseen (WCAG 2.4.11).
      */
     const onFocusIn = (event: FocusEvent) => {
       if (!isOpen(element)) return
@@ -365,10 +304,34 @@ export function Header() {
       closeMenu()
     }
 
-    // Crossing into desktop, the sheet becomes the row: close it first.
-    const desktop = window.matchMedia('(min-width: 800px)')
+    /*
+     * The focus trap — G1. While the sheet is open, Tab from its last stop
+     * goes back to the button and Shift+Tab from the button goes to the last
+     * stop, so a keyboard walks the sheet and its way out and nothing else.
+     * The browser already places the popover right after its button in the
+     * focus order, so only the two ends need handling. Escape still closes,
+     * by the popover.
+     */
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab' || !isOpen(element)) return
+      const stops = trapStops(button, element)
+      const first = stops[0]
+      const last = stops.at(-1)
+      if (!first || !last || first === last) return
+      const active = document.activeElement
+      if (!event.shiftKey && active === last) {
+        event.preventDefault()
+        first.focus()
+      } else if (event.shiftKey && active === first) {
+        event.preventDefault()
+        last.focus()
+      }
+    }
+
+    // Crossing into the row, the sheet becomes the capsule: close it first.
+    const row = window.matchMedia(ROW_QUERY)
     const onBreakpoint = () => {
-      if (desktop.matches) closeMenu()
+      if (row.matches) closeMenu()
     }
 
     // A tap before hydration may have opened it with nothing listening.
@@ -376,11 +339,13 @@ export function Header() {
 
     element.addEventListener('beforetoggle', onBeforeToggle)
     document.addEventListener('focusin', onFocusIn)
-    desktop.addEventListener('change', onBreakpoint)
+    document.addEventListener('keydown', onKeyDown)
+    row.addEventListener('change', onBreakpoint)
     return () => {
       element.removeEventListener('beforetoggle', onBeforeToggle)
       document.removeEventListener('focusin', onFocusIn)
-      desktop.removeEventListener('change', onBreakpoint)
+      document.removeEventListener('keydown', onKeyDown)
+      row.removeEventListener('change', onBreakpoint)
       // Hidden with its page, the sheet is not left open behind it.
       closeMenu()
       uncover()
@@ -415,79 +380,13 @@ export function Header() {
   }, [fallbackOpen, closeMenu, cover, uncover])
 
   /*
-   * The sheet's words, measured — E8.1.
-   *
-   * On a phone, each route word is set so its widest word fills the sheet's
-   * column, measured with the canvas in the face the word is drawn in, at
-   * the sheet's own tracking. The column is the header's content box: the
-   * sheet is laid out with the same `--safe` inset, and the header is there
-   * to measure while the sheet is still shut. Measured again when the
-   * viewport changes; the 14svh cap stays the stylesheet's.
-   */
-  useEffect(() => {
-    const header = bar.current
-    const list = nav.current?.querySelector('ul')
-    const context = document.createElement('canvas').getContext('2d')
-    if (!header || !list || !context) return
-
-    const phone = window.matchMedia('(max-width: 799.98px)')
-    const fit = () => {
-      if (!phone.matches) return
-      const box = getComputedStyle(header)
-      const column =
-        header.clientWidth -
-        Number.parseFloat(box.paddingLeft) -
-        Number.parseFloat(box.paddingRight)
-      for (const link of list.querySelectorAll<HTMLElement>(
-        '[data-route-word]'
-      )) {
-        const face = getComputedStyle(link)
-        context.font = `${face.fontWeight} ${FIT_PROBE}px ${face.fontFamily}`
-        const widest = Math.max(
-          ...(link.textContent ?? '')
-            .split(/\s+/)
-            .filter(Boolean)
-            .map(
-              (word) =>
-                context.measureText(word).width +
-                SHEET_TRACKING * FIT_PROBE * Array.from(word).length
-            )
-        )
-        if (widest > 0) {
-          link.style.setProperty(
-            '--fit-size',
-            `${((column * FIT_MARGIN) / widest) * FIT_PROBE}px`
-          )
-        }
-      }
-    }
-
-    let cancelled = false
-    document.fonts.ready
-      .then(() => {
-        if (!cancelled) fit()
-      })
-      .catch(() => {
-        // The per-character estimate stays, which is the size without a script.
-      })
-    phone.addEventListener('change', fit)
-    window.addEventListener('resize', fit)
-    return () => {
-      cancelled = true
-      phone.removeEventListener('change', fit)
-      window.removeEventListener('resize', fit)
-    }
-  }, [])
-
-  /*
    * The bar takes the ground of the section under it — R4.
    *
-   * Sections that paint the other theme carry `data-theme` (the unit pages'
-   * dark opening); the bar watches a one-pixel line through its own middle
-   * and takes the theme of the last such section crossing it, or the page's
-   * when none does. This page's own `<main>`, found from the bar: Next keeps
-   * the previous page in a hidden `<Activity>`, and its sections would
-   * otherwise be watched too.
+   * Sections that paint the other theme carry `data-theme`; the bar watches a
+   * one-pixel line through its own middle and takes the theme of the last
+   * such section crossing it, or the page's when none does. This page's own
+   * `<main>`, found from the bar: Next keeps the previous page in a hidden
+   * `<Activity>`, and its sections would otherwise be watched too.
    */
   useEffect(() => {
     const header = bar.current
@@ -550,6 +449,18 @@ export function Header() {
     closeMenu()
   }
 
+  const isCurrent = (href: string) => getLinkIntent(href, pathname).isActive
+
+  const primary = [
+    ...UNIT_LINKS.map(({ href, unit }) => ({ href, label: tUnit(unit) })),
+    ...(isAwaitingContent(METHOD_HREF)
+      ? []
+      : [{ href: METHOD_HREF, label: t('method') }]),
+  ]
+  const secondary = SECONDARY_LINKS.filter(
+    ({ href }) => !isAwaitingContent(href)
+  )
+
   return (
     <header ref={bar} className={s.header}>
       <Link href="/" className={s.brand} aria-label={`${BRAND_NAME} — home`}>
@@ -572,64 +483,50 @@ export function Header() {
          */
         {...(open && { 'data-lenis-prevent': '' })}
       >
-        <ul className={s.navList}>
-          {/*
-            The routes, on every page — Tahap 38.
+        {/* The sheet's title. The capsule has none: the row is its own. */}
+        <p className={s.sheetTitle}>{t('openMenu')}</p>
 
-            This nav rendered `sections` and nothing else, and only the home
-            page passes any. Measured: nine of eleven page types shipped a
-            header of wordmark, search and language switcher, with **zero**
-            route links, while a project page offered exactly one way out of
-            its own content.
-
-            `footer/index.tsx` already argued that the site needs persistent
-            route navigation and put it in the footer, where it is below every
-            page. This is the same three destinations at the top, where
-            someone who has just landed on a project from search will look.
-
-            Tahap 54 removed the home-page anchors that used to sit above
-            these, so this is now the whole list.
-          */}
-          {ROUTE_LINKS.map(({ href, labelKey, kind }, index) => {
-            const label = kind === 'unit' ? tUnit(labelKey) : t(labelKey)
-            return (
-              <li
-                key={href}
-                className={s.navItem}
-                style={{ '--item': index } as CSSProperties}
+        <ul className={s.capsule}>
+          {primary.map(({ href, label }, index) => (
+            <li
+              key={href}
+              className={s.item}
+              // Its place in the sheet's entrance (header.module.css).
+              style={{ '--item': index } as CSSProperties}
+            >
+              <Link
+                className={s.link}
+                href={href}
+                onClick={onRouteClick}
+                // `MOTION-SPEC.md` §9: hover, focus and press read on `.glow`.
+                data-press="nav"
+                data-intent=""
+                data-sheet-link=""
+                {...(isCurrent(href) && { 'aria-current': 'page' as const })}
               >
-                <Link
-                  className={cn('caption', s.navLink)}
-                  href={href}
-                  onClick={onRouteClick}
-                  // `MOTION-SPEC.md` §9.
-                  data-press="nav"
-                  data-intent=""
-                  // The sheet's size for this word (E8.1), measured above.
-                  data-route-word=""
-                  style={{ '--fit-chars': fitChars(label) } as CSSProperties}
-                  {...(getLinkIntent(href, pathname).isActive && {
-                    'aria-current': 'page' as const,
-                  })}
-                >
+                <span aria-hidden="true" className={s.glow} data-glow="" />
+                <span className={s.label} data-label="">
                   {label}
-                </Link>
-              </li>
-            )
-          })}
+                </span>
+              </Link>
+            </li>
+          ))}
 
           {STORYBOOK_ENABLED && (
-            <li className={cn(s.navItem, s.navAside)}>
+            <li className={cn(s.item, s.aside)}>
               <Link
-                className={cn('caption', s.navLink)}
+                className={s.link}
                 href={STORYBOOK_HREF}
                 newTab
                 {...(getLinkIntent(STORYBOOK_HREF, pathname, { newTab: true })
                   .isActive && { 'aria-current': 'page' as const })}
               >
-                {t('storybook')}
-                <span aria-hidden="true" className={s.externalMark}>
-                  ↗
+                <span aria-hidden="true" className={s.glow} data-glow="" />
+                <span className={s.label} data-label="">
+                  {t('storybook')}
+                  <span aria-hidden="true" className={s.externalMark}>
+                    ↗
+                  </span>
                 </span>
               </Link>
             </li>
@@ -637,64 +534,76 @@ export function Header() {
         </ul>
 
         {/*
-          The rule under the current route, slid to the one pressed before
-          the page turns — Tata & Gerak, stage 2. Desktop only: on a phone
-          the sheet's current word carries an underline of its own.
+          The second list, on the sheet only: Layanan, Pembayaran and Kontak
+          left the row in G1 and stay reachable here and in the footer. On the
+          row this list is `display: none`, so it is neither seen nor read nor
+          focusable there, and none of it is a pressable noun that a desktop
+          gate could find hidden.
         */}
-        <RouteMarker className={s.marker} previews />
+        <ul className={s.secondary}>
+          {secondary.map(({ href, labelKey }, index) => (
+            <li
+              key={href}
+              style={{ '--item': primary.length + index } as CSSProperties}
+            >
+              <Link
+                className={s.secondaryLink}
+                href={href}
+                onClick={onRouteClick}
+                data-sheet-link=""
+                {...(isCurrent(href) && { 'aria-current': 'page' as const })}
+              >
+                {t(labelKey)}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/*
+          The action, on the sheet, where the bar has no room for it (under
+          640px). It is the same link as the bar's; only one of the two is
+          ever shown. It names no page as current: the contact page is named
+          by Kontak above.
+        */}
+        <Link href={CONTACT_HREF} className={s.sheetCta} onClick={onRouteClick}>
+          {t('ctaNeed')}
+        </Link>
       </nav>
 
       {/*
-        Search sits beside the language switcher rather than inside the nav:
-        it is not a destination, it is a way of reaching every destination.
-        Its own file records why it is a visible button and not only a ⌘K
-        shortcut, and why almost nothing of it ships to a page that never
-        opens it.
-
-        The two are one group so the header can place them as one — Tahap 87.
-        As separate children of a `space-between` row, each sat wherever the
-        leftover space fell; together they mirror the wordmark at the other
-        `--safe` edge. `header.module.css` has the measurement.
+        The right zone: search and the language switcher, then the action at
+        the end, mirroring the wordmark at the other edge. Search is not a
+        destination but a way of reaching every one, and it stays one press
+        away (⌘K, and the early shortcut that listens before hydration).
       */}
       <div className={s.tools}>
         <CommandTrigger className={s.search} />
         {/*
-          The first step, at the end of the row — R4. A link, not a
-          destination: it leads to the same contact page the nav names, so it
-          carries no `aria-current` and the nav keeps the one "you are here".
-          From 1100px, where the row has room for it; a phone's sheet already
-          lists Kontak.
+          The language switcher shows only on a page whose English is open,
+          and on an English page as the way back (`ENGLISH_PAGES`, #96).
         */}
+        <LanguageSwitcher className={s.language} />
         <Link
-          href="/kontak"
-          className={cn('caption', s.cta)}
+          href={CONTACT_HREF}
+          className={s.cta}
           data-press="cta"
           data-intent=""
         >
-          {t('cta')}
+          <span className={s.ctaLabel}>{t('ctaNeed')}</span>
         </Link>
-        {/*
-          The language switcher's place, last on the right (R4). It takes this
-          place only on a page whose English R7 has opened, and on an English
-          page as the way back; elsewhere it renders nothing, so the row keeps
-          its shape until the first page opens (`ENGLISH_PAGES`).
-        */}
-        <LanguageSwitcher className={s.language} />
       </div>
 
       {/*
         After the tools in the markup, so it sits at the right edge — under
-        the thumb — and the focus order is the order on screen. It sat
-        between the wordmark and search, with the language switcher moved
-        past it by `order`, so the thumb had to reach the middle of the bar.
+        the thumb — and the focus order is the order on screen.
       */}
       <button
         ref={menuButton}
         type="button"
-        className={cn('caption', s.menuToggle)}
+        className={s.menuToggle}
         popoverTarget="header-nav"
         aria-controls="header-nav"
-        {...(!native && { 'aria-expanded': fallbackOpen })}
+        {...(hydrated && { 'aria-expanded': native ? menuOpen : fallbackOpen })}
         onClick={() => {
           if (!supportsPopover()) setFallbackOpen((was) => !was)
         }}
