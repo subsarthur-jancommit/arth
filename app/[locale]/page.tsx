@@ -36,6 +36,8 @@ import { Plate } from '@/vault/blocks/plate'
 import { PracticeList } from '@/vault/blocks/practice-list'
 import { SituationLinks } from '@/vault/blocks/situation-links'
 import { Reveal } from '@/vault/motion/reveal'
+import { CafeAside, CafeIllustration } from '@/vault/webgl/cafe'
+import { CafeStill } from '@/vault/webgl/cafe/still'
 import { PlateMaterial } from '@/vault/webgl/plate-material'
 
 import { HomeSequence } from './home-sequence'
@@ -293,8 +295,8 @@ export default async function Home() {
 
   return (
     /*
-     * `webgl` for the hero's SceneShell and the passage's lit plates, `gsap`
-     * for their timelines. No `simTypes`: the flowmap's reader was the work
+     * `webgl` for the hero's SceneShell and café and the passage's lit
+     * plates, `gsap` for their timelines. No `simTypes`: the flowmap's reader was the work
      * grid's material, removed here with the grid
      * (`docs/TINJAUAN-F01-F03.md` B5), and the plates read the reader's
      * scroll, not the pointer.
@@ -325,9 +327,28 @@ export default async function Home() {
             {tNav('ctaNeed')}
           </Link>
         }
+        /*
+         * G3: the matte café, modelled in code (`lib/cafe`). The server
+         * writes its still; WebGL draws the same café over it where WebGL is
+         * used (`vault/webgl/cafe`).
+         */
+        art={
+          <CafeIllustration>
+            <CafeStill id="cafe-hero" />
+          </CafeIllustration>
+        }
       />
 
       {needs.length > 0 ? <NeedChooser needs={needs} join={join} /> : null}
+
+      {/*
+        On a phone the hero leaves its art out, and the café follows the
+        three needs instead (the reference's §4): a still of its own, with
+        ids of its own, assembling when the reader reaches it.
+      */}
+      <CafeAside>
+        <CafeStill id="cafe-aside" />
+      </CafeAside>
 
       <div className={s.sections}>
         {isDraftMode && (

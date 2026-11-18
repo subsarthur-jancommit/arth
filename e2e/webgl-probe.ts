@@ -17,7 +17,9 @@
  *   its own shader declares: `uCover` is `vault/webgl/material-image`'s plate
  *   (a picture), `uColorA` is `vault/webgl/scene-shell`'s wash, `uClip` is
  *   `vault/webgl/plate-material`'s lit plate (it was `uScan` until G2 took
- *   the scan away). When one draws, its kind is
+ *   the scan away), `uCafe` is the quad that shows `vault/webgl/cafe`'s
+ *   picture and `uCafeRoof` the model drawn into that picture (G3). When one
+ *   draws, its kind is
  *   recorded; for a picture, so is the image bound to its `uTexture` sampler,
  *   by URL. The scene loads the `currentSrc` of the plate's own `<img>`, so
  *   the URL names the plate.
@@ -31,7 +33,7 @@
  */
 
 /** What a program draws, told apart by a uniform only its shader declares. */
-export type DrawKind = 'picture' | 'wash' | 'plate'
+export type DrawKind = 'picture' | 'wash' | 'plate' | 'cafe' | 'cafe-model'
 
 /** What the probe follows in one WebGL context. */
 export interface GlTrack {
@@ -200,6 +202,8 @@ export function installWebglProbe(): void {
       if (name === 'uCover') kindOf.set(program, 'picture')
       if (name === 'uColorA') kindOf.set(program, 'wash')
       if (name === 'uClip') kindOf.set(program, 'plate')
+      if (name === 'uCafe') kindOf.set(program, 'cafe')
+      if (name === 'uCafeRoof') kindOf.set(program, 'cafe-model')
       if (name === 'uTexture') samplerOf.set(location, program)
     }
     return location

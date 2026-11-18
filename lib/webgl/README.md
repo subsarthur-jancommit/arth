@@ -106,7 +106,8 @@ it returns a stable getter for an element's current transform, for reading
 inside a `useFrame` loop.
 
 `useFirstFrame` is for a scene whose DOM side hides a fallback once the scene
-has drawn (`vault/webgl/material-image`, `scene-shell`, `plate-material`). It
+has drawn (`vault/webgl/material-image`, `scene-shell`, `plate-material`,
+`cafe`). It
 returns `announce`, called from the scene's `useFrame` once everything it
 needs to draw is in place. `announce` reports once, never from a lost context,
 and the hook calls `onContextLost` when the context goes, so the fallback shows

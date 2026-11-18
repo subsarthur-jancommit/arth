@@ -1,0 +1,138 @@
+/*
+ * The café illustration: its box, the still's assembly, and the hand-over
+ * to WebGL (`index.tsx`, `still.tsx`).
+ */
+
+/*
+ * The box the café is drawn in. It takes its container's size and has none
+ * of its own to change, so nothing moves when the still steps aside for
+ * the canvas or comes back (no layout shift).
+ */
+.root {
+  position: relative;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/*
+ * The still. `--cafe-start` is when the assembly begins after the first
+ * paint: once the entrance curtain has lifted on a session's first page
+ * (`vault/motion/curtain` marks later pages `data-entered`), a beat after
+ * the headline on any other.
+ */
+.still {
+  --cafe-start: 260ms;
+
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+  transition: opacity var(--duration-fast) var(--ease-out-quart);
+}
+
+:global(html:not([data-entered])) .still {
+  --cafe-start: 720ms;
+}
+
+/*
+ * Each run of faces drops into place and fades in; `--cafe-delay`,
+ * `--cafe-x`, `--cafe-y` and `--cafe-duration` come from
+ * `lib/cafe/assembly.ts` through `still.tsx`. Transform and opacity only.
+ */
+.stage {
+  animation: cafe-arrive var(--cafe-duration) var(--ease-out-expo) both;
+  animation-delay: calc(var(--cafe-start) + var(--cafe-delay));
+}
+
+/* The roof's shade and the contact shadows: a fade on their caster's beat. */
+.fade {
+  animation: cafe-fade var(--cafe-duration) var(--ease-out-expo) both;
+  animation-delay: calc(var(--cafe-start) + var(--cafe-delay));
+}
+
+@keyframes cafe-arrive {
+  from {
+    opacity: 0;
+    transform: translate(var(--cafe-x, 0), var(--cafe-y, 0));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes cafe-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/*
+ * Once arrived, the animation is taken away, so a page that is hidden and
+ * shown again (`cachedNavigations`) does not assemble a second time. Asked
+ * to assemble again with no canvas, the still replays from its first beat.
+ */
+.root[data-cafe-settled] .stage,
+.root[data-cafe-settled] .fade {
+  animation: none;
+}
+
+.root[data-cafe-replay] .still {
+  --cafe-start: 0ms;
+}
+
+/*
+ * The canvas has drawn the café: the still steps aside by opacity alone,
+ * keeping its box and its place, and comes back the moment the canvas
+ * cannot draw (a lost context).
+ */
+.root[data-cafe-live] > .still {
+  opacity: 0;
+}
+
+/*
+ * On a phone the café follows the three needs (the reference's §4), in a
+ * 4:3 box of its own, and assembles when it is reached: paused until the
+ * reveal marks it visible, still and whole without script.
+ */
+.aside {
+  display: block;
+  aspect-ratio: 4 / 3;
+  margin-inline: var(--safe);
+  pointer-events: none;
+
+  @media (--desktop) {
+    display: none;
+  }
+}
+
+.aside .still {
+  --cafe-start: 0ms;
+}
+
+.aside:not([data-reveal]) .stage,
+.aside:not([data-reveal]) .fade {
+  animation: none;
+}
+
+.aside[data-reveal='hidden'] .stage,
+.aside[data-reveal='hidden'] .fade {
+  animation-play-state: paused;
+}
+
+/* Reduced motion: no assembly and no fade. The still is whole from the start. */
+@media (--reduced-motion) {
+  .stage,
+  .fade {
+    animation: none;
+  }
+
+  .still {
+    transition: none;
+  }
+}
