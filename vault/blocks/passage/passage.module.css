@@ -147,6 +147,66 @@
   }
 }
 
+/*
+ * The drawing and its legend (G2), the plate's words as HTML. On a desktop
+ * the legend takes a column of its own beside the drawing, in the room the
+ * drawing's proportions leave: every plate is fitted by the frame's height
+ * at 1440 × 900 and at 1280 × 720 alike, so the column costs it nothing. On
+ * a phone it sits under the drawing.
+ *
+ * Its own cell, not over the drawing: the lit plate is clipped to the
+ * `<svg>`'s box (`vault/webgl/plate-material/scene.tsx`), so nothing the
+ * canvas draws ever passes behind a word of the legend.
+ */
+.drawing [data-plate-material] {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: mobile-vw(12px);
+
+  @media (--desktop) {
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
+    gap: desktop-vw(32px);
+  }
+}
+
+/*
+ * While a phone holds the reel pinned (GSAP's `.pin-spacer` exists only
+ * then), the frame is one screen shared by the drawing, its caption and the
+ * legend, and Peekabo's full legend would leave the drawing a strip. So the
+ * legend names only its groups there, in one run. Unpinned (reduced motion,
+ * no script) the plates stand in the flow and the legend is whole.
+ */
+@media (--mobile) {
+  :global(.pin-spacer) > .withReel .drawing {
+    & [data-plate-legend] dl {
+      display: block;
+    }
+
+    & [data-plate-legend-group] {
+      display: inline;
+    }
+
+    /* The same separator as between names (`vault/blocks/plate`): the
+       space after the dot is where the run may wrap. */
+    & [data-plate-legend-group] + [data-plate-legend-group]::before {
+      content: '\00a0·\0020';
+      color: var(--text-muted);
+    }
+
+    & [data-plate-legend] dd,
+    & [data-plate-legend-statement] {
+      display: none;
+    }
+
+    /* With the names hidden, the heading's gap before them would stand
+       before the dot alone and leave the separator lopsided. */
+    & [data-plate-legend-heading] {
+      margin-inline-end: 0;
+    }
+  }
+}
+
 .caption {
   display: grid;
   align-content: start;

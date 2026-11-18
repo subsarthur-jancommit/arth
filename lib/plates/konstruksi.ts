@@ -30,7 +30,7 @@ import {
   segment,
   sheet,
 } from './draw'
-import type { Plate } from './types'
+import type { Plate, PlateLegend } from './types'
 import { type PlateWords, plateWords } from './words'
 
 /** Plate units per metre. */
@@ -537,6 +537,30 @@ function drawLabels(
   }
 }
 
+/**
+ * The rooms and routes each drawing names, for the legend: the plan's in the
+ * order it labels them, then what only the section adds.
+ */
+function legendOf(words: PlateWords): PlateLegend {
+  const plan = [...new Set(PLAN_LABELS.map(([name]) => name))]
+  const section = [...new Set(SECTION_LABELS.map(([name]) => name))].filter(
+    (name) => !plan.includes(name)
+  )
+  return {
+    groups: [
+      {
+        heading: words.word('DENAH LANTAI 1'),
+        items: plan.map((name) => words.word(name)),
+      },
+      {
+        heading: words.word('POTONGAN A-A'),
+        items: section.map((name) => words.word(name)),
+      },
+    ],
+    statements: [],
+  }
+}
+
 function build(locale: Locale): Plate {
   const words = plateWords('konstruksi', locale)
   const draw = sheet()
@@ -554,14 +578,10 @@ function build(locale: Locale): Plate {
    * title (its baseline is 512) and above the flue's cap (549). The lit model
    * lays the first down and stands the second up behind it.
    */
-  return draw.done(
-    'konstruksi',
-    [50, 50, 1080, 1050],
-    [
-      { id: 'plan', rect: [50, 50, 1080, 480] },
-      { id: 'section', rect: [50, 530, 1080, 570] },
-    ]
-  )
+  return draw.done('konstruksi', [50, 50, 1080, 1050], legendOf(words), [
+    { id: 'plan', rect: [50, 50, 1080, 480] },
+    { id: 'section', rect: [50, 530, 1080, 570] },
+  ])
 }
 
 export const KONSTRUKSI_PLATE: Plate = build('id')

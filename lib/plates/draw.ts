@@ -9,7 +9,14 @@
  * so that the site owns the drawing it serves.
  */
 
-import type { MarkRole, Plate, PlateMark, PlateText, TextRole } from './types'
+import type {
+  MarkRole,
+  Plate,
+  PlateLegend,
+  PlateMark,
+  PlateText,
+  TextRole,
+} from './types'
 
 export type Point = readonly [number, number]
 
@@ -157,13 +164,14 @@ export function sheet() {
   function done(
     unit: Plate['unit'],
     viewBox: Plate['viewBox'],
+    legend: PlateLegend,
     parts: Plate['parts'] = [{ id: 'sheet', rect: viewBox }]
   ): Plate {
     const merged: PlateMark[] = [...marks].map(([role, paths]) => ({
       role,
       d: paths.join(''),
     }))
-    return { unit, viewBox, marks: merged, texts, parts }
+    return { unit, viewBox, marks: merged, texts, parts, legend }
   }
 
   return { mark, text, arrow, done }

@@ -81,7 +81,9 @@ function drawingFacts(page: Page, scope: string) {
         lit: Boolean(svg?.closest('[data-plate-live]')),
         /** Words set in HTML beside the drawing, with their sizes. */
         html: [
-          ...document.querySelectorAll(`${selector} [data-plate-key] li`),
+          ...document.querySelectorAll(
+            `${selector} [data-plate-legend] :is(dt, [data-plate-legend-item], p)`
+          ),
         ].map((item) => ({
           text: item.textContent?.trim() ?? '',
           px: Number.parseFloat(getComputedStyle(item).fontSize),

@@ -1,8 +1,17 @@
 import { describe, expect, it } from 'bun:test'
+import { readFileSync } from 'node:fs'
 
 import { UNITS } from '@/lib/content/units'
 
-import { MARK_STYLES, plateFor, PLATES, PLATES_EN, TEXT_STYLES } from './index'
+import {
+  MARK_STYLES,
+  PLATE_NOTE,
+  plateFor,
+  PLATES,
+  PLATES_EN,
+  TEXT_STYLES,
+} from './index'
+import type { Plate } from './types'
 
 /**
  * What a plate has to be for both of its renderers to draw it: finite, inside
@@ -134,4 +143,74 @@ describe('working-drawing plates in English', () => {
       expect(lines.filter((line) => /[–—]|\s-\s/u.test(line))).toEqual([])
     })
   }
+})
+
+/*
+ * The legend (G2): the plate's words as HTML beside the drawing. It may only
+ * carry words the plate already draws, so nothing in it is copy written anew,
+ * and in English none of it may be Indonesian.
+ */
+describe('plate legends', () => {
+  /** Every run of text the plate draws, one line, compared without case. */
+  function drawn(plate: Plate): Set<string> {
+    return new Set(
+      plate.texts.map((text) => text.lines.join(' ').toLocaleLowerCase())
+    )
+  }
+
+  /** Everything the legend sets, headings and statements included. */
+  function words(plate: Plate): string[] {
+    return [
+      ...plate.legend.groups.flatMap((group) => [
+        group.heading,
+        ...group.items,
+      ]),
+      ...plate.legend.statements,
+    ]
+  }
+
+  for (const unit of UNITS) {
+    for (const plate of [PLATES[unit], PLATES_EN[unit]]) {
+      const locale = plate === PLATES[unit] ? 'id' : 'en'
+
+      it(`${unit} (${locale}): names something in every group`, () => {
+        // Anti-vacuum: an empty legend would pass the check below.
+        expect(plate.legend.groups.length).toBeGreaterThan(1)
+        for (const group of plate.legend.groups) {
+          expect(group.heading.trim()).not.toBe('')
+          expect(group.items.length).toBeGreaterThan(0)
+          expect(group.items.every((item) => item.trim() !== '')).toBe(true)
+        }
+      })
+
+      it(`${unit} (${locale}): sets only words the drawing draws`, () => {
+        const inDrawing = drawn(plate)
+        expect(
+          words(plate).filter(
+            (word) => !inDrawing.has(word.toLocaleLowerCase())
+          )
+        ).toEqual([])
+      })
+    }
+
+    it(`${unit}: the English legend keeps no Indonesian`, () => {
+      const id = new Set(words(PLATES[unit]))
+      const left = words(PLATES_EN[unit]).filter(
+        (word) => id.has(word) && word.toLocaleUpperCase() !== 'BAR'
+      )
+      expect(left).toEqual([])
+      expect(words(PLATES_EN[unit])).toHaveLength(words(PLATES[unit]).length)
+    })
+  }
+
+  it('reuses the approved sentence that the café is an example', () => {
+    // Read as files: `messages/en.json` carries generated next-intl types
+    // that a JSON import resolves to instead.
+    const note = (locale: 'id' | 'en') =>
+      String(
+        JSON.parse(readFileSync(`messages/${locale}.json`, 'utf8')).plates?.note
+      )
+    expect(PLATE_NOTE.id).toBe(note('id'))
+    expect(PLATE_NOTE.en).toBe(note('en'))
+  })
 })

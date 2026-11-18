@@ -34,7 +34,7 @@ import { installWebglProbe } from './webgl-probe'
  *
  * The probe in `e2e/webgl-probe.ts` records which kind a live, visible
  * context has drawn since the reader left: the wash (`uColorA`) or the lit
- * plate (`uScan`). A sampler reads every frame from the click away:
+ * plate (`uClip`). A sampler reads every frame from the click away:
  *
  * - the hero is blank when its region is marked live (`data-accent-live`, the
  *   CSS wash taken away) and no wash has been drawn since the reader left;
