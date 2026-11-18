@@ -1,10 +1,21 @@
+/*
+ * One track as wide as the section and never wider (#12). It was the implicit
+ * `auto` track, which grows to its widest item's min-content: three table
+ * columns of mono, letter-spaced headings and words like "WhatsApp" took the
+ * header and the table past the page's edge, and the whole side page scrolled
+ * sideways at every phone width (measured on production, 2026-11-18: 356px
+ * of page in a 315px window). `.reader`'s clip could not help, because it
+ * clipped inside a box that was already too wide.
+ */
 .section {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: calc(28 / 375 * 100vw);
 }
 
 .header {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: calc(12 / 375 * 100vw);
   max-width: 50rem;
 }
@@ -46,13 +57,19 @@
   border-top: 1px solid var(--line);
 }
 
-.table thead th {
+.table thead th,
+.cellLabel {
   color: var(--text-muted);
   font-family: var(--font-mono, monospace);
   font-size: 0.6875rem;
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+/* A column's name inside its cell: shown only where the rows stack. */
+.cellLabel {
+  display: none;
 }
 
 .table tbody th {
@@ -121,6 +138,89 @@
 
 .preview > :last-child {
   margin: 0;
+}
+
+/*
+ * Below the desktop breakpoint each row is one block, read top to bottom:
+ * the chapter and its situation, then the kinds of work and their count, then
+ * where to start. Three columns of about 100px left a word or two on each
+ * line and the section 8822px tall at 325px (measured on production,
+ * 2026-11-18).
+ *
+ * Only the boxes change. The markup stays a table, complete without a script:
+ * the head row is hidden from the eye and still names every cell to assistive
+ * technology, and each cell repeats its column's name for the eye
+ * (`aria-hidden` there, so nothing is read twice).
+ */
+@media (--mobile) {
+  .table,
+  .table tbody,
+  .table tr,
+  .table th,
+  .table td {
+    display: block;
+  }
+
+  .table thead {
+    position: absolute;
+    display: block;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .table tbody tr {
+    padding-block: calc(24 / 375 * 100vw);
+    border-top: 1px solid var(--line);
+  }
+
+  /* `.reader` draws the first rule. */
+  .table tbody tr:first-child {
+    border-top: 0;
+  }
+
+  .table tbody th,
+  .table tbody td,
+  .table tbody td:nth-child(2) {
+    width: auto;
+    padding: 0;
+    border-top: 0;
+    overflow-wrap: break-word;
+  }
+
+  .table tbody td {
+    margin-top: calc(20 / 375 * 100vw);
+  }
+
+  .cellLabel {
+    display: block;
+    margin-bottom: calc(6 / 375 * 100vw);
+  }
+
+  .situation {
+    max-width: 42ch;
+  }
+
+  /* Nothing hovers here to show that the entry is a link, so it says so the
+     way the offer cards' links do. */
+  a.entry {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+}
+
+/*
+ * The crosshair and the plate read a grid by its edges, for a pointer that
+ * hovers. Where nothing hovers, a finger on a row is scrolling the page, not
+ * pointing at the row; where the rows stack, there are no columns for the
+ * lines to name, and the plate would cover the row's own words.
+ */
+@media (--mobile), not (--hover) {
+  .decoration {
+    display: none;
+  }
 }
 
 @media (--desktop) {

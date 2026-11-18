@@ -8,6 +8,16 @@
  * The header is fixed, so the page clears it the way the side pages do. The
  * hero this replaced was held at 62 to 76svh and bottom-aligned, which hid
  * the missing clearance under empty space.
+ *
+ * Clipped sideways. Peekabo's rows arrive from the inline end, two gutters
+ * out (its dialect, `lib/styles/css/dialects.css`), and a card still waiting
+ * to arrive stood past the screen's edge: every Peekabo situation and work
+ * page scrolled sideways on a phone, by 9 to 19px, until its cards had
+ * arrived (production, 2026-11-18; `e2e/phone-overflow.e2e.ts`). On a phone
+ * the sheet is the screen's width, so this is the screen's edge, and the
+ * dashed forms a quarter gutter outside each card stay inside its padding.
+ * `clip`, not `hidden`: it makes no scroll container, so nothing sticky or
+ * scrolled inside the page changes.
  */
 .page {
   display: flex;
@@ -16,6 +26,7 @@
   gap: calc(80 / 375 * 100vw);
   padding: calc(var(--header-height) + 32 / 375 * 100vw) calc(20 / 375 * 100vw)
     calc(96 / 375 * 100vw);
+  overflow-x: clip;
 }
 
 /* The buyer's own words, the largest line after the title. */

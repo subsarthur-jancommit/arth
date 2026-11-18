@@ -905,7 +905,9 @@ above is the brief. Where the code differs, this is what a reader meets today:
   (`/metode`, the network side, the copy control), `splice` and `level`
   (`unit-sequence` on `/layanan` and home), `plumb` (`/metode`, the network
   side), `leader` (home's situations), `crosshair` and `cover-preview` (the
-  side table, and `/work`'s catalogue), `route-marker` (header, side switcher),
+  side table, and `/work`'s catalogue; the side table draws them only from
+  800px on a screen that hovers, aimed by a mouse or the keyboard focus and
+  never by a finger), `route-marker` (header, side switcher),
   `north-arrow` (the wayfinder).
 - On a route, but not the one intended: `bearing` frames `/work`'s catalogue,
   not the Konstruksi unit; `brace` steadies `/work/<slug>`'s engagements, not

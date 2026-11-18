@@ -7,10 +7,16 @@
  * each eligible chapter, its reader-facing offer types, and its smallest
  * approved entry offer. The crosshair is decoration over that semantic table;
  * links and their labels remain complete with JavaScript unavailable.
+ *
+ * On a phone the rows stack into blocks (the stylesheet says how), and the
+ * decoration answers only a mouse that hovers and the keyboard focus. A
+ * finger that lands on a row is scrolling the page: it used to aim the
+ * crosshair at every row it touched, so the lines jumped and glided under
+ * the reader's thumb.
  */
 
 import cn from 'clsx'
-import { type FocusEvent, type PointerEvent, useRef, useState } from 'react'
+import { type PointerEvent, useRef, useState } from 'react'
 
 import { Link } from '@/components/ui/link'
 import { CoverPreview, PreviewCover } from '@/vault/motion/cover-preview'
@@ -128,12 +134,9 @@ export function SideChapterTable({
   const [aim, setAim] = useState<Aim>(NOWHERE)
   const [plate, setPlate] = useState<Plate>(NO_PLATE)
 
-  function select(
-    event: PointerEvent<HTMLTableRowElement> | FocusEvent<HTMLTableRowElement>
-  ) {
+  function select(row: HTMLTableRowElement) {
     const root = rootRef.current
     if (!root) return
-    const row = event.currentTarget
     const id = row.dataset.sideChapter
     if (!id) return
     setAim(aimAt(root, row))
@@ -143,6 +146,18 @@ export function SideChapterTable({
   function clear() {
     setAim((last) => ({ ...last, on: false }))
     setPlate((last) => ({ ...last, on: false }))
+  }
+
+  /*
+   * Only a mouse points. A finger enters a row when it lands on it, which on
+   * a phone is the start of a scroll, not a choice of row.
+   */
+  function point(event: PointerEvent<HTMLTableRowElement>) {
+    if (event.pointerType === 'mouse') select(event.currentTarget)
+  }
+
+  function leave(event: PointerEvent<HTMLTableRowElement>) {
+    if (event.pointerType === 'mouse') clear()
   }
 
   return (
@@ -171,9 +186,9 @@ export function SideChapterTable({
                 <tr
                   key={chapter.id}
                   data-side-chapter={chapter.id}
-                  onPointerEnter={select}
-                  onPointerLeave={clear}
-                  onFocus={select}
+                  onPointerEnter={point}
+                  onPointerLeave={leave}
+                  onFocus={(event) => select(event.currentTarget)}
                   onBlur={clear}
                 >
                   <th scope="row">
@@ -195,20 +210,28 @@ export function SideChapterTable({
                     ) : null}
                   </th>
                   <td data-side-type="">
+                    {/* For the eye where rows stack; the head row names
+                        the cell to assistive technology. */}
+                    <span className={s.cellLabel} aria-hidden="true">
+                      {typeLabel}
+                    </span>
                     <span className={s.types}>{chapter.types.join(' · ')}</span>
                     <span className={cn('caption', s.count)}>
                       {chapter.offerCountText}
                     </span>
                   </td>
                   <td>
+                    <span className={s.cellLabel} aria-hidden="true">
+                      {entryLabel}
+                    </span>
                     <ChapterEntry entryOffer={chapter.entryOffer} />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <Crosshair {...aim} />
-          <CoverPreview {...plate}>
+          <Crosshair {...aim} className={s.decoration} />
+          <CoverPreview {...plate} className={s.decoration}>
             {chapters.map((chapter) => (
               <PreviewCover key={chapter.id} id={chapter.id}>
                 <span className={s.preview}>
