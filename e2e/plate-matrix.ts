@@ -66,6 +66,12 @@ export interface PlateMatrixState {
   textures: HTMLCanvasElement[]
   /** Compile logs of plate shaders that failed: a variant that never drew. */
   errors: string[]
+  /**
+   * Holds back the hero's wash (`vault/webgl/scene-shell`), which the same
+   * canvas draws over the whole viewport, so a ground painted on the page
+   * shows behind the plate. Read at every draw, so a test can switch it.
+   */
+  hideWash: boolean
 }
 
 declare global {
@@ -95,6 +101,7 @@ export function installPlateMatrix(options: PlateMatrixOptions): void {
     frames: 0,
     textures: [],
     errors: [],
+    hideWash: false,
   }
   window.__plateMatrix = state
 
@@ -136,6 +143,8 @@ export function installPlateMatrix(options: PlateMatrixOptions): void {
 
   const plateShaders = new WeakSet<WebGLShader>()
   const platePrograms = new WeakSet<WebGLProgram>()
+  /** The wash's program declares `uColorA`, as `e2e/webgl-probe.ts` knows. */
+  const washPrograms = new WeakSet<WebGLProgram>()
   const current = new WeakMap<WebGL2RenderingContext, WebGLProgram | null>()
   /** Replays the blending three last asked for, after a forced one. */
   let replayFunc: ((context: WebGL2RenderingContext) => void) | null = null
@@ -151,6 +160,16 @@ export function installPlateMatrix(options: PlateMatrixOptions): void {
   const blendEquationSeparate = proto.blendEquationSeparate
   const drawElements = proto.drawElements
   const clear = proto.clear
+  const locate = proto.getUniformLocation
+
+  proto.getUniformLocation = function getUniformLocation(
+    this: WebGL2RenderingContext,
+    program: WebGLProgram,
+    name: string
+  ) {
+    if (name === 'uColorA') washPrograms.add(program)
+    return locate.call(this, program, name)
+  }
 
   proto.shaderSource = function shaderSource(
     this: WebGL2RenderingContext,
@@ -261,6 +280,7 @@ export function installPlateMatrix(options: PlateMatrixOptions): void {
     offset: number
   ) {
     const program = current.get(this) ?? null
+    if (state.hideWash && program !== null && washPrograms.has(program)) return
     const isPlate = program !== null && platePrograms.has(program)
     if (isPlate) state.draws += 1
     if (!isPlate || variant === 'shipped') {

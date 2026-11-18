@@ -3,10 +3,10 @@
 Satu baris per paket kerja, diperbarui **di dalam PR paket itu sendiri** —
 bukan sesudahnya, supaya ia tidak bisa kedaluwarsa tanpa terlihat di diff.
 
-**Untuk sesi berikutnya:** baca berkas ini, lalu paket berikutnya di
-[`RENCANA-REVISI-F3.md`](./RENCANA-REVISI-F3.md) (R7, tahap B), lalu tabel K1–K9
-dan tabel _Menunggu pemilik_. Itu cukup untuk mulai bekerja — tidak perlu
-membaca ulang keempat artefak atau dokumen repo.
+**Untuk sesi berikutnya:** baca berkas ini, lalu goal berikutnya di
+[`RENCANA-VISUAL-GERAK.md`](./RENCANA-VISUAL-GERAK.md) (G1 dan G2 lebih dulu),
+lalu tabel K1–K9 dan tabel _Menunggu pemilik_. Itu cukup untuk mulai bekerja —
+tidak perlu membaca ulang keempat artefak atau dokumen repo.
 
 **Bekerja dari workspace lain?** [`KONTEKS-TIM.md`](./KONTEKS-TIM.md) memuat
 tautan keempat dokumen konteks, urutan kewenangannya, pagar yang berlaku terus,
@@ -56,6 +56,11 @@ Keputusan sejak 15 Oktober 2026, tanggalnya tanggal merge di `main` (WIB):
   terbit lewat konektor Sanity, dengan dua cadangan dan bukti sebelum dan
   sesudah di `docs/R7-CATATAN-TULIS.md`. `/en` tetap 307 sampai kode tahap B
   (#94, #95) merge dan segmennya dibuka per halaman.
+- **17 November (keputusan):** pemilik mengusung konsep kasar beranda (navbar
+  pill, hero dengan ilustrasi kafe matte, dan tiga kebutuhan) dan menetapkan
+  targetnya: "Target utamanya adalah estetika dengan animasi yang kompleks."
+  Rencananya di `docs/RENCANA-VISUAL-GERAK.md`. Addendum teknis pemilik di
+  `docs/SOLUSI-TEKNIS-VISUAL-GERAK.md` menjadi rujukannya.
 
 **15 Oktober 2026:** F3-01 sampai F3-11 direvisi (`docs/TINJAUAN-F01-F03.md`,
 `docs/RENCANA-REVISI-F3.md`). P1–P4 memakai usulan bawaan; protokol `ci` dan
@@ -156,7 +161,7 @@ tetap "Jaringan penjual"; mengubahnya perlu ok tulis (#56).
 | F4-04 susulan: Back ke `/work`                  | #86, #87           | —         | **PR terbuka**            | Diukur dulu (`work-return`): Back lambat ~0,65 s pelat kosong; Back < 500 ms kosong ≥ 14,7 s, kanvas mati; panggilan ke konteks mati tiap kembali. Kunci kanvas berganti saat halaman disembunyikan, `drew` direset (#86). Tiga uji `fixme` material kembali di `/work` (#87)           |
 | F4-04 susulan: beranda, dan konteks hilang      | #89                | —         | **PR terbuka**            | Diukur dulu: Back ke beranda menyembunyikan wash hero atau pelat lintasan tanpa gambar 0,76–0,86 s; konteks WebGL yang hilang membiarkan pelat dan wash tersembunyi. `drew` direset saat disembunyikan; bingkai pertama hanya dari konteks hidup (`useFirstFrame`)                      |
 | R7 Dwibahasa                                    | #62, #91, #93–#99  | `82ab37f` | **Selesai**               | Copy Inggris disetujui 15 November 2026 ("Setujui semua", 57 blok; L-meta dan P-meta "Setujui keempatnya"); K2 diubah tertulis. Inggris tertulis di Sanity (`R7-CATATAN-TULIS.md`). Ke-14 halaman terbuka di `/en`, masing-masing terbukti tanpa bahasa Indonesia (`e2e/english-pages`) |
-| G1 Fondasi visual                               | #103, PR kedua     | —         | **PR terbuka**            | Navbar pill dan kontrak (#103); hero SceneShell dan pemilih kebutuhan di PR kedua, bertumpuk. Gutter tetap `--safe` 16px, tanpa batas 1280px (header dipakai semua halaman, `/work` tetap). Menu di bawah 1024px. Ilustrasi hero tetap grid dan grain sampai G3                         |
+| G1 Fondasi visual                               | #103, #104         | `c3d6633` | **Sebagian**              | Navbar pill dan kontrak di `main` (#103). Hero SceneShell dan pemilih kebutuhan di #104, PR terbuka. Gutter tetap `--safe` 16px, tanpa batas 1280px (header dipakai semua halaman, `/work` tetap). Menu di bawah 1024px. Ilustrasi hero tetap grid dan grain sampai G3                  |
 | F0-02 Uji terbit menampilkan isi baru           | —                  | —         | Belum mulai               | Bergantung F0-06                                                                                                                                                                                                                                                                        |
 | F0-03 Token produksi hanya Viewer               | —                  | —         | Menunggu pemilik          | Tindakan dasbor                                                                                                                                                                                                                                                                         |
 | F0-04 Token dev dicabut                         | —                  | —         | Menunggu pemilik          | Tindakan dasbor; paling lambat sebelum F5-05                                                                                                                                                                                                                                            |
