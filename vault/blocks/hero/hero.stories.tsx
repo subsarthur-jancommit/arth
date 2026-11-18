@@ -3,8 +3,8 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Hero } from './index'
 
 /**
- * The hero composes three vault pieces: `TextReveal` for the headline,
- * `Magnetic` for the single action, and `SceneShell` for the background.
+ * The hero composes vault pieces: `TextReveal` for the headline, and
+ * `SceneShell` for the wash, with the grain and grid in the art viewport.
  *
  * `SceneShell` renders its DOM gradient fallback here rather than a WebGL
  * canvas — the R3F canvas is mounted by `lib/features` in the app layout and
@@ -28,85 +28,32 @@ const action = (
     type="button"
     className="cta"
     style={{
-      border: '1px solid var(--color-secondary)',
-      padding: '12px 24px',
-      textTransform: 'uppercase',
+      display: 'inline-flex',
+      alignItems: 'center',
+      minHeight: 'var(--control-cta)',
+      paddingInline: 'var(--space-24)',
+      borderRadius: 'var(--radius-pill)',
+      background: 'var(--color-secondary)',
+      color: 'var(--color-primary)',
+      border: 0,
       cursor: 'pointer',
     }}
   >
-    Start a commission
+    Tell us what you need
   </button>
 )
 
 /**
- * The shipped shape, and it did not used to be.
- *
- * `index` is the counterweight this block was built with in Tahap 12d, and
- * for fifty-five stages **nothing passed it** — not the home page, and not
- * this story, so the catalogue showed the same staircase down the left edge
- * that the prop's own doc records Tahap 12 removing. Tahap 67 wired both. A
- * story that omits the argument a block was designed around documents the
- * block wrong.
+ * The shipped shape since G1: the headline, one sentence of scope, the
+ * action, and the art viewport beside them on desktop. The unit index the
+ * story used to pass left the hero with G1; the need chooser that follows
+ * the hero on the home page (`vault/blocks/need-chooser`) took its place.
  */
 export const Default: Story = {
   args: {
-    headline: 'Commissioned work for people who notice',
+    headline: 'Projects move. Systems work. Markets grow.',
     subline:
-      'Consulting, AI and data, and commissioned build, scoped to a brief and delivered against it.',
-    index: {
-      label: 'Unit',
-      items: [
-        {
-          label: 'Konstruksi',
-          note: 'Isi celahnya. Bangun sampai jadi. Rawat sesudahnya.',
-          href: '/konstruksi',
-        },
-        {
-          label: 'Teknologi',
-          note: 'Buka pasar baru. Otomatiskan sisanya.',
-          href: '/teknologi',
-        },
-        {
-          label: 'Peekabo',
-          note: 'Rebut perhatian. Bangun kepercayaan. Biarkan jaringan yang menjual.',
-          href: '/peekabo',
-        },
-      ],
-    },
+      'Civil construction, technology systems, and a market-share agency for Subang, Purwakarta, and Bandung.',
     action,
   },
-}
-
-/** A hero is not a paragraph, and it is not a menu: one line, one action. */
-export const HeadlineOnly: Story = {
-  args: { headline: 'Arth' },
-}
-
-/**
- * Long headlines are where a masked line reveal usually breaks — the split
- * happens after layout, so a headline that wraps to four lines must still
- * reveal line by line rather than as one block.
- */
-export const LongHeadline: Story = {
-  args: {
-    headline:
-      'Consulting, AI and data, and commissioned build for teams that have to live with the decision',
-    subline: 'Working to brief, at any scale, since 2019.',
-    action,
-  },
-}
-
-/**
- * Under reduced motion the headline renders as plain text, the reveals resolve
- * immediately, the magnet is inert, and the background is a static gradient.
- * Nothing is left at `opacity: 0` — which is the failure this project treats
- * as a defect rather than a trade-off.
- */
-export const ReducedMotion: Story = {
-  args: {
-    headline: 'Commissioned work for people who notice',
-    subline: 'Everything below is legible with no animation at all.',
-    action,
-  },
-  parameters: { chromatic: { prefersReducedMotion: 'reduce' } },
 }

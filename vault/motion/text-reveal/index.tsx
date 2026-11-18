@@ -197,6 +197,19 @@ export function TextReveal({
       const instance = SplitText.create(container, {
         type: config.type,
         mask: config.type,
+        /*
+         * Named, so the stylesheet can find what SplitText makes. G1, from
+         * G2's render matrix (`docs/G2-MATRIKS-RENDER.md`, row G): SplitText
+         * names nothing by default, so the `.split-line` rules in
+         * `text-reveal.module.css` had never matched a thing. A mask takes
+         * its part's class with `-mask` added (`split-line-mask`), and the
+         * stylesheet clips the masks alone. A line never clips itself, so
+         * its descenders are cut by its mask only while it rises, and by
+         * nothing once `revert()` has handed the text back.
+         */
+        linesClass: 'split-line',
+        wordsClass: 'split-word',
+        charsClass: 'split-char',
         // 'auto', not 'hidden'. Both put aria-hidden on the generated spans,
         // but only 'auto' also writes the original string to an aria-label on
         // the container. With 'hidden' the element keeps its role and loses
@@ -224,6 +237,19 @@ export function TextReveal({
           // Not scrubbed: this is a one-shot entrance, not scroll-linked.
           toggleActions: once ? 'play none none none' : 'play none none reset',
         },
+        /*
+         * At rest the heading is plain text again — G1, "teks kopong".
+         *
+         * The split stayed in place after the rise: every line sat in an
+         * `overflow: clip` mask as tall as its line box, and the `h1` token's
+         * line-height is 100%, so the masks went on cutting the descenders
+         * of "Proyek jalan" and "Pasar bertambah" (y, j, g) long after the
+         * entrance had ended. The owner read the result as hollow text. The
+         * masks exist for the rise; once the last line has landed the split
+         * is undone and the original text nodes, which React rendered, come
+         * back. A replaying reveal keeps its split, because it rises again.
+         */
+        ...(once ? { onComplete: () => instance.revert() } : {}),
       })
 
       // useGSAP reverts tweens and ScrollTriggers created in this scope, but

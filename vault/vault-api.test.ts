@@ -142,7 +142,6 @@ const DELIBERATE = {
   // F3-01 replaces the legacy studio home with Arthur's umbrella structure.
   // These capabilities stay in the vault for the routes named below; keeping
   // the reasons here makes their temporary lack of a caller explicit.
-  'hero:index': 'F3-01 caps the umbrella hero at four text elements',
   'latest-writing:practice':
     'the legacy journal promotion left the home in F3-01',
   'passage:plates': 'the Arthur home passage is now its three unit doors',
@@ -441,13 +440,18 @@ const STRUCTURAL = new Set(['className', 'children', 'id', 'style', 'ref'])
 describe('a declared prop has a caller', () => {
   it('finds props to check, so a broken parser cannot pass silently', () => {
     // The failure mode of a rule that reads source: it stops matching and
-    // reports a clean sweep. `Hero`'s `index` is the prop this gate exists
-    // for, so its presence is the parser's own smoke test.
+    // reports a clean sweep. `Hero`'s `index` was the prop this gate exists
+    // for and served as the parser's own smoke test; G1 took the unit index
+    // out of the hero (the need chooser replaced it), so the smoke test reads
+    // its twin, `PracticeHero`'s `index`, which is still declared and still
+    // listed in DELIBERATE above.
     const all = declared()
     expect(all.length, 'no optional props parsed at all').toBeGreaterThan(20)
     expect(
-      all.some((entry) => entry.module === 'hero' && entry.prop === 'index'),
-      'the parser no longer sees the prop this gate was written for'
+      all.some(
+        (entry) => entry.module === 'practice-hero' && entry.prop === 'index'
+      ),
+      'the parser no longer sees the prop it is smoke-tested on'
     ).toBe(true)
   })
 

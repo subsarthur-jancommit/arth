@@ -1,487 +1,146 @@
+/*
+ * The home hero — G1 (`index.tsx` has the composition and its reasons).
+ *
+ * Sizes from the shape and type contract (`lib/styles/css/global.css`, the
+ * reference's §3): the headline at `--type-hero` on a line of 1.06, the
+ * sentence of scope at body size, the action at 48px, and the space between
+ * them from the one scale.
+ */
 .hero {
   /*
-   * Reveal knobs for the subline and CTA. The headline is animated separately
-   * by TextReveal; these two follow it. 120ms stagger against a 400ms
-   * duration reads as sequence rather than as two things fading together.
+   * Reveal knobs for the sentence and the action, which follow the headline:
+   * 8px of travel at most (the reference's §6), a beat of `--stagger-hero`.
    */
-  --reveal-transform: translateY(16px);
+  --reveal-transform: translateY(8px);
   --reveal-stagger: var(--stagger-hero);
   --reveal-duration: var(--duration);
 
   position: relative;
-  display: grid;
   /*
-   * svh, not vh: on mobile browsers vh includes the collapsing address bar, so
-   * a 100vh hero is taller than the visible viewport on first paint and the
-   * CTA sits below the fold. svh is the smallest viewport state and is always
-   * visible.
+   * Top padding clears the fixed header, which takes no space of its own.
+   * Height is the content's: no viewport `min-height`, so the need chooser
+   * below starts inside the first screen.
    */
-  /*
-   * 100, and this reverses a decision two stages built — Tahap 49.
-   *
-   * It read 88 for a reason worth restating rather than deleting: Tahap 12
-   * measured that a full-viewport hero on a 5749px document said nothing
-   * about the rest and answered it with a `Scroll` label; Tahap 34 removed
-   * the label (`taste-skill` SKILL.md section 14 names it an AI tell) and
-   * moved the job here, so the next section's top edge peeked into the first
-   * screen. Measured at 1440x900: 792px of hero left **108px** of the work
-   * section visible before any scroll.
-   *
-   * The owner asked for a hero that fills the screen, the objection was put
-   * to them during planning, and the plan was approved with 100 in it. So the
-   * peek is gone, and what replaces it is written down rather than assumed:
-   * the first scroll gesture now meets `arth-passage`, a pinned sequence, so
-   * the reader's first input produces a large immediate response. A peek says
-   * something is below; a pin says what is below was worth the scroll.
-   *
-   * The ground layers below are a weaker secondary cue — the grid is cut
-   * mid-tile at the fold, so the surface reads as continuing rather than as a
-   * panel that ends. That is a real difference but a small one, and it is not
-   * claimed as an equal replacement for the peek.
-   */
-  min-height: 100svh;
-  /*
-   * Top padding clears the fixed header, which is `position: fixed` and so
-   * takes no space of its own. Without it the index row starts underneath the
-   * bar.
-   *
-   * The hero no longer centres its content: `align-items` was `center`, which
-   * is what produced 141px of dead space above the headline and 205px below
-   * it in a 900px screen. `.frame` stretches instead, and decides where each
-   * anchor sits.
-   */
-  padding: var(--header-height) var(--safe) mobile-vw(48px);
+  padding: calc(var(--header-height) + var(--space-32)) var(--safe)
+    var(--space-48);
   overflow: clip;
+
+  @media (--desktop) {
+    padding-block: calc(var(--header-height) + var(--space-64)) var(--space-64);
+  }
 }
 
-.background {
+/* The wash: the hero's ground, behind both layers, never interactive. */
+.wash {
   position: absolute;
   inset: 0;
-  /* Behind the content, and never interactive. */
   z-index: 0;
   pointer-events: none;
 }
 
 /*
- * The grid, faint, at the same 48px tile `vault/blocks/passage` resolves to —
- * Tahap 49.
- *
- * Same element, two states: here it rests at the rhythm the site composes on,
- * and the passage below sharpens into it from a coarser scale. A reader who
- * never notices the hero's grid still reads the passage as *arriving* at
- * something rather than as inventing it.
- *
- * `--line` already carries a contrast decision (`global.css` — 14% ink into
- * transparent, measured by `contrast.test.ts`), so this needs no colour of
- * its own. The extra fade below is because this sits over the WebGL wash
- * rather than over the page ground, and the wash is the one surface on this
- * site whose luminance is not a token.
+ * The scene shell. One column on a phone; on desktop the site's 12, with the
+ * contract's 24px gap, the title in 7 and the art in 5, both on the bottom
+ * line so the headline's last line and the art's edge share a baseline of
+ * sorts. Grid children are `minmax(0, 1fr)` (CLAUDE.md #12).
  */
-.heroGrid {
-  opacity: 0.4;
+.shell {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--space-32);
+
+  @media (--desktop) {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--space-24);
+    align-items: end;
+  }
+}
+
+/* The reading layer: nothing here moves for decoration. */
+.reading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+  min-inline-size: 0;
+
+  @media (--desktop) {
+    grid-column: 1 / span 7;
+    gap: var(--space-32);
+  }
 }
 
 /*
- * Grain, so the wash reads as a surface rather than as an empty buffer.
+ * The headline, solid — G1, "teks kopong".
  *
- * Two values, both set by Tahap 55 and both consequences of the same repair.
- *
- * `--noise-base`: since that stage the grain is noise added *around a base
- * colour*, and its default base is `--color-primary` — correct everywhere the
- * layer sits on the page ground, wrong here, where `SceneShell` paints a wash
- * over that ground. Pointing it at the wash's midpoint keeps the layer's mean
- * inside the range it actually covers, so the largest error is half the
- * wash's amplitude rather than all of it.
- *
- * `opacity`: the same 0.45 the ground carries (`components/layout/theme`), so
- * the hero's surface and the rest of the page are the same material. It was
- * 0.5, chosen when the number weighted a veil rather than an amplitude.
+ * Onest at 700, not the `h1` token's 500: the token's medium weight with
+ * -0.04em of tracking drew the strokes thin at display size, and the
+ * reference asks for a large solid headline. A plain fill in the ink, no
+ * stroke, no filter, no opacity below 1, and since G1 no mask once the
+ * entrance has ended (`vault/motion/text-reveal`).
  */
-.heroGrain {
+.headline {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--type-hero);
+  line-height: var(--type-hero-leading);
+  letter-spacing: -0.035em;
+  color: var(--color-secondary);
+  text-wrap: balance;
+  /*
+   * `anywhere`, so a word longer than the column breaks rather than pushing
+   * the box past the screen (`e2e/responsive.e2e.ts`). At 40px no word in
+   * either language's headline comes near a 320px column.
+   */
+  overflow-wrap: anywhere;
+}
+
+/* The sentence of scope: body size, on 1.5, quieter than the headline. */
+.subline {
+  margin: 0;
+  max-inline-size: 44ch;
+  font-family: var(--font-text);
+  font-size: var(--type-body);
+  line-height: var(--type-body-leading);
+  color: var(--text-muted);
+}
+
+/* Shrink-wrapped, so the action is its own width, not the column's. */
+.action {
+  align-self: flex-start;
+}
+
+/*
+ * The art viewport. Its box is fixed by its aspect ratio before anything is
+ * drawn in it, so nothing moves when the art arrives (G3 puts the matte café
+ * here). Clipped to its own corners, the media radius of the contract; the
+ * texture lives here now, never behind the headline.
+ */
+.art {
+  display: none;
+
+  @media (--desktop) {
+    position: relative;
+    display: block;
+    grid-column: 8 / -1;
+    aspect-ratio: 4 / 3;
+    overflow: clip;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-media);
+    pointer-events: none;
+  }
+}
+
+/* The grain inside the art: the wash's midpoint as its base (Tahap 55). */
+.artGrain {
   --noise-base: var(--hero-wash-mid);
 
   opacity: 0.45;
 }
 
-/*
- * The frame: three anchors, not one centred column.
- *
- * Rows are `auto 1fr auto` so the index pins to the top and the headline and
- * action to the bottom, with the slack in the middle where it costs nothing.
- * That puts the index in the top right and the headline in the bottom left —
- * a diagonal across the screen — instead of three left-aligned elements of
- * descending width floating in the vertical centre.
- *
- * Columns are the site's own 12 (`lib/styles/layout.mjs`), so the headline's
- * left edge and the grid below it are the same line rather than nearly the
- * same line.
- */
-.frame {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
-  /*
-   * `minmax(0, 1fr)`, and the zero is the point.
-   *
-   * This said `minmax(mobile-vw(48px), 1fr)`, meaning to keep a little air
-   * between the index and the headline. `mobile-vw()` resolves against the
-   * 375px *mobile* design width, so at a 1440 viewport it is 12.8vw — 184px,
-   * not 48px. The middle row demanded that space, the frame grew to 816px,
-   * the hero to 978px, and the call to action fell 78px below a 900px
-   * screen: exactly the failure the `100svh` note above exists to prevent.
-   *
-   * The slack in this row is meant to absorb space, never to ask for it.
-   */
-  /*
-   * Slack first, then the two content rows — Tahap 74.
-   *
-   * This was `auto minmax(0, 1fr) auto`: the index in row 1, `.content`
-   * bottom-anchored across rows 2–4, and the slack between them. On a phone
-   * that put **554px of nothing between the index and the headline**, 66% of
-   * the first screen. Moving the slack above both makes the hero one
-   * bottom-anchored band with air over it, which is the composition the rest
-   * of this site already uses and `practice-hero` defends with measurements.
-   *
-   * The slack keeps its `minmax(0, 1fr)`, and the note below is still why.
-   */
-  grid-template-rows: minmax(0, 1fr) auto auto;
-  column-gap: var(--gap);
-  row-gap: mobile-vw(32px);
-  min-height: 0;
-
-  @media (--desktop) {
-    row-gap: desktop-vw(48px);
-  }
-}
-
-.index {
-  /*
-   * Above `.content`, because on desktop the two share a row — R5.
-   *
-   * SplitText sets each headline line as a block as wide as the `h1`'s 9em
-   * measure, so the line boxes run under the right-hand columns even where
-   * the words stop short of them. `.content` comes later and sits at z 1, so
-   * once the units became links its line boxes took the clicks: e2e run
-   * 41159054886 found `main a[href="/id/konstruksi"]` visible and
-   * unclickable, intercepted by the "Pasar bertambah." line. Nothing in
-   * `.content` lies under this block — the subline and the action keep to the
-   * left — so lifting it costs no other control its pointer.
-   */
-  position: relative;
-  z-index: 2;
-  /* Row 2: directly above `.content` in row 3, with the frame's slack over
-     both. On desktop this is overridden to share `.content`'s rows so the
-     list sits beside the headline instead of above it. */
-  grid-row: 2;
-  /* Full width on mobile — four columns is not enough to sit a list beside a
-     display headline, and stacking it reads as a standfirst rather than as a
-     cramped sidebar. */
-  grid-column: 1 / -1;
-  display: flex;
-  flex-direction: column;
-  gap: mobile-vw(8px);
-  /*
-   * Clearance from the fixed header — the mobile half of the note below.
-   *
-   * Measured at 390×844 with the index finally rendered and only the desktop
-   * clearance in place: the label sat at **y=58 against a header whose bottom
-   * edge is 58**, touching it. The phone header is shorter than the desktop
-   * one, so the collision is the same one and arrives sooner.
-   */
-  padding-block-start: mobile-vw(16px);
-
-  @media (--desktop) {
-    /* The four columns the headline's 9em measure leaves free. */
-    grid-column: 9 / -1;
-    /*
-     * The same rows as `.content`, bottom-aligned — Tahap 74.
-     *
-     * This was `grid-row: 1`, which is the top of a `100svh` frame, while
-     * `.content` spans rows 2–4 and is `justify-content: end`. One element
-     * pinned to the top, everything else to the bottom, and the frame's
-     * `minmax(0, 1fr)` slack in between: a **516px hole through the middle of
-     * the first screen**, 57% of it at 1440x900 and 66% at 390x844, against
-     * 4–16% everywhere else on this site.
-     *
-     * The line above has said where this belongs since Tahap 12d — *beside*
-     * the headline, in the columns its measure leaves free. It never was:
-     * measured at 1440x900 the index sat at y 100–182 and the `h1` at
-     * y 465–655. Tahap 67 shipped the prop that renders it into the right
-     * columns and the wrong row, and no gate could see the difference.
-     *
-     * Sharing `.content`'s rows makes the two masses one band, and what was a
-     * hole becomes leading air — which is what the rest of the site does, and
-     * what `practice-hero` defends with its own measurements.
-     *
-     * `e2e/first-screen-void.e2e.ts` holds it.
-     */
-    grid-row: 2 / 4;
-    align-self: end;
-    /*
-     * Anchored to the frame's right edge — Tahap 84.
-     *
-     * Tahap 74 moved this block down to share `.content`'s rows, which closed
-     * a 516px hole through the middle of the first screen. What it left is a
-     * **band**: headline, subline and action along the bottom left, this list
-     * along the bottom right. A band needs both ends held.
-     *
-     * This one was held at neither. Measured at 1600x800: the column runs
-     * `9 / -1`, x 1065-1574, and the words inside it are about 110px wide and
-     * left-aligned — so roughly **400px of nothing** sat between the list and
-     * the frame edge it was supposed to be the far end of. It read as
-     * floating because it was: near the right side without touching it.
-     *
-     * `flex-end` puts its right edge on the frame's, where the header's
-     * EN/ID already sits. The headline holds x=16 and this holds x=1574, and
-     * the band spans the screen instead of trailing off inside it.
-     *
-     * R5: the right edge still holds, and the block holds it now rather than
-     * each line. Every unit carries its header line under its name, and three
-     * right-aligned two-line notes would read as a ragged poem. So the block
-     * sits against the frame's right edge at a measure of its own, and its
-     * lines start together on its left.
-     *
-     * That measure scales with the screen, as the headline does. A fixed
-     * 26rem held at 1440 and collided below it: measured on production at
-     * 1024x768, the headline's last line ends at x 682, and a 416px block
-     * against the right edge would start about 90px over its last word. At
-     * 28vw it starts about 30px clear of it, and about 60px clear at 1280.
-     * Arithmetic from that measurement, not a rendering of this rule.
-     */
-    justify-self: end;
-    width: min(100%, 26rem, 28vw);
-    gap: desktop-vw(12px);
-    /*
-     * Clearance from the header, measured — Tahap 67.
-     *
-     * The frame begins at `--header-height` exactly, so with the index
-     * finally rendered its label started at **y=72 against a fixed header
-     * whose own bottom edge is 72**: flush, with the header's z-20 band
-     * touching the label's cap height. It read as clipped rather than as a
-     * corner.
-     *
-     * The space is taken from row 2, which is the frame's `minmax(0, 1fr)`
-     * slack and was absorbing 304px at 1440×900. That row is meant to give
-     * space up, never to ask for it — the note on `.frame` records what
-     * happened the one time it asked.
-     *
-     * **Zeroed at desktop in Tahap 74, and the note above is kept rather than
-     * deleted.** Once the index shares `.content`'s rows it is no longer the
-     * topmost element, so there is no header to clear — but the collision it
-     * was measured against was real, and removing the fix without leaving its
-     * reasoning behind is the fastest way to invite it back the next time
-     * someone moves this element. On a phone the index is still `grid-column:
-     * 1 / -1` in row 1, so the mobile clearance above stays load-bearing.
-     */
-    padding-block-start: 0;
-  }
-}
-
-.content {
-  position: relative;
-  z-index: 1;
-  /* Row 3 on a phone, under the index in row 2. On desktop it takes both
-     content rows so the index — which spans the same two — sits beside it. */
-  grid-row: 3;
-  grid-column: 1 / -1;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-
-  /* Generous, not tight. Whitespace is the cheapest expensive-looking asset
-     there is — see DESIGN-SYSTEM.md §3. */
-  gap: mobile-vw(24px);
-
-  @media (--desktop) {
-    grid-row: 3;
-    /*
-     * The full width, and the headline's own `max-width: 9em` is what keeps
-     * the right side free.
-     *
-     * Constraining this to `1 / 9` instead was the first attempt and it broke
-     * the headline: eight columns is 933px at 1440, and "Commissioned" sets
-     * at about 950px, so `overflow-wrap: anywhere` split it across two lines
-     * as "Commissione / d". A column count is the wrong instrument for a
-     * measure — 9em is relative to the headline's own fluid size and holds at
-     * every viewport, which a fraction of the grid does not.
-     *
-     * Row 3 is now this element's alone. It used to share the row with the
-     * scroll cue on the right, which is why the 9em cap exists: 9em resolves
-     * to about 1035px at 1440, and the cue's track started at 1068px. The cue
-     * left in Tahap 34; the cap stays because a headline wider than 9em is a
-     * headline nobody reads in one pass.
-     */
-    grid-column: 1 / -1;
-  }
-  /*
-   * No width limit here, and `align-items` left at its `stretch` default.
-   *
-   * Setting it to `flex-start` sizes every child to its own max-content
-   * width, which for the headline means "as wide as the longest word on one
-   * line" — 396px inside a 357px column at phone width, overflowing into the
-   * hero's `overflow: clip`. `.action` opts out individually with
-   * `align-self: start`, which is the one child that genuinely wants to
-   * shrink-wrap.
-   */
-}
-
-.headline {
-  /*
-   * Size, weight, leading and tracking come from the `h1` type class in
-   * `lib/styles/typography.ts`, applied in the component rather than restated
-   * here.
-   *
-   * This block previously declared its own `clamp(2.5rem, 8vw, 7.5rem)`, its
-   * own weight, 85% leading and -0.04em tracking. Every one was a hardcoded
-   * design value (CLAUDE.md rule 8) sitting beside the token that already said
-   * the same thing, and free to drift from it.
-   */
-  margin: 0;
-  text-wrap: balance;
-  /*
-   * `em`, not `ch`, and on the headline rather than its container.
-   *
-   * The container previously carried `max-width: 16ch`, meaning to say "about
-   * sixteen characters of headline". It does not: `ch` is the advance of "0"
-   * in the *element's own* font at its own size, and the container inherits
-   * body type — so the constraint resolved to roughly 128px and clipped the
-   * `<h1>` into a narrow strip against the left edge, with `overflow: clip` on
-   * the hero hiding the evidence. Nothing failed: not the build, not a test,
-   * not axe. It was found by screenshotting the page and looking at it.
-   *
-   * `9em` is relative to the headline's own fluid size, so it holds the same
-   * measure at every viewport.
-   */
-  max-width: 9em;
-  /*
-   * `anywhere`, and the difference from `break-word` is the whole point.
-   *
-   * This said `break-word` and carried a comment claiming it was a last
-   * resort that "should never fire". It could not fire. `break-word` does not
-   * reduce an element's **min-content** contribution, so the h1 box was still
-   * forced as wide as its longest word — the browser was allowed to break the
-   * word only after the box had already been sized to fit it unbroken. Only
-   * `anywhere` shrinks the min-content width.
-   *
-   * The result shipped for six stages: at every width from 320 to 768px, the
-   * Indonesian headline ("memperhatikan") pushed the box past the viewport
-   * and `overflow: clip` above swallowed the end of it. English fit at every
-   * width, so it was invisible in the language this file was written in.
-   *
-   * `e2e/responsive.e2e.ts` now asserts this per element, in both locales.
-   */
-  overflow-wrap: anywhere;
-}
-
-.indexLabel {
-  margin: 0;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-}
-
-/*
- * The units as a ruled list, 01 to 03 (R5, after the approved home screen).
- *
- * It was a row of three bare words on a phone and a right-aligned stack on
- * desktop. With a line under each name a row no longer fits, so the list is
- * a stack at every width: the number in its own narrow column, the name and
- * its line beside it, a hairline over each entry.
- */
-.indexList {
-  list-style: none;
-  color: var(--color-secondary);
-  margin: 0;
-  padding: 0;
-  display: grid;
-}
-
-.indexItem {
-  display: grid;
-  grid-template-columns: 2.5em minmax(0, 1fr);
-  column-gap: mobile-vw(8px);
-  row-gap: mobile-vw(2px);
-  padding-block: mobile-vw(8px);
-  border-block-start: 1px solid var(--line);
-
-  @media (--desktop) {
-    column-gap: desktop-vw(8px);
-    row-gap: desktop-vw(4px);
-    padding-block: desktop-vw(10px);
-  }
-}
-
-.indexNumber {
-  grid-row: 1 / span 2;
-  font-family: var(--font-mono, monospace);
-  color: var(--text-muted);
-  /* On the name's first line, not centred against the name and its note. */
-  padding-block-start: 0.3em;
-}
-
-.indexName {
-  grid-column: 2;
-  width: fit-content;
-  margin: 0;
-  font-weight: 500;
-  color: inherit;
-  text-decoration: none;
-  text-underline-offset: 0.2em;
-}
-
-a.indexName:focus-visible {
-  outline: 2px solid var(--color-contrast);
-  outline-offset: 4px;
-}
-
-@media (--hover) {
-  a.indexName:hover {
-    text-decoration: underline;
-  }
-}
-
-/*
- * Desktop only. On a phone the index stands above the headline, and three
- * two-line notes there would push the headline toward the fold; the unit
- * list below the passage says the same thing at full size.
- */
-.indexNote {
-  display: none;
-  grid-column: 2;
-  color: var(--text-muted);
-  text-wrap: pretty;
-
-  @media (--desktop) {
-    display: block;
-  }
-}
-
-.subline {
-  font-family: var(--font-mono, monospace);
-  /* scale-exempt: 14-18px, between `p` (12-14) and `p-big` (16-20). One of
-     the four ad-hoc clamps the audit found; converting it changes the hero's
-     balance, which Tahap 12 measured. Left as a recorded decision. */
-  font-size: clamp(0.875rem, 1vw, 1.125rem);
-  line-height: 140%;
-  letter-spacing: -0.01em;
-  margin: 0;
-  max-width: 42ch;
-  opacity: 0.7;
-}
-
-.action {
-  /* Shrink-wrap so the magnetic wrapper matches the control, not the column —
-     otherwise the magnet's hit area is the full width of the hero. */
-  align-self: start;
-}
-
-@media (--desktop) {
-  .hero {
-    padding: var(--header-height) var(--safe) desktop-vw(64px);
-  }
-
-  .content {
-    gap: desktop-vw(32px);
-  }
+/* The 48px grid the site composes on, faint, inside the art only. */
+.artGrid {
+  opacity: 0.5;
 }

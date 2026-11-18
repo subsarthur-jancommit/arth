@@ -398,20 +398,20 @@ test.describe('a reader moving through the site', () => {
     })
 
     /*
-     * `:visible`, and that is not defensive noise. At 390px the header's
-     * section anchors are collapsed behind the menu — measured as `0x0`, four
-     * of them — while the hero's own call to action stays pressable at
-     * 146x42. Taking `.first()` of a plain selector picks a hidden header link
-     * and the press times out, which is a test failing on its own selector
-     * rather than on the product. This presses the anchor a reader can
-     * actually reach at whichever width the test is running.
+     * The skip link, from the keyboard — G1. The press was the hero's own
+     * call to action, `#situasi`; since G1 the hero's action leads to the
+     * contact page (the reference's §4), and the home page's one in-page
+     * anchor left with it. The skip link is the in-page anchor every page
+     * carries, and Enter on it is the press a reader makes: the first Tab
+     * shows it, Enter follows it (`e2e/keyboard-focus.e2e.ts` holds that it
+     * is the first stop).
      */
-    await page
-      .locator(
-        'a[href="#situasi"]:visible, a[href="#unit"]:visible, a[href="#contact"]:visible'
-      )
-      .first()
-      .click()
+    await page.keyboard.press('Tab')
+    await expect(page.locator(':focus')).toHaveAttribute(
+      'href',
+      '#main-content'
+    )
+    await page.keyboard.press('Enter')
     await page.waitForTimeout(2200)
 
     const states = await page.evaluate(() => [...new Set(globalThis.__states)])

@@ -1,100 +1,70 @@
 'use client'
 
 /**
- * Hero — the first screen, and the one that decides whether a visitor
- * believes the studio is expensive.
+ * Hero — the first screen of the home page, rebuilt for G1
+ * (`docs/RENCANA-VISUAL-GERAK.md`, the reference's §4 and §6).
  *
  * Provenance: original work for this project. No third-party code copied.
  * Composes this project's own vault primitives over Satūs's canvas system.
  *
- * ## The composition, and why each part is here
+ * ## A scene shell, in two layers
  *
- * | Layer | Component | Purpose |
- * |---|---|---|
- * | Background | `SceneShell` | WebGL accent, with a DOM gradient fallback |
- * | Headline | `TextReveal` | line-by-line masked rise — the premium reveal |
- * | Action | `Magnetic` | pointer attraction on the single CTA |
- * | Index | slot | a standing fact, in the columns the headline leaves |
+ * The reference's §6 separates what is read from what moves:
  *
- * ## Where the scroll cue went — Tahap 34
+ * ```text
+ * SceneShell (layout; fixed size)
+ * ├─ ReadingLayer (H1, caption, controls; no decorative transform)
+ * └─ ArtViewport (overflow clip; pointer-events: none for decoration)
+ * ```
  *
- * There was a fourth slot here: a `Scroll` label with a 1px rule under it,
- * bottom right. It was added in Tahap 12 for a measured reason —
- * `ui-ux-pro-max`'s `hero-centric-design` pattern says to let the hero
- * dominate the first screen *without hiding the next-content cue*, and this
- * hero dominated 900px of a 5749px document while saying nothing about the
- * rest.
+ * `.reading` is the reading layer: the headline, one sentence of scope and
+ * the action, and nothing in it moves for decoration — the magnet that used
+ * to pull the action toward the pointer is gone, and the entrance is the
+ * headline rising into place once and the two lines under it fading in.
  *
- * `taste-skill` SKILL.md section 14 bans scroll cues outright, as an AI tell.
- * Two vendored skills, opposite instructions, so the tie is broken on which
- * one is right about *this* page rather than on which arrived later.
+ * `.art` is the art viewport: 7 columns of title and 5 of art on desktop,
+ * with the art's box fixed by its aspect ratio, so nothing shifts when the
+ * art arrives. It holds today's art — the grid and the grain that used to
+ * sit behind the headline, where the reference no longer allows texture —
+ * until G3 replaces it with the matte café. It is decoration: `aria-hidden`,
+ * no pointer events, clipped to its own corners.
  *
- * Both are. The problem Tahap 12 measured is real and the word is the tell.
- * A label is a weak way to say "there is more below"; the strong way is for
- * there to visibly be more below. So the hero gives up 12svh and the next
- * section's top edge now sits inside the first screen. The affordance is
- * kept, in a form that carries no copy, needs no `aria-hidden`, and adds no
- * element to the hero stack — which SKILL.md section 4.7 caps at four.
+ * The wash under both is `SceneShell` from `vault/webgl/scene-shell`, as
+ * before: a gradient, not a texture, drawn by WebGL across the whole hero
+ * (its quad covers the canvas's viewport, so it cannot be confined to the
+ * art's box) with a CSS gradient where WebGL is not used.
  *
- * ## The frame, and why it is not centred
+ * ## Order on a phone
  *
- * The text elements sat on a diagonal: the index in the top right, the
- * headline and its action at the bottom left. **They no longer do, and this
- * paragraph is kept because the reason is worth more than the arrangement.**
- * Tahap 74 measured what the diagonal cost once the index was finally
- * rendered — a 516px hole through the middle of the first screen, 57% of it
- * at 1440x900 — and moved the index down to share the headline's rows. The
- * composition is now a **band** along the bottom: headline, subline and
- * action at the left, the index at the right, anchored to the frame's edge in
- * Tahap 84 so the band has two ends rather than one. That is a composition.
- * The
- * previous arrangement — everything centred in a column down the left — was
- * not: it was one element's natural width three times over, with the vertical
- * position decided by `align-items: center`. `docs/stages/TAHAP-12.md` §3.1
- * has the measurement it came from.
+ * H1, the sentence of scope, the action — and then the need chooser, which
+ * the page renders straight after this block. The art viewport is left out
+ * under the desktop breakpoint: the reference makes the illustration
+ * optional there, and the unit index that used to sit above the headline is
+ * gone, so nothing comes before the benefit.
  *
- * **And for fifty-five stages this paragraph described a page that did not
- * exist.** The `index` prop, its markup and its CSS shipped in Tahap 12d;
- * `app/[locale]/page.tsx` never passed it, so the home page rendered exactly
- * the staircase above. Measured at 1440×900 before Tahap 67 wired it: first
- * screen content **462→836 of 900**, nothing at all in the top 51%.
+ * ## Height
  *
- * The tell was sitting in plain sight in three places — this paragraph,
- * `lib/content/practices.ts` ("the hero's right-hand column has been labelled
- * `Practice` / `Praktik` since Tahap 12d"), and `home.heroIndexLabel` idle in
- * both dictionaries. A doc that describes an unpassed prop is the same defect
- * class as a `[data-epic]` name with no element, and this project has now
- * found it in motion (Tahap 50, 52) and in composition.
- *
- * ## Choreography
- *
- * The eyeline order is headline → subline → action, and the timing follows
- * it. The subline and CTA are revealed by the CSS `[data-reveal]` contract
- * with a stagger, rather than by a second GSAP timeline — one animation
- * system per block keeps the sequencing legible and avoids a second RAF
- * consumer for what is a fade.
- *
- * Total entrance stays under ~1.2s (`MOTION-SPEC.md` §3): a hero that takes
- * longer than that to settle is not dramatic, it is slow.
+ * The content's, not the viewport's. The hero filled 100svh (Tahap 49); the
+ * reference asks for the three needs to be seen after the introduction and
+ * before any long explanation, so the hero ends where its content does and
+ * the chooser starts in the first screen.
  *
  * ## Accessibility
  *
  * - One `<h1>` per page, and it is this one.
- * - The WebGL background is `aria-hidden` decoration and carries no meaning.
+ * - The wash and the art are `aria-hidden` decoration and carry no meaning.
  * - Under reduced motion the headline renders as plain text, the reveals
- *   resolve instantly, the magnet is inert, and the background falls back to
- *   a static gradient. The hero is fully legible in every one of those paths.
+ *   resolve instantly, and the wash falls back to a still gradient. The hero
+ *   is fully legible in every one of those paths.
  */
 
 import cn from 'clsx'
 import type { ReactNode } from 'react'
 
-import { Link } from '@/components/ui/link'
 import { useReveal } from '@/lib/hooks/use-reveal'
 import { GridPattern } from '@/vault/magic/grid-pattern'
 import { NoiseTexture } from '@/vault/magic/noise-texture'
 import { TextReveal } from '@/vault/motion/text-reveal'
-import { Magnetic } from '@/vault/primitives/magnetic'
 import { SceneShell } from '@/vault/webgl/scene-shell'
 
 import s from './hero.module.css'
@@ -105,123 +75,36 @@ interface HeroProps {
    * SplitText, which takes ownership of the rendered text nodes.
    */
   headline: string
-  /** Short supporting line. One sentence — a hero is not a paragraph. */
+  /** One sentence of scope. A hero is not a paragraph. */
   subline?: string | undefined
   /** The single call to action. One, not three. */
-  action?: ReactNode | undefined
-  /**
-   * A short standing fact about the practice, set in the columns the
-   * headline does not use.
-   *
-   * Measured before this existed: the headline ran to 75% of the viewport,
-   * the subline to 26% and the action to 12% — a staircase down the left
-   * edge with nothing at all on the right, and 456px of ink in a 900px
-   * screen (`docs/stages/TAHAP-12.md` §3.1). The emptiness was not a
-   * composition, it was `align-items: center` and no second element.
-   *
-   * Keep it to a label and a few lines. It is a counterweight, not a column
-   * of copy.
-   *
-   * Structured rather than a `ReactNode` slot: the block owns the markup and
-   * the classes, the page owns the words. A slot would put the typography of
-   * the hero in `page.tsx`, which is where the hardcoded values this project
-   * spent Tahap 11 removing came from in the first place.
-   *
-   * R5: each item is numbered, may carry one line under its name, and may
-   * lead somewhere. The approved home screen (`docs/r4-arah-visual/`,
-   * `hasil-akhir.html`) sets the index as 01 to 03 with each unit's own
-   * header line under its name, so the first screen says what each unit does
-   * rather than only that there are three.
-   */
-  index?: { label: string; items: readonly HeroIndexItem[] } | undefined
+  action: ReactNode
   className?: string | undefined
 }
 
-export interface HeroIndexItem {
-  label: string
-  /** One line under the name, in the caller's words. */
-  note?: string | undefined
-  /** Where the name leads. Without one it is a plain word. */
-  href?: string | undefined
-}
-
-export function Hero({
-  headline,
-  subline,
-  action,
-  index,
-  className,
-}: HeroProps) {
+export function Hero({ headline, subline, action, className }: HeroProps) {
   const ref = useReveal<HTMLDivElement>()
 
   return (
     /*
      * `data-epic` names one of the two choreographed moments a page is
-     * allowed (`MOTION-SPEC.md` §9.5). The requirement is that both are
-     * *named*; naming them in the DOM is what makes it checkable, and it
-     * means `e2e/interaction-grammar.e2e.ts` can say which moment overspent
-     * instead of pointing at an anonymous element.
+     * allowed (`MOTION-SPEC.md` §9.5); `e2e/interaction-grammar.e2e.ts`
+     * reports it by that name.
      */
     <section className={cn(s.hero, className)} data-epic="hero-arrival">
-      <div className={s.background}>
+      <div className={s.wash}>
         <SceneShell />
-        {/*
-          The ground the passage below resolves into — Tahap 49.
-
-          Both are `aria-hidden` and inert, and neither carries information:
-          `vault/magic/README.md` house rule 4. They are here because the hero
-          now fills the screen, and a full screen of one flat wash is the
-          cheapest-looking thing a display can show.
-        */}
-        <NoiseTexture className={s.heroGrain} />
-        <GridPattern width={48} height={48} className={s.heroGrid} />
       </div>
 
-      <div ref={ref} className={s.frame}>
-        {index && (
-          <div data-reveal-item className={s.index}>
-            <p className={cn('caption', s.indexLabel)}>{index.label}</p>
-            {/*
-              An ordered list, so the order is said once by the list itself;
-              the drawn number beside each name is for the eye and stays out
-              of the reading.
-            */}
-            <ol className={s.indexList}>
-              {index.items.map((item, position) => (
-                <li key={item.label} className={s.indexItem}>
-                  <span
-                    aria-hidden="true"
-                    className={cn('caption', s.indexNumber)}
-                  >
-                    {String(position + 1).padStart(2, '0')}
-                  </span>
-                  {item.href ? (
-                    <Link href={item.href} className={cn('p', s.indexName)}>
-                      {item.label}
-                    </Link>
-                  ) : (
-                    <span className={cn('p', s.indexName)}>{item.label}</span>
-                  )}
-                  {item.note ? (
-                    <span className={cn('caption', s.indexNote)}>
-                      {item.note}
-                    </span>
-                  ) : null}
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
-
-        <div className={s.content}>
+      <div className={s.shell}>
+        <div ref={ref} className={s.reading}>
           <TextReveal
             as="h1"
             split="lines"
-            // `hero-arrival` is this section's named moment (see `data-epic`
-            // above), so the heading is allowed the choreographed band. Every
-            // other masthead on the site takes the 400ms default — Tahap 40.
+            // `hero-arrival` is this section's named moment, so the heading
+            // is allowed the choreographed band (Tahap 40).
             pace="epic"
-            className={cn('h1', s.headline)}
+            className={s.headline}
           >
             {headline}
           </TextReveal>
@@ -232,11 +115,14 @@ export function Hero({
             </p>
           )}
 
-          {action && (
-            <div data-reveal-item className={s.action}>
-              <Magnetic>{action}</Magnetic>
-            </div>
-          )}
+          <div data-reveal-item className={s.action}>
+            {action}
+          </div>
+        </div>
+
+        <div className={s.art} aria-hidden="true" data-art-viewport="">
+          <NoiseTexture className={s.artGrain} />
+          <GridPattern width={48} height={48} className={s.artGrid} />
         </div>
       </div>
     </section>

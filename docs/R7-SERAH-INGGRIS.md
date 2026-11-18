@@ -162,6 +162,25 @@ Kalimat tetap, sama di setiap halaman:
 | biaya pembangunan, kemitraan bagi hasil                                                                                | a build fee, a revenue-share partnership                                                                                                                                          |
 | Cocok bila …                                                                                                           | Suits you if …                                                                                                                                                                    |
 
+### G1 · Navbar dan pemilih kebutuhan (draf, menunggu persetujuan)
+
+_Ditambahkan 17 November 2026, G1 (`docs/RENCANA-VISUAL-GERAK.md`)._ Teks
+antarmuka baru dari rujukan teknis pemilik §4, lewat PR kode
+(`messages/{id,en}.json`), bukan Sanity. Inggrisnya ditulis menurut aturan
+di atas dan **belum disetujui**; persetujuannya diminta lewat PR G1. Label
+cabang memakai label pembaca yang sudah disetujui (glosarium §3), jadi tidak
+butuh persetujuan baru.
+
+| Kunci               | ID                                  | EN (draf)                                   | Catatan                                                   |
+| ------------------- | ----------------------------------- | ------------------------------------------- | --------------------------------------------------------- |
+| `nav.method`        | Cara kerja                          | How we work                                 | Judul Inggris `/metode` yang sudah disetujui              |
+| `nav.ctaNeed`       | Ceritakan kebutuhan                 | Tell us what you need                       | Ajakan di header dan hero; aturan 8 melarang "your needs" |
+| `need.building`     | Bangunan & proyek                   | Buildings & projects                        | Kebutuhan pertama, ke Konstruksi                          |
+| `need.systems`      | Sistem & operasional                | Systems & operations                        | Kebutuhan kedua, ke Teknologi                             |
+| `need.market`       | Pasar & penjualan                   | Market & sales                              | Kebutuhan ketiga, ke Peekabo                              |
+| `need.join`         | Bergabung                           | Join                                        | Terpisah, ke `/peekabo/jaringan`                          |
+| `need.for.*` (enam) | Untuk pelaku proyek, dan seterusnya | For people running projects, dan seterusnya | Label pembaca glosarium §3, sudah disetujui               |
+
 ## 2. Beranda
 
 Dokumen `siteSettings`. Kartu unit di beranda memakai `judul` dan `ringkas`
