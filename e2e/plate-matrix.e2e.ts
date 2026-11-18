@@ -312,7 +312,7 @@ for (const dpr of DPRS) {
     test.describe.configure({ timeout: WEBGL_TEST_BUDGET_MS * 2 })
 
     /*
-     * Rows A, B, E, and C's additive half on paper: the neutral shader, which
+     * Rows B, E, C's additive half on paper, then A: the neutral shader, which
      * is the texel and nothing else, blended additively as the plate was.
      */
     test('A B E: the texture, the neutral shader, the turn', async ({
@@ -323,6 +323,29 @@ for (const dpr of DPRS) {
         await holdProgress(page, 0)
         await frameShot(page, testInfo, 'B-neutral')
 
+        // Row E: the turn held still at its middle (turn 0.5), its lean
+        // (turn 1, no orbit) and its end (turn 1, the orbit's full 14°).
+        for (const [name, progress] of [
+          ['E-middle', 0.3],
+          ['E-lean', 0.6],
+          ['E-end', 1],
+        ] as const) {
+          await holdProgress(page, progress)
+          await frameShot(page, testInfo, name)
+        }
+
+        // Row C, its additive half on paper: light added to paper.
+        await holdProgress(page, 0)
+        await paperGround(page, true)
+        await frameShot(page, testInfo, 'C-additive-paper')
+        await paperGround(page, false)
+
+        /*
+         * Row A last. It hides the canvas and decodes a 1600-pixel picture of
+         * the texture, and once, at DPR 2, the canvas drew too few frames
+         * after it for the next held state to settle (run #381, retried
+         * green). Taken last, nothing after it waits on the canvas.
+         */
         // Row A. The texture's canvas over the flat plate's box, fitted the
         // way the SVG fits its view box, and added to the page the way the
         // plate adds light (`plus-lighter`), with the canvas hidden: the same
@@ -385,23 +408,6 @@ for (const dpr of DPRS) {
             canvas.style.removeProperty('visibility')
           }
         }, FIRST_MATERIAL)
-
-        // Row E: the turn held still at its middle (turn 0.5), its lean
-        // (turn 1, no orbit) and its end (turn 1, the orbit's full 14°).
-        for (const [name, progress] of [
-          ['E-middle', 0.3],
-          ['E-lean', 0.6],
-          ['E-end', 1],
-        ] as const) {
-          await holdProgress(page, progress)
-          await frameShot(page, testInfo, name)
-        }
-
-        // Row C, its additive half on paper: light added to paper.
-        await holdProgress(page, 0)
-        await paperGround(page, true)
-        await frameShot(page, testInfo, 'C-additive-paper')
-        await paperGround(page, false)
 
         await record(page, testInfo, { textureShown: shown })
       } finally {
