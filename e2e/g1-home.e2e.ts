@@ -302,6 +302,65 @@ test.describe('the hero', () => {
     expect(headline.masks, 'line masks left on the headline at rest').toBe(0)
   })
 
+  /*
+   * The split's own stylesheet, applied. G2's render matrix found that
+   * `text-reveal.module.css` named classes SplitText never wrote, so its
+   * clip had matched nothing. Caught while the headline is still split:
+   * each mask is a `split-line-mask` and stays clipped with SplitText's
+   * inline clip taken off, so the clip is the stylesheet's; each line is a
+   * `split-line` that clips nothing itself, so no line cuts its own
+   * descenders. The test above holds the other half: at rest no mask is
+   * left at all.
+   */
+  test('while the headline rises, its masks clip and its lines do not', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await page.goto('/id', { waitUntil: 'domcontentloaded' })
+    const split = await page
+      .waitForFunction(
+        () => {
+          const h1 = document.querySelector('main h1')
+          // Split, the headline's children are its masks; plain, it has none.
+          const masks = h1 ? [...h1.children] : []
+          if (masks.length === 0) return false
+          const lines = masks.flatMap((mask) => [...mask.children])
+          for (const mask of masks) {
+            if (mask instanceof HTMLElement) {
+              mask.style.removeProperty('overflow')
+            }
+          }
+          const clipped = (node: Element) =>
+            getComputedStyle(node).overflow !== 'visible'
+          return {
+            masks: masks.length,
+            namedMasks: masks.filter((mask) =>
+              mask.classList.contains('split-line-mask')
+            ).length,
+            clippedMasks: masks.filter(clipped).length,
+            lines: lines.length,
+            namedLines: lines.filter((line) =>
+              line.classList.contains('split-line')
+            ).length,
+            clippedLines: lines.filter(clipped).length,
+          }
+        },
+        undefined,
+        { timeout: 15_000, polling: 16 }
+      )
+      .then((handle) => handle.jsonValue())
+      .catch(() => null)
+    expect(split, 'the headline was never caught split').toBeTruthy()
+    if (!split) return
+    expect(split.lines).toBeGreaterThan(0)
+    expect(split.namedMasks).toBe(split.masks)
+    expect(split.clippedMasks, 'a mask clipped by SplitText alone').toBe(
+      split.masks
+    )
+    expect(split.namedLines).toBe(split.lines)
+    expect(split.clippedLines, 'a line that clips its own glyphs').toBe(0)
+  })
+
   test('under reduced motion everything is there, still', async ({
     browser,
   }) => {

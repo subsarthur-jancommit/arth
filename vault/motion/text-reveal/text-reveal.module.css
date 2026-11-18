@@ -3,6 +3,16 @@
  * clip. SplitText sets this inline when `mask` is used, but declaring it here
  * as well keeps the reveal correct if the split is ever configured manually.
  *
+ * The masks, and only the masks — G1. These selectors used to name
+ * `.split-line` and its siblings, which SplitText never wrote: it names
+ * nothing unless asked, so the rule matched nothing (G2's render matrix,
+ * row G). `index.tsx` now asks for `split-line`, `split-word` and
+ * `split-char` on the parts, and SplitText gives each mask its part's class
+ * with `-mask` added. The parts themselves are not clipped here: a line that
+ * clipped itself would cut its own descenders wherever it stood, and the
+ * only clip a line meets is its mask's, while it rises. Once the reveal has
+ * landed, `revert()` removes the masks and nothing is clipped at all.
+ *
  * `clip` rather than `hidden`: `overflow: hidden` creates a scroll container,
  * which can be focus-scrolled by the browser and shift the layout. `clip`
  * clips without that side effect.
@@ -17,9 +27,9 @@
  * browser layers them for exactly as long as they move.
  */
 .reveal {
-  :global(.split-line),
-  :global(.split-word),
-  :global(.split-char) {
+  :global(.split-line-mask),
+  :global(.split-word-mask),
+  :global(.split-char-mask) {
     overflow: clip;
   }
 }

@@ -197,6 +197,19 @@ export function TextReveal({
       const instance = SplitText.create(container, {
         type: config.type,
         mask: config.type,
+        /*
+         * Named, so the stylesheet can find what SplitText makes. G1, from
+         * G2's render matrix (`docs/G2-MATRIKS-RENDER.md`, row G): SplitText
+         * names nothing by default, so the `.split-line` rules in
+         * `text-reveal.module.css` had never matched a thing. A mask takes
+         * its part's class with `-mask` added (`split-line-mask`), and the
+         * stylesheet clips the masks alone. A line never clips itself, so
+         * its descenders are cut by its mask only while it rises, and by
+         * nothing once `revert()` has handed the text back.
+         */
+        linesClass: 'split-line',
+        wordsClass: 'split-word',
+        charsClass: 'split-char',
         // 'auto', not 'hidden'. Both put aria-hidden on the generated spans,
         // but only 'auto' also writes the original string to an aria-label on
         // the container. With 'hidden' the element keeps its role and loses
