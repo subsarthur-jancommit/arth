@@ -232,13 +232,40 @@ export interface PlatePart {
   rect: readonly [number, number, number, number]
 }
 
+/**
+ * One group of the words a plate names: a drawing's rooms, a lane's steps, a
+ * row's cards. Its heading is the plate's own name for the group.
+ */
+export interface PlateLegendGroup {
+  heading: string
+  items: readonly string[]
+}
+
+/**
+ * The plate's words as a reader reads them beside the drawing (G2).
+ *
+ * The drawing sets its labels at its own scale, where a 14.5-unit label is
+ * about seven CSS pixels on a 1440 screen and less once the lit model leans
+ * back, so a label inside the picture can name a room but cannot be read as
+ * one. The legend carries the same words as stable HTML at a reading size:
+ * the plate's own words, in the reader's locale, nothing written anew.
+ */
+export interface PlateLegend {
+  groups: readonly PlateLegendGroup[]
+  /** Sentences the plate states outright, read after the groups. */
+  statements: readonly string[]
+}
+
 /** One unit's working drawing, in its own units. */
 export interface Plate {
   unit: Unit
   /** `[x, y, width, height]`: the part of the plate units that is drawn. */
   viewBox: readonly [number, number, number, number]
+  /** The geometry and the words drawn into it, for both renderers. */
   marks: readonly PlateMark[]
   texts: readonly PlateText[]
   /** At least one; together they cover the view box. */
   parts: readonly PlatePart[]
+  /** The same words, for the HTML beside the drawing. */
+  legend: PlateLegend
 }

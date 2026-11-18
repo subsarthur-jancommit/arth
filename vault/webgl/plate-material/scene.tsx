@@ -13,8 +13,9 @@
  * ## The model
  *
  * At rest a part is exactly where the flat plate draws it: the same box, the
- * same size, facing the reader. As the plate's progress runs, the parts turn
- * into a model of light seen from above and to one side: Konstruksi's plan
+ * same size, facing the reader, in the same ink (G2: a print of the drawing,
+ * not light added to the page; `shaders.ts`). As the plate's progress runs,
+ * the parts turn into a model seen from above and to one side: Konstruksi's plan
  * lies down and its section stands up along the plan's far wall, the way
  * direction B's still drew them; a flow diagram or a board leans back like a
  * sheet on a table. Then the camera keeps turning slowly, so the model is
@@ -25,14 +26,17 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useRef, useState } from 'react'
 import {
-  AdditiveBlending,
   CanvasTexture,
+  Color,
   type IUniform,
   LinearFilter,
   LinearMipmapLinearFilter,
   Matrix4,
   type Mesh,
+  NoColorSpace,
+  NormalBlending,
   type ShaderMaterial,
+  SRGBColorSpace,
   type Texture,
   Vector2,
   Vector4,
@@ -92,8 +96,9 @@ interface PlateUniforms {
   uPixel: IUniform<Vector2>
   uFocal: IUniform<number>
   uClip: IUniform<Vector4>
+  /** The page's ink, in linear light. */
+  uInk: IUniform<Color>
   uOpacity: IUniform<number>
-  uScan: IUniform<number>
 }
 
 function createUniforms(): PlateUniforms {
@@ -106,9 +111,40 @@ function createUniforms(): PlateUniforms {
     uPixel: { value: new Vector2(1, 1) },
     uFocal: { value: 1000 },
     uClip: { value: new Vector4() },
+    uInk: { value: new Color(1, 1, 1) },
     uOpacity: { value: 1 },
-    uScan: { value: -1 },
   }
+}
+
+/**
+ * The plate's ink: its CSS `color`, which is the flat plate's
+ * `currentColor`, so the lit drawing is printed in the same token. Resolved
+ * through a one-pixel 2D canvas, because the site authors colour in
+ * `oklch()` and three's `Color.setStyle` does not read it; then taken from
+ * sRGB into the linear light the shader works in.
+ */
+function inkOf(element: Element): Color {
+  const ink = new Color(1, 1, 1)
+  const probe = document.createElement('canvas')
+  probe.width = 1
+  probe.height = 1
+  const context = probe.getContext('2d', { willReadFrequently: true })
+  if (!context) return ink
+  context.fillStyle = getComputedStyle(element).color
+  context.fillRect(0, 0, 1, 1)
+  const [red = 255, green = 255, blue = 255] = context.getImageData(
+    0,
+    0,
+    1,
+    1
+  ).data
+  return ink.setRGB(red / 255, green / 255, blue / 255, SRGBColorSpace)
+}
+
+/** What the material is drawn from: the coverage texture, and the ink. */
+interface Print {
+  texture: CanvasTexture
+  ink: Color
 }
 
 /**
@@ -204,7 +240,7 @@ export function PlateMaterialScene({
   const size = useThree((state) => state.size)
   const dpr = useThree((state) => state.viewport.dpr)
 
-  const [texture, setTexture] = useState<CanvasTexture | null>(null)
+  const [print, setPrint] = useState<Print | null>(null)
   const [uniforms] = useState(() => parts.map(() => createUniforms()))
   const meshes = useRef<(Mesh | null)[]>([])
   const announce = useFirstFrame(onFirstFrame, onContextLost)
@@ -214,6 +250,11 @@ export function PlateMaterialScene({
    * are set in Geist Mono and Onest rather than whatever a canvas falls back
    * to. Created here, so it is disposed here (CLAUDE.md #15): three disposes
    * what JSX made, and this was not made by JSX.
+   *
+   * It is coverage, not colour (G2): white on black, read for how much the
+   * pen covered, so it is declared `NoColorSpace` and three samples its
+   * values as they are. Mipmaps, trilinear filtering and anisotropy stay:
+   * the drawing is minified on its way to the screen.
    */
   useEffect(() => {
     let cancelled = false
@@ -225,11 +266,12 @@ export function PlateMaterialScene({
         const canvas = drawPlate(plate, TEXTURE_WIDTH, facesOf(element))
         if (!canvas) return
         made = new CanvasTexture(canvas)
+        made.colorSpace = NoColorSpace
         made.generateMipmaps = true
         made.minFilter = LinearMipmapLinearFilter
         made.magFilter = LinearFilter
         made.anisotropy = gl.capabilities.getMaxAnisotropy()
-        setTexture(made)
+        setPrint({ texture: made, ink: inkOf(element) })
       })
       .catch(() => {
         // No texture, no mesh: the flat plate stays, and it is the same
@@ -245,16 +287,18 @@ export function PlateMaterialScene({
   useEffect(() => {
     for (const mesh of meshes.current) {
       const set = uniformsOf(mesh)
-      if (set) set.uTexture.value = texture
+      if (!set) continue
+      set.uTexture.value = print?.texture ?? null
+      if (print) set.uInk.value.copy(print.ink)
     }
-  }, [texture])
+  }, [print])
 
   useFrame(() => {
     const svg = element.querySelector('svg')
     const hide = () => {
       for (const mesh of meshes.current) if (mesh) mesh.visible = false
     }
-    if (!texture || !svg) return hide()
+    if (!print || !svg) return hide()
 
     // The flat plate's box as drawn now, every transform above it included:
     // the reel's wipe, the drawing's counter-move, the frame's settle.
@@ -358,7 +402,6 @@ export function PlateMaterialScene({
         (size.height - top) * dpr
       )
       set.uOpacity.value = opacity
-      set.uScan.value = turn > 0 && turn < 1 ? turn : -1
       mesh.visible = opacity > 0.001
     })
 
@@ -379,15 +422,21 @@ export function PlateMaterialScene({
           visible={false}
         >
           <planeGeometry args={[1, 1]} />
+          {/*
+            Ink over the page (G2): straight alpha out of the shader, so
+            `premultipliedAlpha` is off and three blends it as
+            `SRC_ALPHA, ONE_MINUS_SRC_ALPHA`, the same over-operation the
+            page's own text is composited with.
+          */}
           <shaderMaterial
             vertexShader={vertexShader}
             fragmentShader={fragmentShader}
             uniforms={uniforms[index] ?? createUniforms()}
             transparent
-            premultipliedAlpha
+            premultipliedAlpha={false}
             depthTest={false}
             depthWrite={false}
-            blending={AdditiveBlending}
+            blending={NormalBlending}
           />
         </mesh>
       ))}

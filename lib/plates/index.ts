@@ -23,6 +23,8 @@ export type {
   MarkRole,
   MarkStyle,
   Plate,
+  PlateLegend,
+  PlateLegendGroup,
   PlateMark,
   PlatePart,
   PlateText,
@@ -30,6 +32,7 @@ export type {
   TextStyle,
 } from './types'
 export { LABEL_HALO, MARK_STYLES, TEXT_STYLES } from './types'
+export { PLATE_NOTE } from './words'
 
 /** The plates in Indonesian, the site's first language. */
 export const PLATES: Record<Unit, Plate> = {

@@ -15,8 +15,9 @@
  * - **What was drawn.** It follows texture units, bindings, the program in
  *   use and the draw framebuffer. A program is told apart by a uniform only
  *   its own shader declares: `uCover` is `vault/webgl/material-image`'s plate
- *   (a picture), `uColorA` is `vault/webgl/scene-shell`'s wash, `uScan` is
- *   `vault/webgl/plate-material`'s lit plate. When one draws, its kind is
+ *   (a picture), `uColorA` is `vault/webgl/scene-shell`'s wash, `uClip` is
+ *   `vault/webgl/plate-material`'s lit plate (it was `uScan` until G2 took
+ *   the scan away). When one draws, its kind is
  *   recorded; for a picture, so is the image bound to its `uTexture` sampler,
  *   by URL. The scene loads the `currentSrc` of the plate's own `<img>`, so
  *   the URL names the plate.
@@ -198,7 +199,7 @@ export function installWebglProbe(): void {
     if (live && location) {
       if (name === 'uCover') kindOf.set(program, 'picture')
       if (name === 'uColorA') kindOf.set(program, 'wash')
-      if (name === 'uScan') kindOf.set(program, 'plate')
+      if (name === 'uClip') kindOf.set(program, 'plate')
       if (name === 'uTexture') samplerOf.set(location, program)
     }
     return location
