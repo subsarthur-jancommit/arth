@@ -124,11 +124,14 @@ async function holdProgress(page: Page, progress: number) {
 
 /**
  * Paints the page's ground paper. Only the document's own ground: `<main>`
- * stays clear, because the canvas is drawn behind it.
+ * stays clear, because the canvas is drawn behind it. The hero's wash is
+ * held back while it is on: the canvas draws it over the whole viewport, so
+ * it, not the page, is the ground behind a lit plate (run #367, rows A–C).
  */
 async function paperGround(page: Page, on: boolean) {
   await page.evaluate(
     ([paper, apply]) => {
+      if (window.__plateMatrix) window.__plateMatrix.hideWash = apply
       const id = 'plate-matrix-paper'
       document.querySelector(`#${id}`)?.remove()
       if (!apply) return
@@ -219,6 +222,7 @@ function matrixState(
         (canvas) => `${canvas.width}x${canvas.height}`
       ),
       errors: state.errors,
+      hideWash: state.hideWash,
     }
   })
 }
@@ -308,7 +312,7 @@ for (const dpr of DPRS) {
     test.describe.configure({ timeout: WEBGL_TEST_BUDGET_MS * 2 })
 
     /*
-     * Rows A, B, E, and C's additive half on paper: the neutral shader, which
+     * Rows B, E, C's additive half on paper, then A: the neutral shader, which
      * is the texel and nothing else, blended additively as the plate was.
      */
     test('A B E: the texture, the neutral shader, the turn', async ({
@@ -319,6 +323,29 @@ for (const dpr of DPRS) {
         await holdProgress(page, 0)
         await frameShot(page, testInfo, 'B-neutral')
 
+        // Row E: the turn held still at its middle (turn 0.5), its lean
+        // (turn 1, no orbit) and its end (turn 1, the orbit's full 14°).
+        for (const [name, progress] of [
+          ['E-middle', 0.3],
+          ['E-lean', 0.6],
+          ['E-end', 1],
+        ] as const) {
+          await holdProgress(page, progress)
+          await frameShot(page, testInfo, name)
+        }
+
+        // Row C, its additive half on paper: light added to paper.
+        await holdProgress(page, 0)
+        await paperGround(page, true)
+        await frameShot(page, testInfo, 'C-additive-paper')
+        await paperGround(page, false)
+
+        /*
+         * Row A last. It hides the canvas and decodes a 1600-pixel picture of
+         * the texture, and once, at DPR 2, the canvas drew too few frames
+         * after it for the next held state to settle (run #381, retried
+         * green). Taken last, nothing after it waits on the canvas.
+         */
         // Row A. The texture's canvas over the flat plate's box, fitted the
         // way the SVG fits its view box, and added to the page the way the
         // plate adds light (`plus-lighter`), with the canvas hidden: the same
@@ -381,23 +408,6 @@ for (const dpr of DPRS) {
             canvas.style.removeProperty('visibility')
           }
         }, FIRST_MATERIAL)
-
-        // Row E: the turn held still at its middle (turn 0.5), its lean
-        // (turn 1, no orbit) and its end (turn 1, the orbit's full 14°).
-        for (const [name, progress] of [
-          ['E-middle', 0.3],
-          ['E-lean', 0.6],
-          ['E-end', 1],
-        ] as const) {
-          await holdProgress(page, progress)
-          await frameShot(page, testInfo, name)
-        }
-
-        // Row C, its additive half on paper: light added to paper.
-        await holdProgress(page, 0)
-        await paperGround(page, true)
-        await frameShot(page, testInfo, 'C-additive-paper')
-        await paperGround(page, false)
 
         await record(page, testInfo, { textureShown: shown })
       } finally {
@@ -554,22 +564,26 @@ for (const dpr of DPRS) {
          * `linesClass` is empty), so a line is any `<div>` it put inside the
          * headline: the masks are the headline's children, the lines theirs.
          */
-        const caught = await page
+        const splitWhileMoving = await page
           .waitForFunction(
-            () =>
-              [
+            () => {
+              const lines = [
                 ...document.querySelectorAll(
                   '[data-epic="hero-arrival"] h1 > div > div'
                 ),
-              ].some((part) => {
+              ]
+              const moving = lines.some((part) => {
                 const { transform } = getComputedStyle(part)
                 return transform !== 'none' && !/,\s*0\)$/u.test(transform)
-              }),
+              })
+              return moving ? lines.length : false
+            },
             undefined,
             { timeout: 15_000, polling: 16 }
           )
-          .then(() => true)
-          .catch(() => false)
+          .then(async (handle) => Number(await handle.jsonValue()))
+          .catch(() => 0)
+        const caught = splitWhileMoving > 0
         if (caught) await headlineShot(page, 'G-moving')
 
         await waitForEntrance(page)
@@ -642,10 +656,17 @@ for (const dpr of DPRS) {
         await write(
           testInfo,
           'facts.json',
-          JSON.stringify({ viewport: VIEWPORT, dpr, caught, ...chain }, null, 2)
+          JSON.stringify(
+            { viewport: VIEWPORT, dpr, caught, splitWhileMoving, ...chain },
+            null,
+            2
+          )
         )
+        // Anti-vacuum: the headline was split, while it moved or once it
+        // settled. A reveal may hand the plain text back when it completes
+        // (SplitText's `revert()`), so settled alone cannot be required.
         expect(
-          chain.split,
+          Math.max(splitWhileMoving, chain.split),
           'the headline was never split, so G measured nothing'
         ).toBeGreaterThan(0)
       } finally {
