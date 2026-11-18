@@ -269,6 +269,83 @@ html {
   --tap-target: 44px;
 }
 
+/*
+ * The shape and type contract — G1 (`docs/RENCANA-VISUAL-GERAK.md`).
+ *
+ * The owner's technical reference, §3 (`docs/SOLUSI-TEKNIS-VISUAL-GERAK.md`),
+ * locks one hierarchy of shape, type and space before components are built,
+ * so the header, the home hero and the need chooser speak one language
+ * instead of three. These are its starting values, as tokens rather than as
+ * numbers repeated in three stylesheets.
+ *
+ * Not theme-dependent, so `:root` alone: nothing here mixes a palette colour.
+ *
+ * Two of §3's values are not applied, on purpose, and the G1 PR says why:
+ * the page gutters (20/32/48px) and the 1280px content cap. The header is
+ * shared by every page, `e2e/visual-substance.e2e.ts` holds each page's `h1`
+ * to the header's inset, and `/work` may not change, so the frame stays the
+ * site's `--safe` until a site-wide goal moves every page with it.
+ */
+:root {
+  /* Shape. Pills for navigation and actions, a gentler corner for panels
+     and media, the smallest for inputs. Content rows use a divider. */
+  --radius-pill: 999px;
+  --radius-panel: 12px;
+  --radius-media: 16px;
+  --radius-input: 8px;
+
+  /* Space: one scale, 4 to 96. */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-48: 48px;
+  --space-64: 64px;
+  --space-96: 96px;
+  /* Between sections: 56 on a phone, 96 from the desktop breakpoint. */
+  --section-space: 56px;
+
+  /*
+   * Type. The hero headline is 40 to 44px on a phone and
+   * `clamp(44px, 5.3vw, 76px)` on desktop, on a line of 1.06. Body 16 to 18
+   * on 1.5, navigation 15 on 1.2, and no caption under 14.
+   */
+  --type-hero: clamp(40px, 10.5vw, 44px);
+  --type-hero-leading: 1.06;
+  --type-body: 16px;
+  --type-body-leading: 1.5;
+  --type-nav: 15px;
+  --type-nav-leading: 1.2;
+  --type-caption: 14px;
+
+  /*
+   * Controls. The navigation capsule is 52px with a 4px inset, so each link
+   * is 44px; the main action is 48px. The focus ring is 2px, 3px out.
+   */
+  --control-capsule: 52px;
+  --control-inset: 4px;
+  --control-link: 44px;
+  --control-cta: 48px;
+  --ring-width: 2px;
+  --ring-offset: 3px;
+
+  /*
+   * Feedback (§6): a hover answers in 160 to 180ms and a press in 100 to
+   * 120ms, both on the reference's one easing between states.
+   */
+  --feedback-hover: 170ms;
+  --feedback-press: 110ms;
+  --ease-state: cubic-bezier(0.22, 1, 0.36, 1);
+
+  @media (--desktop) {
+    --section-space: 96px;
+    --type-hero: clamp(44px, 5.3vw, 76px);
+    --type-body: 18px;
+  }
+}
+
 html.overflow-hidden {
   overflow: hidden;
   touch-action: none;
@@ -282,8 +359,13 @@ html.overflow-hidden {
  * the sheet's content at ~473px of a 786px box, so it had nothing to scroll
  * and every drag went to the document. Two rules, not one list: an engine
  * without `:popover-open` would drop a list that named it.
+ *
+ * Below 1024px since G1, not below the 800px desktop breakpoint: the header
+ * folds its three zones into the menu earlier than the page changes layout
+ * (`components/layout/header/header.module.css`), so the sheet can be open
+ * up to 1023px and the page must hold still there too.
  */
-@media (--mobile) {
+@media (width < 1024px) {
   html:has(#header-nav:popover-open) {
     overflow: hidden;
   }

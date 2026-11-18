@@ -145,7 +145,12 @@ async function counts(page: Page): Promise<Counts> {
 
 /** One away-and-back navigation, entirely client-side. */
 async function cycle(page: Page) {
-  const link = page.locator(`a[href$="${AWAY}"]`).first()
+  /*
+   * A link a reader can press — G1. The first link to `AWAY` in the document
+   * is now the menu sheet's Kontak, which the desktop row keeps
+   * `display: none`; `:visible` takes the bar's action, to the same page.
+   */
+  const link = page.locator(`a[href$="${AWAY}"]:visible`).first()
   await link.scrollIntoViewIfNeeded()
   await link.click()
   await page.waitForURL(`**${AWAY}`, { timeout: 30_000 })
