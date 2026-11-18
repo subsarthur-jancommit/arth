@@ -222,6 +222,7 @@ function matrixState(
         (canvas) => `${canvas.width}x${canvas.height}`
       ),
       errors: state.errors,
+      hideWash: state.hideWash,
     }
   })
 }
