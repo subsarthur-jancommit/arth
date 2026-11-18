@@ -235,8 +235,9 @@ test.describe('the hero', () => {
       expect(order.scope ?? 0).toBeGreaterThan(order.h1 ?? 0)
       expect(order.action ?? 0).toBeGreaterThan(order.scope ?? 0)
       expect(order.needs ?? 0).toBeGreaterThan(order.action ?? 0)
-      // The illustration is optional on a phone, and here it is left out,
-      // so nothing comes between the action and the needs.
+      // The illustration is optional on a phone: the hero leaves it out, so
+      // nothing comes between the action and the needs. The café follows
+      // the needs instead (G3, `e2e/g3-cafe.e2e.ts`).
       expect(order.art).toBeNull()
     } finally {
       await context.close()

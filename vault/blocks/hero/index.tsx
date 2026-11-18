@@ -24,10 +24,11 @@
  *
  * `.art` is the art viewport: 7 columns of title and 5 of art on desktop,
  * with the art's box fixed by its aspect ratio, so nothing shifts when the
- * art arrives. It holds today's art — the grid and the grain that used to
- * sit behind the headline, where the reference no longer allows texture —
- * until G3 replaces it with the matte café. It is decoration: `aria-hidden`,
- * no pointer events, clipped to its own corners.
+ * art arrives. Since G3 it holds the matte café the page passes as `art`
+ * (`vault/webgl/cafe`): its SVG still, and the same café drawn by WebGL where
+ * WebGL is used. It is decoration: `aria-hidden`, no pointer events, clipped
+ * to its own box. The grid and the grain it held until then are gone; the
+ * reference keeps texture to the illustration's own material.
  *
  * The wash under both is `SceneShell` from `vault/webgl/scene-shell`, as
  * before: a gradient, not a texture, drawn by WebGL across the whole hero
@@ -39,8 +40,9 @@
  * H1, the sentence of scope, the action — and then the need chooser, which
  * the page renders straight after this block. The art viewport is left out
  * under the desktop breakpoint: the reference makes the illustration
- * optional there, and the unit index that used to sit above the headline is
- * gone, so nothing comes before the benefit.
+ * optional there and puts it after the needs, which is where the page
+ * renders the café's phone copy (`CafeAside`), so nothing comes before the
+ * benefit.
  *
  * ## Height
  *
@@ -62,8 +64,6 @@ import cn from 'clsx'
 import type { ReactNode } from 'react'
 
 import { useReveal } from '@/lib/hooks/use-reveal'
-import { GridPattern } from '@/vault/magic/grid-pattern'
-import { NoiseTexture } from '@/vault/magic/noise-texture'
 import { TextReveal } from '@/vault/motion/text-reveal'
 import { SceneShell } from '@/vault/webgl/scene-shell'
 
@@ -79,10 +79,15 @@ interface HeroProps {
   subline?: string | undefined
   /** The single call to action. One, not three. */
   action: ReactNode
+  /**
+   * The illustration in the art viewport: the matte café
+   * (`vault/webgl/cafe`). Its box is fixed whether or not this is given.
+   */
+  art?: ReactNode
   className?: string | undefined
 }
 
-export function Hero({ headline, subline, action, className }: HeroProps) {
+export function Hero({ headline, subline, action, art, className }: HeroProps) {
   const ref = useReveal<HTMLDivElement>()
 
   return (
@@ -121,8 +126,7 @@ export function Hero({ headline, subline, action, className }: HeroProps) {
         </div>
 
         <div className={s.art} aria-hidden="true" data-art-viewport="">
-          <NoiseTexture className={s.artGrain} />
-          <GridPattern width={48} height={48} className={s.artGrid} />
+          {art}
         </div>
       </div>
     </section>

@@ -4,7 +4,9 @@ import { Hero } from './index'
 
 /**
  * The hero composes vault pieces: `TextReveal` for the headline, and
- * `SceneShell` for the wash, with the grain and grid in the art viewport.
+ * `SceneShell` for the wash. The art viewport is left empty here: the home
+ * page passes it the matte café (`vault/webgl/cafe`), whose still is written
+ * by the server.
  *
  * `SceneShell` renders its DOM gradient fallback here rather than a WebGL
  * canvas — the R3F canvas is mounted by `lib/features` in the app layout and

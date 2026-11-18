@@ -114,9 +114,10 @@
 
 /*
  * The art viewport. Its box is fixed by its aspect ratio before anything is
- * drawn in it, so nothing moves when the art arrives (G3 puts the matte café
- * here). Clipped to its own corners, the media radius of the contract; the
- * texture lives here now, never behind the headline.
+ * drawn in it, so nothing moves when the art arrives, or when the café's
+ * still hands over to the canvas (G3, `vault/webgl/cafe`). No frame: the
+ * café is an object standing on the page's own ground, in its own pool of
+ * light, as in the owner's concept. Clipped to its box.
  */
 .art {
   display: none;
@@ -127,20 +128,6 @@
     grid-column: 8 / -1;
     aspect-ratio: 4 / 3;
     overflow: clip;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-media);
     pointer-events: none;
   }
-}
-
-/* The grain inside the art: the wash's midpoint as its base (Tahap 55). */
-.artGrain {
-  --noise-base: var(--hero-wash-mid);
-
-  opacity: 0.45;
-}
-
-/* The 48px grid the site composes on, faint, inside the art only. */
-.artGrid {
-  opacity: 0.5;
 }
