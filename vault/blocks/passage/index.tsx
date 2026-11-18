@@ -29,7 +29,7 @@ import s from './passage.module.css'
  * | Fraction | Movement |
  * | --- | --- |
  * | 0 → 0.15 | The frame settles (`yPercent 8 → 0`, `scale 0.94 → 1`) |
- * | 0.08 → 0.8 | One share per plate. Each after the first wipes up through the frame with its caption while the one before fades, its drawing counter-moving from `scale 1.2`; then the plate rests, and its `data-plate-progress` runs from 0 to 1 |
+ * | 0.08 → 0.8 | One share per plate. Each after the first wipes up through the frame with its caption while the drawing before fades and the words before go at once, its drawing counter-moving from `scale 1.2`; then the plate rests, and its `data-plate-progress` runs from 0 to 1 |
  * | 0.78 → 0.94 | The section title rises through its mask |
  * | 0.88 → 1 | The stage drifts up as the pin releases |
  *
@@ -299,12 +299,35 @@ export function Passage({
             )
         }
         if (i > 0 && previous) {
-          timeline.fromTo(
-            previous,
-            { opacity: 1 },
-            { opacity: 0, duration: arrival },
-            from
+          /*
+           * The plate before leaves in two ways — G2. Its drawing fades
+           * with the scroll, as it always did, and the lit plate takes that
+           * fade from `[data-plate-fade]` on the drawing. Its words (the
+           * caption, and the drawing's legend where there is one) go at once,
+           * as the next plate starts to rise.
+           *
+           * They used to fade with the whole plate, so a reader who stopped
+           * mid-wipe left them half-faded: `e2e/contrast-situ.e2e.ts` caught
+           * plate 1's muted caption at 3.28:1 against 4.5 on `/id` at 390px,
+           * with the plate at about 0.5 (G1's #104, run 44156432726). Fading
+           * the drawing alone would not do either: on a phone the next plate
+           * rises over the caption, and a caption kept at full ink would be
+           * read against the drawing that covers it. Words are either
+           * whole or gone; only the drawing is ever between.
+           */
+          const words = previous.querySelectorAll(
+            `.${s.caption}, [data-plate-legend]`
           )
+          const previousDrawing = drawingNodes[i - 1]
+          timeline.set(words, { opacity: 0 }, from)
+          if (previousDrawing) {
+            timeline.fromTo(
+              previousDrawing,
+              { opacity: 1 },
+              { opacity: 0, duration: arrival },
+              from
+            )
+          }
         }
 
         // The rest of the share: progress for the material, if there is one.
@@ -384,7 +407,6 @@ export function Passage({
                   key={plate.id}
                   className={s.plate}
                   data-passage-plate=""
-                  data-plate-fade=""
                   /*
                     A clip as well as the frame — F4-04. The flat drawing
                     is clipped by the plate's own `overflow: clip`; the lit
@@ -393,7 +415,13 @@ export function Passage({
                   */
                   data-plate-clip=""
                 >
-                  <div className={s.drawing} data-passage-drawing="">
+                  {/* What fades as the next plate arrives: the drawing,
+                      lit or flat, never the words (see the timeline). */}
+                  <div
+                    className={s.drawing}
+                    data-passage-drawing=""
+                    data-plate-fade=""
+                  >
                     {plate.media}
                   </div>
                   <figcaption className={s.caption}>
