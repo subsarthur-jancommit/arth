@@ -175,6 +175,47 @@ function collectRuns(): Facts {
     return { fg: { r: r ?? 0, g: g ?? 0, b: b ?? 0 }, alpha: (a ?? 255) / 255 }
   }
 
+  /*
+   * The site's bar, when its ground is opaque — G1.
+   *
+   * The header is fixed, so at every stop below the first some of the page's
+   * text has scrolled under it. Until G1 the bar's ground was 82% ink or paper
+   * behind a blur, and nothing on it was filled, so that text was measured
+   * against the bar's tinted ground and passed. G1's bar is solid (the
+   * reference's §4), and its action and its current route are filled pills.
+   * Run 44096131996 measured page text that had scrolled under those pills
+   * at 1:1, on `/id/kontak` and `/id/konstruksi` at 1280px only, where the
+   * pills are: paper words under the paper action on a dark page, ink words
+   * under the ink pills on a light one. No reader sees those words; the
+   * opaque bar is painted over them.
+   *
+   * So an opaque fixed bar is an occluder, the way an `overflow` ancestor is
+   * a clip: text that is not the bar's own is measured only below the bar's
+   * bottom edge. The bar's own text is still measured against the bar. A bar
+   * that is not opaque — R4's, or this one mid-crossfade — occludes nothing,
+   * and its text-under-the-bar is measured as before. Opacity is read from
+   * the two grounds the bar paints (`header.module.css`, `::before` and
+   * `::after`), never assumed.
+   */
+  const bar =
+    [...document.querySelectorAll('header')].find(
+      (node) =>
+        node.querySelector('#header-nav') !== null &&
+        node.getClientRects().length > 0
+    ) ?? null
+  const groundCover = (pseudo: '::before' | '::after') => {
+    if (!bar) return 0
+    const ground = getComputedStyle(bar, pseudo)
+    if (ground.content === 'none' || ground.display === 'none') return 0
+    return resolve(ground.backgroundColor).alpha * Number(ground.opacity)
+  }
+  const barIsOpaque =
+    bar !== null &&
+    getComputedStyle(bar).position === 'fixed' &&
+    1 - (1 - groundCover('::before')) * (1 - groundCover('::after')) >= 0.99
+  const barBottom =
+    barIsOpaque && bar ? Math.max(0, bar.getBoundingClientRect().bottom) : 0
+
   const out: Raw[] = []
   for (const el of document.querySelectorAll('*')) {
     if (/^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE|TITLE)$/.test(el.tagName)) continue
@@ -251,6 +292,10 @@ function collectRuns(): Facts {
         clip.top = Math.max(clip.top, edge.top)
         clip.bottom = Math.min(clip.bottom, edge.bottom)
       }
+    }
+    // Under an opaque bar, only what shows below it (see `barBottom`).
+    if (barBottom > 0 && bar && !bar.contains(el)) {
+      clip.top = Math.max(clip.top, barBottom)
     }
 
     const { fg, alpha } = resolve(style.color)

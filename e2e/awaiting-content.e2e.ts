@@ -88,21 +88,24 @@ test.describe('English is offered only where it is written', () => {
   })
 })
 
-test.describe('the phone menu keeps its display size', () => {
+test.describe('the phone menu keeps its reading size', () => {
   test.use({ viewport: { width: 390, height: 844 } })
 
-  test('every route word is at least 40px on a 390px phone', async ({
+  test('every link on the sheet is 24 to 32px on a 390px phone', async ({
     page,
   }) => {
     /*
      * Fitted to the longest whole label, "Cara kami bekerja" shrank every word
-     * to 28px (`docs/TINJAUAN-F01-F03.md` E8.1). Fitted to the longest word,
-     * the sheet measured 48px at 390 × 844 on 2026-10-15.
+     * to 28px (`docs/TINJAUAN-F01-F03.md` E8.1); fitted to the longest word,
+     * the sheet measured 48px at 390 × 844 on 2026-10-15. G1 sets the size
+     * instead: the reference's §4 asks for a title and links at 24 to 32px
+     * that fit, not monumental type, and every link on the sheet is held to
+     * that band, the four routes and the second list alike.
      */
     await page.goto('/id')
     await page.getByRole('button', { name: /menu/i }).click()
     const sizes = await page
-      .locator('#header-nav a')
+      .locator('#header-nav [data-sheet-link]')
       .evaluateAll((links) =>
         links
           .filter((link) => (link as HTMLElement).offsetParent !== null)
@@ -110,6 +113,9 @@ test.describe('the phone menu keeps its display size', () => {
       )
 
     expect(sizes.length).toBeGreaterThan(2)
-    for (const size of sizes) expect(size).toBeGreaterThanOrEqual(40)
+    for (const size of sizes) {
+      expect(size).toBeGreaterThanOrEqual(24)
+      expect(size).toBeLessThanOrEqual(32)
+    }
   })
 })

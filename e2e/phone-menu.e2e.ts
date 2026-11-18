@@ -49,8 +49,14 @@ import { axeTags } from './axe-tags'
  * read after the entrance had ended anyway. Each is a test below now.
  */
 
-/** The words on the sheet are display type, not an 11px list. */
-const DISPLAY_MIN_PX = 44
+/**
+ * The sheet's links are 24 to 32px — G1, the reference's §4: a title and
+ * links that fit, not monumental type. Until G1 each route word was fitted to
+ * the column (E8.1) and had to reach 44px; the sheet now also carries the
+ * second list (Layanan, Pembayaran, Kontak), and the reference sets the size.
+ */
+const SHEET_MIN_PX = 24
+const SHEET_MAX_PX = 32
 
 /** The open menu: the visible primary navigation. */
 const menuOf = (page: Page) => page.getByRole('navigation', { name: 'Utama' })
@@ -139,7 +145,10 @@ test.describe('the phone menu', () => {
         Number.parseFloat(getComputedStyle(link).fontSize)
       )
       expect(size, `the route words are ${size}px`).toBeGreaterThanOrEqual(
-        DISPLAY_MIN_PX
+        SHEET_MIN_PX
+      )
+      expect(size, `the route words are ${size}px`).toBeLessThanOrEqual(
+        SHEET_MAX_PX
       )
 
       await expect(
@@ -358,21 +367,88 @@ test.describe('the phone menu', () => {
       .toBe(false)
 
     /*
-     * And the same path from the keyboard, as a reader takes it. Shift+Tab
-     * from MENU never passes through the sheet — review found this path left
-     * it open over whatever took focus next, and search opened its palette
-     * underneath it.
+     * And from the keyboard, as a reader takes it. Before G1, Shift+Tab from
+     * MENU left the sheet and closed it — review had found that path leaving
+     * it open over whatever took focus next. Since G1 the open sheet traps
+     * the keyboard (the reference's §4), so Shift+Tab from the button wraps
+     * to the sheet's last stop and the sheet stays open; Escape is the way
+     * out, and focus comes back to the button. Search from the keyboard then
+     * opens its palette on top, not under a sheet.
      */
     const menu = page.getByRole('button', { name: 'Menu' })
     await menu.focus()
     await page.keyboard.press('Enter')
     await expect(menuOf(page)).toBeVisible()
     await page.keyboard.press('Shift+Tab')
+    await expect(menuOf(page)).toBeVisible()
+    expect(
+      await menuOf(page).evaluate((nav) =>
+        nav.contains(document.activeElement)
+      ),
+      'Shift+Tab from the button left the open sheet'
+    ).toBe(true)
+    await page.keyboard.press('Escape')
     await expect(menuOf(page)).toBeHidden()
+    await expect(menu).toBeFocused()
 
     await page.locator('[data-search-trigger]').focus()
     await page.keyboard.press('Enter')
     await expectPaletteOnTop(page)
+  })
+
+  test('the open sheet traps the keyboard, and says it is open', async ({
+    page,
+  }) => {
+    await page.goto('/id', { waitUntil: 'networkidle' })
+    const menu = page.getByRole('button', { name: 'Menu' })
+    await expect(menu).toHaveAttribute('aria-expanded', 'false')
+
+    await menu.focus()
+    await page.keyboard.press('Enter')
+    await expect(menuOf(page)).toBeVisible()
+    const close = page.getByRole('button', { name: 'Tutup' })
+    await expect(close).toHaveAttribute('aria-expanded', 'true')
+
+    // Every stop in the sheet, then once more: the next one is the button.
+    const stops = await menuOf(page).evaluate(
+      (nav) =>
+        [...nav.querySelectorAll('a[href], button')].filter(
+          (node) => node.getClientRects().length > 0
+        ).length
+    )
+    expect(stops, 'the sheet has nothing to focus').toBeGreaterThan(3)
+    for (let stop = 0; stop < stops; stop += 1) {
+      await page.keyboard.press('Tab')
+      expect(
+        await menuOf(page).evaluate((nav) =>
+          nav.contains(document.activeElement)
+        ),
+        `Tab ${stop + 1} left the sheet`
+      ).toBe(true)
+    }
+    await page.keyboard.press('Tab')
+    await expect(close, 'Tab past the last stop did not wrap').toBeFocused()
+
+    await page.keyboard.press('Escape')
+    await expect(menuOf(page)).toBeHidden()
+    await expect(menu).toBeFocused()
+    await expect(menu).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  test('held sideways, the sheet still closes', async ({ page }) => {
+    /*
+     * A phone on its side: 844 wide, 390 tall. The row needs 1024, so the
+     * bar keeps Menu, and the sheet's links run past the screen's height.
+     * The way out sits in the bar, which the sheet never covers.
+     */
+    await page.setViewportSize({ width: 844, height: 390 })
+    await page.goto('/id', { waitUntil: 'networkidle' })
+    await openMenu(page)
+
+    const close = page.getByRole('button', { name: 'Tutup' })
+    await expect(close).toBeInViewport()
+    await close.click()
+    await expect(menuOf(page)).toBeHidden()
   })
 
   test('after a client navigation, MENU opens this page’s sheet', async ({
@@ -523,8 +599,9 @@ test.describe('the same nav on desktop', () => {
       'Konstruksi',
       'Teknologi',
       'Peekabo',
-      // "Cara kami bekerja" returns when its page is published (R0, R5).
-      'Kontak',
+      // G1: the capsule's fourth route. Kontak left the row for the menu's
+      // second list and the footer; the action leads to the same page.
+      'Cara kerja',
     ]) {
       await expect(
         page.getByRole('banner').getByRole('link', { name, exact: true })
